@@ -1,0 +1,10 @@
+pre {
+	font-size: 14;
+	margin-left: 3em;
+	margin-right: 2em;
+	padding: 8px;
+	background-color: #c8c8c8;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 1px;
+}

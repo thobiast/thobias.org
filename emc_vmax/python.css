@@ -1,0 +1,25 @@
+
+body h1 {
+  background: #87CEFA;
+  padding: 0em;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+}
+
+
+div.examples {
+  background: #eee;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  margin-left: 2em;
+}
+
+pre {
+font-size: 9pt;
+margin-left: 2em;
+}
+

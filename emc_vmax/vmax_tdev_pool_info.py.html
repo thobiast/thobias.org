@@ -1,0 +1,406 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>~/pessoal/public_html/htdocs/python/vmax_tdev_pool_info.py.html</title>
+<meta name="Generator" content="Vim/7.4">
+<meta name="plugin-version" content="vim7.4_v1">
+<meta name="syntax" content="python">
+<meta name="settings" content="use_css,pre_wrap,no_foldcolumn,expand_tabs,prevent_copy=">
+<meta name="colorscheme" content="none">
+<style type="text/css">
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+* { font-size: 1em; }
+.Type { color: #2e8b57; font-weight: bold; }
+.Statement { color: #a52a2a; font-weight: bold; }
+.Comment { color: #0000ff; }
+.Constant { color: #ff00ff; }
+.Special { color: #6a5acd; }
+.PreProc { color: #800080; }
+.Identifier { color: #008b8b; }
+-->
+</style>
+
+<script type='text/javascript'>
+<!--
+
+-->
+</script>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="Comment">#!/usr/bin/env python3</span>
+<span class="Comment">#</span>
+<span class="Comment"># vmax_tdev_pool_info.py - Script to query EMC VMAX Storage System using</span>
+<span class="Comment">#                          SYMCLI and print the LUNs space utilization</span>
+<span class="Comment">#                          per pool for a given Storage Group</span>
+<span class="Comment">#</span>
+<span class="Comment"># Homepage: <a href="http://thobias.org/python">http://thobias.org/python</a></span>
+<span class="Comment"># Author  : Thobias Salazar Trevisan (thobias at thobias.org)</span>
+<span class="Comment">#</span>
+<span class="Comment"># Changelog (DD/MM/YYYY):</span>
+<span class="Comment"># 15/10/2016 - first version</span>
+<span class="Comment">#</span>
+<span class="Comment">##############################################################################</span>
+<span class="Comment">#</span>
+<span class="Comment"># Prerequisite</span>
+<span class="Comment"># ============</span>
+<span class="Comment"># </span>
+<span class="Comment"># EMC Solutions Enabler (SYMCLI)</span>
+<span class="Comment">#</span>
+<span class="Comment"># Documentation</span>
+<span class="Comment"># =============</span>
+<span class="Comment">#</span>
+<span class="Comment"># This script runs a few symcli list commands to gather information about</span>
+<span class="Comment"># LUNs pool utilization for the Storage Group specified at command line.</span>
+<span class="Comment"># Then, it parses the XML symcli output and create a python dictionary</span>
+<span class="Comment"># with the following structure:</span>
+<span class="Comment">#</span>
+<span class="Comment"># tdevs_dict = { tdev_name : {</span>
+<span class="Comment">#                           'total_tracks_gb' = LUN SIZE (GB)</span>
+<span class="Comment">#                           'alloc_tracks_gb' = LUN used space (GB)</span>
+<span class="Comment">#                           'alloc_percent'   = LUN used space (pct)</span>
+<span class="Comment">#                           'sg_parent'       = Storage Group Parent Name</span>
+<span class="Comment">#                           'sg_child'        = Storage Group Child Name</span>
+<span class="Comment">#                           pool_name : {</span>
+<span class="Comment">#                                        'alloc_tracks_gb'    = LUN used</span>
+<span class="Comment">#                                                               space in pool</span>
+<span class="Comment">#                                        'pool_alloc_percent' = LUN used</span>
+<span class="Comment">#                                                               space (PCT)</span>
+<span class="Comment">#                                       }</span>
+<span class="Comment">#                              }</span>
+<span class="Comment">#              }</span>
+<span class="Comment">#</span>
+<span class="Comment"># The prettytable module is used to print the dictionary information</span>
+<span class="Comment"># as a table.</span>
+<span class="Comment">#</span>
+<span class="Comment"># #####################################################</span>
+<span class="Comment"># #                   Usage:                          #</span>
+<span class="Comment"># #####################################################</span>
+<span class="Comment">#</span>
+<span class="Comment"># prompt&gt; ./vmax_tdev_pool_info.py -h</span>
+<span class="Comment"># usage: vmax_tdev_pool_info.py [-h] [--version] [--verbose] [--nocolor] -sid</span>
+<span class="Comment">#                               SID</span>
+<span class="Comment">#                               SG_NAME</span>
+<span class="Comment">#</span>
+<span class="Comment"># Script to show LUNs space utilization per pool</span>
+<span class="Comment">#</span>
+<span class="Comment"># positional arguments:</span>
+<span class="Comment">#   SG_NAME        Storage Group Name to show LUNs space utilization</span>
+<span class="Comment">#</span>
+<span class="Comment"># optional arguments:</span>
+<span class="Comment">#   -h, --help     show this help message and exit</span>
+<span class="Comment">#   --version      show program's version number and exit</span>
+<span class="Comment">#   --verbose, -v  verbose flag</span>
+<span class="Comment">#   --nocolor      no color flag</span>
+<span class="Comment">#   -sid SID       Symmetrix ID</span>
+<span class="Comment">#</span>
+<span class="Comment">#     Example of use:</span>
+<span class="Comment">#         ./vmax_tdev_pool_info.py -sid 001 STORAGE_GROUP_1</span>
+<span class="Comment">#         ./vmax_tdev_pool_info.py -sid 002 STORAGE_GROUP_2</span>
+<span class="Comment">#</span>
+<span class="Comment">##############################################################################</span>
+
+<span class="Comment"># Import python modules</span>
+<span class="PreProc">import</span> logging
+<span class="PreProc">import</span> pprint
+<span class="PreProc">import</span> collections
+<span class="PreProc">import</span> prettytable
+<span class="PreProc">import</span> sys
+<span class="PreProc">import</span> argparse
+<span class="PreProc">import</span> subprocess
+<span class="PreProc">import</span> xml.etree.ElementTree <span class="Statement">as</span> ET
+
+VERSION = <span class="Constant">'1.0'</span>
+COLORS = <span class="Constant">1</span>
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Configure logging</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">setup_logging</span>():
+    logging.basicConfig(level=logging.DEBUG,
+                        <span class="Identifier">format</span>=<span class="Constant">'%(asctime)s - %(module)s - %(funcName)s -</span><span class="Special">\</span>
+<span class="Constant"> %(levelname)s - %(message)s'</span>,
+                        datefmt=<span class="Constant">'%m/%d/%Y %I:%M:%S %p'</span>)
+    <span class="Statement">return</span> logging.getLogger(__name__)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Execute the command and return the output</span>
+<span class="Comment"># If command return code is != 0, terminate the script</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">run_command</span>(cmd):
+    log.debug(<span class="Constant">&quot;Executing command: %s&quot;</span>, cmd)
+
+    p = subprocess.Popen(cmd,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        universal_newlines=<span class="Identifier">True</span>,
+                        shell=<span class="Identifier">True</span>)
+    stdout, stderr = p.communicate()
+    <span class="Statement">if</span> p.returncode:
+        message(<span class="Constant">&quot;red&quot;</span>, <span class="Constant">&quot;Error running command: &quot;</span> + cmd, <span class="Constant">0</span>)
+        message(<span class="Constant">&quot;red&quot;</span>, stderr, <span class="Constant">1</span>)
+    <span class="Statement">return</span> stdout
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Print colored messages</span>
+<span class="Comment"># If exitcode parameter is not zero, finish the script</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">message</span>(color, msg, exitcode=<span class="Constant">0</span>):
+    <span class="Statement">if</span>   color == <span class="Constant">'blue'</span>    : color = <span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[1;34m'</span>
+    <span class="Statement">elif</span> color == <span class="Constant">'red'</span>     : color = <span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[1;31m'</span>
+    <span class="Statement">elif</span> color == <span class="Constant">'green'</span>   : color = <span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[0;32m'</span>
+    <span class="Statement">elif</span> color == <span class="Constant">'yellow'</span>  : color = <span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[0;33m'</span>
+    <span class="Statement">elif</span> color == <span class="Constant">'p_color'</span> : color = <span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[01;37;44m'</span>
+    <span class="Statement">elif</span> color == <span class="Constant">'nocolor'</span> : color = <span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[0m'</span>
+    <span class="Statement">else</span>:
+        <span class="Identifier">print</span>(<span class="Constant">&quot;Error: message function: invalid color:&quot;</span> , color)
+        sys.exit(<span class="Constant">1</span>)
+
+    nocolor =<span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[0m'</span>
+
+    <span class="Statement">if</span> COLORS:
+        <span class="Identifier">print</span>(color + msg + nocolor)
+    <span class="Statement">else</span>:
+        <span class="Identifier">print</span>(msg)
+
+    <span class="Statement">if</span> exitcode:
+        sys.exit(exitcode)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Create nested dic</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">nested_dict</span>():
+    <span class="Statement">return</span> collections.defaultdict(nested_dict)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Return the text for a specific XML tag</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">get_xml_text</span>(elem, tag):
+    <span class="Statement">try</span>:
+        x = elem.find(tag).text
+    <span class="Statement">except</span>:
+        <span class="Comment"># print error message and exit</span>
+        message(<span class="Constant">&quot;red&quot;</span>, <span class="Constant">&quot;Error: XML tag '&quot;</span> + tag + <span class="Constant">&quot;' not found&quot;</span>, <span class="Constant">1</span>)
+    <span class="Statement">return</span> x
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Return list with VMAX pools</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">get_srp_pools</span>(symmid):
+    log.debug(<span class="Constant">&quot;Finding VMAX pools:&quot;</span>)
+    pools = <span class="Identifier">list</span>()
+    xml_string = run_command(<span class="Constant">'symcfg -sid '</span>+symmid+<span class="Constant">' list -pool -output xml_e'</span>)
+    pooltree = ET.fromstring(xml_string)
+    <span class="Statement">for</span> pool <span class="Statement">in</span> pooltree.findall(<span class="Constant">'Symmetrix/DevicePool/pool_name'</span>):
+        pools.append(pool.text)
+    log.debug(<span class="Constant">&quot;Pools available: %s&quot;</span>, pools)
+    <span class="Statement">return</span> pools
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># For all luns in tdevs_dict dictionary, get the storage group it belongs</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">get_tdevs_sg</span>(symmid, tdevs_dict):
+    log.debug(<span class="Constant">&quot;Getting storage group for tdev&quot;</span>)
+    <span class="Statement">for</span> lun <span class="Statement">in</span> tdevs_dict:
+        xml_string = run_command(<span class="Constant">'symaccess -sid '</span>                        +
+                                 symmid                                   +
+                                 <span class="Constant">' list -type storage -v -output xml_e -dev '</span>+
+                                 lun)
+        luntree = ET.fromstring(xml_string)
+        <span class="Statement">for</span> elem <span class="Statement">in</span> luntree.iterfind(<span class="Constant">'Symmetrix/Storage_Group'</span>):
+            sg = get_xml_text(elem, <span class="Constant">'Group_Info/group_name'</span>)
+            status = get_xml_text(elem, <span class="Constant">'Group_Info/Status'</span>)
+            <span class="Statement">if</span> status == <span class="Constant">'IsParent'</span>:
+                tdevs_dict[lun][<span class="Constant">'sg_parent'</span>] = sg
+            <span class="Statement">elif</span> status == <span class="Constant">'IsChild'</span>:
+                tdevs_dict[lun][<span class="Constant">'sg_child'</span>]  = sg
+            <span class="Statement">elif</span> status == <span class="Constant">'N/A'</span>:
+                tdevs_dict[lun][<span class="Constant">'sg_parent'</span>] = sg
+                tdevs_dict[lun][<span class="Constant">'sg_child'</span>]  = <span class="Constant">'N/A'</span>
+            <span class="Statement">else</span>:
+                message(<span class="Constant">&quot;red&quot;</span>,
+                        <span class="Constant">&quot;Error: get_tdevs_sg. Luns is not parent, child or N/A &quot;</span>+
+                            lun  +
+                            <span class="Constant">&quot; &quot;</span>  +
+                            sg   +
+                            <span class="Constant">&quot; &quot;</span>  +
+                            status,
+                        <span class="Constant">1</span>)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Return tdevs_dict dictionary data structure filled in</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">find_tdev_pool_alloc</span>(symmid, sgname):
+    log.debug(<span class="Constant">&quot;symmmid: %s and sgname: %s&quot;</span>, symmid, sgname)
+    <span class="Comment"># Find all VMAX pools</span>
+    pools = get_srp_pools(symmid)
+    <span class="Comment"># SYMCLI command that return space pool allocation for all TDEVs</span>
+    <span class="Comment"># for the storage group 'sgname'</span>
+    xml_string = run_command(<span class="Constant">'symcfg -sid '</span>     +
+                             symmid             +
+                             <span class="Constant">' list -tdev -sg '</span> +
+                             sgname             +
+                             <span class="Constant">' -tb -detail -output xml_e'</span>)
+    tdevs_dict = nested_dict()
+    tdevtree = ET.fromstring(xml_string)
+    <span class="Statement">for</span> elem <span class="Statement">in</span> tdevtree.iterfind(<span class="Constant">'Symmetrix/ThinDevs/Device'</span>):
+        tdev_name = get_xml_text(elem, <span class="Constant">'dev_name'</span>)
+        log.debug(<span class="Constant">&quot;LUN: %s&quot;</span>, tdev_name)
+        tdevs_dict[tdev_name][<span class="Constant">'total_tracks_gb'</span>] = get_xml_text(elem, <span class="Constant">'total_tracks_gb'</span>)
+        tdevs_dict[tdev_name][<span class="Constant">'alloc_tracks_gb'</span>] = get_xml_text(elem, <span class="Constant">'alloc_tracks_gb'</span>)
+        <span class="Statement">try</span>:
+            tdevs_dict[tdev_name][<span class="Constant">'alloc_percent'</span> ] = <span class="Special">\</span>
+                <span class="Identifier">int</span>((<span class="Identifier">float</span>(tdevs_dict[tdev_name][<span class="Constant">'alloc_tracks_gb'</span>]) * <span class="Constant">100</span>) / <span class="Special">\</span>
+                    <span class="Identifier">float</span>(tdevs_dict[tdev_name][<span class="Constant">'total_tracks_gb'</span>]) <span class="Special">\</span>
+                   )
+        <span class="Statement">except</span> <span class="Type">ZeroDivisionError</span>:
+            tdevs_dict[tdev_name][<span class="Constant">'alloc_percent'</span> ] = <span class="Constant">&quot;0.0&quot;</span>
+        <span class="Statement">for</span> pool <span class="Statement">in</span> elem.iterfind(<span class="Constant">'pool'</span>):
+            pool_name = get_xml_text(pool, <span class="Constant">'pool_name'</span>)
+            <span class="Statement">if</span> pool_name == <span class="Constant">'N/A'</span>:
+                <span class="Statement">continue</span>
+            tdevs_dict[tdev_name][pool_name][<span class="Constant">'alloc_tracks_gb'</span>] = <span class="Special">\</span>
+                                    get_xml_text(pool, <span class="Constant">'alloc_tracks_gb'</span>)
+            tdevs_dict[tdev_name][pool_name][<span class="Constant">'pool_alloc_percent'</span>] = <span class="Special">\</span>
+                                    get_xml_text(pool, <span class="Constant">'pool_alloc_percent'</span>)
+        <span class="Comment"># want to be sure that tdev have information for all</span>
+        <span class="Comment"># pools available</span>
+        <span class="Statement">for</span> pool_name <span class="Statement">in</span> pools:
+            <span class="Statement">if</span> <span class="Statement">not</span> tdevs_dict[tdev_name][pool_name]:
+                tdevs_dict[tdev_name][pool_name][<span class="Constant">'alloc_tracks_gb'</span>] = <span class="Constant">'0'</span>
+                tdevs_dict[tdev_name][pool_name][<span class="Constant">'pool_alloc_percent'</span>] = <span class="Constant">'00'</span>
+
+    <span class="Comment"># Find storage group each lun belongs to and</span>
+    <span class="Comment"># the Storage Group Parent or Child</span>
+    get_tdevs_sg(symmid, tdevs_dict)
+
+    <span class="Statement">if</span> <span class="Statement">not</span> log.disabled:
+        log.debug(<span class="Constant">&quot;tdevs_dict:&quot;</span>)
+        pprint.pprint(tdevs_dict)
+
+    <span class="Statement">return</span> (pools, tdevs_dict)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Print table with lun space utilization per pool</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">print_tdevs</span>(pools, tdevs):
+    header = <span class="Identifier">list</span>()
+    header.append(<span class="Constant">&quot;TDEV&quot;</span>)
+    header.append(<span class="Constant">&quot;Total GB&quot;</span>)
+    header.append(<span class="Constant">&quot;Alloc GB&quot;</span>)
+    header.append(<span class="Constant">&quot;Alloc Pct&quot;</span>)
+    <span class="Statement">for</span> pool <span class="Statement">in</span> <span class="Identifier">sorted</span>(pools):
+        header.append(<span class="Constant">&quot;Alloc GB (&quot;</span> + pool + <span class="Constant">&quot;)&quot;</span>)
+    header.append(<span class="Constant">&quot;SG Parent&quot;</span>)
+    header.append(<span class="Constant">&quot;SG Child&quot;</span>)
+
+    output = prettytable.PrettyTable(header)
+    output.<span class="Identifier">format</span> = <span class="Identifier">True</span>
+    <span class="Statement">for</span> tdev <span class="Statement">in</span> <span class="Identifier">sorted</span>(tdevs):
+        row = <span class="Identifier">list</span>()
+        row.append(tdev)
+        row.append(tdevs[tdev][<span class="Constant">'total_tracks_gb'</span>])
+        row.append(tdevs[tdev][<span class="Constant">'alloc_tracks_gb'</span>])
+        row.append(tdevs[tdev][<span class="Constant">'alloc_percent'</span>])
+        <span class="Statement">for</span> pool <span class="Statement">in</span> <span class="Identifier">sorted</span>(pools):
+            row.append(tdevs[tdev][pool][<span class="Constant">'alloc_tracks_gb'</span>]    +
+                       <span class="Constant">&quot; (&quot;</span>                                    +
+                       tdevs[tdev][pool][<span class="Constant">'pool_alloc_percent'</span>] +
+                       <span class="Constant">&quot;%)&quot;</span>)
+        row.append(tdevs[tdev][<span class="Constant">'sg_parent'</span>])
+        row.append(tdevs[tdev][<span class="Constant">'sg_child'</span>])
+        output.add_row(row)
+    output.align[<span class="Constant">&quot;SG Child&quot;</span>] = <span class="Constant">&quot;l&quot;</span>
+    output.sortby = <span class="Constant">&quot;SG Child&quot;</span>
+    <span class="Identifier">print</span>(output)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Parses the command line arguments</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">parse_parameters</span>():
+    <span class="Comment"># epilog message: Custom text after the help</span>
+    epilog = <span class="Constant">'''</span>
+<span class="Constant">    Example of use:</span>
+<span class="Constant">        %s -sid 001 STORAGE_GROUP_1</span>
+<span class="Constant">        %s -sid 002 STORAGE_GROUP_2</span>
+<span class="Constant">    '''</span> % (sys.argv[<span class="Constant">0</span>],sys.argv[<span class="Constant">0</span>])
+    <span class="Comment"># Create the argparse object and define global options</span>
+    parser = argparse.ArgumentParser(description=<span class="Constant">'Script to show LUNs space </span><span class="Special">\</span>
+<span class="Constant">utilization per pool'</span>,
+                                    formatter_class=argparse.RawDescriptionHelpFormatter,
+                                    epilog=epilog)
+    parser.add_argument(<span class="Constant">'--version'</span>,
+                        action=<span class="Constant">'version'</span>,
+                        version=VERSION)
+    parser.add_argument(<span class="Constant">'--verbose'</span>, <span class="Constant">'-v'</span>,
+                        action=<span class="Constant">'store_true'</span>,
+                        <span class="Identifier">help</span>=<span class="Constant">'verbose flag'</span>,
+                        dest=<span class="Constant">'verbose'</span>)
+    parser.add_argument(<span class="Constant">'--nocolor'</span>,
+                        action=<span class="Constant">'store_false'</span>,
+                        <span class="Identifier">help</span>=<span class="Constant">'no color flag'</span>,
+                        dest=<span class="Constant">'color'</span>)
+    parser.add_argument(<span class="Constant">'-sid'</span>,
+                        <span class="Identifier">type</span>=<span class="Identifier">str</span>,
+                        required=<span class="Identifier">True</span>,
+                        <span class="Identifier">help</span>=<span class="Constant">'Symmetrix ID'</span>)
+    parser.add_argument(<span class="Constant">'SG_NAME'</span>,
+                        <span class="Identifier">help</span>=<span class="Constant">'Storage Group Name to show LUNs space utilization'</span>)
+
+    <span class="Comment"># If there is no parameter, print help</span>
+    <span class="Statement">if</span> <span class="Identifier">len</span>(sys.argv) &lt; <span class="Constant">2</span>:
+        parser.print_help()
+        sys.exit(<span class="Constant">0</span>)
+
+    <span class="Statement">return</span> parser.parse_args()
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Main function</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">main</span>():
+    <span class="Statement">global</span> COLORS
+    <span class="Statement">global</span> log
+    <span class="Comment"># Create the log</span>
+    log = setup_logging()
+
+    <span class="Comment"># Parser the command line</span>
+    args = parse_parameters()
+
+    <span class="Comment"># Check if we are running verbose. If not, disable logging</span>
+    <span class="Statement">if</span> <span class="Statement">not</span> args.verbose:
+        log.disabled = <span class="Identifier">True</span>
+    log.debug(<span class="Constant">'parameters: %s'</span>,args)
+    <span class="Statement">if</span> <span class="Statement">not</span> args.color:
+        log.debug(<span class="Constant">&quot;Disabling colored output&quot;</span>)
+        COLORS = <span class="Constant">0</span>
+
+    pools, tdevs_dict = find_tdev_pool_alloc(args.sid, args.SG_NAME.upper())
+    print_tdevs(pools, tdevs_dict)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Run from command line</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">if</span> __name__ == <span class="Constant">'__main__'</span>:
+    main()
+
+
+<span class="Comment"># vim&#0058; ts=4</span>
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->

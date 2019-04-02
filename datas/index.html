@@ -1,0 +1,431 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.sf.net">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="stylesheet" TYPE="text/css" HREF="datas.css">
+<TITLE>datas</TITLE>
+</HEAD>
+<BODY>
+
+<DIV CLASS="header" ID="header">
+<H1>datas</H1>
+<H2>Programa em modo texto de calendário e compromissos</H2>
+</DIV>
+
+<DIV CLASS="mini" ID="mini"> <IMG ALIGN="middle" SRC="img/mini.png" BORDER="0" ALT=""></DIV>
+<DIV CLASS="toc" ID="toc">
+  <OL>
+  <LI><A HREF="#toc1">Datas</A>
+  <LI><A HREF="#toc2">Motivação</A>
+  <LI><A HREF="#toc3">Download</A>
+  <LI><A HREF="#toc4">Instalação</A>
+  <LI><A HREF="#toc5">Como Funciona</A>
+    <UL>
+    <LI><A HREF="#toc6">5.1. Adicionando Compromissos</A>
+    <LI><A HREF="#toc7">5.2. Enviando Lembrete por E-mail</A>
+    </UL>
+  <LI><A HREF="#toc8">Changelog</A>
+  <LI><A HREF="#toc9">Agradecimentos</A>
+  <LI><A HREF="#toc10">Patches</A>
+  <LI><A HREF="#toc11">Considerações Finais</A>
+  </OL>
+
+</DIV>
+<DIV CLASS="body" ID="body">
+<A NAME="toc1"></A>
+<H1>1. Datas</H1>
+<P>
+O datas é um programa de agenda e compromissos que funciona na linha de
+comando. Simples, rápido e sem frescuras.
+</P>
+<div class="lastrelease">
+<TABLE ALIGN="center">
+<TR>
+<TD>Última versão: 1.2 (25 de novembro de 2005)</TD>
+</TR>
+</TABLE>
+
+</div>
+<P></P>
+<A NAME="toc2"></A>
+<H1>2. Motivação</H1>
+<P>
+Assim como eu, várias pessoas têm dificuldade em lembrar de datas
+importantes. Sempre esquecem de aniversários, reuniões,
+dia de pagar contas etc.
+</P>
+<P>
+Existem alguns programas/agendas que ajudam a lembrar, mas a maioria são com
+interfaces web, programas grandes, pesados, ou que não atendem as minhas
+necessidades.
+</P>
+<P>
+Assim surgiu o datas, um programa simples, direto e que só faz uma única
+tarefa: ajuda os <I>esquecidos</I> a lembrar estes dias.
+</P>
+<P>
+Com uma interface simples de linha de comando, é extremamente fácil e
+rápido consultar e gerenciar o calendário com os compromissos.
+Os compromissos ficam armazenados em um arquivo texto com uma estrutura
+simples.
+</P>
+<P>
+O programa possui ainda a opção de enviar um mail ou uma mensagem para celular,
+lembrando de algum compromisso com <I>N</I> dias de antecedência.
+</P>
+<A NAME="toc3"></A>
+<H1>3. Download</H1>
+<P>
+O datas é dividido em dois arquivos:
+</P>
+<UL>
+<LI><I>datas.txt</I> - um arquivo texto com os dias a serem lembrados.
+  <A HREF="datas.txt">Clique aqui</A> para baixar o arquivo com a estrutura
+  pronta do <I>datas.txt</I>.
+<LI><I>datas</I> - um shell script que gerencia e mostra os compromissos
+  agendados. <A HREF="datas">Clique aqui</A> para baixar o programa.
+</UL>
+
+<P>
+Para os nerds, o <A HREF="datas.html">código fonte</A> do programa colorido
+para facilitar o entendimento.
+</P>
+<A NAME="toc4"></A>
+<H1>4. Instalação</H1>
+<P>
+É necessário alterar algumas linhas no código fonte do programa. Não se
+assuste, são alterações bem simples. Edite o arquivo <I>datas</I> e altere
+as seguintes variáveis (linha 26, 30 e 34 respectivamente):
+</P>
+<TABLE ALIGN="center" BORDER="1">
+<TR>
+<TD>dados='caminho_completo_para_o_arquivo_datas.txt'</TD>
+</TR>
+<TR>
+<TD>mailto='usuario_que_ira_receber_os_lembretes'</TD>
+</TR>
+<TR>
+<TD>celmail='endereço_de_mail_do_seu_celular'</TD>
+</TR>
+</TABLE>
+
+<P></P>
+<P>
+<B>Variável dados</B>: Coloque o caminho completo para o arquivo datas.txt.
+</P>
+<P>
+<B>Variável mailto</B>: O endereço de mail de quem receberá os avisos dos
+compromissos.
+</P>
+<P>
+<B>Variável celmail</B>: O endereço de mail do seu celular. Ex:
+<I>celmail='<A HREF="mailto:seunumero@suaoperadora.com.br">seunumero@suaoperadora.com.br</A>'</I>
+</P>
+<P>
+Observação: Na variável <I>cmd_mail</I> é definido o comando utilizado para enviar
+o mail. Se não for entrega local, é necessário ter um smtp configurado, ou utilize
+outro comando para enviar o mail. Altere esta linha apenas se for necessário.
+A configuração atual deve funcionar para entrega local.
+</P>
+<P>
+Depois de alterada as linhas acima, torne o arquivo executável:
+</P>
+<PRE>
+prompt&gt; chmod +x datas
+</PRE>
+<P></P>
+<A NAME="toc5"></A>
+<H1>5. Como Funciona</H1>
+<P>
+Para começar, execute o programa:
+</P>
+<PRE>
+prompt&gt; ./datas
+</PRE>
+<P></P>
+<P>
+Se nenhum parâmetro for passado, é mostrado na tela o calendário
+do mês atual com os seus lembretes.
+</P>
+<TABLE ALIGN="center">
+<TR>
+<TD><IMG ALIGN="middle" SRC="img/shot1.png" BORDER="0" ALT=""></TD>
+</TR>
+</TABLE>
+
+<P></P>
+<P>
+O dia atual é destacado (por padrão na cor verde) na saída do comando, e caso
+exista algum compromisso neste dia, ele também é destacado. Os demais dias
+com compromisso também estão em destaque (por padrão na cor azul claro).
+Estas cores podem ser facilmente modificadas no código fonte. Elas estão
+definidas nas variáveis <I>COR_HJ</I> e <I>COR_DATA</I> respectivamente.
+</P>
+<P>
+O mês a ser consultado pode ser especificado na chamada do programa. Para
+ver os compromissos de dezembro:
+</P>
+<PRE>
+prompt&gt; ./datas 12
+</PRE>
+<P></P>
+<TABLE ALIGN="center">
+<TR>
+<TD><IMG ALIGN="middle" SRC="img/shot2.png" BORDER="0" ALT=""></TD>
+</TR>
+</TABLE>
+
+<P></P>
+<P>
+O ano também pode ser escolhido.
+</P>
+<PRE>
+prompt&gt; ./datas 12 2006
+</PRE>
+<P></P>
+<A NAME="toc6"></A>
+<H2>5.1. Adicionando Compromissos</H2>
+<P>
+Em vez de criar uma interface para adicionar/remover/alterar os
+compromissos, o programa abre um editor de texto para você manipular o
+arquivo.
+</P>
+<P>
+Para abrir o editor é necessário passar o parâmetro <I>--edit</I> ou <I>-e</I>.
+</P>
+<PRE>
+prompt&gt; ./datas -e
+</PRE>
+<P></P>
+<TABLE ALIGN="center">
+<TR>
+<TD><IMG ALIGN="middle" SRC="img/shot3.png" BORDER="0" ALT=""></TD>
+</TR>
+</TABLE>
+
+<P></P>
+<P>
+O editor de texto utilizado é o que está definido na variável de ambiente
+<I>EDITOR</I>. Caso esta variável não esteja setada, é utilizado o editor
+passada como parâmetro. Se nenhum for passado é utilizado o VI.
+</P>
+<PRE>
+prompt&gt; ./datas -e nano
+</PRE>
+<P></P>
+<P>
+O arquivo com os compromissos possui uma estrutura simples, e poucas
+regras precisam ser respeitadas:
+</P>
+<UL>
+<LI>As linhas que começam com o caractere '#' são comentários.
+<LI>Existe uma entrada (um comentário) para cada um dos 12 meses
+ (<B>não altere estas linhas</B>).
+<LI>As datas precisam ser adicionadas abaixo do mês correspondente com o
+  seguinte formato:
+<P></P>
+</UL>
+
+<TABLE ALIGN="center" BORDER="1">
+<TR>
+<TD>dia - lembrete</TD>
+</TR>
+</TABLE>
+
+<P></P>
+<P>
+Para ajudar na compreensão da estrutura, segue um pequeno exemplo deste
+arquivo:
+</P>
+<PRE>
+prompt&gt; cat datas.txt
+# datas.txt - http://thobias.org/datas
+#
+# Esse arquivo contém os compromissos agendados.
+# Sua estrutura é:
+# DD - compromisso/lembrete
+#
+# Observações:
+# - É necessário respeitar a estrutura deste arquivo para adicionar
+#   seus lembretes e, as linhas indicando os meses, _NÃO_ podem ser
+#   apagadas, mesmo que não exista nenhum lembrete no mês.
+#
+# - O "mês 00" é uma configuração especial no arquivo datas.txt. os
+#   lembretes adicionados nele, serão lembrados em todos os meses
+#   reais. Deste modo, você não precisa adicionar a mesma entrada em
+#   todos os mês. Útil para lembrete como: para pagar a conta de luz
+#   todo o dia 10.
+#
+# - Para acrescentar lembretes é só colocá-los logo abaixo do mês
+#   correspondente.
+##########################################################################
+
+# 00 - "mes" especial
+10 - pagar conta de luz
+
+# 01 - janeiro
+4  - aniversario jerusa
+
+# 02 - fevereiro
+
+# 03 - março
+03 - aniversario mandarim
+25 - aniversario germano
+
+# 04 - abril
+
+# 05 - maio
+
+# 06 - junho
+
+# 07 - julho
+
+# 08 - agosto
+
+# 09 - setembro
+
+# 10 - outubro
+14 - meu aniversario
+
+# 11 - novembro
+
+# 12 - dezembro
+08 - aniversario gordo
+14 - aniversario careca
+25 - natal
+31 - ano novo
+</PRE>
+<P></P>
+<P>
+O arquivo é auto explicativo. Os compromissos são adicionados após o seu
+respectivo mês.
+</P>
+<P>
+O <I>mês 00</I> é uma configuração especial no arquivo datas.txt. Os
+compromissos adicionados nele serão lembrados em todos os meses
+reais. Deste modo, você não precisa adicionar a mesma entrada em
+todos os mês. Útil para lembretes como: para pagar a conta de luz
+todo o dia 10.
+</P>
+<A NAME="toc7"></A>
+<H2>5.2. Enviando Lembrete por E-mail</H2>
+<P>
+Utiliza-se o parâmetro <I>--cron</I> para o
+script enviar o resultado (se necessário) por mail. O mail só será enviado
+caso exista algum lembrete para daqui a N dias, onde N por padrão é 1, ou
+seja, com quantos dias de antecedência o mail com o lembrete será enviado.
+</P>
+<PRE>
+prompt&gt; ./datas --cron
+</PRE>
+<P></P>
+<P>
+O número de dias de antecedência pode ser modificado passando o seu novo
+valor na chamada do programa. Para que o mail seja enviado 2 dias antes
+do compromisso:
+</P>
+<PRE>
+prompt&gt; ./datas --cron 2
+</PRE>
+<P></P>
+<P>
+Se quiser enviar um mail no dia do compromisso, especifique o
+número zero:
+</P>
+<PRE>
+prompt&gt; ./datas --cron 0
+</PRE>
+<P></P>
+<P>
+Para automatizar este processo, esta chamada pode ser adicionada na crontab
+do sistema operacional. Por exemplo, para
+executar o programa todos os dias às 9h da manhã:
+</P>
+<PRE>
+0 9 * * * /caminho/do/arquivo/datas --cron
+</PRE>
+<P></P>
+<P>
+Observação: o cron não compensa comandos que foram perdidos
+enquando o sitema estava desligado, ou seja, se você colocar o datas para
+executar via cron às 6h da manhã e a máquina não estiver ligada, o programa
+não será executado naquele dia. Então coloque-o para executar em um horário
+em que a máquina esteja ligada ou em algum servidor.
+</P>
+<A NAME="toc8"></A>
+<H1>6. Changelog</H1>
+<P>
+<B>Versão 1.2 - 25 de novembro de 2005</B>
+</P>
+<UL>
+<LI>Sempre colore o dia de hoje com uma cor diferente no calendário (valeu Elias pela idéia)
+<LI>Colore os compromissos mesmo que o mês não seja o atual
+<LI>Adicionada variável que especifica a implementação do sed a ser utilizada (valeu Josevan)
+</UL>
+
+<P>
+<B>Versão 1.1 - 20 de setembro de 2005</B>
+</P>
+<UL>
+<LI>Adicionado mês 00 (valeu Aurélio Marinho Jargas pela idéia)
+<LI>Adicionado aviso pelo celular (valeu Ataliba Teixeira pela idéia/patch)
+<LI>Adicionada opção -l para listar todos os compromissos agendados (valeu
+  Aurélio)
+<LI>Ordenada a saída dos lembretes do mês. Não importa a ordem que estão no arquivo
+</UL>
+
+<P>
+<B>Versão 1.0 - 15 de janeiro de 2005</B>
+</P>
+<A NAME="toc9"></A>
+<H1>7. Agradecimentos</H1>
+<P>
+Pessoas que contribuiram:
+</P>
+<UL>
+<LI>Aurélio Marinho Jargas
+<LI>Silvano Bolfoni Dias
+<LI>Ataliba Teixeira
+<LI>Elias Junior
+<LI>Josevan Gondim
+</UL>
+
+<A NAME="toc10"></A>
+<H1>8. Patches</H1>
+<P>
+O Ataliba Teixeira mantém um
+<A HREF="http://cerebro.freeshell.org/sections/aplicationpatches/datas/">patch</A>
+para o programa funcionar na SDF (<A HREF="http://sdf.lonestar.org">http://sdf.lonestar.org</A>).
+</P>
+<A NAME="toc11"></A>
+<H1>9. Considerações Finais</H1>
+<P>
+Espero que este programa seja útil para mais alguém.
+</P>
+<P>
+Se tiver algum comentário, sugestão, aviso de bug... me envie um mail:
+</P>
+<P>
+thobias (at) thobias (dot) org
+</P>
+<HR NOSHADE SIZE=5>
+<P></P>
+<TABLE ALIGN="center">
+<TR>
+<TD><A HREF="http://txt2tags.sourceforge.net"><IMG ALIGN="middle" SRC="img/t2tpowered.png" BORDER="0" ALT=""></A></TD>
+</TR>
+</TABLE>
+
+<P></P>
+</DIV>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2229503-1";
+urchinTracker();
+</script>
+
+<!-- html code generated by txt2tags 2.3 (http://txt2tags.sf.net) -->
+<!-- cmdline: txt2tags index.t2t -->
+</BODY></HTML>

@@ -1,0 +1,58 @@
+div.header {
+  background: #87CEFA;
+  font-family: Verdana, Arial, Helvetica, Sans-Serif;
+  text-align: center;
+  margin: 0;
+  padding: 0em;
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+
+}
+
+div.header h2 {
+  font-size: 11pt;
+}
+
+div.body h3 {
+  text-decoration: underline;
+}
+
+div.body h4 {
+  margin-left: 2em;
+}
+
+div.body {
+  font-family: Verdana, Arial, Helvetica, Sans-Serif;
+  font-size: 13;
+}
+
+div.examples {
+  background: #eee;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  margin-left: 2em;
+}
+
+LI {
+  font-size: 11pt;
+/*  background: #eee;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;*/
+  text-decoration: underline;
+}
+
+pre {
+font-size: 9pt;
+margin-left: 2em;
+}
+
+table {
+  font-size: 9pt;
+}
+

@@ -1,0 +1,127 @@
+#!/bin/bash
+# datas - programa em modo texto de calendario e compromissos
+#
+# Autor....: Thobias Salazar Trevisan
+# Site.....: http://thobias.org/datas
+# Licenca..: GPL
+#
+# Changelog:
+# 20/09/2005 - adicionada opcao --list
+#            - sort dos lembretes do mes
+#            - aviso de lembrete para o celular (valeu ataliba)
+#            - adicionado o "mes 00". nao precisar mais adicionar o
+#              mesmo lembrete em todos os meses (valeu aurelio)
+# 15/01/2005 - Primeira versao
+#
+#############################################################################
+#
+#                Configuracoes
+#                =============
+#
+# arquivo que contem as datas a serem lembradas
+dados='/home/thobias/devel/datas/1.1/datas.txt'
+#
+# endereco de mail de quem vai receber o lembrete (utilizado apenas quando
+# for chamado via cron (parametro --cron)
+mailto='thobias'
+#
+# se o seu celular recebe mail, voce pode receber os lembretes nele tambem.
+# ex: celmail='seunumero@suaoperadora.com.br'
+celmail=''
+#
+# numero de dias de antecedencias que sera enviado o lembrete por mail
+days='1'
+# comando para enviar o mail
+cmd_mail="mail -s 'datas: lembrete de data(s) importante(s)' $mailto"
+#
+# cores
+VERDE="\\033[1;32m"
+NORMAL="\\033[0;39m"
+#
+versao='1.1'
+#
+# sedao que arruma o mes especial no arquivo com os lembretes
+# so mexa se voce souber _realmente_ o que esta fazendo
+SEDMES00='/^ *# *00 *-/,/^ *# *[0-9][0-9] *-/{/^ *# *00 *-/d;
+/^ *# *[0-9][0-9] *-/ba;H;};:a;/^ *# *[0-9][0-9] *-/G'
+#
+#############################################################################
+############# Funcoes
+#############################################################################
+
+##### funcao que trata a execucao via cron (parametro --cron)
+cron(){
+local i
+[ "$1" -a "${1//[0-9]}" ] && { echo "Número de dias inválido"; return; }
+hj=$(date  '+%d' --date "${1:-$days} days" | sed 's/^0//')
+ms=$(date  '+%m' --date "${1:-$days} days" | sed 's/^.$/0&/')
+ano=$(date  '+%Y' --date "${1:-$days} days")
+i=$(cat $dados | sed "$SEDMES00" |sed -n "/^ *# *$ms *- /,/#/{//d;/^ *$/d;
+s/^ *0//;/\b$hj\b/!d;p;}")
+# tem algum lembrete ?!
+[ "$i" ] && { (echo -e "Hoje é: $(date '+%d de %b de %Y')\n";
+echo -e "$(cal $ms $ano)\nLembretes:\n\n$i") | eval $cmd_mail;
+[ "$celmail" ] && echo "Lembrete do programa datas: dia $i"|mail $celmail; }
+}
+
+##### mostra o calendario com os lembretes na stdout
+cmd(){
+local hj ms ano
+hj=$(date '+%d' | sed 's/^0//')
+[ "$1" ] && ms="$1" || ms=$(date '+%m'); ms=$(echo $ms | sed 's/^.$/0&/')
+[ "$2" ] && ano="$2" || ano=$(date '+%Y')
+# testa se o mes e valido
+[ "$(echo $ms | sed 's/^.$/0&/;s/^\(0[1-9]\|1[0-2]\)$//')" ] &&
+{ echo Erro: mês inválido; exit 1; }
+# testa se o ano e valido
+[ "$(echo $ano | sed 's/^200[0-9]$//')" ] &&
+{ echo "Erro: ano inválido"; exit 1; }
+# se nao for este mes ou ano nao colore
+[ "$ms" = "$(date '+%m')" -a "$ano" = "$(date '+%Y')" ] || { VERDE=$NORMAL; }
+# monta o calendario com os lembretes
+paste \
+<(cal "$ms" $ano|sed "s/\b$hj\b/$(echo -en $VERDE)&$(echo -en $NORMAL)/") \
+<(cat $dados | sed "$SEDMES00" |
+sed -n "/^ *# *$ms *- /,/#/{//d;/^ *$/d;s/^ *0//;s/ \+/ /g;p;}" | sort -n |
+sed "s/^[0-9] / &/;/\b$hj\b/s/.*/$(echo -en $VERDE)&$(echo -en $NORMAL)/")
+}
+
+#############################################################################
+############# Main
+#############################################################################
+
+[ "$1" = "--versao" -o "$1" = "-v" ]&&{ echo "datas versao $versao";exit; }
+
+# edita o arquivo de configuracao
+[ "$1" = "--edit" -o "$1" = "-e" ] && { ${EDITOR:-${2:-vi}} $dados ; exit; }
+
+# se for passado o parametro cron, envia os dados por mail (se necessario)
+[ "$1" = "--cron" ] && { shift; cron "$1"; exit; }
+
+# lista todos os compromissos cadastrados
+[ "$1" = "--list" -o "$1" = "-l" ] && {
+sed "$SEDMES00" $dados | sed -n "/^ *$/d;s/^[0-9] /0&/;/^ *# *01 *-/,\${
+s/^ *# *[0-9].*/$(echo -en $VERDE)&$(echo -en $NORMAL)/;p;}" |
+sed '1i **** tecla Q sai' | ${PAGER:-less -r}; exit; }
+
+# mostra help
+[ "$1" = "--help" -o "$1" = "-h" ] && {
+echo "datas.: script que mostra o calendário destacando as datas importantes
+Site..: http://thobias.org/datas
+Versão: $versao
+
+Uso: datas [opções]
+
+    [mês] [ano] especifica o mês a ser consultado (pode ser indicado o ano)
+    --cron [N]  envia o mail com de N dias de antecedência da data do lembrete
+-e, --edit      abre o arquivo com os lembretes em um editor de texto
+-l, --list      mostra todos os lembretes cadastrados
+-h, --help      mostra a ajuda
+-v, --versao    mostra a versão
+
+Consulte a documentação completa no site.
+" ; exit; }
+
+# mostra o calendario com os lembretes na stdout
+cmd "$@"
+

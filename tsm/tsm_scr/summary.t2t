@@ -1,0 +1,42 @@
+
+
+ || Script name | Description |
+ | CLIENTEVENTS | Display number of client events per state in a specific date. $1 = YYYY-MM-DD |
+ | COMPARESTGPOOLS | Compare amount of space and number of files between two stgpools. $1 - stgpool_1 and $2 - stgpool_2. Example: run comparestgpools OFF_TAPE OFF_COPY |
+ | DRIVEPATH | Display information about drives and paths |
+ | DRMDB | List DRM TSM DB volumes - $1 dbs or dbb |
+ | DRMINLIB | Information about drm volumes in the library |
+ | DRMNUMVOL | Number of volumes per DRM state |
+ | DRMVOL | List details about DRM volumes |
+ | FALSEPRIVATE | False private tapes |
+ | NODESINFO | Show nodes information (node, domain, platform, contact, tsm version, amount of data stored and last access date) |
+ | NODESNOTACCESS | Display nodes that have not accessed TSM server in the last X days. $1 = number of days |
+ | NUMNODES | Display number of nodes (total, by domain, by platform, by client_os_level and by TSM client version) |
+ | OCCUPANCYNODEFS | Storage space used per filespace and per backup/archive type for a specific node - $1 = NODE_NAME |
+ | PROCESSINFO | Information about running process |
+ | RECLAIM | Display information about volumes (volser, devclass, stgpool, pct_reclaim, pct_utilized, status and access) |
+ | SCRATCH | Number of scratch per tape library |
+ | SESSINFO | Sessions information |
+ | SESSTAPE | List sessions using tape drive |
+ | STGPOOLINFO | Show information about storage pool (space and number of files) |
+ | STGPOOLINFO2 | Space stored and number of files per storage pool and per type (Archive/Backup) |
+ | SUMMARY24H | Summary of Operations in the Last 24 Hours (GB) |
+ | SUMMARYALLNODES | Display amount of data archive/backup/restore/retrive per day and per node. Order by GB |
+ | SUMMARYBKPDB | TSM DB backup summary |
+ | SUMMARYBKPSTG | Backup storage pool - amount of data copied per day |
+ | SUMMARYBKPSTGPR | Display information about backup stgpool process |
+ | SUMMARYDATE | Summary of Operations in a specific date (GB) - $1 YYYY-MM-DD |
+ | SUMMARYEXPIRE | Expire inventory summary |
+ | SUMMARYMIGRATE | Amount of space migrated by date and storage pool |
+ | SUMMARYMIGRATEPR | Display information about migration process |
+ | SUMMARYNODE | Display amount of data archive/backup/retrieve/restore per date for an specific node. '$1' nodename |
+ | SUMMARYNODEPERFORMANCE | Display nodes performance from summary. $1 = NODE |
+ | SUMMARYNUMACTIVITY | Display number of activities reported in summary in a specific time - $1 = YYYY-MM-DD HH:MM:SS |
+ | SUMMARYOFFRECLAIM | Information about offsite reclamation |
+ | SUMMARYOPERATION | Display amount of data per date for a specific operation - $1 = ARCHIVE or BACKUP or RESTORE or RETRIEVE or MIGRATION, etc |
+ | SUMMARYRECLAIM | Display information about number of GB and volumes reclaimed by date and by stgpool |
+ | SUMMARYRECLAIMPR | Display information about reclaim process |
+ | TOTALDATA | Display amount of data stored on TSM (auditocc) |
+ | VOLINLIB | Display information about volumes that are inside the library. It does not show scratch tapes |
+ | VOLPEROWNER | Display number of tapes per owner/server/library client |
+ | VOLPERSTGPOOL | Number of volumes per storage pool |

@@ -1,0 +1,243 @@
+\begin{thebibliography}{10}
+
+\bibitem{mvia}
+``{NERSC. M-VIA}''.
+\newblock http://www.nersc.gov/research/FTG/via.
+
+\bibitem{cluster3}
+``{Rocketcalc}''.
+\newblock http://www.rocketcalc.com.
+
+\bibitem{cluster1}
+``{NCSA Urbana-Champaign}''.
+\newblock http://www.ncsa.uiuc.edu, 2001.
+
+\bibitem{cluster2}
+``{CBRC - Tsukuba Advanced Computing Center - TACC/AIST Tsukuba}''.
+\newblock http://www.cbrc.jp/magi/, 2001.
+
+\bibitem{mpi}
+``{Message Passing Interface Forum}''.
+\newblock http://www.mpi-forum.org.
+
+\bibitem{ldd}
+{Alessandro Rubini and Jonathan Corbet}.
+\newblock {\em {Linux Device Drivers}}.
+\newblock {O'Reilly \& Associates}, 2nd ed., June 2001.
+
+\bibitem{amza96treadmarks}
+Amza,~C., Cox,~A.~L., Dwarkadas,~S., Keleher,~P., Lu,~H., Rajamony,~R., Yu,~W.,
+  Zwaenepoel,~W.
+\newblock ``{TreadMarks: Shared Memory Computing on Networks of
+  Workstations}''.
+\newblock {\em IEEE Computer}, v.~29, n.~2, pp. 18--28, 1996.
+
+\bibitem{amza97software}
+Amza,~C., Cox,~A.~L., Dwarkadas,~S., Zwaenepoel,~W.
+\newblock ``{Software DSM Protocols that Adapt between Single Writer and
+  Multiple Writer}''.
+\newblock In: {\em Proc. of the 3rd {IEEE} Symp. on High-Performance Computer
+  Architecture ({HPCA}-3)}, pp. 261--271, 1997.
+
+\bibitem{bailey91nas}
+Bailey,~D.~H., Barszcz,~E., Barton,~J.~T., Browning,~D.~S., Carter,~R.~L.,
+  Dagum,~D., Fatoohi,~R.~A., Frederickson,~P.~O., Lasinski,~T.~A.,
+  Schreiber,~R.~S., Simon,~H.~D., Venkatakrishnan,~V., Weeratunga,~S.~K.
+\newblock ``{The NAS Parallel Benchmarks}''.
+\newblock {\em The International Journal of Supercomputer Applications}, v.~5,
+  n.~3, pp. 63--73, Fall 1991.
+
+\bibitem{bal92orca}
+Bal,~Heri~E., Kaashoek,~M.~Frans, Tanenbaum,~Andrew~S.
+\newblock ``{Orca: a language for parallel programming of distributed
+  systems}''.
+\newblock {\em IEEE Transactions on Software Engineering}, v.~18, n.~3, pp.
+  190--205, 1992.
+
+\bibitem{brian91midway}
+Bershad,~Brian~N., Zekauskas,~Matthew~J.
+\newblock {\em {Midway: Shared Memory Parallel Programming with Entry
+  Consistency for Distributed Memory Multiprocessors}}.
+\newblock Technical Report CMU-CS-91-170, Pittsburgh, PA (USA), 1991.
+
+\bibitem{bianchini96hiding}
+Bianchini,~R., Kontothanassis,~L.~I., Pinto,~R., {De Maria},~M., Abud,~M.,
+  Amorim,~C.~L.
+\newblock ``{Hiding Communication Latency and Coherence Overhead in Software
+  DSMs}''.
+\newblock In: {\em Proc. of the 7th Symp. on Architectural Support for
+  Programming Languages and Operating Systems ({ASPLOSVII})}, pp. 198--209,
+  1996.
+
+\bibitem{bianchini96categorizing}
+Bianchini,~R., LeBlanc,~T., Veenstra,~J.
+\newblock ``{Categorizing Network Traffic in Update-Based Protocols on Scalable
+  Multiprocessors}''.
+\newblock In: {\em {In Proceedings of the International Parallel Processing
+  Symposium}}, April 1996.
+
+\bibitem{google}
+Brin,~Sergey, Page,~Lawrence.
+\newblock ``{The anatomy of a large-scale hypertextual Web search engine}''.
+\newblock {\em Computer Networks and ISDN Systems}, v.~30, n. 1--7, pp.
+  107--117, 1998.
+
+\bibitem{cox99performance}
+Cox,~A., {de Lara},~E., Hu,~W. Zwaenepoel Y.~C.
+\newblock ``{A Performance Comparison of Homeless and Home-Based Lazy Release
+  Consistency Protocols for Software Shared Memory}''.
+\newblock In: {\em Proc. of the 5th {IEEE} Symp. on High-Performance Computer
+  Architecture ({HPCA}-5)}, 1999.
+
+\bibitem{livro_kernel}
+{Daniel P. Bovet, Marco Cesati}.
+\newblock {\em {Understanding the Linux Kernel}}.
+\newblock {O'Reilly \& Associates}, 2nd ed., December 2002.
+
+\bibitem{culler}
+David E.~Culler,~Anoop~Gupta, Jaswinder Pal~Singh.
+\newblock {\em Parallel Computer Architecture: A Hardware/Software Approach}.
+\newblock Morgan Kaufmann Publishers, August 1998.
+
+\bibitem{bailey92nas}
+{David H. Bailey and Leonardo Dagum and E. Barszcz and Horst D. Simon}.
+\newblock ``{NAS Parallel Benchmark Results}''.
+\newblock In: {\em {Supercomputing}}, pp. 386--393, 1992.
+
+\bibitem{Cashmere-VLM}
+Dwarkadas,~S., Hardavellas,~N., Kontothanassis,~L., Nikhil,~R., Stets,~R.
+\newblock ``{Cashmere-VLM: Remote Memory Paging for Software Distributed Shared
+  Memory}''.
+\newblock In: {\em {Proc., IPPS}}, April 1999.
+
+\bibitem{engler95exokernel}
+Engler,~Dawson~R., Kaashoek,~M.~Frans, O'Toole,~James.
+\newblock ``{Exokernel: An Operating System Architecture for Application-Level
+  Resource Management}''.
+\newblock In: {\em Symposium on Operating Systems Principles}, pp. 251--266,
+  1995.
+
+\bibitem{GMS}
+Feely,~Michael~J., Morgan,~William~E., Pighin,~Frederic~H., Karlin,~Anna~R.,
+  Levy,~Henry~M., Tekkath,~Chandramohan~A.
+\newblock ``{Implementing Global Memory Management in a Workstation Cluster}''.
+\newblock In: {\em {Proceedings of the 15th Symposium on Operating Systems
+  Principles}}, pp. 201--212, December 1995.
+
+\bibitem{pvm}
+Geist,~G.~A., Sunderam,~V.~S.
+\newblock ``{Network-based Concurrent Computing on the PVM System}''.
+\newblock {\em Concurrency: practice and experience}, v.~4, n.~4, pp. 293--312
+  (or 293--311??), 1992.
+
+\bibitem{JIAJIA}
+Hu,~Weiwu, Shi,~Weisong, Tang,~Zhimin.
+\newblock ``{JIAJIA: An SVM System Based on A New Cache Coherence Protocol}''.
+\newblock In: {\em {In Proceedings of the High Performance Computing and
+  Networking (HPCN'99)}}, pp. 463--472, April 1999.
+
+\bibitem{iftode99shared}
+Iftode,~L., Singh,~J.~P.
+\newblock ``{Shared Virtual Memory: Progress and Challenges}''.
+\newblock {\em Proc. of the IEEE, Special Issue on Distributed Shared Memory},
+  v.~87, n.~3, pp. 498--507, 1999.
+
+\bibitem{iftode96scope}
+Iftode,~L., Singh,~J.~P., Li,~K.
+\newblock ``{Scope Consistency: {A} Bridge between Release Consistency and
+  Entry Consistency}''.
+\newblock In: {\em Proc. of the 8th {ACM} Annual Symp. on Parallel Algorithms
+  and Architectures ({SPAA}'96)}, pp. 277--287, 1996.
+
+\bibitem{karlsson97effectiveness}
+Karlsson,~Magnus, Stenstr{\"o}m,~Per.
+\newblock ``{Effectiveness of Dynamic Prefetching in Multiple-Writer
+  Distributed Virtual Shared-Memory Systems}''.
+\newblock {\em Journal of Parallel and Distributed Computing}, v.~43, n.~2, pp.
+  79--93, 1997.
+
+\bibitem{keleher:1992:lrc}
+Keleher,~Pete, Cox,~Alan~L., Zwaenepoel,~Willy.
+\newblock ``{Lazy Release Consistency for Software Distributed Shared
+  Memory}''.
+\newblock In: {\em Proc. of the 19th Annual Int'l Symp. on Computer
+  Architecture ({ISCA}'92)}, pp. 13--21, 1992.
+
+\bibitem{Li86}
+Li,~K., Hudak,~P.
+\newblock ``{M}emory {C}oherence in {S}hared {V}irtual {M}emory {S}ystems''.
+\newblock In: {\em PODC86}, pp. 229 -- 239, August 1986.
+
+\bibitem{kli}
+Li,~K., Hudak,~P.
+\newblock ``{Memory Coherence in Shared Virtual Memory Systems}''.
+\newblock In: {\em ACM Transactions on Computer Systems}, pp. 321--359,
+  November 1989.
+
+\bibitem{bsd}
+{Marshall Kirk McKusick, Keith Bostic, Michael J. Karels, John S. Quarterman}.
+\newblock {\em {The Design and Implementation of the 4.4BSD Operating System}}.
+\newblock {Addison Wesley Professional}, 1996.
+
+\bibitem{monnerat98efficiently}
+Monnerat,~L.~R., Bianchini,~R.
+\newblock ``{Efficiently Adapting to Sharing Patterns in Software DSMs}''.
+\newblock In: {\em Proc. of the 4th {IEEE} Symp. on High-Performance Computer
+  Architecture ({HPCA}-4)}, 1998.
+
+\bibitem{adsm}
+Monnerat.,~L.R.R.
+\newblock ``{Adaptação Eficiente a Padrões de Compartilhamento em Software
+  DSMs.}''.
+\newblock {\em Tese de Mestrado, COPPE/UFRJ}, Dezembro 1997.
+
+\bibitem{mowry98comparative}
+Mowry,~T.~C., Chan,~C., Lo,~A.
+\newblock ``{Comparative Evaluation of Latency Tolerance Techniques for
+  Software Distributed Shared Memory}''.
+\newblock In: {\em Proc. of the 4th {IEEE} Symp. on High-Performance Computer
+  Architecture ({HPCA}-4)}, pp. 300--311, 1998.
+
+\bibitem{raquel}
+Pinto,~R.
+\newblock {\em {Estratégias de Software e Hardware para Otimização de Sistemas
+  de Memória Compartilhada Distribuída}}.
+\newblock PhD thesis, Federal University of Rio de Janeiro, Brazil, December
+  2001.
+
+\bibitem{sge}
+{Sun Microsystems Inc.}
+\newblock ``{SGE}''.
+\newblock http://wwws.sun.com/software/gridware.
+
+\bibitem{trevisan}
+Trevisan,~Thobias~S., Costa,~Vitor~S., Whately,~L., , Amorim,~C.~L.
+\newblock ``{Distributed Shared Memory in Kernel Mode}''.
+\newblock In: {\em Proceedings of the 14th Symposium on Computer Architecture
+  and High-Performance Computing (SBAC-PAD)}, pp. 159 -- 166, October 2002.
+
+\bibitem{unix}
+{Uresh Vahalia }.
+\newblock {\em {UNIX Internals: The New Frontiers}}.
+\newblock {Prentice Hall}, October 1995.
+
+\bibitem{pbs}
+{Veridian Systems}.
+\newblock ``{OpenPBS}''.
+\newblock http://www.openpbs.org.
+
+\bibitem{whately}
+Whately,~L., Pinto,~R., Rangarajan,~M., Iftode,~L., Bianchini,~R.,
+  Amorim,~C.~L.
+\newblock ``{A}daptive {T}echniques for {H}ome-{Ba}sed {S}oftware {DSM}s''.
+\newblock In: {\em Proceedings of the 13th Symposium on Computer Architecture
+  and High-Performance Computing (SBAC-PAD)}, pp. 164 -- 171, September 2001.
+
+\bibitem{zhou96performance}
+Zhou,~Y., Iftode,~L., Li,~K.
+\newblock ``{Performance Evaluation of Two Home-Based Lazy Release Consistency
+  Protocols for Shared Virtual Memory Systems}''.
+\newblock In: {\em Proc. of the 2nd Symp. on Operating Systems Design and
+  Implementation ({OSDI}'96)}, pp. 75--88, 1996.
+
+\end{thebibliography}

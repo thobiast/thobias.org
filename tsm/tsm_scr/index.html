@@ -1,0 +1,749 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.org">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="stylesheet" TYPE="text/css" HREF="tsm_scr.css">
+<TITLE>TSM scripts</TITLE>
+</HEAD>
+<BODY>
+
+<DIV CLASS="header" ID="header">
+<H1>TSM scripts</H1>
+<H3>Collection of useful TSM scripts</H3>
+</DIV>
+
+<DIV CLASS="body" ID="body">
+<P>
+Here is a list of useful TSM scripts I use on my TSM servers. They intend to help daily basis activities, monitoring and capacity planning.
+Most of them work only on version 6 and later.
+If you have a nice one that you would like to share, please, send me an email: &lt;thobias (a) thobias org&gt;.
+</P>
+
+<H3>How to use TSM scripts</H3>
+
+<P>
+Use the DEFINE SCRIPT command to define a script on TSM server. For example, if you want to define the <I>DRIVEPATH</I> script on your TSM server.
+</P>
+<div class="examples" id="examples">
+
+<PRE>
+tsm: SERVER1&gt; define script drivepath "SELECT cast((b.source_name) as char(25)) as source_name, cast((a.library_name) as char(15)) as library, cast((a.drive_name) as char(15)) as drive, cast((a.device_type) as char(10)) as device_type, cast((a.drive_serial) as char(20)) as serial, cast((b.device) as char(35)) as device, cast((a.drive_state) as char(10)) as drive_state, cast((volume_name) as char(15)) as volume, cast((a.online) as char(12)) as drive_online, cast((b.online) as char(12)) as path_online FROM drives a, paths b WHERE a.drive_name=b.destination_name and a.library_name=b.library_name" desc="Display information about drives and paths"
+ANR1454I DEFINE SCRIPT: Command script DRIVEPATH defined.
+
+tsm: SERVER1&gt; q scr drivepath
+
+Name                Description                                            Managing profile    
+---------------     --------------------------------------------------     --------------------
+DRIVEPATH           Display information about drives and paths                                 
+</PRE>
+
+</div>
+<P>
+Use the RUN command to run the script:
+</P>
+<div class="examples" id="examples">
+
+<PRE>
+tsm: SERVER1&gt; run drivepath
+
+SOURCE_NAME               LIBRARY          DRIVE            DEVICE_TYPE  SERIAL                DEVICE                               DRIVE_STATE  VOLUME           DRIVE_ONLINE  PATH_ONLINE  
+------------------------- ---------------- ---------------- ------------ --------------------- ------------------------------------ ------------ ---------------- ------------- -------------
+SERVER1                   L3584            DRIVE01          LTO          000XXXXXXX            /dev/rmt0                            EMPTY                         YES           YES          
+SERVER1                   L3584            DRIVE02          LTO          000XXXXXXX            /dev/rmt1                            EMPTY                         YES           YES          
+SERVER1                   L3584            DRIVE03          LTO          000XXXXXXX            /dev/rmt2                            EMPTY                         YES           YES          
+SERVER1                   L3584            DRIVE04          LTO          000XXXXXXX            /dev/rmt3                            EMPTY                         YES           YES          
+SERVER1                   L3584            DRIVE05          LTO          000XXXXXXX            /dev/rmt4                            EMPTY                         YES           YES          
+SERVER1                   L3584            DRIVE06          LTO          000XXXXXXX            /dev/rmt5                            EMPTY                         YES           YES          
+SERVER1                   L3584            DRIVE07          LTO          000XXXXXXX            /dev/rmt6                            EMPTY                         YES           YES          
+SERVER1                   L3584            DRIVE08          LTO          000XXXXXXX            /dev/rmt7                            EMPTY                         YES           YES          
+SERVER1                   L3584            DRIVE09          LTO          000XXXXXXX            /dev/rmt8                            EMPTY                         YES           YES          
+SERVER1                   L3584            DRIVE10          LTO          000XXXXXXX            /dev/rmt9                            LOADED       PW0436L4         YES           YES          
+ANR1462I RUN: Command script DRIVEPATH completed successfully.
+</PRE>
+
+</div>
+
+<H3>Scripts Summary</H3>
+
+<TABLE ALIGN="center" BORDER="1">
+<TR>
+<TH>Script name</TH>
+<TH>Description</TH>
+</TR>
+<TR>
+<TD>CLIENTEVENTS</TD>
+<TD>Display number of client events per state in a specific date. $1 = YYYY-MM-DD</TD>
+</TR>
+<TR>
+<TD>COMPARESTGPOOLS</TD>
+<TD>Compare amount of space and number of files between two stgpools. $1 - stgpool_1 and $2 - stgpool_2. Example: run comparestgpools OFF_TAPE OFF_COPY</TD>
+</TR>
+<TR>
+<TD>DRIVEPATH</TD>
+<TD>Display information about drives and paths</TD>
+</TR>
+<TR>
+<TD>DRMDB</TD>
+<TD>List DRM TSM DB volumes - $1 dbs or dbb</TD>
+</TR>
+<TR>
+<TD>DRMINLIB</TD>
+<TD>Information about drm volumes in the library</TD>
+</TR>
+<TR>
+<TD>DRMNUMVOL</TD>
+<TD>Number of volumes per DRM state</TD>
+</TR>
+<TR>
+<TD>DRMVOL</TD>
+<TD>List details about DRM volumes</TD>
+</TR>
+<TR>
+<TD>FALSEPRIVATE</TD>
+<TD>False private tapes</TD>
+</TR>
+<TR>
+<TD>NODESINFO</TD>
+<TD>Show nodes information (node, domain, platform, contact, tsm version, amount of data stored and last access date)</TD>
+</TR>
+<TR>
+<TD>NODESNOTACCESS</TD>
+<TD>Display nodes that have not accessed TSM server in the last X days. $1 = number of days</TD>
+</TR>
+<TR>
+<TD>NUMNODES</TD>
+<TD>Display number of nodes (total, by domain, by platform, by client_os_level and by TSM client version)</TD>
+</TR>
+<TR>
+<TD>OCCUPANCYNODEFS</TD>
+<TD>Storage space used per filespace and per backup/archive type for a specific node - $1 = NODE_NAME</TD>
+</TR>
+<TR>
+<TD>PROCESSINFO</TD>
+<TD>Information about running process</TD>
+</TR>
+<TR>
+<TD>RECLAIM</TD>
+<TD>Display information about volumes (volser, devclass, stgpool, pct_reclaim, pct_utilized, status and access)</TD>
+</TR>
+<TR>
+<TD>SCRATCH</TD>
+<TD>Number of scratch per tape library</TD>
+</TR>
+<TR>
+<TD>SESSINFO</TD>
+<TD>Sessions information</TD>
+</TR>
+<TR>
+<TD>SESSTAPE</TD>
+<TD>List sessions using tape drive</TD>
+</TR>
+<TR>
+<TD>STGPOOLINFO</TD>
+<TD>Show information about storage pool (space and number of files)</TD>
+</TR>
+<TR>
+<TD>STGPOOLINFO2</TD>
+<TD>Space stored and number of files per storage pool and per type (Archive/Backup)</TD>
+</TR>
+<TR>
+<TD>SUMMARY24H</TD>
+<TD>Summary of Operations in the Last 24 Hours (GB)</TD>
+</TR>
+<TR>
+<TD>SUMMARYALLNODES</TD>
+<TD>Display amount of data archive/backup/restore/retrive per day and per node. Order by GB</TD>
+</TR>
+<TR>
+<TD>SUMMARYBKPDB</TD>
+<TD>TSM DB backup summary</TD>
+</TR>
+<TR>
+<TD>SUMMARYBKPSTG</TD>
+<TD>Backup storage pool - amount of data copied per day</TD>
+</TR>
+<TR>
+<TD>SUMMARYBKPSTGPR</TD>
+<TD>Display information about backup stgpool process</TD>
+</TR>
+<TR>
+<TD>SUMMARYDATE</TD>
+<TD>Summary of Operations in a specific date (GB) - $1 YYYY-MM-DD</TD>
+</TR>
+<TR>
+<TD>SUMMARYEXPIRE</TD>
+<TD>Expire inventory summary</TD>
+</TR>
+<TR>
+<TD>SUMMARYMIGRATE</TD>
+<TD>Amount of space migrated by date and storage pool</TD>
+</TR>
+<TR>
+<TD>SUMMARYMIGRATEPR</TD>
+<TD>Display information about migration process</TD>
+</TR>
+<TR>
+<TD>SUMMARYNODE</TD>
+<TD>Display amount of data archive/backup/retrieve/restore per date for an specific node. '$1' nodename</TD>
+</TR>
+<TR>
+<TD>SUMMARYNODEPERFORMANCE</TD>
+<TD>Display nodes performance from summary. $1 = NODE</TD>
+</TR>
+<TR>
+<TD>SUMMARYNUMACTIVITY</TD>
+<TD>Display number of activities reported in summary in a specific time - $1 = YYYY-MM-DD HH:MM:SS</TD>
+</TR>
+<TR>
+<TD>SUMMARYOFFRECLAIM</TD>
+<TD>Information about offsite reclamation</TD>
+</TR>
+<TR>
+<TD>SUMMARYOPERATION</TD>
+<TD>Display amount of data per date for a specific operation - $1 = ARCHIVE or BACKUP or RESTORE or RETRIEVE or MIGRATION, etc</TD>
+</TR>
+<TR>
+<TD>SUMMARYRECLAIM</TD>
+<TD>Display information about number of GB and volumes reclaimed by date and by stgpool</TD>
+</TR>
+<TR>
+<TD>SUMMARYRECLAIMPR</TD>
+<TD>Display information about reclaim process</TD>
+</TR>
+<TR>
+<TD>TOTALDATA</TD>
+<TD>Display amount of data stored on TSM (auditocc)</TD>
+</TR>
+<TR>
+<TD>VOLINLIB</TD>
+<TD>Display information about volumes that are inside the library. It does not show scratch tapes</TD>
+</TR>
+<TR>
+<TD>VOLPEROWNER</TD>
+<TD>Display number of tapes per owner/server/library client</TD>
+</TR>
+<TR>
+<TD>VOLPERSTGPOOL</TD>
+<TD>Number of volumes per storage pool</TD>
+</TR>
+</TABLE>
+
+<H3>Scripts in Action</H3>
+
+<div class="examples" id="examples">
+
+<PRE>
+tsm: SERVER1&gt;run sessinfo
+
+  SESSION_ID   NODE                          CLIENT_PLATFORM          ELAPTIME_D_HHMMSS        MB_SENT     SENT_MB_S       MB_RCVD     RCVD_MB_S   OUT_VOLUME           INPUT_VOLUME      
+------------   ---------------------------   ----------------------   ------------------   -----------   -----------   -----------   -----------   ------------------   ------------------
+   12274951   NODE_AAA                       WinNT                    0 01:23:20                  0.00          0.00       2450.51          0.49 
+   12277780   NODE_PPP                       DB2/LINUXZ64             0 00:33:18                  0.03          0.00      15542.56          7.77   BKP_TAPE,PW0185L4                      
+   12277781   NODE_TTT                       DB2/LINUXZ64             0 00:33:15                  0.01          0.00     180232.10         90.34   BKP_TAPE,PW0370L4                      
+   12279262   NODE_QQQ                       WinNT                    0 00:03:22                  7.29          0.03          0.00          0.00                                          
+   12279278   NODE_XXX                       AIX                      0 00:03:06                  0.00          0.00         49.88          0.26                                          
+   12279428   NODE_ZZZ                       DB2/AIX64                0 00:00:17                  0.00          0.00         19.75          1.16                        
+
+
+tsm: SERVER1&gt;run nodesinfo
+
+NODE                                                   DOMAIN           PLATFORM_NAME         CONTACT                                              TSM_VERSION          TOTAL_GB     LASTACC_DATE
+---------------------------------------------------    -------------    ------------------    -------------------------------------------------    --------------    -----------    -------------
+NODE_111                                               OFFSITE          AIX                   XXXXXXXXXXXXXXXXXXXXXXXXXXX                          6.2.4-0              49168.84       2014-03-28
+NODE_222                                               SERVERS          DB2/6000              XXXXXXXXXXXXXXXXXXXXXXXXXX                           6.4.1-1              29078.53       2014-03-28
+NODE_333                                               OFFSITE          AIX                   YYYYYYYYYYYYYYYYYYYYYYYYYYY                          6.4.4-1              29042.36       2014-03-28
+NODE_444                                               SERVERS          AIX                   ZZZZZZZZZZZZZZZZZZZZZZZZZZ                           6.2.5-0               5813.65       2014-03-28
+NODE_555                                               OFFSITE          AIX                   ZZZZZZZZZZZZZZZZZZZZZZZZZZZ                          6.2.4-0               5679.99       2014-03-28
+NODE_666                                               SERVERS          Linux390              ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ                     6.1.5-0               4231.78       2014-03-28
+NODE_777                                               SERVERS          Linux390              YYYYYYYYYYYYYYYYYYYYYYYYYYY                          6.3.1-0               4123.03       2014-03-28
+NODE_888                                               SERVERS          DB2/LINUXZ64          YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY                      6.3.1-0               3977.58       2014-03-28
+
+
+tsm: SERVER1&gt;run summarybkpdb
+
+START_TIME                ACTIVITY           ELAPTIME__D_HHMMSS               GB     SUCCESSFUL 
+---------------------     --------------     -------------------     -----------     -----------
+2014-03-28 12:00:34       FULL_DBBACKUP      0 00:30:34                    149.1     YES        
+2014-03-28 10:00:37       FULL_DBBACKUP      0 00:39:29                    149.3     YES        
+2014-03-27 12:00:48       FULL_DBBACKUP      0 00:34:19                    148.5     YES        
+2014-03-26 12:00:59       FULL_DBBACKUP      0 00:32:34                    148.6     YES        
+2014-03-25 12:00:55       FULL_DBBACKUP      0 00:36:29                    148.0     YES        
+2014-03-24 12:00:59       FULL_DBBACKUP      0 00:35:18                    148.1     YES        
+
+
+tsm: SERVER1&gt;run summarymigrate  
+
+ACTIVITY              DATE     STORAGEPOOL                            GB
+----------     -----------     ---------------     ---------------------
+MIGRATION       2014-03-28     ARC_DISK                              306
+MIGRATION       2014-03-28     BKP_DISK                             1065
+MIGRATION       2014-03-27     ARC_DISK                              265
+MIGRATION       2014-03-27     BKP_DISK                             1314
+MIGRATION       2014-03-27     OFF_DISK                              100
+MIGRATION       2014-03-26     ARC_DISK                              284
+MIGRATION       2014-03-26     BKP_DISK                             1152
+
+
+tsm: SERVER1&gt;run summarymigratepr
+
+ACTIVITY        ENTITY                              START_TIME                  ELAPTIME__D_HHMMSS            NUMBER              GB     SUCCESSFUL 
+-----------     -------------------------------     -----------------------     -------------------     ------------     -----------     -----------
+MIGRATION       BKP_DISK                            2014-03-28 08:00:29         0 00:56:25                      1955          1065.5     YES        
+MIGRATION       ARC_DISK                            2014-03-28 08:00:29         0 00:31:01                      1958           306.8     YES        
+MIGRATION       OFF_DISK                            2014-03-27 18:00:23         0 00:14:48                      1944           100.2     YES        
+MIGRATION       BKP_DISK                            2014-03-27 08:00:17         0 01:00:23                      1926          1314.1     YES        
+MIGRATION       ARC_DISK                            2014-03-27 08:00:17         0 00:20:49                      1933           265.5     YES        
+MIGRATION       OFF_DISK                            2014-03-26 18:00:02         0 00:11:51                      1919            54.6     YES        
+MIGRATION       ARC_DISK                            2014-03-26 08:00:26         0 00:24:45                      1905           284.1     YES        
+MIGRATION       BKP_DISK                            2014-03-26 08:00:26         0 00:58:54                      1907          1152.6     YES        
+MIGRATION       OFF_DISK                            2014-03-25 18:00:23         0 00:12:13                      1896            51.8     YES        
+MIGRATION       ARC_DISK                            2014-03-25 08:00:17         0 00:17:17                      1888           211.8     YES        
+MIGRATION       BKP_DISK                            2014-03-25 08:00:17         0 00:52:07                      1884          1028.3     YES        
+
+
+tsm: SERVER1&gt;run summaryoperation backup
+
+       DATE     ACTIVITY                                     GB
+-----------     -------------------------------     -----------
+ 2014-03-28     BACKUP                                  2249.86
+ 2014-03-27     BACKUP                                  3823.63
+ 2014-03-26     BACKUP                                  3929.38
+ 2014-03-25     BACKUP                                  3760.09
+ 2014-03-24     BACKUP                                  3972.79
+ 2014-03-23     BACKUP                                  3845.36
+ 2014-03-22     BACKUP                                  4162.89
+
+
+tsm: SERVER1&gt;run summarydate 2014-03-30
+
+ACTIVITY                                     GB
+-------------------------------     -----------
+ARCHIVE                                  333.16
+BACKUP                                  3835.08
+FULL_DBBACKUP                            149.15
+MIGRATION                               1164.42
+OFFSITE RECLAMATION                      100.80
+RECLAMATION                              271.76
+RETRIEVE                                  26.97
+STGPOOL BACKUP                           672.93
+
+
+tsm: SERVER1&gt;run summaryexpire
+
+       DATE     ELAPTIME__D_HHMMSS                   AFFECTED           NUMBER     SUCCESSFUL 
+-----------     -------------------     ---------------------     ------------     -----------
+ 2014-03-31     0 01:06:21                            2718444             2069     YES        
+ 2014-03-30     0 01:13:35                            2596123             2023     YES        
+ 2014-03-29     0 00:42:54                            2585806             2001     YES        
+ 2014-03-28     0 00:48:09                            2889280             1970     YES        
+ 2014-03-27     0 01:08:01                            2867192             1940     YES        
+ 2014-03-26     0 01:20:39                            2851657             1914     YES        
+ 2014-03-25     0 00:58:38                            2818715             1891     YES        
+
+
+tsm: SERVER1&gt;run totaldata
+
+  BACKUP_GB      BACKUP_COPY_GB      ARCHIVE_GB      ARCHIVE_COPY_GB        TOTAL_GB
+-----------     ---------------     -----------     ----------------     -----------
+   149205.1             46602.8          7182.7                 24.6        203015.3
+
+
+tsm: SERVER1&gt;run stgpoolinfo2
+
+STGPOOL_NAME                         TYPE               TB      NUMBER_OF_FILES
+--------------------------------     -----     -----------     ----------------
+ARC_DISK                             Arch             0.03                 1661
+ARC_TAPE                             Arch             7.00              1791051
+BKP_DISK                             Bkup             0.06               141103
+BKP_TAPE                             Bkup           100.86            117496111
+
+
+tsm: SERVER1&gt;run comparestgpools off_tape off_copy
+
+STGPOOL_NAME                                    GB      NUMBER_FILES      PENDING_COPY_GB      PENDING_NUM_FILES
+--------------------------------     -------------     -------------     ----------------     ------------------
+OFF_COPY                                  47765.17          10154837                42.27                  36053
+OFF_TAPE                                  47722.90          10118784                42.27                  36053
+
+
+tsm: SERVER1&gt;run summaryreclaim
+
+DATE            ACTIVITY          STGPOOL                    GB      #_VOLUMES_RECLAIMED
+-----------     -------------     -------------     -----------     --------------------
+2014-03-27      RECLAMATION       OFF_TAPE                85.00                        3
+2014-03-26      RECLAMATION       BKP_TAPE                66.62                        1
+2014-03-26      RECLAMATION       OFF_TAPE               117.39                        2
+2014-03-25      RECLAMATION       ARC_TAPE               169.84                        1
+2014-03-25      RECLAMATION       BKP_TAPE               529.39                        3
+2014-03-24      RECLAMATION       ARC_TAPE               233.48                        1
+2014-03-24      RECLAMATION       BKP_TAPE               169.61                        3
+
+
+tsm: SERVER1&gt;run drmnumvol
+
+STATE                 NUMBER_OF_VOLUMES
+----------------     ------------------
+COURIERRETRIEVE                      90
+MOUNTABLE                             8
+VAULT                               114
+
+
+tsm: SERVER1&gt;run drmdb dbs
+
+VOLSER        STATE                                   UPD_DATE     VOLTYPE    
+---------     ----------------     ---------------------------     -----------
+PW0296L4      VAULT                 2014-03-28 10:45:20.000000     DBSnapshot 
+PW0286L4      VAULT                 2014-03-27 10:51:55.000000     DBSnapshot 
+PW0271L4      VAULT                 2014-03-26 10:46:11.000000     DBSnapshot 
+PW0246L4      VAULT                 2014-03-25 10:35:08.000000     DBSnapshot 
+PW0224L4      VAULT                 2014-03-24 10:31:46.000000     DBSnapshot 
+PW0209L4      VAULT                 2014-03-23 10:26:07.000000     DBSnapshot 
+PW0183L4      VAULT                 2014-03-22 10:36:04.000000     DBSnapshot 
+PW0145L4      VAULT                 2014-03-22 10:22:31.000000     DBSnapshot 
+PW0110L4      VAULT                 2014-03-20 10:33:53.000000     DBSnapshot 
+PW0058L4      COURIERRETRIEVE       2014-03-19 09:00:05.000000     DBSnapshot
+
+
+tsm: SERVER1&gt;run clientevents 2014-03-27
+
+       DATE     STATUS                          NUMBER_EVENTS
+-----------     --------------------------     --------------
+ 2014-03-27     Completed                                 252
+ 2014-03-27     Failed                                     15
+ 2014-03-27     Missed                                      8
+
+
+</PRE>
+
+</div>
+
+<H3>Scripts Code</H3>
+
+<UL>
+<LI>CLIENTEVENTS - Desc="Display number of client events per state in a specific date. $1 = YYYY-MM-DD"
+</UL>
+
+<PRE>
+SELECT DATE(scheduled_start) as DATE, status, count(*) as number_events FROM events WHERE DATE(scheduled_start)='$1' and node_name is not null GROUP BY DATE(scheduled_start), status
+</PRE>
+
+<UL>
+<LI>COMPARESTGPOOLS - Desc="Compare amount of space and number of files between two stgpools. $1 - stgpool_1 and $2 - stgpool_2. Example: run comparestgpools OFF_TAPE OFF_COPY"
+</UL>
+
+<PRE>
+SELECT stgpool_name, cast(float(sum(logical_mb))/1024 as dec(10,2)) as GB, sum(num_files) as number_files, ( (SELECT CAST(FLOAT(SUM(logical_mb))/1024 AS DEC(8,2)) FROM occupancy WHERE stgpool_name=upper('$2') GROUP BY stgpool_name) - (SELECT CAST(FLOAT(SUM(logical_mb))/1024 AS DEC(8,2)) FROM occupancy WHERE stgpool_name=upper('$1') GROUP BY stgpool_name) ) as pending_copy_gb, ( (SELECT SUM(num_files) FROM occupancy WHERE stgpool_name=upper('$2') GROUP BY stgpool_name) - (SELECT SUM(num_files) FROM occupancy WHERE stgpool_name=upper('$1') GROUP BY stgpool_name) ) as pending_num_files FROM occupancy WHERE stgpool_name=upper('$1') or stgpool_name=upper('$2') GROUP BY stgpool_name
+</PRE>
+
+<UL>
+<LI>DRIVEPATH - Desc="Display information about drives and paths"
+</UL>
+
+<PRE>
+SELECT cast((b.source_name) as char(25)) as source_name, cast((a.library_name) as char(15)) as library, cast((a.drive_name) as char(15)) as drive, cast((a.device_type) as char(10)) as device_type, cast((a.drive_serial) as char(20)) as serial, cast((b.device) as char(35)) as device, cast((a.drive_state) as char(10)) as drive_state, cast((volume_name) as char(15)) as volume, cast((a.online) as char(12)) as drive_online, cast((b.online) as char(12)) as path_online FROM drives a, paths b WHERE a.drive_name=b.destination_name and a.library_name=b.library_name
+</PRE>
+
+<UL>
+<LI>DRMDB - Desc="List DRM TSM DB volumes - $1 dbs or dbb"
+</UL>
+
+<PRE>
+SELECT cast ((volume_name) as char (8)) as VolSer, cast ((state) as char (15)) as State, upd_date, cast ((voltype) as char (10)) as VolType FROM drmedia WHERE upper(voltype) like upper('$1%')
+</PRE>
+
+<UL>
+<LI>DRMINLIB - Desc="Information about drm volumes in the library"
+</UL>
+
+<PRE>
+SELECT cast ((drmedia.volume_name) as char(8)) as VolSer, cast ((drmedia.stgpool_name) as char (17)) as Storage_pool, cast ((drmedia.state) as char (15)) as State, cast ((drmedia.voltype) as char(10)) As VolType FROM drmedia, libvolumes WHERE drmedia.volume_name=libvolumes.volume_name ORDER BY voltype
+</PRE>
+
+<UL>
+<LI>DRMNUMVOL - Desc="Number of volumes per DRM state"
+</UL>
+
+<PRE>
+SELECT state,count(*) as number_of_volumes FROM drmedia GROUP BY state
+</PRE>
+
+<UL>
+<LI>DRMVOL - Desc="List details about DRM volumes"
+</UL>
+
+<PRE>
+SELECT cast ((drmedia.volume_name) as char(8)) as VolSer,cast ((volumes.stgpool_name) as char (17)) as Storage_pool, cast ((drmedia.state) as char (15)) as State, cast ((drmedia.voltype) as char(10)) As VolType, cast ((volumes.status) as char(7)) as Status, cast ((volumes.access) as char(9)) as Access, volumes.pct_utilized FROM drmedia, volumes WHERE drmedia.volume_name=volumes.volume_name ORDER BY drmedia.state
+</PRE>
+
+<UL>
+<LI>FALSEPRIVATE - Desc="False private tapes"
+</UL>
+
+<PRE>
+SELECT volume_name FROM libvolumes WHERE status='Private' AND last_use IS NULL AND volume_name NOT IN (SELECT volume_name FROM volumes )
+</PRE>
+
+<UL>
+<LI>NODESINFO - Desc="Show nodes information (node, domain, platform, contact, tsm version, amount of data stored and last access date)"
+</UL>
+
+<PRE>
+SELECT cast((n.node_name) as char(50)) as NODE , cast((n.domain_name) as char(12)) as DOMAIN, n.platform_name, cast((n.contact) as char(48)) as CONTACT, cast((TRIM(CHAR(client_version))||'.'||TRIM(CHAR(client_release))||'.'||TRIM(CHAR(client_level))||'-'||TRIM(CHAR(client_sublevel))) as char(13)) as TSM_VERSION, cast(float(a.total_mb)/1024 as DEC(8,2)) AS TOTAL_GB, DATE(n.lastacc_time) as LASTACC_DATE FROM nodes n, auditocc a WHERE n.node_name=a.node_name ORDER BY TOTAL_GB DESC
+</PRE>
+
+<UL>
+<LI>NODESNOTACCESS - Desc="Display nodes that have not accessed TSM server in the last X days. $1 = number of days"
+</UL>
+
+<PRE>
+SELECT cast((n.node_name) as char(50)) as NODE , cast((n.domain_name) as char(12)) as DOMAIN, n.platform_name, cast((n.contact) as char(48)) as CONTACT, cast((TRIM(CHAR(client_version))||'.'||TRIM(CHAR(client_release))||'.'||TRIM(CHAR(client_level))||'-'||TRIM(CHAR(client_sublevel))) as char(13)) as TSM_VERSION, cast(float(a.total_mb)/1024 as DEC(8,2)) AS TOTAL_GB, DATE(n.lastacc_time) as LASTACC_DATE FROM nodes n, auditocc a WHERE n.node_name=a.node_name AND DAYS(current_date)-DAYS(lastacc_time)&gt;$1 ORDER BY lastacc_time
+</PRE>
+
+<UL>
+<LI>NUMNODES - Desc="Display number of nodes (total, by domain, by platform, by client_os_level and by TSM client version)"
+</UL>
+
+<PRE>
+SELECT count(*) as total_number_of_nodes from nodes
+SELECT domain_name,COUNT(*) as number_nodes FROM nodes GROUP BY domain_name
+SELECT platform_name,COUNT(*) number_nodes FROM nodes GROUP BY platform_name
+SELECT client_os_name,COUNT(*) number_nodes FROM nodes GROUP BY client_os_name
+SELECT TRIM(CHAR(client_version))||'.'||TRIM(CHAR(client_release))||'.'||TRIM(CHAR(client_level))||'-'||TRIM(CHAR(client_sublevel)) as TSM_Client_Version, count(*) as number_nodes FROM nodes GROUP BY TRIM(CHAR(client_version))||'.'||TRIM(CHAR(client_release))||'.'||TRIM(CHAR(client_level))||'-'||TRIM(CHAR(client_sublevel))
+</PRE>
+
+<UL>
+<LI>OCCUPANCYNODEFS - Desc="Storage space used per filespace and per backup/archive type for a specific node - $1 = NODE_NAME"
+</UL>
+
+<PRE>
+SELECT cast((node_name) as char(50)) as node_name, cast((filespace_name) as char(50)) as filespace_name, type, CAST(SUM(logical_mb)/1024 as DEC(8,2)) AS Total_GB FROM occupancy WHERE node_name='$1' GROUP BY node_name, filespace_name, type ORDER BY Total_GB
+</PRE>
+
+<UL>
+<LI>PROCESSINFO - Desc="Information about running process"
+</UL>
+
+<PRE>
+SELECT process_num, cast((process) as char(30)) as PROCESS, cast((TO_CHAR(start_time,'YYYY-MM-DD HH24:MI:SS')) as char(21)) AS START_TIME, CAST(day (current_timestamp - start_time) as CHAR)||''||CAST(RIGHT(DIGITS(hour(current_timestamp - start_time)),2) as CHAR(2))||':'||CAST(RIGHT(DIGITS(minute(current_timestamp - start_time)),2) as CHAR(2))||':'||CAST(RIGHT(DIGITS(second(current_timestamp - start_time)),2) as CHAR(2)) as ELAPTIME__D_HHMMSS, CAST(bytes_processed/1024/1024 AS DEC(8,2)) AS MB, CAST(bytes_processed/TIMESTAMPDIFF(2,CHAR(current_timestamp-start_time))/1024/1024 AS DEC(8,2)) AS MB_s FROM processes ORDER BY process_num
+</PRE>
+
+<UL>
+<LI>RECLAIM - Desc="Display information about volumes (volser, devclass, stgpool, pct_reclaim, pct_utilized, status and access)"
+</UL>
+
+<PRE>
+SELECT cast ((volume_name) as char(17)) as VolSer, cast ((devclass_name) as char(5)) as DevClass, cast ((stgpool_name) as char(17)) as storage_pool, pct_reclaim, pct_utilized, cast ((status) as char(9)) as status, cast ((access) as char(9)) as access FROM volumes WHERE devclass_name&lt;&gt;'DISK' ORDER BY pct_reclaim
+</PRE>
+
+<UL>
+<LI>SCRATCH - Desc="Number of scratch per tape library"
+</UL>
+
+<PRE>
+SELECT library_name,COUNT(*) AS #_Scratch FROM libvolumes WHERE status='Scratch' GROUP BY library_name
+</PRE>
+
+<UL>
+<LI>SESSINFO - Desc="Sessions information"
+</UL>
+
+<PRE>
+SELECT session_id, cast((client_name) as char(30)) as NODE, client_platform, TRANSLATE('a bc:de:fg', DIGITS(current_timestamp-start_time), '_______abcdefgh_____',' ') as ELAPTIME_D_HHMMSS, CAST(bytes_sent/1024/1024 AS DEC(8,2)) AS MB_Sent, CAST(bytes_sent/TIMESTAMPDIFF(2,CHAR(current_timestamp-start_time))/1024/1024 AS DEC(8,2)) AS Sent_MB_s, CAST(bytes_received/1024/1024 AS DEC(8,2)) AS MB_Rcvd, CAST(bytes_received/TIMESTAMPDIFF(2,CHAR(current_timestamp-start_time))/1024/1024 AS DEC(8,2)) AS Rcvd_MB_s, cast((output_vol_access) as char(17)) as OUT_VOLUME, cast((input_vol_access) as char(17)) as INPUT_VOLUME FROM sessions WHERE session_type='Node' ORDER BY session_id
+</PRE>
+
+<UL>
+<LI>SESSTAPE - Desc="List sessions using tape drive"
+</UL>
+
+<PRE>
+SELECT session_id, cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(22)) as START_TIME, CAST((client_name) as CHAR(40)) as nodename, client_platform, CAST((output_vol_access) as CHAR(20)) as output_volume, CAST((input_vol_access) as CHAR(20)) as input_volume, state FROM sessions WHERE output_vol_access IS NOT NULL or input_vol_access IS NOT NULL ORDER BY session_id
+</PRE>
+
+<UL>
+<LI>STGPOOLINFO - Desc="Show information about storage pool (space and number of files)"
+</UL>
+
+<PRE>
+SELECT stgpool_name,CAST(FLOAT(SUM(logical_mb))/1024/1024 AS DEC(8,2)) as TB, SUM(num_files) as Number_of_files FROM occupancy GROUP BY stgpool_name
+</PRE>
+
+<UL>
+<LI>STGPOOLINFO2 - Desc="Space stored and number of files per storage pool and per type (Archive/Backup)"
+</UL>
+
+<PRE>
+SELECT stgpool_name, type, CAST(FLOAT(SUM(logical_mb))/1024/1024 AS DEC(8,2)) as TB, SUM(num_files) as Number_of_files FROM occupancy GROUP BY stgpool_name, type ORDER BY stgpool_name
+</PRE>
+
+<UL>
+<LI>SUMMARY24H - Desc="Summary of Operations in the Last 24 Hours (GB)"
+</UL>
+
+<PRE>
+SELECT cast((activity) as char(30)) as activity, cast(float(sum(bytes))/1024/1024/1024 as dec(8,2)) as GB FROM summary WHERE activity&lt;&gt;'TAPE MOUNT' AND activity&lt;&gt;'EXPIRATION' AND end_time&gt;current_timestamp-24 hours GROUP BY activity
+</PRE>
+
+<UL>
+<LI>SUMMARYALLNODES - Desc="Display amount of data archive/backup/restore/retrive per day and per node. Order by GB"
+</UL>
+
+<PRE>
+SELECT cast((entity) as char(36)) as Node, DATE(start_time) as DATE, cast((activity) as char(15)) as OPERATION, cast(float(SUM(bytes))/1024/1024/1024 as DEC(8,1)) as GB FROM summary WHERE activity='ARCHIVE' OR activity='BACKUP' OR activity='RETRIEVE' OR activity='RESTORE' GROUP BY entity,DATE(start_time), activity ORDER BY GB DESC
+</PRE>
+
+<UL>
+<LI>SUMMARYBKPDB - Desc="TSM DB backup summary"
+</UL>
+
+<PRE>
+SELECT cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(20)) as START_TIME, cast((activity) as char(13)) as ACTIVITY, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, cast(float(bytes)/1024/1024/1024 as DEC(8,1)) as GB, successful FROM summary WHERE activity='FULL_DBBACKUP' ORDER BY START_TIME DESC
+</PRE>
+
+<UL>
+<LI>SUMMARYBKPSTG - Desc="Backup storage pool - amount of data copied per day"
+</UL>
+
+<PRE>
+SELECT DATE(start_time) as DATE, cast((activity) as char(17)) as ACTIVITY, cast((entity) as char(30)) as entity, cast(float(SUM(bytes))/1024/1024/1024 as DEC(8,2)) as GB FROM summary WHERE activity='STGPOOL BACKUP' GROUP BY DATE(start_time), activity, entity ORDER BY DATE DESC, activity, entity
+</PRE>
+
+<UL>
+<LI>SUMMARYBKPSTGPR - Desc="Display information about backup stgpool process"
+</UL>
+
+<PRE>
+SELECT cast((activity) as char(15)) as activity, cast((entity) as char(30)) as entity, cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(22)) as START_TIME, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, number, cast(float(bytes)/1024/1024/1024 as DEC(8,2)) as GB, successful FROM summary WHERE activity='STGPOOL BACKUP' ORDER BY start_time DESC
+</PRE>
+
+<UL>
+<LI>SUMMARYDATE - Desc="Summary of Operations in a specific date (GB) - $1 YYYY-MM-DD"
+</UL>
+
+<PRE>
+SELECT cast((activity) as char(30)) as activity, cast(float(sum(bytes))/1024/1024/1024 as dec(8,2)) as GB FROM summary WHERE activity&lt;&gt;'TAPE MOUNT' AND activity&lt;&gt;'EXPIRATION' AND DATE(start_time) = '$1' GROUP BY activity
+</PRE>
+
+<UL>
+<LI>SUMMARYEXPIRE - Desc="Expire inventory summary"
+</UL>
+
+<PRE>
+SELECT DATE(start_time) as DATE, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, affected, number, successful FROM summary WHERE activity='EXPIRATION' AND entity IS NULL ORDER BY DATE DESC
+</PRE>
+
+<UL>
+<LI>SUMMARYMIGRATE - Desc="Amount of space migrated by date and storage pool"
+</UL>
+
+<PRE>
+SELECT cast ((activity) as char(9)) as Activity, DATE(start_time) as Date, cast ((entity) as char (14)) as StoragePool, SUM(bytes)/1024/1024/1024 as GB FROM summary WHERE activity='MIGRATION' GROUP BY activity,entity,DATE(start_time) ORDER BY Date desc, activity,entity
+</PRE>
+
+<UL>
+<LI>SUMMARYMIGRATEPR - Desc="Display information about migration process"
+</UL>
+
+<PRE>
+SELECT cast((activity) as char(10)) as activity, cast((entity) as char(30)) as entity, cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(22)) as START_TIME, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, number, cast(float(bytes)/1024/1024/1024 as DEC(8,1)) as GB, successful FROM summary WHERE activity='MIGRATION' ORDER BY start_time DESC
+</PRE>
+
+<UL>
+<LI>SUMMARYNODE - Desc="Display amount of data archive/backup/retrieve/restore per date for an specific node. '$1' nodename"
+</UL>
+
+<PRE>
+SELECT cast((entity) as char(36)) as Node, DATE(start_time) as DATE, cast((activity) as char(15)) as OPERATION, cast(float(SUM(bytes))/1024/1024/1024 as DEC(8,1)) as GB FROM summary WHERE entity='$1' and activity&lt;&gt;'EXPIRATION' GROUP BY entity,DATE(start_time), activity ORDER BY DATE DESC, activity
+</PRE>
+
+<UL>
+<LI>SUMMARYNODEPERFORMANCE - Desc="Display nodes performance from summary. $1 = NODE"
+</UL>
+
+<PRE>
+SELECT cast((entity) as char(40)) as NODE, number, cast((activity) as char(15)) as activity, cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(22)) as START_TIME, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, CAST(float(bytes)/1024/1024/1024 AS DECIMAL(8,2)) as GB,CAST(float(bytes)/(TIMESTAMPDIFF(2,CHAR(end_time-start_time))+1)/1024/1024 AS DECIMAL(8,2)) AS MB_s FROM summary WHERE entity='$1' and activity&lt;&gt;'EXPIRATION' order by start_time
+</PRE>
+
+<UL>
+<LI>SUMMARYNUMACTIVITY - Desc="Display number of activities reported in summary in a specific time - $1 = YYYY-MM-DD HH:MM:SS"
+</UL>
+
+<PRE>
+SELECT cast((activity) as char(30)) as activity, count(*) as NUM_SESSIONS FROM summary WHERE start_time&lt;= '$1' AND end_time&gt;'$1' GROUP BY activity
+</PRE>
+
+<UL>
+<LI>SUMMARYOFFRECLAIM - Desc="Information about offsite reclamation"
+</UL>
+
+<PRE>
+SELECT cast((activity) as char(20)) as ACTIVITY, cast((entity) as char(30)) as ENTITY, cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(22)) as START_TIME, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, number, num_offsite_vols, cast(float(bytes)/1024/1024/1024 as DEC(8,2)) as GB, successful FROM summary WHERE activity='OFFSITE RECLAMATION' AND bytes&gt;0 ORDER BY start_time DESC
+</PRE>
+
+<UL>
+<LI>SUMMARYOPERATION - Desc="Display amount of data per date for a specific operation - $1 = ARCHIVE or BACKUP or RESTORE or RETRIEVE or MIGRATION, etc"
+</UL>
+
+<PRE>
+SELECT DATE(start_time) as DATE, cast((activity) as char(30)) as activity, cast(float(sum(bytes))/1024/1024/1024 as dec(8,2)) as GB FROM summary WHERE activity=upper('$1') GROUP BY DATE(start_time), activity ORDER BY DATE DESC
+</PRE>
+
+<UL>
+<LI>SUMMARYRECLAIM - Desc="Display information about number of GB and volumes reclaimed by date and by stgpool"
+</UL>
+
+<PRE>
+SELECT cast((DATE(start_time)) as CHAR(10)) as DATE, cast((activity) as char(12)) as ACTIVITY, cast((SUBSTR(entity, 1,LOCATE(' ',entity))) as char(12)) as STGPOOL, cast(float(sum(bytes))/1024/1024/1024 as DEC(8,2)) as GB, count(*) as #_Volumes_Reclaimed FROM summary WHERE activity='RECLAMATION' and successful='YES' GROUP BY DATE(start_time), activity, SUBSTR(entity, 1,LOCATE(' ',entity)) ORDER BY DATE(start_time) DESC
+</PRE>
+
+<UL>
+<LI>SUMMARYRECLAIMPR - Desc="Display information about reclaim process"
+</UL>
+
+<PRE>
+SELECT cast((activity) as char(14)) as ACTIVITY, cast((entity) as char(30)) as ENTITY, cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(22)) as START_TIME, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, number, cast(float(bytes)/1024/1024/1024 as DEC(8,2)) as GB, successful FROM summary WHERE activity='RECLAMATION' ORDER BY start_time DESC
+</PRE>
+
+<UL>
+<LI>TOTALDATA - Desc="Display amount of data stored on TSM (auditocc)"
+</UL>
+
+<PRE>
+SELECT CAST(FLOAT(SUM(backup_mb))/1024 as DEC(8,1)) as BACKUP_GB, CAST(FLOAT(SUM(backup_copy_mb))/1024 as DEC(8,1)) as BACKUP_COPY_GB, CAST(FLOAT(SUM(archive_mb))/1024 as DEC(8,1)) as ARCHIVE_GB, CAST(FLOAT(SUM(archive_copy_mb))/1024 as DEC(8,1)) as ARCHIVE_COPY_GB, CAST(FLOAT(SUM(total_mb))/1024 as DEC(8,1)) as TOTAL_GB from auditocc
+</PRE>
+
+<UL>
+<LI>VOLINLIB - Desc="Display information about volumes that are inside the library. It does not show scratch tapes"
+</UL>
+
+<PRE>
+SELECT cast((l.library_name) as char(12)) as library_name, cast((l.owner) as char(12)) as owner, cast((v.volume_name) as char(8)) as volume_name, cast((v.stgpool_name) as char(18)) as stgpool, v.pct_utilized, v.pct_reclaim, cast((v.status) as char(12)) as status, cast((v.access) as char(9)) as access, v.write_errors, v.read_errors FROM volumes v, libvolumes l WHERE v.volume_name=l.volume_name ORDER BY pct_utilized
+</PRE>
+
+<UL>
+<LI>VOLPEROWNER - Desc="Display number of tapes per owner/server/library client"
+</UL>
+
+<PRE>
+SELECT cast((owner) as char(40)) as owner,count(*) as num_tapes FROM libvolumes WHERE status&lt;&gt;'Scratch' GROUP BY owner
+</PRE>
+
+<UL>
+<LI>VOLPERSTGPOOL - Desc="Number of volumes per storage pool"
+</UL>
+
+<PRE>
+SELECT stgpool_name, devclass_name, COUNT(*) FROM volumes GROUP BY stgpool_name, devclass_name
+</PRE>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2229503-1";
+urchinTracker();
+</script>
+</DIV>
+
+<!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
+<!-- cmdline: txt2tags index.t2t -->
+</BODY></HTML>

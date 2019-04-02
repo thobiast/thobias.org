@@ -1,0 +1,321 @@
+- COMPAREOFFSITE - Desc=""
+
+
+
+```
+SELECT stgpool_name, CAST(FLOAT(SUM(logical_mb))/1024 AS DEC(8,2)) as stg_data_gb, SUM(num_files) as Stg_num_files, -
+    ( -
+(SELECT CAST(FLOAT(SUM(logical_mb))/1024 AS DEC(8,2)) FROM occupancy WHERE stgpool_name='OFF_TAPE' GROUP BY stgpool_name) + -
+(SELECT CAST(FLOAT(SUM(logical_mb))/1024 AS DEC(8,2)) FROM occupancy WHERE stgpool_name='OFF_DISK' GROUP BY stgpool_name) -
+    ) as diskpool_plus_tapepool_gb, -
+    ( -
+      ( -
+(SELECT CAST(FLOAT(SUM(logical_mb))/1024 AS DEC(8,2)) FROM occupancy WHERE stgpool_name='OFF_TAPE' GROUP BY stgpool_name) + -
+(SELECT CAST(FLOAT(SUM(logical_mb))/1024 AS DEC(8,2)) FROM occupancy WHERE stgpool_name='OFF_DISK' GROUP BY stgpool_name) -
+      ) -
+      - -
+(SELECT CAST(FLOAT(SUM(logical_mb))/1024 AS DEC(8,2)) FROM occupancy WHERE stgpool_name='OFF_COPY' GROUP BY stgpool_name) -
+    ) as pending_copy_gb, -
+    ( -
+      ( -
+(SELECT SUM(num_files) FROM occupancy WHERE stgpool_name='OFF_TAPE' GROUP BY stgpool_name) + -
+(SELECT SUM(num_files) FROM occupancy WHERE stgpool_name='OFF_DISK' GROUP BY stgpool_name) -
+      ) -
+      - -
+(SELECT SUM(num_files) FROM occupancy WHERE stgpool_name='OFF_COPY' GROUP BY stgpool_name) -
+    ) as pending_num_files -
+FROM occupancy  WHERE stgpool_name='OFF_TAPE' OR stgpool_name='OFF_DISK' OR stgpool_name='OFF_COPY' GROUP BY stgpool_name
+```
+
+- DRIVEPATH - Desc="Display information about drives and paths"
+
+
+
+```
+SELECT cast((b.source_name) as char(25)) as source_name, cast((a.library_name) as char(15)) as library, cast((a.drive_name) as char(15)) as drive, cast((a.device_type) as char(10)) as device_type, cast((a.drive_serial) as char(20)) as serial, cast((b.device) as char(35)) as device, cast((a.drive_state) as char(10)) as drive_state, cast((volume_name) as char(15)) as volume, cast((a.online) as char(12)) as drive_online, cast((b.online) as char(12)) as path_online FROM drives a, paths b WHERE a.drive_name=b.destination_name and a.library_name=b.library_name
+```
+
+- DRMDB - Desc="List DRM TSM DB volumes - $1 dbs or dbb"
+
+
+
+```
+SELECT cast ((volume_name) as char (8)) as VolSer, cast ((state) as char (15)) as State, upd_date, cast ((voltype) as char (10)) as VolType FROM drmedia WHERE upper(voltype) like upper('$1%')
+```
+
+- DRMINLIB - Desc="Information about drm volumes in the library"
+
+
+
+```
+SELECT cast ((drmedia.volume_name) as char(8)) as VolSer, cast ((drmedia.stgpool_name) as char (17)) as Storage_pool, cast ((drmedia.state) as char (15)) as State, cast ((drmedia.voltype) as char(10)) As VolType FROM drmedia, libvolumes WHERE drmedia.volume_name=libvolumes.volume_name ORDER BY voltype
+```
+
+- DRMVOL - Desc="List details about DRM volumes"
+
+
+
+```
+SELECT cast ((drmedia.volume_name) as char(8)) as VolSer,cast ((volumes.stgpool_name) as char (17)) as Storage_pool, cast ((drmedia.state) as char (15)) as State, cast ((drmedia.voltype) as char(10)) As VolType, cast ((volumes.status) as char(7)) as Status, cast ((volumes.access) as char(9)) as Access, volumes.pct_utilized FROM drmedia, volumes WHERE drmedia.volume_name=volumes.volume_name ORDER BY drmedia.state
+```
+
+- FALSEPRIVATE - Desc="False private tapes"
+
+
+
+```
+SELECT volume_name FROM libvolumes WHERE status='Private' AND last_use IS NULL AND volume_name NOT IN (SELECT volume_name FROM volumes )
+```
+
+- NODESINFO - Desc="Show nodes information"
+
+
+
+```
+SELECT cast((n.node_name) as char(50)) as NODE , cast((n.domain_name) as char(12)) as DOMAIN, n.platform_name, cast((n.contact) as char(48)) as CONTACT, cast((TRIM(CHAR(client_version))||'.'||TRIM(CHAR(client_release))||'.'||TRIM(CHAR(client_level))||'-'||TRIM(CHAR(client_sublevel))) as char(13)) as TSM_VERSION, cast(float(a.total_mb)/1024 as DEC(8,2)) AS TOTAL_GB, DATE(n.lastacc_time) as LASTACC_DATE FROM nodes n, auditocc a WHERE n.node_name=a.node_name ORDER BY TOTAL_GB DESC
+```
+
+- NODESNOTACCESS - Desc="Display nodes that have not accessed TSM server in the last X days. $1 = number of days"
+
+
+
+```
+SELECT cast((n.node_name) as char(50)) as NODE , cast((n.domain_name) as char(12)) as DOMAIN, n.platform_name, cast((n.contact) as char(48)) as CONTACT, cast((TRIM(CHAR(client_version))||'.'||TRIM(CHAR(client_release))||'.'||TRIM(CHAR(client_level))||'-'||TRIM(CHAR(client_sublevel))) as char(13)) as TSM_VERSION, cast(float(a.total_mb)/1024 as DEC(8,2)) AS TOTAL_GB, DATE(n.lastacc_time) as LASTACC_DATE FROM nodes n, auditocc a WHERE n.node_name=a.node_name AND DAYS(current_date)-DAYS(lastacc_time)>$1 ORDER BY lastacc_time
+```
+
+- NUMNODES - Desc="Display number of nodes (total, by domain, by platform, by client_os_level and by TSM client version)"
+
+
+
+```
+SELECT count(*) as total_number_of_nodes from nodes
+SELECT domain_name,COUNT(*) as number_nodes FROM nodes GROUP BY domain_name
+SELECT platform_name,COUNT(*) number_nodes FROM nodes GROUP BY platform_name
+SELECT client_os_name,COUNT(*) number_nodes FROM nodes GROUP BY client_os_name
+SELECT TRIM(CHAR(client_version))||'.'||TRIM(CHAR(client_release))||'.'||TRIM(CHAR(client_level))||'-'||TRIM(CHAR(client_sublevel)) as TSM_Client_Version, count(*) as number_nodes FROM nodes GROUP BY TRIM(CHAR(client_version))||'.'||TRIM(CHAR(client_release))||'.'||TRIM(CHAR(client_level))||'-'||TRIM(CHAR(client_sublevel))
+```
+
+- OCCUPANCYNODEFS - Desc="Storage space used per filespace and per backup/archive type for a specific node - $1 = NODE_NAME"
+
+
+
+```
+SELECT node_name, filespace_name, type, CAST(SUM(logical_mb)/1024 as DEC(8,2)) AS Total_GB FROM occupancy WHERE node_name='$1' GROUP BY node_name, filespace_name, type ORDER BY Total_GB
+```
+
+- PROCESSINFO - Desc="Information about running process"
+
+
+
+```
+SELECT process_num, cast((process) as char(30)) as PROCESS, cast((TO_CHAR(start_time,'YYYY-MM-DD HH24:MI:SS')) as char(21)) AS START_TIME, CAST(day (current_timestamp - start_time) as CHAR)||''||CAST(RIGHT(DIGITS(hour(current_timestamp - start_time)),2) as CHAR(2))||':'||CAST(RIGHT(DIGITS(minute(current_timestamp - start_time)),2) as CHAR(2))||':'||CAST(RIGHT(DIGITS(second(current_timestamp - start_time)),2) as CHAR(2)) as ELAPTIME__D_HHMMSS, CAST(bytes_processed/1024/1024 AS DEC(8,2)) AS MB, CAST(bytes_processed/TIMESTAMPDIFF(2,CHAR(current_timestamp-start_time))/1024/1024 AS DEC(8,2)) AS MB_s FROM processes ORDER BY process_num
+```
+
+- RECLAIM - Desc="Display information about volumes (volser, devclass, stgpool, pct_reclaim, pct_utilized, status and access)"
+
+
+
+```
+SELECT cast ((volume_name) as char(17)) as VolSer, cast ((devclass_name) as char(5)) as DevClass, cast ((stgpool_name) as char(17)) as storage_pool, pct_reclaim, pct_utilized, cast ((status) as char(9)) as status, cast ((access) as char(9)) as access FROM volumes WHERE devclass_name<>'DISK' ORDER BY pct_reclaim
+```
+
+- SCRATCH - Desc="Number of scratch per tape library"
+
+
+
+```
+SELECT library_name,COUNT(*) AS #_Scratch FROM libvolumes WHERE status='Scratch' GROUP BY library_name
+```
+
+- SESSINFO - Desc="Sessions information"
+
+
+
+```
+SELECT session_id, cast((client_name) as char(30)) as NODE, client_platform, TRANSLATE('a bc:de:fg', DIGITS(current_timestamp-start_time), '_______abcdefgh_____',' ') as ELAPTIME_D_HHMMSS, CAST(bytes_sent/1024/1024 AS DEC(8,2)) AS MB_Sent, CAST(bytes_sent/TIMESTAMPDIFF(2,CHAR(current_timestamp-start_time))/1024/1024 AS DEC(8,2)) AS Sent_MB_s, CAST(bytes_received/1024/1024 AS DEC(8,2)) AS MB_Rcvd, CAST(bytes_received/TIMESTAMPDIFF(2,CHAR(current_timestamp-start_time))/1024/1024 AS DEC(8,2)) AS Rcvd_MB_s, cast((output_vol_access) as char(17)) as OUT_VOLUME, cast((input_vol_access) as char(17)) as INPUT_VOLUME FROM sessions WHERE session_type='Node' ORDER BY session_id
+```
+
+- SESSTAPE - Desc="List sessions using tape drive"
+
+
+
+```
+SELECT session_id, cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(22)) as START_TIME, CAST((client_name) as CHAR(40)) as nodename, client_platform, CAST((output_vol_access) as CHAR(20)) as output_volume, CAST((input_vol_access) as CHAR(20)) as input_volume, state FROM sessions WHERE output_vol_access IS NOT NULL or input_vol_access IS NOT NULL ORDER BY session_id
+```
+
+- STGPOOLINFO - Desc="Show information about storage pool (space and number of files)"
+
+
+
+```
+SELECT stgpool_name,CAST(FLOAT(SUM(logical_mb))/1024/1024 AS DEC(8,2)) as TB, SUM(num_files) as Number_of_files FROM occupancy GROUP BY stgpool_name
+```
+
+- STGPOOLINFO2 - Desc="Space stored and number of files per storage pool and per type (Archive/Backup)"
+
+
+
+```
+SELECT stgpool_name, type, CAST(FLOAT(SUM(logical_mb))/1024/1024 AS DEC(8,2)) as TB, SUM(num_files) as Number_of_files FROM occupancy GROUP BY stgpool_name, type ORDER BY stgpool_name
+```
+
+- SUMMARY24H - Desc="Summary of Operations in the Last 24 Hours (GB)"
+
+
+
+```
+SELECT cast((activity) as char(30)) as activity, cast(float(sum(bytes))/1024/1024/1024 as dec(8,2)) as GB FROM summary WHERE activity<>'TAPE MOUNT' AND activity<>'EXPIRATION' AND end_time>current_timestamp-24 hours GROUP BY activity
+```
+
+- SUMMARYALLNODES - Desc="Display amount of data archive/backup/restore/retrive per day and per node. Order by GB"
+
+
+
+```
+SELECT cast((entity) as char(36)) as Node, DATE(start_time) as DATE, cast((activity) as char(15)) as OPERATION, cast(float(SUM(bytes))/1024/1024/1024 as DEC(8,1)) as GB FROM summary WHERE activity='ARCHIVE' OR activity='BACKUP' OR activity='RETRIEVE' OR activity='RESTORE' GROUP BY entity,DATE(start_time), activity ORDER BY GB DESC
+```
+
+- SUMMARYBKPDB - Desc="TSM DB backup summary"
+
+
+
+```
+SELECT cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(20)) as START_TIME, cast((activity) as char(13)) as ACTIVITY, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, cast(float(bytes)/1024/1024/1024 as DEC(8,1)) as GB, successful FROM summary WHERE activity='FULL_DBBACKUP' ORDER BY START_TIME DESC
+```
+
+- SUMMARYBKPSTG - Desc="Backup storage pool - amount of data copied per day"
+
+
+
+```
+SELECT DATE(start_time) as DATE, cast((activity) as char(17)) as ACTIVITY, cast((entity) as char(30)) as entity, cast(float(SUM(bytes))/1024/1024/1024 as DEC(8,2)) as GB FROM summary WHERE activity='STGPOOL BACKUP' GROUP BY DATE(start_time), activity, entity ORDER BY DATE DESC, activity, entity
+```
+
+- SUMMARYBKPSTGPR - Desc="Display information about backup stgpool process"
+
+
+
+```
+SELECT cast((activity) as char(15)) as activity, cast((entity) as char(30)) as entity, cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(22)) as START_TIME, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, number, cast(float(bytes)/1024/1024/1024 as DEC(8,2)) as GB, successful FROM summary WHERE activity='STGPOOL BACKUP' ORDER BY start_time DESC
+```
+
+- SUMMARYDATE - Desc="Summary of Operations in a specific date (GB) - $1 YYYY-MM-DD"
+
+
+
+```
+SELECT cast((activity) as char(30)) as activity, cast(float(sum(bytes))/1024/1024/1024 as dec(8,2)) as GB FROM summary WHERE activity<>'TAPE MOUNT' AND activity<>'EXPIRATION' AND DATE(start_time) = '$1' GROUP BY activity
+```
+
+- SUMMARYEXPIRE - Desc="Expire inventory summary"
+
+
+
+```
+SELECT DATE(start_time) as DATE, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, affected, number, successful FROM summary WHERE activity='EXPIRATION' AND entity IS NULL ORDER BY DATE DESC
+```
+
+- SUMMARYMIGRATE - Desc="Amount of space migrated by date and storage pool"
+
+
+
+```
+SELECT cast ((activity) as char(9)) as Activity, DATE(start_time) as Date, cast ((entity) as char (14)) as StoragePool, SUM(bytes)/1024/1024/1024 as GB FROM summary WHERE activity='MIGRATION' GROUP BY activity,entity,DATE(start_time) ORDER BY Date desc, activity,entity
+```
+
+- SUMMARYMIGRATEPR - Desc="Display information about migration process"
+
+
+
+```
+SELECT cast((activity) as char(10)) as activity, cast((entity) as char(30)) as entity, cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(22)) as START_TIME, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, number, cast(float(bytes)/1024/1024/1024 as DEC(8,1)) as GB, successful FROM summary WHERE activity='MIGRATION' ORDER BY start_time DESC
+```
+
+- SUMMARYNODE - Desc="Display amount of data archive/backup/retrieve/restore per date for an specific node. '$1' nodename"
+
+
+
+```
+SELECT cast((entity) as char(36)) as Node, DATE(start_time) as DATE, cast((activity) as char(15)) as OPERATION, cast(float(SUM(bytes))/1024/1024/1024 as DEC(8,1)) as GB FROM summary WHERE entity='$1' and activity<>'EXPIRATION' GROUP BY entity,DATE(start_time), activity ORDER BY DATE DESC, activity
+```
+
+- SUMMARYNODEPERFORMANCE - Desc="Display nodes performance from summary. $1 = NODE"
+
+
+
+```
+SELECT cast((entity) as char(40)) as NODE, number, cast((activity) as char(15)) as activity, cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(22)) as START_TIME, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, CAST(float(bytes)/1024/1024/1024 AS DECIMAL(8,2)) as GB,CAST(float(bytes)/(TIMESTAMPDIFF(2,CHAR(end_time-start_time))+1)/1024/1024 AS DECIMAL(8,2)) AS MB_s FROM summary WHERE entity='$1' and activity<>'EXPIRATION' order by start_time
+```
+
+- SUMMARYNUMACTIVITY - Desc="Display number of activities reported in summary in a specific time - $1 = YYYY-MM-DD HH:MM:SS"
+
+
+
+```
+SELECT cast((activity) as char(30)) as activity, count(*) as NUM_SESSIONS FROM summary WHERE start_time<= '$1' AND end_time>'$1' GROUP BY activity
+```
+
+- SUMMARYOFFRECLAIM - Desc="Information about offsite reclamation"
+
+
+
+```
+SELECT cast((activity) as char(20)) as ACTIVITY, cast((entity) as char(30)) as ENTITY, cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(22)) as START_TIME, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, number, num_offsite_vols, cast(float(bytes)/1024/1024/1024 as DEC(8,2)) as GB, successful FROM summary WHERE activity='OFFSITE RECLAMATION' AND bytes>0 ORDER BY start_time DESC
+```
+
+- SUMMARYOPERATION - Desc="Display amount of data per date for a specific operation - $1 = ARCHIVE or BACKUP or RESTORE or RETRIEVE or MIGRATION, etc"
+
+
+
+```
+SELECT DATE(start_time) as DATE, cast((activity) as char(30)) as activity, cast(float(sum(bytes))/1024/1024/1024 as dec(8,2)) as GB FROM summary WHERE activity=upper('$1') GROUP BY DATE(start_time), activity ORDER BY DATE DESC
+```
+
+- SUMMARYRECLAIM - Desc="Display information about number of GB and volumes reclaimed by date and by stgpool"
+
+
+
+```
+SELECT cast((DATE(start_time)) as CHAR(10)) as DATE, cast((activity) as char(12)) as ACTIVITY, cast((SUBSTR(entity, 1,LOCATE(' ',entity))) as char(12)) as STGPOOL, cast(float(sum(bytes))/1024/1024/1024 as DEC(8,2)) as GB, count(*) as #_Volumes_Reclaimed FROM summary WHERE activity='RECLAMATION' and successful='YES' GROUP BY DATE(start_time), activity, SUBSTR(entity, 1,LOCATE(' ',entity)) ORDER BY DATE(start_time) DESC
+```
+
+- SUMMARYRECLAIMPR - Desc="Display information about reclaim process"
+
+
+
+```
+SELECT cast((activity) as char(14)) as ACTIVITY, cast((entity) as char(30)) as ENTITY, cast((TO_CHAR(CHAR(start_time),'YYYY-MM-DD HH24:MI:SS')) as char(22)) as START_TIME, TRANSLATE('a bc:de:fg', DIGITS(end_time-start_time), '_______abcdefgh_____',' ') as ELAPTIME__D_HHMMSS, number, cast(float(bytes)/1024/1024/1024 as DEC(8,2)) as GB, successful FROM summary WHERE activity='RECLAMATION' ORDER BY start_time DESC
+```
+
+- TOTALDATA - Desc="Display amount of data stored on TSM (auditocc)"
+
+
+
+```
+SELECT CAST(FLOAT(SUM(backup_mb))/1024 as DEC(8,1)) as BACKUP_GB, CAST(FLOAT(SUM(backup_copy_mb))/1024 as DEC(8,1)) as BACKUP_COPY_GB, CAST(FLOAT(SUM(archive_mb))/1024 as DEC(8,1)) as ARCHIVE_GB, CAST(FLOAT(SUM(archive_copy_mb))/1024 as DEC(8,1)) as ARCHIVE_COPY_GB, CAST(FLOAT(SUM(total_mb))/1024 as DEC(8,1)) as TOTAL_GB from auditocc
+```
+
+- VOLINLIB - Desc="Display information about volumes that are inside the library. It does not show scratch tapes"
+
+
+
+```
+SELECT cast((l.library_name) as char(12)) as library_name, cast((l.owner) as char(12)) as owner, cast((v.volume_name) as char(8)) as volume_name, cast((v.stgpool_name) as char(18)) as stgpool, v.pct_utilized, v.pct_reclaim, cast((v.status) as char(12)) as status, cast((v.access) as char(9)) as access, v.write_errors, v.read_errors FROM volumes v, libvolumes l WHERE v.volume_name=l.volume_name ORDER BY pct_utilized
+```
+
+- VOLPEROWNER - Desc="Display number of tapes per owner/server/library client"
+
+
+
+```
+SELECT cast((owner) as char(40)) as owner,count(*) as num_tapes FROM libvolumes WHERE status<>'Scratch' GROUP BY owner
+```
+
+- VOLPERSTGPOOL - Desc="Number of volumes per storage pool"
+
+
+
+```
+SELECT stgpool_name, devclass_name, COUNT(*) FROM volumes GROUP BY stgpool_name, devclass_name
+```
+

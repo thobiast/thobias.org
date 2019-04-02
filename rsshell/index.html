@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.sf.net">
+<LINK REL="stylesheet" TYPE="text/css" HREF="rsshell.css">
+<TITLE>RSShell</TITLE>
+</HEAD><BODY BGCOLOR="white" TEXT="black">
+<P ALIGN="center"><CENTER><H1>RSShell</H1>
+<FONT SIZE=4>
+<I>Thobias Salazar Trevisan</I><BR>
+Atualizado em 07 Nov 2004
+</FONT></CENTER>
+
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<P>
+ <UL>
+ <LI><A HREF="#toc1">Olá</A>
+  <UL>
+  <LI><A HREF="#toc2">Os sites</A>
+  </UL>
+ <LI><A HREF="#toc3">Como Usar</A>
+   <UL>
+   <LI><A HREF="#toc4">Crontab ou Linha de Comando</A>
+   <LI><A HREF="#toc5">CGI</A>
+   <LI><A HREF="#toc6">Personalizar o HTML</A>
+   </UL>
+ <LI><A HREF="#toc7">Screenshot</A>
+ <LI><A HREF="#toc8">Download</A>
+ <LI><A HREF="#toc9">Considerações Finais</A>
+ </UL>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<P>
+<a name="toc1"></a>
+<H1>Olá</H1>
+<P>
+Bem-vindo(a) à página do programa RSShell.
+<P>
+Muitas pessoas acessam alguns sites todos os dias a procura de
+notícias interessantes. Entretanto, perde-se muito tempo
+e gasta-se conexão acessando cada um destes sites no browser.
+Esperar carregar todas as imagens, banners, flash, java etc, só para
+ver se <I>hoje</I> tem alguma notícia legal. Este é o ponto do RSShell,
+que tem como objetivo poupar tempo e conexão.
+<P>
+O RSShell acessa os sites pré-configurados, utilizando um browser modo
+texto chamado <A HREF="http://lynx.isc.org">lynx</A>, coleta as notícias e monta uma
+página com todos os sites e suas respectivas manchetes com links para cada
+uma delas. A que lhe interessar é só clicar em cima que a página referente
+a esta notícia é carregada. Utilizando o lynx somente o texto da página é
+acessado, desta maneira não é realizado o download destes sites <I>bloated</I>.
+RSShell foi todo escrito em Shell Script (BASH).
+<P>
+<a name="toc2"></a>
+<H2>Os sites</H2>
+<P>
+O RSShell foi feito de maneira genérica, ou seja, funciona para
+<B>qualquer</B> site que tenha suporte a RSS. Sites que não tem este suporte
+não funcionam. Não sabe o que é RSS? Acesse:
+<A HREF="http://en.wikipedia.org/wiki/RSS_%28protocol%29">RSS no Wikipedia</A>
+<P>
+A lista com os sites a serem acessados está no final do código fonte do
+programa. Pode-se customizá-los adicionando ou removendo as URLs dos
+arquivos RSS dos sites. É necessário deixar uma URL por linha.
+<P>
+Também existe a opção de criar seções. Adicione-as no final do código
+fonte. Ao contrário das URLs, as seções <B>tem</B> que começar pelo sinal de
+menos.
+<P>
+Dê uma olhada no código que ficará mais claro. É bem simples de
+costumizar para os seus sites favoritos.
+<P>
+<a name="toc3"></a>
+<H1>Como Usar</H1>
+<P>
+Existem duas maneiras de utilizar o RSShell:
+<P>
+<a name="toc4"></a>
+<H3>Crontab ou Linha de Comando</H3>
+<P>
+Normalmente acessa-se sites de notícias algumas vezes por dia. Se você
+acessa uma vez por dia, por exemplo, às 9h da manhã, você pode colocar o
+programa para rodar todos os dias às 8:50h no <I>cron</I> de sua máquina.
+Assim, quando acessar às 9h terá as últimas notícias.
+<P>
+Se for várias vezes por dia, pode colocar no <I>cron</I> para rodar uma vez a cada
+uma hora, duas horas.... É só escolher.
+<P>
+Outra alternativa é executar o programa direto na linha de comando quando
+for necessário. Quer ler?! É só rodar.
+<P>
+<B>OBS</B>:
+O RSShell gera a página HTML na saída padrão (<I>stdout</I>). Caso seja utilizado
+<I>cron</I> ou a linha de comando, sua saída deve ser redirecionada para um
+arquivo para posteriormente ser acessado através de algum browser.
+<P>
+<PRE>
+  prompt&gt; ./rsshell &gt; rsshell.html
+</PRE>
+<P>
+<a name="toc5"></a>
+<H3>CGI</H3>
+<P>
+O RSShell também pode ser utilizado como um script CGI.
+Não sabe o que é CGI? Acesse <A HREF="http://thobias.org/doc/cgi_shell.html">http://thobias.org/doc/cgi_shell.html</A>
+<P>
+Nesta opção é necessário colocar o programa em algum servidor web.
+Quando for acessada esta URL, o RSShell busca
+as notícias dos sites e monta a página de forma dinâmica.
+<P>
+<PRE>
+  http://localhost/cgi-bin/rsshell
+</PRE>
+<P>
+<a name="toc6"></a>
+<H3>Personalizar o HTML</H3>
+<P>
+A página HTML gerada pelo RSShell é bem simples. Para personalizar você
+deve utilizar a opção '--css' e informar um arquivo CSS. Exemplo:
+<P>
+<PRE>
+  prompt&gt; ./rsshell --css arquivo.css &gt; pagina.html
+</PRE>
+<P>
+Utilizando CSS você pode deixar a página do seu gosto. As notícias estão em
+tabelas HTML. Para facilitar a customização as seguintes TAGs HTML
+foram utilizadas.
+<P>
+<table align="center" cellpadding=4 border=1>
+<tr>
+<td>h1</td>
+<td>Título da página</td>
+</tr>
+<tr>
+<td>h2</td>
+<td>Nome da seção (ex: Notícias Informática)</td>
+</tr>
+<tr>
+<td>h3</td>
+<td>Nome do site (ex: BR-Linux 5.0)</td>
+</tr>
+</table>
+
+<P>
+<a name="toc7"></a>
+<H1>Screenshot</H1>
+<P>
+Como uma imagem vale mais do que mil palavras, alguns exemplos de uso do
+RSShell em ação.
+<P>
+<P ALIGN="center"><IMG ALIGN="center" SRC="rsshell_1.jpg" BORDER="0"></P>
+<P>
+<P ALIGN="center"><IMG ALIGN="center" SRC="rsshell_2.jpg" BORDER="0"></P>
+<P>
+<a name="toc8"></a>
+<H1>Download</H1>
+<P>
+Link para baixar o programa: <A HREF="rsshell">RSShell</A>
+<P>
+OBS: Após baixar não esqueça de dar permissão de execução para o arquivo.
+<P>
+<PRE>
+  prompt&gt; chmod +x rsshell
+</PRE>
+<P>
+<a name="toc9"></a>
+<H1>Considerações Finais</H1>
+<P>
+Gostou?! Achou algum bug?! Tem algum comentário?! Me envie um mail:
+thobias [at ] thobias.org
+<P>
+Divirta-se!!!
+
+<!-- html code generated by txt2tags 1.7 (http://txt2tags.sf.net) -->
+<!-- cmdline: txt2tags -\-style rsshell.css -t html -\-toc index.t2t -->
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2229503-1";
+urchinTracker();
+</script>
+</BODY></HTML>

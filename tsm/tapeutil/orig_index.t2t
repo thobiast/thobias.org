@@ -1,0 +1,78 @@
+tapeutil, itdt and mtlib commands
+Collection of useful tapeutil and mtlib commands 
+
+
+%!encoding: iso-8859-1
+%!Style   : itdt.css
+%!target  : html
+%!Options : --mask-email --css-sugar
+
+**Important links:**
+
+[IBM Important changes with IBM Tape Device Driver. http://www-01.ibm.com/support/docview.wss?uid=swg21428656&myns=swgtiv&mynp=OCSSRQGY&mynp=OCSSVVS7&mynp=OCSSSQZW&mynp=OCSSSQWC&mynp=OCSSGSG7&mync=E]
+
+[IBM Tape Device Drivers Installation and User's Guide. http://www-01.ibm.com/support/docview.wss?rs=577&uid=ssg1S7002972]
+
+Steps to download the IBM Tape Diagnostic Tool (ITDT):
+
+- Access http://www.ibm.com/support/fixcentral
+- Product Group: "Storage Systems"
+- System Storage: "Tape Systems"
+- Tape systems : "Tape drivers and software"
+- Tape drivers and software : "IBM Tape Diagnostic Tool ITDT"
+- Platform: Select your platform and "Continue".
+
+
+==Tapeutil or ITDT==
+
+If you are using IBM Tape Diagnostic Tool (ITDT), you just need to replace //tapeutil// by //itdt//.
+
+ | tapeutil -f /dev/smc0 elementinfo | Displays element information - library information |
+ | tapeutil -f /dev/smc0 inventory  | Displays the element status information |
+ | tapeutil -f /dev/smc0 inventory -i | Display only the import/export element status information |
+ | tapeutil -f /dev/smc0 inventory |grep -p Import | Display only the import/export element status information |
+ | tapeutil -f /dev/smc0 inventory |sed -n '/Import/,/^$/p' | Display only the import/export element status information |
+ | tapeutil -f /dev/smc0 inventory -i |awk '/Tag/ {if ( $4 != "" ) print $4; else print "IO_SLOT_EMPTY"}' | Display tapes in the I/O door |
+ | tapeutil -f /dev/smc0 move X Y  | Move tape from slot element number X to slot element number Y |
+ | tapeutil -f /dev/smc0 devids | Display device ID element status information for all drives |
+ | tapeutil -f /dev/rmt1 status  | Query drive status |
+ | tapeutil -f /dev/rmt1 vpd  | Display drive Vital Product Data (VPD) |
+ | tapeutil -f /dev/rmt1 devinfo  | Show device information |
+ | tapeutil -f /dev/rmt1 path | Check tape and path SCSI information |
+ | tapeutil -f /dev/rmt1 fuser | Display which process is using the drive |
+ | tapeutil -f /dev/rmt1 mount <element number> | Mount tape from element number on drive rmt0 |
+ | tapeutil -f /dev/rmt1 unmount <element number> | Dismount tape from element number on drive rmt0 |
+ | tapeutil -f /dev/rmt1 inqpage 83 | Show drive serial |
+
+
+
+==mtlib==
+
+ | mtlib -l /dev/lmcp0 -qL  | Library status | 
+ | mtlib -l /dev/lmcp0 -A  | Library address information |
+ | mtlib -l /dev/lmcp0 -qS | Library information and statistical data |
+ | mtlib -l /dev/lmcp0 -DE | Display drives information | 
+ | mtlib -l /dev/lmcp0 -qM | Show mounted tapes |
+ | mtlib -l /dev/lmcp0 -vqI | Category codes for tapes - tapes information |
+ | mtlib -l /dev/lmcp0 -qV -V VolName | Information about tape |
+ | mtlib -l /dev/lmcp0 -vqV -V VolName | Information about tape (verbose) |
+ | mtlib -l /dev/lmcp0 -qI | List tapes |
+ | mtlib -l /dev/lmcp0 -qD -f /dev/rmt1 | Drive status |
+ | mtlib -l /dev/lmcp0 -a -V VolName | Barcode, examine tape to assure that it is physically in library |
+ | mtlib -l /dev/lmcp0 -vqK -s FFFD | Number of 3590 cleaning tapes |
+ | mtlib -l /dev/lmcp0 -qC -s FFFD | List 3590 cleaning tapes |
+ | mtlib -l /dev/lmcp0 -qC -s FFF4 | List 3592 cleaning tapes |
+ | mtlib -l /dev/lmcp0 -C -V VolName -s<current category> -t<new category>  | Change volume category |
+ | mtlib -l /dev/lmcp0 -vC -V VolName -t FFFB | Remove tape from 3494 inventory |
+ | mtlib -l /dev/lmcp0 -vC -V VolName -t FF10 | Eject tape |
+ | mtlib -l /dev/lmcp0 -f /dev/rmt0 -m -V VolName | Mount tape |
+ | mtlib -l /dev/lmcp0 -m -x drive_serial -V VolName | Mount tape |
+ | mtlib -l /dev/lmcp0 -f /dev/rmt0 -d | Dismount tape |
+ | mtlib -l /dev/lmcp0 -x device_serial -d | Dismount tape |
+
+
+The complete list of volume categories for 3494 tape library can be found at:
+[IBM Redbook TotalStorage 3494 Tape Library http://www.redbooks.ibm.com/abstracts/sg244632.html] -
+Appendix C. Library Manager volume categories
+
+If you have any new example to add, feel free to contact me: thobias@thobias.org

@@ -1,0 +1,55 @@
+<html>
+<head>
+  <title>Página do Thobias</title>
+  <style type="text/css">
+  @import "../links.css";
+  </style>
+</head>
+
+<body bgcolor="black" text="#DEDEDE" vlink="blue">
+<br>
+[guest@thobias ~/Programas_old]$ vi Simulador_de_um_processador_pipeline.txt<br>
+<br>
+<center>
+Trabalho realizado durante a disciplina de Arquitetura de Computadores COS703<br>
+3 Periodo de 2000 - COPPE/UFRJ<br>
+Prof. <a href="http://www.cos.ufrj.br/~eliseu/">Eliseu M. Chaves Filho</a><br>
+</center><br>
+<br><br>
+
+Desenvolver um programa que simule um processador pipeline, com suporte a um dado conjunto de instruções.<br>
+O pipeline deve ter quatro estágios: busca, decodificação, execução e resultado. Assuma que:<br>
+<br>
+&nbsp;- o conjunto de registradores tem 32 registradores<br>
+&nbsp;- um mecanismo de <em>forwarding</em> e empregado pra resolver dependências verdadeiras<br>
+&nbsp;- a técnica de desvio atrasados e empregada para resolver dependências de controle<br>
+&nbsp;- arquitetura de Harvard no acesso a memória principal.<br>
+<br>
+O programa C deve simular a execução de programas neste caminho de dados. <br>
+Para este simulador:<br>
+<br>
+&nbsp;- Será fornecido um arquivo executável contendo uma sequência de palavras de 32 bit em hexadecimal<br>
+&nbsp;(o arquivo está em ASCII)<br>
+&nbsp;- o simulador deverá fornecer <br><br>
+&nbsp;&nbsp;&nbsp;1) o conteudo dos registradores a cada ciclo<br>
+&nbsp;&nbsp;&nbsp;2) o número médio de ciclos por instrução<br>
+&nbsp;&nbsp;&nbsp;3) a distribuição dos tipos de intruções executadas<br>
+&nbsp;&nbsp;&nbsp;4) o conteudo de uma região especificada da memória<br><br>
+&nbsp;- suponha uma memória de 64Kbytes. O simulador deve encerrar a execução se for feito um acesso<br>
+&nbsp;além do tamanho da memória.<br>
+
+Simulador do pipeline <a href="pipe.c">pipe.c</a><br>
+Arquivo entrada (execução) <a href="sort.exe">sort.exe</a><br>
+Conjunto de instruções <a href="mif.ps">mif.ps</a><br>
+<br>
+<em>PS: Programa roda em Linux, BSD, Solaris...</em>
+<br>
+~<br>
+~<br>
+:x<br>
+[guest@thobias ~/Programas_old]$<br>
+
+[guest@thobias ~/Programas_old]$&nbsp;<a href="index.html">ls -la<blink>_</blink></a><br>
+  <br><br>
+</body>
+</html>

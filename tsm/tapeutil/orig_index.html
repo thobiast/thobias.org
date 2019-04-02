@@ -1,0 +1,216 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.sf.net">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="stylesheet" TYPE="text/css" HREF="itdt.css">
+<TITLE>tapeutil, itdt and mtlib commands</TITLE>
+</HEAD>
+<BODY>
+
+<DIV CLASS="header" ID="header">
+<H1>tapeutil, itdt and mtlib commands</H1>
+<H2>Collection of useful tapeutil and mtlib commands </H2>
+</DIV>
+
+<DIV CLASS="body" ID="body">
+<P>
+<B>Important links:</B>
+</P>
+<P>
+<A HREF="http://www-01.ibm.com/support/docview.wss?uid=swg21428656&amp;myns=swgtiv&amp;mynp=OCSSRQGY&amp;mynp=OCSSVVS7&amp;mynp=OCSSSQZW&amp;mynp=OCSSSQWC&amp;mynp=OCSSGSG7&amp;mync=E">IBM Important changes with IBM Tape Device Driver.</A>
+</P>
+<P>
+<A HREF="http://www-01.ibm.com/support/docview.wss?rs=577&amp;uid=ssg1S7002972">IBM Tape Device Drivers Installation and User's Guide.</A>
+</P>
+<P>
+Steps to download the IBM Tape Diagnostic Tool (ITDT):
+</P>
+<UL>
+<LI>Access <A HREF="http://www.ibm.com/support/fixcentral">http://www.ibm.com/support/fixcentral</A>
+<LI>Product Group: "Storage Systems"
+<LI>System Storage: "Tape Systems"
+<LI>Tape systems : "Tape drivers and software"
+<LI>Tape drivers and software : "IBM Tape Diagnostic Tool ITDT"
+<LI>Platform: Select your platform and "Continue".
+</UL>
+
+<H2>Tapeutil or ITDT</H2>
+<P>
+If you are using IBM Tape Diagnostic Tool (ITDT), you just need to replace <I>tapeutil</I> by <I>itdt</I>.
+</P>
+<TABLE ALIGN="center" BORDER="1">
+<TR>
+<TD>tapeutil -f /dev/smc0 elementinfo</TD>
+<TD>Displays element information - library information</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/smc0 inventory</TD>
+<TD>Displays the element status information</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/smc0 inventory -i</TD>
+<TD>Display only the import/export element status information</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/smc0 inventory |grep -p Import</TD>
+<TD>Display only the import/export element status information</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/smc0 inventory |sed -n '/Import/,/^$/p'</TD>
+<TD>Display only the import/export element status information</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/smc0 inventory -i |awk '/Tag/ {if ( $4 != "" ) print $4; else print "IO_SLOT_EMPTY"}'</TD>
+<TD>Display tapes in the I/O door</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/smc0 move X Y</TD>
+<TD>Move tape from slot element number X to slot element number Y</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/smc0 devids</TD>
+<TD>Display device ID element status information for all drives</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/rmt1 status</TD>
+<TD>Query drive status</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/rmt1 vpd</TD>
+<TD>Display drive Vital Product Data (VPD)</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/rmt1 devinfo</TD>
+<TD>Show device information</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/rmt1 path</TD>
+<TD>Check tape and path SCSI information</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/rmt1 fuser</TD>
+<TD>Display which process is using the drive</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/rmt1 mount &lt;element number&gt;</TD>
+<TD>Mount tape from element number on drive rmt0</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/rmt1 unmount &lt;element number&gt;</TD>
+<TD>Dismount tape from element number on drive rmt0</TD>
+</TR>
+<TR>
+<TD>tapeutil -f /dev/rmt1 inqpage 83</TD>
+<TD>Show drive serial</TD>
+</TR>
+</TABLE>
+
+<H2>mtlib</H2>
+<TABLE ALIGN="center" BORDER="1">
+<TR>
+<TD>mtlib -l /dev/lmcp0 -qL</TD>
+<TD>Library status</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -A</TD>
+<TD>Library address information</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -qS</TD>
+<TD>Library information and statistical data</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -DE</TD>
+<TD>Display drives information</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -qM</TD>
+<TD>Show mounted tapes</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -vqI</TD>
+<TD>Category codes for tapes - tapes information</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -qV -V VolName</TD>
+<TD>Information about tape</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -vqV -V VolName</TD>
+<TD>Information about tape (verbose)</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -qI</TD>
+<TD>List tapes</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -qD -f /dev/rmt1</TD>
+<TD>Drive status</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -a -V VolName</TD>
+<TD>Barcode, examine tape to assure that it is physically in library</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -vqK -s FFFD</TD>
+<TD>Number of 3590 cleaning tapes</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -qC -s FFFD</TD>
+<TD>List 3590 cleaning tapes</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -qC -s FFF4</TD>
+<TD>List 3592 cleaning tapes</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -C -V VolName -s&lt;current category&gt; -t&lt;new category&gt;</TD>
+<TD>Change volume category</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -vC -V VolName -t FFFB</TD>
+<TD>Remove tape from 3494 inventory</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -vC -V VolName -t FF10</TD>
+<TD>Eject tape</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -f /dev/rmt0 -m -V VolName</TD>
+<TD>Mount tape</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -m -x drive_serial -V VolName</TD>
+<TD>Mount tape</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -f /dev/rmt0 -d</TD>
+<TD>Dismount tape</TD>
+</TR>
+<TR>
+<TD>mtlib -l /dev/lmcp0 -x device_serial -d</TD>
+<TD>Dismount tape</TD>
+</TR>
+</TABLE>
+
+<P>
+The complete list of volume categories for 3494 tape library can be found at:
+<A HREF="http://www.redbooks.ibm.com/abstracts/sg244632.html">IBM Redbook TotalStorage 3494 Tape Library</A> -
+Appendix C. Library Manager volume categories
+</P>
+<P>
+If you have any new example to add, feel free to contact me: &lt;thobias (a) thobias org&gt;
+</P>
+</DIV>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2229503-1";
+urchinTracker();
+</script>
+
+<!-- html code generated by txt2tags 2.4 (http://txt2tags.sf.net) -->
+<!-- cmdline: txt2tags index.t2t -->
+</BODY></HTML>

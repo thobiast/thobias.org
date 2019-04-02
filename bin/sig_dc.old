@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+#
+# O dc eh uma calculadora muito poderosa. Para saber mais detalhes 
+# man dc.
+# Com a opcao P ele imprime um valor ascii como caracter, por exemplo:
+#
+# $echo 65P | dc
+# A
+# $
+#
+# Soh que ele faz isto fazendo um shit de 8 bits, ie, 256. Entao ele 
+# trata qualquer numero como uma colecao de 8 bits concatenados. Assim, 
+# a partir de um determinado numero, se vc for shiftando ele por 256 vc vai 
+# tendo cada letra.
+# Vamos ao que interessa entao. Temos que pegar a letra que 
+# queremos, ver seu caracter ascii, e pegar a representacao binaria deste 
+# valor ascii. Assim, para escrever AB, fizemos:
+#
+# para pegarmos o A
+# $echo "obase=2;65" | bc -l
+# 1000001
+# $
+#	
+# Como ele pega a cada 8 bits, preenchemos com zero a esquerda ateh 
+# formar 8 bits. Assim ficando 01000001
+
+# Mesma coisa para B
+# $echo "obase=2;66" | bc -l
+# 1000010
+# $
+# 
+# Preenchemos com 0, ficando 01000010.
+# Agora concatenamos os dois valores binario. Assim ficando 
+# 0100000101000010
+# Agora usamos o bc para transformar este valor em decimal:
+#
+# $echo "ibase=2;0100000101000010" | bc -l
+# 167906
+# $
+#
+# Pronto agora temos o nosso valor magico ;-)
+#
+# $echo 16706P | dc
+# AB
+# $
+#
+# Chato de fazer a mao neh !? Entao:
+# Let's Code
+# ou
+# echo 92357463970445465556903178P | dc
+#
+# Thobias Salazar Trevisan
+# <thobias at cos.ufrj.br>
+#
+# 19/09/2002
+
+
+SIZE="$@"
+for i in `seq 1 "${#SIZE}"`;do
+char=$(echo "$@" | cut -b "$i")
+decimal=$(echo -n "$char" | od -d | sed -n '1s/^[^ ]* *\([0-9]\+\).*/\1/p') 
+binary=$binary$(echo "obase=2;$decimal" | bc -l | gawk '{printf("%08s",$1)}');done
+binary=$binary$(gawk 'BEGIN {printf("%08s",1010)}')
+echo "echo $(echo "ibase=2;$binary" | bc -l)P | dc"

@@ -1,0 +1,689 @@
+TSMmonitor
+Thobias Salazar Trevisan 
+%%date(%m/%d/%Y)
+
+
+%!encoding: iso-8859-1
+%!Style   : tsmmonitor.css
+%!target: html
+%!Options : --toc --css-sugar --mask-email
+
+
+=Introduction=
+
+
+This script is developed to provide an easy, customizable and effective
+way to monitor TSM
+([Tivoli Storage Manager http://www.ibm.com/software/tivoli/products/storage-mgr])
+Servers.
+
+It is composed of functions to check specific TSM resources.
+Each check returns the resource status. The available status for a
+resource are:
+
+ - Ok / Warning / Critical
+
+
+
+The status returned is based on defined thresholds for each check.
+For example, the function to check the TSM Database utilization:
+
+```
+        prompt> ./tsmmonitor db -h
+
+        check tsm database utilization
+
+        The default percentages are:
+           warning..: 85
+           critical.: 90
+
+        Usage..: tsmmonitor db [options] [warning] [critical]
+
+                 -v6     check database utilization for TSM version 6
+
+        Usage..: tsmmonitor db [warning] [critical]
+        Example: tsmmonitor db
+                 tsmmonitor db 80 95
+                 tsmmonitor db -v6 80 90
+```
+
+
+The status returned from db check depends on the warning and critical
+threshold values. These values can be customized using command line
+arguments:
+
+```
+        prompt> ./tsmmonitor db
+        db: database utilization 81%, OK
+
+        prompt> ./tsmmonitor db 80 90
+        db: database utilization 81%, Warning
+
+        prompt> ./tsmmonitor db 60 80
+        db: database utilization 81%, Critical
+```
+
+Some nice features:
+
+ - Supports multiples tsm servers (servername)
+ - Can be used transparently as a nagios plugin
+ - Alert notification mechanism (by e-mail)
+ - Customizable threshold values for ok/warning/critical status in command line
+ - Bourne shell (sh) compliance
+ - Easy to add news checks
+
+
+This script should work fine under most *NIX variants. It has been tested
+successfully under many Linux and AIX (4.3, 5.2 and 5.3). If you have any
+problem, please let me know.
+
+
+Suggestions and bug reports are very welcome.
+Contact me at: thobias@thobias.org
+
+=Changelog=
+
+**Version 2.2**, released on 07/11/2012 (DD/MM/YYYY)
+
+- added support for TSM 6 for db and log checks
+- dbbkp - replaced sed by egrep. AIX sed does not have OR oper
+
+
+**Version 2.1**, released on 11/09/2009 (DD/MM/YYYY)
+
+- added falseprivate check
+- fixed bug drmvol
+
+
+**Version 2.0**, released on 28/11/2008 (DD/MM/YYYY)
+
+- the source code was rewritten.
+- there were changes on the command line options, so version 2.0
+BREAKS BACKWARDS COMPATIBILITY.
+
+
+**Version 1.0**, released on 15/06/2007 (DD/MM/YYYY)
+
+- First public version
+
+
+=Download=
+
+Just download this file: [tsmmonitor tsmmonitor]
+
+Using it is quite simple. It doesn't require installation. All you have
+to do is set three options in the source code.
+Edit the script and look for this section:
+
+```
+############### tsm server information
+#
+# dsmadmc command path
+DSMADMC='/usr/bin/dsmadmc'
+
+# tsm user to connect to the tsm server and perform the checks
+USER=''
+
+# tsm user password
+PASS=''
+```
+
+Only these variables must be changed.
+If everything is fine, you can now test the script:
+
+``` tsmmonitor --help
+``` tsmmonitor db
+
+Take a look at the source code for more customizations.
+
+For nerds, [source code highlighting tsmmonitor.html].
+
+=Checks=
+
+The complete list of the available checks.
+
+ || No | Check        | Description  |
+ | 1   | help         | show all checks help |
+ | 2   | db           | check tsm database utilization |
+ | 3   | dbbkp        | check how many tsm db backup there are in the last 24 hours |
+ | 4   | dbfrag       | check tsm database fragmentation |
+ | 5   | dbvol        | check number of database volumes not synchronized (copy status) |
+ | 6   | diskvol      | check number of disk volumes without readwrite access |
+ | 7   | drive        | check number of drives not online |
+ | 8   | drmvol       | check number of DRM volumes |
+ | 9   | falseprivate | check false private tapes |
+ | 10  | lic          | check server license compliance |
+ | 11  | log          | check tsm recovery log utilization |
+ | 12  | logvol       | check number of log volumes not synchronized (copy status) |
+ | 13  | nodeslocked  | check number of nodes locked |
+ | 14  | numnodes     | check number of nodes |
+ | 15  | numsess      | check number of nodes sessions |
+ | 16  | path         | check number of paths not online |
+ | 17  | sched        | check the number of schedules not completed (only today's schedules) |
+ | 18  | scratch      | check number of scratch tapes |
+ | 19  | searchanr    | Search for a specific ANR in the last N hours (default is 1h) |
+ | 20  | stgpool      | check a storage pool utilization |
+ | 21  | tapeslib     | check how many tapes are in the library |
+ | 22  | tapesown     | check how many tapes have a specific owner |
+ | 23  | tapesstgpool | check how many volumes are in a specific storage pool |
+ | 24  | unav         | check number of unavailable volumes |
+ | 25  | volerr       | check number of volumes with error (error_state) |
+ | 26  | volreclaim   | check for volumes with percentage reclaimable space greater than |
+
+
+
+
+=TSMmonitor in Action=
+
+Some samples to show tsmmonitor in action:
+
+```
+prompt> tsmmonitor -h
+Usage: tsmmonitor [options] [check] [options_check]
+
+Options
+
+-u, --user          tsm user to connect to the tsm server
+-p, --pass          tsm user password to connect to the tsm server
+-s, --servername    specify tsm servername
+-m, --mail          mail addresses separated by blank space
+-q, --quiet         quiet mode, suppress all output (except errors)
+-S, --source        print the check source code
+-h, --help          print this help information and exit
+-V, --version       print program version and exit
+
+The following checks are available:
+
+help, db, log, scratch, drive, path, dbfrag, unav, stgpool, volerr, 
+volreclaim, tapeslib, tapesown, tapesstgpool, dbbkp, numsess, numnodes,
+nodeslocked, diskvol, dbvol, logvol, searchanr, drmvol, sched, lic
+
+Try 'tsmmonitor <check> --help' for more information.
+
+Example:
+    tsmmonitor db --help
+    tsmmonitor db
+    tsmmonitor db -v6
+    tsmmonitor -m='user1@somewhere.com user2@somewhere.com' db
+    tsmmonitor --servername=tsmsrv01 db
+    tsmmonitor --servername=tsmsrv02 db 85 95
+    tsmmonitor -u=user1 -p=xxx -s=tsmsrv02 db 85 95
+```
+
+Showing the help of db check:
+
+```
+prompt> tsmmonitor db -h
+
+check tsm database utilization
+
+The default percentages are:
+   warning..: 85
+   critical.: 90
+
+Usage..: tsmmonitor db [warning] [critical]
+Example: tsmmonitor db
+         tsmmonitor db 80 95
+```
+
+Checking the TSM database utilization:
+
+```
+prompt> tsmmonitor db
+db: database utilization 79%, Ok
+prompt> echo $?
+0
+```
+
+Checking the TSM database utilization specifying different percentage for
+warning and critical status:
+
+```
+prompt> tsmmonitor db 70 85
+db: database utilization 79%, Warning
+prompt> echo $?
+1
+```
+
+```
+prompt> tsmmonitor db 60 75
+db: database utilization 79%, Critical
+prompt> echo $?
+2
+```
+
+Checking the number of volumes with error:
+
+```
+prompt> tsmmonitor volerr   
+volerr: number of volumes with error 2, Critical
+```
+
+Checking the number of volumes unavailable:
+
+```
+prompt> tsmmonitor unav
+unav: number of unavailable volumes 1, Warning.
+```
+
+Checking the number of volumes unavailable with verbose option:
+
+```
+prompt> tsmmonitor unav -v 
+unav: number of unavailable volumes 1, Warning. Volumes: R00043L3
+```
+
+Checking the number of drives not online:
+
+```
+prompt> tsmmonitor drive
+drive: number of drives not online 0, OK
+```
+
+
+
+=Nagios Plugin=
+
+TSMmonitor can be used transparently as a [nagios http://www.nagios.org]
+plugin. Nagios plugins are based on script return code: 
+
+ - 0 - normal
+ - 1 - warning  
+ - 2 - critical
+ - 3 - unknown 
+ 
+ 
+These are the same return codes used by TSMmonitor.
+
+=Alert Notification=
+
+You can use the alert notification to receive an e-mail when the status changes.
+This feature is disabled by default. To turn on, you have to change the following
+options in the source code:
+
+```
+############### send notification
+#
+# at every time that a check changes the status,
+# an alert (notification) will be sent by mail. default is off
+SEND_ALERT=0   # 1 = on and 0 = off
+
+# e-mails which will receive the notifications. mail addresses are separated
+# by blank space. ex: MAILTO='xxx@yyy.zzz aaa@bbb.zzz ppp@qqq.lll'
+MAILTO=''
+
+# temp directory where tsmmonitor will record check status.
+# it is necessary to send mail when the check status changes
+TEMPDIR='/tmp'
+```
+
+Remeber you can specify different mail addresses in the command line:
+
+```
+prompt> tsmmonitor -m=user2@somewhere.com db
+```
+
+You can use the //cron// to execute scheduled checks and receive the tsmmonitor
+alerts by e-mail.
+
+```
+prompt> crontab -l
+*/15 * * * *    /PATH/tsmmonitor db      > /dev/null
+*/10 * * * *    /PATH/tsmmonitor log     > /dev/null
+*/10 * * * *    /PATH/tsmmonitor drive   > /dev/null
+*/10 * * * *    /PATH/tsmmonitor path    > /dev/null
+*/15 * * * *    /PATH/tsmmonitor scratch > /dev/null
+```
+
+
+=Help=
+
+HTML version of the command //tsmmonitor help//.
+
+```
+---------------------------------------------------------------------
+show all checks help
+
+Usage..: tsmmonitor help
+Example: tsmmonitor help
+---------------------------------------------------------------------
+check tsm database utilization
+
+The default percentages are:
+   warning..: 85
+   critical.: 90
+
+Usage..: tsmmonitor db [options] [warning] [critical]
+
+	-v6	check database utilization for TSM version 6
+
+Example: tsmmonitor db
+         tsmmonitor db 80 95
+         tsmmonitor db -v6 80 90
+---------------------------------------------------------------------
+check tsm recovery log utilization
+
+The default percentages are:
+   warning..: 60
+   critical.: 80
+
+Usage..: tsmmonitor log [options] [warning] [critical]
+
+	-v6	check active log utilization for TSM version 6
+
+Example: tsmmonitor log
+         tsmmonitor log 80 95
+         tsmmonitor log -v6 70 80
+---------------------------------------------------------------------
+check number of scratch tapes
+
+The default numbers are:
+   warning..: 10
+   critical.: 6
+
+Usage..: tsmmonitor scratch [options] [warning] [critical]
+
+ -l, --library=LIBRARY_NAME   check for scratch in the library only
+
+Example: tsmmonitor scratch
+         tsmmonitor scratch 8 4
+         tsmmonitor scratch -l=LTOLIB3 8 4
+         tsmmonitor scratch -l=LTOLIB3
+---------------------------------------------------------------------
+check number of drives not online
+
+The default numbers are:
+   warning..: 1
+   critical.: 3
+
+Usage..: tsmmonitor drive [options] [warning] [critical]
+
+ -l, --library=LIBRARY_NAME   check in the specific library only
+
+Example: tsmmonitor drive
+         tsmmonitor drive 2 3
+         tsmmonitor drive -l=LTOLIB3 1 2
+         tsmmonitor drive -l=LTOLIB3
+---------------------------------------------------------------------
+check number of paths not online
+
+The default numbers are:
+   warning..: 1
+   critical.: 3
+
+Usage..: tsmmonitor path [options] [warning] [critical]
+
+-s, --source=SOURCE_NAME   check path with a specific source name
+
+Example: tsmmonitor path
+         tsmmonitor path 2 4
+         tsmmonitor path -s=LANFREE1 1 4
+         tsmmonitor path -s=LANFREE1
+---------------------------------------------------------------------
+check tsm database fragmentation
+
+The default numbers are:
+   warning..: 60
+   critical.: 80
+
+Usage..: tsmmonitor dbfrag [warning] [critical]
+Example: tsmmonitor dbfrag
+         tsmmonitor dbfrag 50 75
+---------------------------------------------------------------------
+check number of unavailable volumes
+
+The default numbers are:
+   warning..: 1
+   critical.: 5
+
+Usage..: tsmmonitor unav [options] [warning] [critical]
+
+-d, --deviceclass=DEVICE_CLASS   check only in a specific device class 
+
+Example: tsmmonitor unav
+         tsmmonitor unav 2 4
+         tsmmonitor unav -d=LTOCLASS 2 4
+---------------------------------------------------------------------
+check a storage pool utilization
+
+The default numbers are:
+   warning..: 80
+   critical.: 95
+
+Usage..: tsmmonitor stgpool <storage_pool_name> [warning] [critical]
+Example: tsmmonitor stgpool DISK_POOL
+         tsmmonitor stgpool DISK_POOL 50 75
+---------------------------------------------------------------------
+check for volumes with write error and/or read error
+
+Default, search for volumes with write or read errors
+
+The default numbers are:
+   warning..: 1
+   critical.: 5
+
+Usage..: tsmmonitor volerr [options] [warning] [critical]
+   -r, --read                   test only read errors
+   -w, --write                  test only write errors
+   -l, --library=LIBRARY_NAME   check only volumes in the library
+
+Example: tsmmonitor volerr
+         tsmmonitor volerr -r
+         tsmmonitor volerr 3 5
+         tsmmonitor volerr -l=LTOLIB
+         tsmmonitor volerr -l=LTOLIB 3 5
+         tsmmonitor volerr -w -l=LTOLIB 3 5
+---------------------------------------------------------------------
+check for volumes with percentage reclaimable space greater than 
+
+The default numbers are:
+   warning..: 5
+   critical.: 20
+
+Usage..: tsmmonitor volreclaim [options] [warning] [critical]
+   -r, --reclaim=PCT_RECLAIM    pct reclaimable space (default: 80 pct)
+   -l, --library=LIBRARY_NAME   check only volumes in the library
+   -s, --stgpool=STGPOOL_NAME   check only volumes in the storage pool
+   -V, --verbose                list the volumes found
+
+Example: tsmmonitor volreclaim
+         tsmmonitor volreclaim -r
+         tsmmonitor volreclaim 3 5
+         tsmmonitor volreclaim -l=LTOLIB
+         tsmmonitor volreclaim -l=LTOLIB 3 5
+         tsmmonitor volreclaim -w -l=LTOLIB 3 5
+---------------------------------------------------------------------
+check how many tapes are in the library
+
+The default numbers are:
+   warning..: 90
+   critical.: 86
+
+Usage..: tsmmonitor tapeslib [options] [warning] [critical]
+
+   -l, --library=LIBRARY_NAME   check only volumes in the library
+
+Example: tsmmonitor tapeslib
+         tsmmonitor tapeslib 120 115
+         tsmmonitor tapeslib -l=LTOLIB3 120 115
+         tsmmonitor tapeslib -l=LTOLIB3
+---------------------------------------------------------------------
+check how many tapes have a specific owner
+
+The default numbers are:
+   warning..: 2
+   critical.: 3
+
+Usage..: tsmmonitor tapesown <owner> [warning] [critical]
+Example: tsmmonitor tapesown tsmsrv01
+         tsmmonitor tapesown tsmsrv01 4 5
+---------------------------------------------------------------------
+check how many volumes are in a specific storage pool
+
+The default numbers are:
+   warning..: 40
+   critical.: 50
+
+Usage..: tsmmonitor tapesstgpool <storage_pool_name> [warning] [critical]
+Example: tsmmonitor tapesstgpool DAILY
+         tsmmonitor tapesstgpool DAILY 30 45
+---------------------------------------------------------------------
+check how many tsm db backup there are in the last N hours (default is 25h)
+
+The default numbers are:
+   warning..: 0
+   critical.: 0
+
+Usage..: tsmmonitor dbbkp [options] [warning] [critical]
+
+   -t, --type=I,F,S       Specifies the type of backup to look for   
+                          Incremental,Full,dbSnapshot (default is full only)
+   -H, --hours=NUM_HOURS  how many hours ago to search for db backup
+
+Example: tsmmonitor dbbkp
+         tsmmonitor dbbkp 2 1
+         tsmmonitor dbbkp -H=12
+         tsmmonitor dbbkp -H=12 2 1
+         tsmmonitor dbbkp -H=12 -t=S
+         tsmmonitor dbbkp -H=12 -t=F,S 2 1
+---------------------------------------------------------------------
+check number of nodes sessions
+
+The default numbers are:
+   warning..: 15
+   critical.: 20
+
+Usage..: tsmmonitor numsess [options] [warning] [critical] [session_state]
+
+  -s, --state=SESSION_STATE   Count only nodes sessions with a specifc state
+
+Example: tsmmonitor numsess
+         tsmmonitor numsess 100 150
+         tsmmonitor numsess -s=MediaW 5 10
+         tsmmonitor numsess -s=MediaW
+---------------------------------------------------------------------
+check number of nodes
+
+The default numbers are:
+   warning..: 80
+   critical.: 90
+
+Usage..: tsmmonitor numnodes [options] [warning] [critical]
+
+   -d, --domain=DOMAIN  Count nodes only in the DOMAIN
+
+Example: tsmmonitor numnodes
+         tsmmonitor numnodes 20 30
+         tsmmonitor numnodes -d=SAP 20 30
+         tsmmonitor numnodes -d=SAP
+---------------------------------------------------------------------
+check number of nodes locked
+
+The default numbers are:
+   warning..: 1
+   critical.: 4
+
+Usage..: tsmmonitor nodeslocked [options] [warning] [critical]
+
+   -d, --domain=DOMAIN  Count nodes only in the DOMAIN
+
+Example: tsmmonitor nodeslocked
+         tsmmonitor nodeslocked 2 4
+         tsmmonitor nodeslocked -d=SAP 2 4
+         tsmmonitor nodeslocked -d=SAP
+---------------------------------------------------------------------
+check number of disk volumes without readwrite access
+
+The default numbers are:
+   warning..: 1
+   critical.: 4
+
+Usage..: tsmmonitor diskvol [warning] [critical]
+Example: tsmmonitor diskvol
+         tsmmonitor diskvol 2 3
+---------------------------------------------------------------------
+check number of database volumes not synchronized (copy status)
+
+The default numbers are:
+   warning..: 1
+   critical.: 2
+
+Usage..: tsmmonitor dbvol [warning] [critical]
+Example: tsmmonitor dbvol
+         tsmmonitor dbvol 2 3
+---------------------------------------------------------------------
+check number of log volumes not synchronized (copy status)
+
+The default numbers are:
+   warning..: 1
+   critical.: 2
+
+Usage..: tsmmonitor logvol [warning] [critical]
+Example: tsmmonitor logvol
+         tsmmonitor logvol 2 3
+---------------------------------------------------------------------
+Search for a specific ANR in the last N hours (default is 1h)
+
+The default numbers are:
+   warning..: 1
+   critical.: 3
+
+Usage..: tsmmonitor searchanr [options] <ANR> [warning] [critical]
+
+   -H, --hours=NUM_HOURS_AGO   how many hours ago to search for
+
+Example: tsmmonitor searchanr ANR8446W
+         tsmmonitor searchanr ANR8446W 2 4
+         tsmmonitor searchanr -H=12 ANR8446W
+---------------------------------------------------------------------
+check number of DRM volumes
+
+The default values are:
+   warning..: 1
+   critical.: 4
+
+Usage..: tsmmonitor drmvol [options] [warning] [critical]
+
+ -l, --library=LIBRARY_NAME  search volumes only in the library
+ -s, --state=DRM_STATE       DRM state of volumes (default: MOUNTABLE)
+                             VAULT,VAULTRETRIEVE,COURIERRETRIEVE
+ -i, --invert                Invert the sense of matching, to select
+                             non-matching volumes
+
+Example: tsmmonitor drmvol
+         tsmmonitor drmvol -i -l=3584LIB # DRM volumes with state different from MOUNTABLE in library
+         tsmmonitor drmvol -s=COURIERRETRIEVE
+         tsmmonitor drmvol -s=VAULT -l=3584LIB 1 8
+         tsmmonitor drmvol 2 6
+---------------------------------------------------------------------
+check the number of schedules not completed (only today's schedules)
+
+The default numbers are:
+   warning..: 1
+   critical.: 3
+
+Usage..: tsmmonitor sched [options] [warning] [critical]
+    -a, --admin                   only administrative schedules.
+    -s, --schedule=SCHEDULE_NAME  only a specific schedule
+
+Example: tsmmonitor sched
+         tsmmonitor sched -a
+         tsmmonitor sched -s=DAILY_BKP 4 15
+---------------------------------------------------------------------
+check server license compliance
+
+Usage..: tsmmonitor lic
+Example: tsmmonitor lic
+---------------------------------------------------------------------
+check false private tapes
+
+The default percentages are:
+   warning..: 1
+   critical.: 3
+
+Usage..: tsmmonitor falseprivate [warning] [critical]
+Example: tsmmonitor falseprivate
+         tsmmonitor falseprivate 3 5
+---------------------------------------------------------------------
+```
+

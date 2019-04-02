@@ -1,0 +1,166 @@
+#!/bin/bash
+# datas - programa em modo texto de calendario e compromissos
+#
+# Autor....: Thobias Salazar Trevisan
+# Site.....: http://thobias.org/datas
+# Licenca..: GPL
+#
+# Changelog:
+# 25/11/2005 - colore dia de hoje com cor diferente (valeu elias)
+#            - colore os compromissos mesmo que o mes/ano nao seja atual
+#            - variavel $SED especifica qual sed utilizar (valeu Josevan)
+# 20/09/2005 - adicionada opcao --list
+#            - sort dos lembretes do mes
+#            - aviso de lembrete para o celular (valeu ataliba)
+#            - adicionado o "mes 00". nao precisa mais adicionar o
+#              mesmo lembrete em todos os meses (valeu aurelio)
+# 15/01/2005 - Primeira versao
+#
+#############################################################################
+#
+#                Configuracoes
+#                =============
+#
+# arquivo que contem as datas a serem lembradas
+# baixe o arquivo modelo no site: http://thobias.org/datas
+dados='/home/thobias/devel/datas/1.2/datas.txt'
+#
+# endereco de mail de quem vai receber o lembrete (utilizado apenas quando
+# for passado o parametro --cron
+mailto='thobias'
+#
+# o seu celular recebe mail?!
+# ex: celmail='seunumero@suaoperadora.com.br'
+celmail=''
+#
+# numero de dias de antecedencia que sera enviado o lembrete por mail
+days='1'
+# comando para enviar o mail
+cmd_mail="mail -s 'datas: lembrete de data(s) importante(s)' $mailto"
+#
+# especifique a versao/implementacao do sed que voce quer usar. este script so
+# foi testado com o GNU Sed, se voce usa algum BSD por exemplo, instale o
+# gsed e coloque o gsed na variavel abaixo: (Exemplo: SED='gsed')
+SED='sed'
+#
+# definindo as possiveis cores
+VERDE="\\033[1;32m"
+BRANCO="\\033[1;37m"
+AZUL="\\033[1;36m"
+AMARELO="\\033[1;33m"
+VERMELHO="\\033[1;31m"
+PRETO="\\033[1;30m"
+NORMAL="\\033[0;39m"
+#
+# escolha quais cores serao utilizadas para destacar os dias com
+# compromissos e o dia de "hoje". Se nao quiser nenhuma cor, defina
+# como NORMAL. Exemplo:  COR_HJ="$NORMAL"
+COR_DATA="$AZUL"
+# cor que ficara o dia de hoje
+COR_HJ="$VERDE"
+#
+versao='1.2'
+#
+# sedao que arruma o mes especial no arquivo com os lembretes
+# so mexa se voce souber _realmente_ o que esta fazendo
+SEDMES00='/^ *# *00 *-/,/^ *# *[0-9][0-9] *-/{/^ *# *00 *-/d;
+/^ *# *[0-9][0-9] *-/ba;H;};:a;/^ *# *[0-9][0-9] *-/G'
+#
+#
+#############################################################################
+############# Funcoes
+#############################################################################
+
+##### funcao que envia o lembrete por mail e/ou celular (parametro --cron)
+cron(){
+local i hj mes ano
+[ "$1" -a "${1//[0-9]}" ] && { echo "Número de dias inválido"; return; }
+hj=$(date  '+%d' --date "${1:-$days} days" | $SED 's/^0//')
+ms=$(date  '+%m' --date "${1:-$days} days" | $SED 's/^.$/0&/')
+ano=$(date  '+%Y' --date "${1:-$days} days")
+# verifica se existe algum compromisso 
+i=$(cat $dados | $SED "$SEDMES00"| $SED -n "/^ *# *$ms *- /,/#/{//d;/^ *$/d;
+s/^ *0//;/\b$hj\b/!d;p;}")
+# tem algum compromisso?!
+if [ "$i" ]; then 
+   # envia mail. facil de personalizar o mail enviado
+   echo "
+Hoje é: $(date '+%d de %b de %Y')
+
+$(cal $ms $ano)
+
+Lembrete(s):
+
+$i" | eval $cmd_mail
+
+   # envia para o celular. facil de personalizar a mensagem enviada
+   [ "$celmail" ] && echo "Lembrete do programa datas: dia $i"|mail $celmail
+fi
+}
+
+##### mostra o calendario com os lembretes na stdout
+cmd(){
+local hj ms ano cal a cor diacor # sed que colore o dia no calendario
+diacor='"s/\(^\| \)$a\( \|$\)/\1$(echo -en $cor)$a$(echo -en $NORMAL)\2/"'
+hj=$(date '+%d' | $SED 's/^0//')
+[ "$1" ] && ms="$1" || ms=$(date '+%m'); ms=$(echo $ms | $SED 's/^.$/0&/')
+[ "$2" ] && ano="$2" || ano=$(date '+%Y')
+# testa se o mes e valido
+[ "$(echo $ms | $SED 's/^.$/0&/;s/^\(0[1-9]\|1[0-2]\)$//')" ] &&
+{ echo Erro: mês inválido; exit 1; }
+[ "$(echo $ano | $SED 's/^200[0-9]$//')" ] && # testa se o ano e valido
+{ echo "Erro: ano inválido"; exit 1; }
+cal=$(cal "$ms" $ano) 
+# se for este mes e ano, colore o dia de hoje
+[ "$ms" = "$(date '+%m')" -a "$ano" = "$(date '+%Y')" ] && {
+cor="$COR_HJ"; a=$hj; cal="$(echo "$cal"| eval $SED "$diacor")"; }
+# colore o calendario
+cor=$COR_DATA ; while read a; do cal="$(echo "$cal"| eval $SED "$diacor")"
+done < <(cat $dados | $SED "$SEDMES00" | 
+$SED -n "/^ *# *$ms *- /,/#/{//d;/^ *$/d;s/^ *0//;s/ \+/ /g;s/ \?-.*//;p;}")
+[ "$ms" = "$(date '+%m')" -a "$ano" = "$(date '+%Y')" ] || COR_HJ=$NORMAL
+# monta o calendario com os lembretes
+paste <(echo "$cal") <(cat $dados | $SED "$SEDMES00" |
+$SED -n "/^ *# *$ms *- /,/#/{//d;/^ *$/d;s/^ *0//;s/ \+/ /g;p;}" | sort -n |
+$SED "s/^[0-9] / &/;/\b$hj\b/s/.*/$(echo -en $COR_HJ)&$(echo -en $NORMAL)/")
+}
+
+#############################################################################
+############# Main
+#############################################################################
+
+[ "$1" = "--versao" -o "$1" = "-v" ]&&{ echo "datas versao $versao";exit; }
+
+# edita o arquivo de configuracao
+[ "$1" = "--edit" -o "$1" = "-e" ] && { ${EDITOR:-${2:-vi}} $dados ; exit; }
+
+# envia o(s) lembrete(s) por mail e/ou celular (se necessario)
+[ "$1" = "--cron" ] && { shift; cron "$1"; exit; }
+
+# lista todos os compromissos cadastrados
+[ "$1" = "--list" -o "$1" = "-l" ] && {
+$SED "$SEDMES00" $dados | $SED -n "/^ *$/d;s/^[0-9] /0&/;/^ *# *01 *-/,\${
+s/^ *# *[0-9].*/$(echo -en $VERDE)&$(echo -en $NORMAL)/;p;}" |
+$SED '1i **** tecla Q sai' | ${PAGER:-less -r}; exit; }
+
+# mostra help
+[ "$1" = "--help" -o "$1" = "-h" ] && {
+echo "datas.: script que mostra o calendário destacando as datas importantes
+Site..: http://thobias.org/datas
+Versão: $versao
+
+Uso: datas [opções]
+
+    [mês] [ano] especifica o mês a ser consultado (pode ser indicado o ano)
+    --cron [N]  envia o mail com de N dias de antecedência da data do lembrete
+-e, --edit      abre o arquivo com os lembretes em um editor de texto
+-l, --list      mostra todos os lembretes cadastrados
+-h, --help      mostra a ajuda
+-v, --versao    mostra a versão
+
+Consulte a documentação completa no site.
+" ; exit; }
+
+# mostra o calendario com os compromissos 
+cmd "$@"
+

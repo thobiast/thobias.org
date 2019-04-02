@@ -1,0 +1,1251 @@
+Shell Script e Banco de Dados
+Thobias Salazar Trevisan
+Primeira versão: 28 de Julho de 2003  
+
+
+%! Cmdline : --style bd.css --toc -t html --enumtitle
+
+
+= Introdução =
+
+
+Muitas pessoas, quando precisam fazer aplicações "mais complexas" e que 
+utilizem banco de dados, optam por uma linguagem de programação diferente 
+de Shell Script. Muitas delas não compreendem o poder de um script em 
+shell e/ou desconhecem a linguagem interpretada contida nele.
+
+Este tutorial se propõe a mostrar como podemos integrar shell script com
+banco de dados. Nos exemplos usaremos o [MySQL http://www.mysql.com], devido ao
+fato dele ser GPL, fácil e rápido. Mas a idéia central abordada neste texto 
+pode ser aplicada também a outros bancos de dados. No final, mostrarei como 
+podemos utilizar a mesma idéia com [PostgreSQL http://www.postgresql.com].
+Será mostrado o básico, apenas para iniciar o leitor no assunto. 
+
+Ao final, você verá o poder de um shell script interagindo com um banco de 
+dados, enxergará a luz e conhecerá a doutrina dos amantes do shell. =8)
+
+== Pré-requisitos ==
+
+Como não vou abordar o básico sobre shell script e SQL, espera-se que você
+já tenha conhecimento de ambos.
+
+== Sobre o Tutorial ==
+
+Na primeira parte, veremos os passos básicos para configurar o MySQL.
+Falaremos rapidamente sobre como "ajeitar" ele para os nossos scripts,
+criando uma base de dados e a tabela sobre as quais realizaremos os
+experimentos.
+Na segunda parte, cobriremos todos os comandos básicos SQL (INSERT, SELECT, 
+DELETE e UPDATE) com vários exemplos, pois este é um guia **prático**.
+Veremos códigos, códigos, códigos... =8) Por último, alguns exemplos usando
+PostgreSQL.
+
+
+-------------------------------------------------
+
+
+= Preparando o Terreno =
+
+Vamos ao que interessa. Veremos os passos **essenciais** para criarmos um banco
+de dados para interagir com os nossos scripts. É recomendado
+que você leia alguns tutoriais sobre MySQL antes de colocar
+o seu sistema em produção.
+
+Neste ponto espera-se que você já tenha o //mysql-server// e o
+//mysql-client// do MySQL instalados. Como os nomes dos pacotes do 
+//server// e do //client// variam entre as distribuições Linux, verifique se você 
+tem os arquivos //mysqld// e //mysql//.
+
+---
+prompt> which mysqld
+/usr/sbin/mysqld
+prompt> 
+prompt> which mysql
+/usr/bin/mysql
+prompt>
+---
+
+Tudo certo, vamos iniciar o servidor MySQL:
+
+--- prompt> /etc/init.d/mysql start
+
+
+Algumas distribuições inicializam o daemon do MySQL sem permitir acesso
+remoto. No Debian, por exemplo, caso você queira permitir, comente a 
+seguinte linha no arquivo ///etc/mysql/my.cnf//:
+
+--- #skip-networking
+
+Se você alterou o arquivo, não se esqueça de reiniciar o daemon.
+
+--- prompt> /etc/init.d/mysql restart 
+
+Na instalação padrão, o MySQL cria um usuário **sem senha** chamado root que
+tem controle total sobre ele. Assim, a primeira coisa que faremos será
+definir uma senha para este usuário:
+
+---
+prompt> mysql -u root mysql
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 3 to server version: 3.23.49-log
+
+Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+
+mysql>
+mysql>
+mysql> SET PASSWORD FOR 'root'@'localhost' = PASSWORD('senha');
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+---
+
+Troque "senha" para a senha que você escolher.
+Pronto, definimos uma senha para o usuário root. 
+Agora vamos criar uma base de dados para os nossos experimentos e
+adicionar um usuário para utilizá-la.
+
+---
+prompt> mysql -u root mysql -p
+Enter password:
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 4 to server version: 3.23.49-log
+
+Type 'help;' or '\h' for help. Type '\c' to clear the buffer.
+
+mysql>
+mysql> create database mysql_bash;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> GRANT usage ON *.* TO thobias@localhost IDENTIFIED BY 'senha';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT usage ON *.* TO thobias@'%' IDENTIFIED BY 'senha';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT CREATE, DROP, SELECT, INSERT, UPDATE, DELETE ON mysql_bash.* TO thobias@localhost;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT CREATE, DROP, SELECT, INSERT, UPDATE, DELETE ON mysql_bash.* TO thobias@'%';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql>
+---
+
+O primeiro comando (//create database mysql_bash;//), cria uma base de
+dados com o nome **mysql_bash**, ou seja, um diretório onde ficarão as 
+nossas tabelas.
+
+O segundo comando cria um usuário chamado //thobias// com a senha
+//senha//, e dá permissão para ele se conectar ao banco de dados. O
+terceiro comando difere do segundo pelo fato de dar permissão para o
+usuário thobias se conectar ao banco à partir de qualquer máquina. Poderíamos
+especificar a máquina, exemplo: 
+
+--- mysql> GRANT usage ON *.* TO thobias@maquina1.com IDENTIFIED BY 'senha';
+
+O //%// é um curinga que especifica **qualquer** máquina. Caso você não
+execute o terceiro comando, você poderá acessar o banco somente na mesma 
+máquina que está rodando o banco, em outras palavras, o localhost.
+
+Os dois últimos comandos servem para dar permissão ao usuário thobias fazer
+o que quiser na base da dados //mysql_bash//.
+
+ || Note: o usuário só pode mexer na base de dados mysql_bash. Nas demais ele não tem permissão |
+
+
+Feito isto, execute:
+
+---
+mysql> flush privileges;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> quit
+Bye
+prompt>
+---
+
+Beleza, já estamos com o nosso banco de dados pronto para começar a
+brincadeira. =8)
+
+
+-------------------------------------------------
+
+
+= O Básico =
+
+Shell script, diferente de PHP, Perl, C, Python e outras linguagens de
+programação, não tem interação direta com o MySQL. Toda
+comunicação entre os scripts com o banco de dados se dá através do
+cliente, ou seja, um comando.
+
+ || O shell para se comunicar com o banco de dados usa o cliente (comando mysql) |
+
+O grande esquema está no fato do cliente do MySQL ser muito flexível,
+aceitando comandos SQL da entrada padrão (stdin), através da linha
+de comando (utilizando a opção -e), fazendo dump da base, etc.
+
+Como típico exemplo de banco de dados, vamos criar uma agenda. :P
+Primeiro, criaremos uma tabela chamada //agenda//:
+
+---
+prompt> mysql -u thobias -psenha -e "CREATE TABLE agenda \ 
+(nome VARCHAR(50) NOT NULL PRIMARY KEY,telefone VARCHAR(150), \
+email VARCHAR(35), aniversario DATE)" mysql_bash
+---
+
+A sintaxe utilizada no comando acima foi:
+
+--- prompt> mysql -u user -psenha -e "cmd SQL" base de dados
+
+ | -u | especifica o usuário para se conectar ao banco de dados |
+ | -p | senha do usuário. (note que não existe espaço entre o -p e a senha |
+ | -e | o comando SQL que queremos executar |
+ | mysql_bash | a base de dados sobre a qual será realizado o comando SQL |
+
+
+Como sabemos que o comando foi executado com sucesso ou não ???
+
+Simples. Como todo comando UNIX ele retorna 0 se foi executado com sucesso
+ou um número diferente de 0 caso ocorra algum erro.
+
+Assim, após executarmos aquele comando testamos o `$?`:
+
+---
+prompt> echo $?
+0
+prompt>
+---
+
+Caso nós executássemos de novo o comando para criar a tabela agenda, 
+ocorreria um erro, pois já existe uma tabela com este nome 
+na base de dados:
+
+---
+prompt> mysql -u thobias -psenha -e "CREATE TABLE agenda \
+(nome VARCHAR(50) NOT NULL PRIMARY KEY,telefone VARCHAR(150),\ 
+email VARCHAR(35), aniversario DATE)" mysql_bash
+
+ERROR 1050 at line 1: Table 'agenda' already exists
+prompt> 
+prompt> echo $?
+1
+prompt>
+---
+
+O `echo $?` retornou um número diferente de 0. Assim, podemos colocar o comando
+em um if, ou usar os operadores lógicos `&&` e `||`, ou seja, tratá-lo como
+um típico comando UNIX.
+
+Então vamos começar a utilizar o comando acima e apenas trocar o comando
+SQL para mexer nos nossos dados. Mas aí vem um "problema". Se quando
+executamos aquele comando, algum usuário executa um `ps aux`.
+hmmmmm nossa senha vai aparecer, e aí já viu né :/
+
+A partir da versão 3.22, por padrão o cliente e o servidor na inicialização
+lêem o arquivo de configuração ~/.my.cnf, para pegarem opções específicas
+dos usuários. Podemos criar este arquivo com as seguintes linhas:
+
+
+---
+prompt> cat .my.cnf << FIM
+> [client]
+> password=senha
+> FIM
+[client]
+password=senha
+prompt> 
+prompt> 
+prompt> cat .my.cnf 
+[client]
+password=senha
+prompt>
+---
+
+Dizemos que o cliente deve usar aquela senha.
+
+Agora não precisamos mais passar a senha na linha de comando.
+
+---
+prompt> mysql -u thobias -e "show tables" mysql_bash
++----------------------+
+| Tables_in_mysql_bash |
++----------------------+
+| agenda               |
++----------------------+
+prompt>
+---
+
+Caso você queira executar o comando SQL em uma máquina remota, utilize a
+opção -h e o host. Exemplo:
+
+--- prompt> mysql -h maquina -u thobias -e "show tables" mysql_bash
+
+Para mais informações consulte o 
+[MySQL Reference Manual http://www.mysql.com/documentation/mysql/bychapter/index.html].
+
+
+-------------------------------------------------
+
+
+= Colocando dados na tabela =
+
+Bom, já temos uma base de dados (mysql_bash), já criamos uma tabela
+(agenda). Para lembrar os campos da tabela:
+
+---
+prompt> mysql -u thobias -e "desc agenda" mysql_bash
++-------------+--------------+------+-----+---------+-------+
+| Field       | Type         | Null | Key | Default | Extra |
++-------------+--------------+------+-----+---------+-------+
+| nome        | varchar(50)  |      | PRI |         |       |
+| telefone    | varchar(150) | YES  |     | NULL    |       |
+| email       | varchar(35)  | YES  |     | NULL    |       |
+| aniversario | date         | YES  |     | NULL    |       |
++-------------+--------------+------+-----+---------+-------+
+prompt>
+---
+
+Existem várias maneiras de se inserir dados na tabela. Vamos ver
+algumas:
+
+== Arquivo com os Dados ==
+
+Vamos supor que temos um arquivo com os dados, onde existe um registro por linha
+e os campos estão separados pelo caractere dois-pontos `:`.
+
+ | 1º campo | nome |
+ | 2º campo | telefone |
+ | 3º campo | E-mail |
+ | 4º campo | data de aniversário |
+
+---
+prompt> cat dados_entrada.txt 
+Super Man:(21)1234-5678 trabalho:superman@palaciodajustica.com:1965-10-25
+Batman::batman@batmail.com:1970-05-15
+Robin:(21) 9999-1111:robin@batmail.com:1985-12-25
+Mulher Maravilha::M.maravilha@bizarro.com:
+prompt>
+---
+
+Note que alguns campos não têm valor.
+
+=== Inserindo cada registro por vez ===
+
+Uma maneira seria criar um script, onde pegamos linha a linha e criamos um
+SQL para inserir os dados:
+
+---
+prompt> cat input_1.sh
+#!/bin/bash
+#
+# $1 = arquivo com os dados já formatados
+#
+
+IFS=:
+
+while read nome fone mail aniver;do
+	echo
+	echo "Nome:        $nome"
+	echo "Telefone:    $fone"
+	echo "mail:        $mail"
+	echo "Aniversário: $aniver"
+
+	mysql -u thobias -e \
+"INSERT INTO agenda VALUES('$nome','$fone','$mail','$aniver')" mysql_bash
+
+	[ "$?" = "0" ] && echo "Operacao OK" || echo "Operação: ERRO"
+done < $1
+
+prompt>
+---
+
+executando:
+
+---
+prompt> ./input_1.sh dados_entrada.txt 
+
+Nome:        Super Man
+Telefone:    (21)1234-5678 trabalho
+mail:        superman@palaciodajustica.com
+Aniversário: 1965-10-25
+Operacao OK
+
+Nome:        Batman
+Telefone:    
+mail:        batman@batmail.com
+Aniversário: 1970-05-15
+Operacao OK
+
+Nome:        Robin
+Telefone:    (21) 9999-1111
+mail:        robin@batmail.com
+Aniversário: 1985-12-25
+Operacao OK
+
+Nome:        Mulher Maravilha
+Telefone:    
+mail:        M.maravilha@bizarro.com
+Aniversário: 
+Operacao OK
+prompt> 
+---
+
+Mas imagine que temos um arquivo imenso. Fazer uma conexão com o banco para
+executar cada insert não é a melhor alternativa. 
+
+=== Criando um Arquivo SQL ===
+
+Podemos criar um arquivo com todos os INSERTs SQL separados por
+ponto-e-vírgula `;`, e passar este arquivo para o comando mysql através
+da entrada padrão (stdin).
+
+---
+prompt> cat input_2.sh 
+#!/bin/bash
+#
+# $1 = arquivo com os dados já formatados
+#
+# Será gerado um arquivo 'arquivo.SQL' com os comandos SQL
+#
+
+IFS=:
+
+while read nome fone mail aniver;do
+	echo "INSERT INTO agenda VALUES('$nome','$fone','$mail','$aniver');" >> arquivo.SQL
+done < $1
+
+prompt>
+---
+
+Note que estamos gerando um arquivo (arquivo.SQL) com os comandos SQL.
+
+--- prompt> ./input_2.sh dados_entrada.txt 
+
+Vamos ver nossa saída:
+
+---
+prompt> cat arquivo.SQL 
+INSERT INTO agenda VALUES('Super Man','(21)1234-5678 trabalho','superman@palaciodajustica.com','1965-10-25');
+INSERT INTO agenda VALUES('Batman','','batman@batmail.com','1970-05-15');
+INSERT INTO agenda VALUES('Robin','(21) 9999-1111','robin@batmail.com','1985-12-25');
+INSERT INTO agenda VALUES('Mulher Maravilha','','M.maravilha@bizarro.com','');
+prompt>
+---
+
+Agora, para incluir os novos dados, executamos:
+
+---
+prompt> mysql -u thobias mysql_bash < arquivo.SQL
+ERROR 1062 at line 1: Duplicate entry 'Super Man' for key 1
+prompt> 
+---
+
+ou
+
+---
+prompt> cat arquivo.SQL | mysql -u thobias mysql_bash 
+ERROR 1062 at line 1: Duplicate entry 'Super Man' for key 1
+prompt>
+---
+
+Ops! o nosso primeiro insert já existe. No nosso caso, todos os insert já
+existem, mas imagine que podem haver alguns que ainda não existam e não
+sabemos quais são. O cliente mysql, por default, vai parar de executar os
+comandos SQL assim que algum comando retornar um erro. Para garantirmos que ele
+executará **todos** os comandos, mesmo que alguns retornem erros,
+utilizamos a opção `-f`.
+
+---
+prompt> mysql -u thobias -f mysql_bash < arquivo.SQL 
+ERROR 1062 at line 1: Duplicate entry 'Super Man' for key 1
+ERROR 1062 at line 2: Duplicate entry 'Batman' for key 1
+ERROR 1062 at line 3: Duplicate entry 'Robin' for key 1
+ERROR 1062 at line 4: Duplicate entry 'Mulher Maravilha' for key 1
+prompt>
+---
+
+Note que, esta tática de colocar vários comandos SQL em um arquivo e
+passá-lo para o cliente mysql, pode ser utilizado com **qualquer** comando
+SQL dentro do arquivo utilizando o ponto-e-vírgula para separá-los.
+Por exemplo, na instalação de um programa você pode criar um arquivo.SQL
+com os comandos para criar as tabelas necessárias, popular o banco com
+alguns dados iniciais, etc.
+
+
+== Interativo ==
+
+Outra possibilidade é fazer um script para ler do teclado uma nova entrada
+para a base:
+
+---
+prompt> cat input_3.sh
+#!/bin/bash
+#
+# Repare que a data para o MySQL é aaaa-mm-dd
+#
+
+# Testa se a data recebida, no formato do MySQL, é válida ou não
+checa_data(){
+[ $(echo "$1" | sed 's,[12][0-9]\{3\}/\(0[1-9]\|1[012]\)/\(0[1-9]\|[12][0-9]\|3[01]\),,') ] &&
+return 1 || return 0
+}
+
+echo "Entre com os dados para incluir na agenda"
+echo
+read -p "Nome       : " nome
+read -p "Telefone   : " fone
+read -p "E-Mail     : " mail
+read -n2 -p "Aniversário (dia/mes/ano): " dia
+read -n2 -p "/" mes
+read -n4 -p "/" ano
+echo
+
+#colocamos na variável aniver a data no formato do MySQL
+aniver="$ano/$mes/$dia"
+echo
+
+# se a data não for nula
+if [ "$ano" -o "$mes" -o "$dia" ];then
+	# testa se a data é válida
+	checa_data "$aniver" || { echo "ERRO: Data de aniversário inválida";exit; }
+fi
+
+# não aceitamos nomes nulo
+[ "$nome" ] || { echo "ERRO: nome inválido";exit; }
+
+read -p "Deseja Incluir (s/n)? "
+if [ "$REPLY" = "s" ];then
+	mysql -u thobias -e\
+	"INSERT INTO agenda VALUES('$nome','$fone','$mail','$aniver')" mysql_bash
+
+	[ "$?" = "0" ] && echo "Operacao OK" || echo "Operação: ERRO"
+fi
+
+prompt>
+---
+
+Executando:
+
+---
+prompt> ./input_3.sh
+Entre com os dados para incluir na agenda
+
+Nome       : Formiga Atomica
+Telefone   : 
+E-Mail     : formiga@formigueiro.com
+Aniversário (dia/mes/ano): 12/12/1930
+
+Deseja Incluir (s/n)? s
+Operacao OK
+prompt>
+---
+
+
+-------------------------------------------------
+
+
+= Pesquisando Dados =
+
+Para pesquisar dados na nossa base de dados utilizamos o comando SQL
+SELECT. Vamos fazer um script que procure por um nome na tabela e mostra
+todas informações. Utilizaremos o curinga `*` para diferenciar a pesquisa
+exata da parcial (usando o LIKE do SQL).
+
+---
+prompt> cat search.sh 
+#!/bin/bash
+#
+# $1 = nome a procurar
+#
+# exemplo de uso:
+# $ ./search.sh Super
+# $ ./search.sh Super*
+# $ ./search.sh *Super*
+#
+# O * é um curinga, fazendo procura parcial (usando o LIKE)
+#
+
+# Testa pra ver se é procura exata ou parcial
+if [ "$*" = "${*#*\*}" ];then
+	# Faz pesquisa exata do nome
+	mysql -u thobias -e\
+	"SELECT * FROM agenda WHERE nome = '$*'" mysql_bash
+
+# Procura por partes do nome
+else
+	# ${*//\\*/%} = troca todos * por %, que é o curinga do LIKE
+	mysql -u thobias -e\
+	"SELECT * FROM agenda WHERE nome LIKE '${*//\\*/%}'" mysql_bash
+fi
+
+prompt>
+---
+
+Para testar vamos procurar pelo Super Man. :)
+
+
+---
+prompt> ./search.sh super
+prompt> 
+prompt> ./search.sh super*
++-----------+------------------------+-------------------------------+-------------+
+| nome      | telefone               | email                         | aniversario |
++-----------+------------------------+-------------------------------+-------------+
+| Super Man | (21)1234-5678 trabalho | superman@palaciodajustica.com | 1965-10-25  |
++-----------+------------------------+-------------------------------+-------------+
+prompt>
+prompt> ./search.sh super man
++-----------+------------------------+-------------------------------+-------------+
+| nome      | telefone               | email                         | aniversario |
++-----------+------------------------+-------------------------------+-------------+
+| Super Man | (21)1234-5678 trabalho | superman@palaciodajustica.com | 1965-10-25  |
++-----------+------------------------+-------------------------------+-------------+
+prompt>
+---
+
+Note que a primeira pesquisa não retornou nada, pois não existe um
+registro onde o campo //nome// tenha o valor **igual** a super.
+Quando usamos o curinga `*`, dizemos qualquer campo que começe por super.
+
+Vamos procurar por batman:
+
+---
+prompt> ./search.sh bat
+prompt>
+prompt> ./search.sh batman
++--------+----------+--------------------+-------------+
+| nome   | telefone | email              | aniversario |
++--------+----------+--------------------+-------------+
+| Batman |          | batman@batmail.com | 1970-05-15  |
++--------+----------+--------------------+-------------+
+prompt>
+---
+
+A segunda pesquisa obteve sucesso, pois casou um registro com o campo 
+//nome// igual ao que nós procurávamos. 
+
+Note que o curinga funciona para um lado específico:
+
+---
+prompt> ./search.sh *bat
+prompt> 
+prompt> ./search.sh bat*
++--------+----------+--------------------+-------------+
+| nome   | telefone | email              | aniversario |
++--------+----------+--------------------+-------------+
+| Batman |          | batman@batmail.com | 1970-05-15  |
++--------+----------+--------------------+-------------+
+prompt> 
+prompt> ./search.sh *atm*
++--------+----------+--------------------+-------------+
+| nome   | telefone | email              | aniversario |
++--------+----------+--------------------+-------------+
+| Batman |          | batman@batmail.com | 1970-05-15  |
++--------+----------+--------------------+-------------+
+prompt>
+---
+
+Se quisermos usar o curinga para procurar por qualquer dado, temos que
+colocá-lo entre aspas para o shell não interpretá-lo:
+
+---
+prompt> ./search.sh *
+prompt> 
+prompt> ./search.sh "*"
++------------------+------------------------+-------------------------------+-------------+
+| nome             | telefone               | email                         | aniversario |
++------------------+------------------------+-------------------------------+-------------+
+| Robin            | (21) 9999-1111         | robin@batmail.com             | 1985-12-25  |
+| Batman           |                        | batman@batmail.com            | 1970-05-15  |
+| Super Man        | (21)1234-5678 trabalho | superman@palaciodajustica.com | 1965-10-25  |
+| Mulher Maravilha |                        | M.maravilha@bizarro.com       | 0000-00-00  |
+| Formiga Atomica  |                        | formiga@formigueiro.com       | 1930-12-12  |
++------------------+------------------------+-------------------------------+-------------+
+prompt>
+---
+
+Vamos deixar a saída mais fru-fru. O MySQL utiliza como separador de campos
+o TAB (`\t`), então colocaremos o `\t` como o separador de campos default
+(IFS):
+
+---
+prompt> cat search2.sh 
+#!/bin/bash
+#
+# $1 = nome a procurar
+#
+# exemplo de uso:
+# $ ./search2.sh Super
+# $ ./search2.sh Super*
+# $ ./search2.sh *Super*
+#
+# O * é um curinga, fazendo procura parcial
+#
+
+# Testa pra ver se é procura exata ou parcial
+if [ "$*" = "${*#*\*}" ];then 
+	# procura exata
+	S=$(mysql -u thobias -e \
+	"SELECT * FROM agenda WHERE nome = '$*'" mysql_bash)
+# Procura por partes do nome
+else
+	# ${*//\\*/%} = troca todos * por %, que é o curinga do LIKE
+	S=$(mysql -u thobias -e \
+	"SELECT * FROM agenda WHERE nome LIKE'${*//\\*/%}'" mysql_bash)
+fi
+
+# a procura retornou algum registro ?!
+[ "$S" ] || { echo "Registro não encontrado";exit; }
+
+# colocar um TAB como IFS
+IFS="$(echo -e '\t')"
+# Apagamos a primeira linha, pois ela contém o nome dos campos
+S=$(echo "$S" | sed '1d')
+
+echo "$S" | while read nome fone mail aniver;do
+	echo "
+Nome       : $nome
+Telefone   : $fone
+E-mail     : $mail
+Aniversário: $aniver"
+
+done 
+
+prompt>
+---
+
+Fazendo uma consulta:
+
+---
+prompt> ./search2.sh batman
+
+Nome       : Batman
+Telefone   : batman@batmail.com
+E-mail     : 1970-05-15
+Aniversário: 
+prompt>
+---
+
+OPS! Algo está errado. O E-mail está com a data de aniversário?! Se
+analisarmos o registro do batman veremos que ele não tem telefone:
+
+---
+prompt> ./search.sh batman
++--------+----------+--------------------+-------------+
+| nome   | telefone | email              | aniversario |
++--------+----------+--------------------+-------------+
+| Batman |          | batman@batmail.com | 1970-05-15  |
++--------+----------+--------------------+-------------+
+prompt>
+---
+
+Como o separador de registros é o TAB e nós cadastramos o telefone dele
+usando aspas simples `''` no INSERT do SQL, ele não mostra o NULL, ficando então, 
+dois TABs grudados (`\t\t`). Nós utilizamos o IFS com TAB. Para simular o que 
+está acontecendo vamos a um exemplo simples:
+
+---
+prompt> IFS="$(echo -en '\t')"
+prompt> echo -e "1\t\t3\t4" | while read a b c d;do echo "a=$a b=$b c=$c d=$d";done
+a=1 b=3 c=4 d=
+prompt>
+---
+
+Repare que no echo não tem o valor 2, sendo omitido por dois TABs seguidos.
+Só que o nosso read não está considerando isto, ele está tratando TABTAB como 1
+campo. Para resolver vamos usar um sed macho para colocar um espaço em
+branco entre os TABs
+
+---
+prompt> echo -e "1\t\t3\t4" | sed ":a;s/\(`echo -e '\t'`\)\(\1\)/\1 \2/;ta" |\
+while read a b c d;do echo "a=$a b=$b c=$c d=$d";done
+a=1 b=  c=3 d=4
+---
+
+Segundo problema é a data, na saída do MySQL está aaaa-mm-dd, vamos fazer
+um outro sed para tratar a data:
+
+---
+prompt> echo 1970-05-15 | sed 's,\([0-9]\{4\}\)-\([0-9][0-9]\)-\([0-9][0-9]\),\3/\2/\1,'
+15/05/1970
+prompt>
+---
+
+Agora alteramos o script de consulta para utilizar estas táticas:
+
+---
+prompt> cat consulta.sh
+#!/bin/bash
+#
+# $* = nome a procurar
+#
+# exemplo de uso:
+# $ ./consulta.sh Super
+# $ ./consulta.sh Super*
+# $ ./consulta.sh *Super*
+# $ ./consulta.sh super man
+#
+# O * é um curinga, fazendo procura parcial
+#
+
+# converte data de aaaa-mm-dd para dia/mes/ano
+data_mysql-to-brasil(){
+echo "$*" | sed 's,\([0-9]\{4\}\)-\([0-9][0-9]\)-\([0-9][0-9]\),\3/\2/\1,'
+}
+
+# Testa pra ver se é procura exata ou parcial
+if [ "$*" = "${*#*\*}" ];then 
+	# procura exata
+	S=$(mysql -u thobias -e \
+	"SELECT * FROM agenda WHERE nome = '$*'" mysql_bash)
+# Procura por partes do nome
+else
+	# ${*//\\*/%} = troca todos * por %, que é o curinga do LIKE
+	S=$(mysql -u thobias -e \
+	"SELECT * FROM agenda WHERE nome LIKE '${*//\\*/%}'" mysql_bash)
+fi
+
+# a procura retornou algum registro ?!
+[ "$S" ] || { echo "Registro não encontrado";exit; }
+
+# colocar um TAB como IFS
+IFS="$(echo -e '\t')"
+# Apagamos a primeira linha, pois ela contém o nome dos campos
+S=$(echo "$S" | sed '1d')
+
+# colocamos um espaço em branco entre TABs repetidos (\t\t)
+echo "$S" | sed ":a;s/\(`echo -e '\t'`\)\(\1\)/\1 \2/;ta" | \
+while read nome fone mail aniver; do
+
+	echo "
+Nome       : $nome
+Telefone   : $fone
+E-mail     : $mail"
+echo "Aniversário: $(data_mysql-to-brasil $aniver)"
+done
+
+prompt>
+---
+
+Para testar, algumas consultas:
+
+---
+prompt> consulta.sh batman
+
+Nome       : Batman
+Telefone   :  
+E-mail     : batman@batmail.com
+Aniversário: 15/05/1970
+prompt> 
+prompt> consulta.sh super*
+
+Nome       : Super Man
+Telefone   : (21)1234-5678 trabalho
+E-mail     : superman@palaciodajustica.com
+Aniversário: 25/10/1965
+prompt> 
+prompt> 
+prompt> consulta.sh "*"
+
+Nome       : Robin
+Telefone   : (21) 9999-1111
+E-mail     : robin@batmail.com
+Aniversário: 25/12/1985
+
+Nome       : Batman
+Telefone   :  
+E-mail     : batman@batmail.com
+Aniversário: 15/05/1970
+
+Nome       : Super Man
+Telefone   : (21)1234-5678 trabalho
+E-mail     : superman@palaciodajustica.com
+Aniversário: 25/10/1965
+
+Nome       : Mulher Maravilha
+Telefone   :  
+E-mail     : M.maravilha@bizarro.com
+Aniversário: 00/00/0000
+
+Nome       : Formiga Atomica
+Telefone   :  
+E-mail     : formiga@formigueiro.com
+Aniversário: 12/12/1930
+prompt> 
+---
+
+
+-------------------------------------------------
+
+
+= Removendo Registro =
+
+Agora as coisas mudam um pouco. No DELETE, não importa se o registro existe
+ou não, o código de retorno sempre será zero, ou seja, `echo $?` é `0`.
+
+---
+prompt> mysql -u thobias -e "DELETE FROM agenda WHERE nome = 'nenhum'" mysql_bash
+prompt> echo $?
+0
+prompt>
+---
+
+Mas repare que não existe ninguém com o nome `nenhum` na base. Para
+resolver o problema teremos que utilizar a opção `-vv`, que retorna
+algumas informações e dentre elas, quantas "linhas" da tabela foram
+alteradas.
+
+---
+prompt> mysql -vv -u thobias -e "DELETE FROM agenda WHERE nome = 'nenhum'" mysql_bash
+--------------
+DELETE FROM agenda WHERE nome = 'nenhum'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+Bye
+prompt>
+---
+
+Repare `0 rows`. Agora com um sed pra filtrar a saída:
+
+---
+prompt> mysql -vv -u thobias -e "DELETE FROM agenda WHERE nome = 'nenhum'" mysql_bash |\
+sed -n '/^Query/s/.*, \([0-9]\+\) rows.*/\1/p'
+0
+prompt>
+---
+
+Pronto, agora podemos tratar o "código de retorno" =8)
+
+O script abaixo deleta um registro procurando pelo nome.
+
+---
+prompt> cat deleta.sh
+#!/bin/bash
+#
+# $* = nome a procurar
+#
+# exemplo de uso:
+# $ ./deleta.sh Super
+# $ ./deleta.sh Super*
+# $ ./deleta.sh *Super*
+# $ ./deleta.sh super man
+#
+# O * é um curinga, fazendo procura parcial
+#
+
+# Retorna quantas linhas a query SQL alterou na base de dados
+linha(){
+	sed -n '/^Query/s/.*, \([0-9]\+\) row.*/\1/p'
+}
+
+# Testa pra ver se é procura exata ou parcial
+if [ "$*" = "${*#*\*}" ];then # procura exata
+	S=$(mysql -vv -u thobias -e \
+	"DELETE FROM agenda WHERE nome = '$*'" mysql_bash | linha)
+	
+	[ $S -eq 0 ] && echo "Registro não encontrado" || echo "Foram deletado(s) $S registro(s)"
+
+# Procura por partes do nome
+else
+	S=$(mysql -vv -u thobias -e \
+	"DELETE FROM agenda WHERE nome LIKE '${*//\\*/%}'" mysql_bash | linha)
+
+	[ $S -eq 0 ] && echo "Registro não encontrado" || echo "Foram deletado(s) $S registro(s)"
+fi
+
+prompt>
+---
+
+Testando:
+
+---
+prompt> ./deleta.sh nenhum
+Registro não encontrado
+prompt>
+prompt> 
+prompt> ./deleta.sh formi*
+Foram deletado(s) 1 registro(s)
+prompt> 
+prompt> ./deleta.sh formi*
+Registro não encontrado
+prompt>
+---
+
+
+-------------------------------------------------
+
+
+= Atualizando um Registro =
+
+Como no delete, aqui ocorre o mesmo problema. Pois o UPDATE do SQL sempre
+retorna zero. Bom, sempre retorna zero se a query SQL estiver correta, caso
+contrário, o `$?` terá um valor diferente de zero.
+
+---
+prompt> mysql -u thobias -e "DELETE FROM agenda WHERE campo_invalido = 'nada'" mysql_bash
+ERROR 1054 at line 1: Unknown column 'campo_invalido' in 'where clause'
+prompt> 
+prompt> echo $?
+1
+prompt>
+---
+
+Repare que a query SQL está procurando o //nada// no campo
+//campo_invalido// da tabela agenda. Como este campo não existe, o código
+de retorno foi 1.
+
+Para descobrirmos se foi alterado algum registro na base
+temos que utilizar a opção `-vv`, para ver quantas linhas (rows) o comando
+SQL alterou.
+
+---
+prompt> mysql -vv -u thobias -e "UPDATE agenda SET telefone='9999999' WHERE nome ='robin'" mysql_bash
+--------------
+UPDATE agenda SET telefone='9999999' WHERE nome ='robin'
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 1  Changed: 0  Warnings: 0
+
+Bye
+prompt>
+---
+
+Podemos utilizar o mesmo algoritmo e o mesmo sed do DELETE. Só que aqui
+precisamos saber qual campo o usuário gostaria de atualizar.
+
+O script abaixo recebe como entrada o campo da tabela a ser atualizado e o
+nome da pessoal que será feita a atualização.
+
+---
+prompt> cat atualiza.sh 
+#!/bin/bash
+#
+# $* = nome a procurar
+#
+# exemplo de uso:
+# $ ./atualiza.sh telefone super man
+# $ ./atualiza.sh nome super*
+# $ ./atualiza.sh aniversario *super*
+#
+# O * é um curinga, fazendo procura parcial
+#
+
+# Testa se a data recebida, no formato do MySQL, é válida ou não
+checa_data(){
+[ $(echo "$1" | sed 's,[12][0-9]\{3\}/\(0[1-9]\|1[012]\)/\(0[1-9]\|[12][0-9]\|3[01]\),,') ] &&
+return 1 || return 0
+}
+
+# Retorna quantas linhas a query SQL alterou na base de dados
+linha(){
+	sed -n '/^Query/s/.*, \([0-9]\+\) row.*/\1/p'
+}
+
+# testa se o campo a alterar é válido
+[ "$1" != nome -a "$1" != telefone -a "$1" != email -a "$1" != aniversario ] &&
+{ echo "Campos Validos: nome telefone email aniversario";exit; }
+
+# colocamos em campo o $1,e um shift para podermos usar o $*
+campo=$1
+shift
+
+# se é aniversário é data então para o MySQL é aaaa-mm-dd
+if [ "$campo" = "aniversario" ];then
+	read -n2 -p "Novos dados para Aniversário (dia/mes/ano): " dia
+	read -n2 -p "/" mes
+	read -n4 -p "/" ano
+	dados="$ano/$mes/$dia"
+	echo
+
+	# testa se a data é válida
+	checa_data "$dados" || { echo "ERRO: Data de aniversário inválida";exit; }
+else
+	read -p "Novos dados para $campo: " dados
+	# se é para trocar o nome, não aceitamos o nome nulo
+	[ "$campo" = "nome" -a ! "$dados" ] && { echo "ERRO: nome inválido";exit; }
+fi
+
+# Testa pra ver se é procura exata ou parcial
+if [ "$*" = "${*#*\*}" ];then # procura exata
+	S=$(mysql -vv -u thobias -e \
+	"UPDATE agenda SET $campo='$dados' WHERE nome = '$*'" mysql_bash | linha)
+	
+	[ $S -eq 0 ] && echo "Registro não encontrado" || echo "Foram alterado(s) $S registro(s)"
+# Procura por partes do nome
+else
+	S=$(mysql -vv -u thobias -e \
+	"UPDATE agenda SET $campo='$dados' WHERE nome LIKE '${*//\\*/%}'" mysql_bash | linha)
+
+	[ $S -eq 0 ] && echo "Registro não encontrado" || echo "Foram alterado(s) $S registro(s)"
+fi
+
+prompt>
+---
+
+Hora de testar:
+
+---
+prompt> atualiza.sh
+Campos Validos: nome telefone email aniversario
+prompt>
+prompt> atualiza.sh formiga
+Campos Validos: nome telefone email aniversario
+prompt>
+prompt> atualiza.sh telefone robin
+Novos dados para telefone: 111112222 casa
+Foram alterado(s) 1 registro(s)
+prompt>
+prompt> atualiza.sh telefone supe*
+Novos dados para telefone: 99999999
+Foram alterado(s) 1 registro(s)
+prompt> 
+prompt> atualiza.sh telefone nenhum
+Novos dados para telefone: 12122
+Registro não encontrado
+prompt>
+---
+
+
+-------------------------------------------------
+
+
+= PostgreSQL =
+
+Outro banco de dados muito utilizado e GPL é o 
+[PostgreSQL http://www.postgresql.org]. Como tinha comentado, o shell não
+se comunica diretamente com o banco de dados, ou seja, nós precisamos do
+cliente. No PostgreSQL, o nome do programa cliente é `psql`. Como no MySQL,
+ele tem **várias** opções que nos permitem trabalhar com shell.
+Por exemplo, ele aceita, através da opção `-h`, realizar um comando SQL em
+uma máquina remota, especificar o usuário com a opção `-U`, gerar saída
+HTML com o uso da opção `-H` e mais um monte de coisas. Mas a parte
+principal é que ele também aceita comandos SQL via linha de comando e gera
+o resultado na saída padrão (stdout). Exemplo:
+
+---
+prompt> su postgres
+prompt>
+prompt> createdb mysql_bash
+prompt>
+prompt> psql mysql_bash
+Welcome to psql, the PostgreSQL interactive terminal.
+
+Type:  \copyright for distribution terms
+       \h for help with SQL commands
+       \? for help on internal slash commands
+       \g or terminate with semicolon to execute query
+       \q to quit
+
+mysql_bash=# 
+mysql_bash=# CREATE TABLE agenda (nome VARCHAR(50),email VARCHAR(35));
+CREATE
+mysql_bash=# \q
+prompt>
+---
+
+Inserindo alguns dados via linha de comando:
+
+---
+prompt> echo "INSERT INTO agenda VALUES ('Super Man','superman@palaciodajustica.com')" | psql -f- mysql_bash
+INSERT 16572 1
+prompt>
+prompt> echo "INSERT INTO agenda VALUES ('Batman','batman@batmail.com')" | psql -f- mysql_bash 
+INSERT 16573 1
+prompt>
+prompt> echo "\d agenda" | psql -U postgres -f- mysql_bash 
+               Table "agenda"
+ Column |         Type          | Modifiers 
+--------+-----------------------+-----------
+ nome   | character varying(50) | 
+ email  | character varying(35) | 
+
+prompt>
+prompt> echo "\pset border 2; \d agenda" | psql -U postgres -f- mysql_bash 
+Border style is 2.
+                Table "agenda"
++--------+-----------------------+-----------+
+| Column |         Type          | Modifiers |
++--------+-----------------------+-----------+
+| nome   | character varying(50) |           |
+| email  | character varying(35) |           |
++--------+-----------------------+-----------+
+
+prompt>
+---
+
+Podemos também usar a opção `-c`.
+
+---
+prompt> psql -U postgres -c "SELECT * FROM agenda" mysql_bash
+   nome    |             email             
+-----------+-------------------------------
+ Super Man | superman@palaciodajustica.com
+ Batman    | batman@batmail.com
+(2 rows)
+
+prompt>
+---
+
+Com a opção `-f` podemos especificar um arquivo contendo os comandos SQL ou
+usar um hífen para ele ler os comandos da entrada padrão (stdin). Com a
+opção `-c`, ele executa **uma** query SQL.
+
+Para mais detalhes: `man psql` 
+
+Viu, também é simples integrar shell script com PostgreSQL.
+
+
+======================================================
+
+
+= Considerações Finais =
+
+Fizemos um tour pelo maravilhoso mundo do shell script com banco de dados.
+Analisamos todas as operações básicas do SQL, ou seja, o básico você já sabe. 
+O que mudará serão os comandos SQL que, "no mundo real", serão
+mais complexos ou maiores. Mas o tratamento para eles serão os mesmos 
+descritos neste tutorial.
+
+Vários outros scripts deveriam ser feitos e os
+scripts acima deveriam ser estendidos para termos uma verdadeira agenda.
+Por exemplo, nosso script de pesquisa só aceita pesquisas pelo campo 
+//nome//, então se você quer saber de quem é o telefone xxxxxx, não dá.
+Mas, para adicionarmos esta funcionalidade, o algoritmo do script será o
+mesmo, alterando somente o comando SQL para fazer o SELECT pelo campo
+//telefone//.
+
+Estas extensões vou deixar para você fazer e, assim, se divertir 
+um pouco também. Pô, só eu que faço a melhor parte! =8)
+
+Imagine o poder de um shell script interagindo com um banco de dados mais
+[CGI cgi_shell.html], [dialog http://aurelio.net/doc/dialog/], etc.
+
+
+= Agradecimentos =
+
+
+- Silvano Bolfoni Dias
+- Aurélio Marinho Jargas
+
+
+---------------------------------------------------------------------
+
+This HTML page is [[pwrbytxt2tags-2.png] http://txt2tags.sf.net]
+(see [source shell_bd.t2t])
+
+
+
+
+
+
+
+

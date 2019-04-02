@@ -1,0 +1,43 @@
+div.toc {
+  float: left;
+  width: 250px;
+  background: #eee;
+  line-height: 175%;
+  border-bottom: 2px solid black;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+}
+
+div.header {
+  background: #eee;
+  border-bottom: 2px solid black;
+  border-top: 2px solid black;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+  font-family: Verdana, Arial, Helvetica, Sans-Serif;
+  text-align: center;
+}
+div.header h2{
+  font-style: italic;
+}
+
+div.body {
+  margin-left: 230px;
+  padding-left: 4em;
+  padding-right: 2em;
+  color: #222;
+}
+
+div.body h2{
+  text-decoration: underline;
+}
+
+div.examples {
+  background: #eee;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  font-size: 8pt;
+}
+

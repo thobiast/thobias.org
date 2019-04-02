@@ -1,0 +1,103 @@
+#!/bin/bash
+# sig_dc: script que converte uma frase/palavra para valores
+#         magicos para o DC imprimir
+#
+# Autor:  Thobias Salazar Trevisan
+#
+# Changelog:
+# 14/02/2005 - somente bash, sed, od e dc. nao precisa mais bc e gawk
+# 19/09/2002 - primeira versao
+#
+########################## Documentacao ##############################
+#
+# O dc eh uma calculadora (reverse-polish desk calculator) muito
+# poderosa. Para saber mais detalhes: 'man dc' ou procure no google.
+# Isto eh um script, nao um tutorial. 8=)
+#
+# Com a opcao P ele imprime um valor ascii como caractere, exemplo:
+#
+# prompt> echo 65P | dc
+# A
+#
+# Ele faz isso fazendo um shift de 8 bits, ie, 256. Qualquer numero
+# eh trato como uma colecao de 8 bits concatenados. Assim a partir
+# de um numero decimal, ele vai shiftando por 256 e obtendo cada
+# letra. Para ficar mais facil:
+#
+# Imagine que se queira escrever AB. Primeiro pega-se a
+# representacao binaria da letra A: (A = decimal 65)
+#
+# prompt> echo "obase=2;65" | bc -l
+# 1000001
+#	
+# Como o DC pega a cada 8 bits, preenche-se com zero a esquerda
+# ateh formar 8 bits. Ficando 01000001
+# Depois, executa-se o mesmo procedimento para a letra B (decimal 66)
+# 
+# prompt> echo "obase=2;66" | bc -l
+# 1000010
+# 
+# 8 bits = 01000010
+# 
+# Agora concatena-se os dois valores binarios:
+# 0100000101000010
+#
+# Transforma este valor em decimal, e assim, chega-se ao valor 
+# magico ;)
+#
+# prompt> echo "ibase=2;0100000101000010" | bc -l
+# 167906
+# prompt> echo 16706P | dc
+# AB
+#
+# PS: o dc nao coloca newline no final. tem que fazer o mesmo esquema
+# para adicionar o '\n'
+#
+# Chato de fazer a mao neh !? Entao:
+# Let's Code
+# ou
+# echo 92357463970445465556903178P | dc
+#
+######################################################################
+#
+#################### Funcoes
+#
+# converte binario para decimal
+bd(){
+local n=$1 pw=1 t=0 i
+for i in  $(seq "$((${#n}-1))" -1 0);do
+ eval t="$(echo "${n:$i:1} $pw * $t + p" | dc)"
+ eval pw="$(echo "$pw 2 * p" | dc)"
+done
+echo $t
+}
+
+# converte de decimal para binario. binario de 8 'bits'
+db(){
+local d=$1 b 
+while [ "$d" -gt 0 ];do b="$(($d%2))$b"; d="$(($d/2))"; done
+echo "${b:-0}" | sed ':a;s/^[01]\{1,7\}$/0&/;ta'
+}
+
+#################### Main
+
+# testa parametro
+[ "$1" ] || { 
+ echo "Uso: $0 palavra/frase"
+ echo "Ex.: $0 Unix is cool" 
+ exit 1; }
+
+# testa se existe o comando dc
+dc -V  >&- 2>&- || { 
+  echo "Erro: A calculadora DC não está instalada."
+  echo "Instale-a antes de executar o $0"
+  exit 1; }
+
+SIZE="$@"
+for i in $(seq 1 "${#SIZE}");do
+ char="${SIZE:((i-1)):1}"
+ decimal=$(echo -n "$char" | od -d | sed -n '1s/^[^ ]* *\([0-9]\+\).*/\1/p') 
+ binary="$binary$(db $decimal)"
+done; binary=${binary}00001010 # adiciona \n
+echo "echo $(bd $binary)P | dc"
+

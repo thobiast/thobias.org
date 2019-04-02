@@ -1,0 +1,1800 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.org">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="stylesheet" TYPE="text/css" HREF="docker.css">
+<TITLE>Docker - First Steps</TITLE>
+</HEAD><BODY BGCOLOR="white" TEXT="black">
+<CENTER>
+<H1>Docker - First Steps</H1>
+<FONT SIZE="4"><I>A tutorial about Docker</I></FONT><BR>
+<FONT SIZE="4">05/25/2017</FONT>
+</CENTER>
+
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
+
+  <OL>
+  <LI><A HREF="#toc1">Introduction</A>
+  <LI><A HREF="#toc2">Images</A>
+    <UL>
+    <LI><A HREF="#toc3">2.1. Copy image to other host</A>
+    </UL>
+  <LI><A HREF="#toc4">Container</A>
+    <UL>
+    <LI><A HREF="#toc5">3.1. Run</A>
+    <LI><A HREF="#toc6">3.2. Network</A>
+    <LI><A HREF="#toc7">3.3. Networks Details</A>
+      <UL>
+      <LI><A HREF="#toc8">3.3.1. none</A>
+      <LI><A HREF="#toc9">3.3.2. host</A>
+      <LI><A HREF="#toc10">3.3.3. bridge</A>
+      </UL>
+    <LI><A HREF="#toc11">3.4. Detach/Attach</A>
+    <LI><A HREF="#toc12">3.5. Exec and Getting shell</A>
+    <LI><A HREF="#toc13">3.6. Stop Container</A>
+    <LI><A HREF="#toc14">3.7. Copy files to/from container</A>
+    <LI><A HREF="#toc15">3.8. Storage</A>
+      <UL>
+      <LI><A HREF="#toc16">3.8.1. Add a volume</A>
+      <LI><A HREF="#toc17">3.8.2. Map a host directory</A>
+      </UL>
+    </UL>
+  <LI><A HREF="#toc18">Statistics</A>
+  <LI><A HREF="#toc19">Inspect</A>
+  <LI><A HREF="#toc20">Useful commands</A>
+  </OL>
+
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
+<P>
+This document is intended to help you to get started with <A HREF="https://www.docker.com">Docker</A>.
+It assumes you already have Docker installed
+on the system. If you need help, please take a look at
+<A HREF="https://www.docker.com/get-docker">Get Docker</A> and/or
+<A HREF="https://docs.docker.com/engine/installation/">Docker installation guide</A>.
+</P>
+<P>
+If you have any comments, you can reach me at &lt;thobias (a) thobias org&gt;.
+</P>
+
+<A NAME="toc1"></A>
+<H1>1. Introduction</H1>
+
+<P>
+Once you have Docker installed you can use the <I>docker</I> command to start managing it. First of all, ensure that
+docker daemon is running:
+</P>
+
+<PRE>
+<B>  prompt&gt; systemctl status docker</B>
+</PRE>
+
+<P>
+If necessary, start it:
+</P>
+
+<PRE>
+<B>  prompt&gt; systemctl start docker</B>
+</PRE>
+
+<P>
+Check if Docker client is able do comunicate with Docker Daemon.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker version</B>
+  Client:
+   Version:      17.03.1-ce
+   API version:  1.27
+   Go version:   go1.7.5
+   Git commit:   c6d412e
+   Built:        Mon Mar 27 17:07:28 2017
+   OS/Arch:      linux/amd64
+  
+  Server:
+   Version:      17.03.1-ce
+   API version:  1.27 (minimum version 1.12)
+   Go version:   go1.7.5
+   Git commit:   c6d412e
+   Built:        Mon Mar 27 17:07:28 2017
+   OS/Arch:      linux/amd64
+   Experimental: false
+</PRE>
+
+<P>
+<I>Docker</I> command is the command line interface (CLI) to manage images and containers.
+It has many commands and each of them has its own man page. You can consult the man page
+running: <I>man docker &lt;command&gt;</I>. Example:
+</P>
+
+<PRE>
+<B>  prompt&gt; man docker</B>
+<B>  prompt&gt; man docker images</B>
+<B>  prompt&gt; man docker search</B>
+<B>  prompt&gt; man docker pull</B>
+</PRE>
+
+<A NAME="toc2"></A>
+<H1>2. Images</H1>
+
+<P>
+The first concept we need to get familiar is Images. An image is a read-only template that
+is used to create the containers.
+</P>
+<P>
+To list all local images we use the command <I>docker images</I>.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker images</B>
+  REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+<B>  prompt&gt;</B>
+</PRE>
+
+<P>
+Since it is the first time we execute <I>docker images</I>, there is no local image stored on the system.
+However, there are thousands of images available on
+<A HREF="https://hub.docker.com/explore/">Docker Registry Hub website</A>.
+We can search for images on the <A HREF="https://hub.docker.com/explore">Docker Hub website</A> or use <I>docker search</I> command.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker search debian</B>
+  NAME                       DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+  debian                     Debian is a Linux distribution that's comp...   2059      [OK]       
+  neurodebian                NeuroDebian provides neuroscience research...   36        [OK]       
+  jesselang/debian-vagrant   Stock Debian Images made Vagrant-friendly ...   11                   [OK]
+  samueldebruyn/debian-git   a minimal docker container with debian and...   9                    [OK]
+  eboraas/debian             Debian base images, for all currently-avai...   7                    [OK]
+  ...
+</PRE>
+
+<P>
+It listed all images found on Docker Hub with the term '<I>debian</I>'.
+Let's download a basic debian image with <I>docker pull</I> command.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker pull debian</B>
+  latest: Pulling from debian
+  32a8b9923ae3: Pull complete
+  c414a505803e: Pull complete
+  Digest: sha256:44254eeafd9b763519070c74eb33f56e0e664af3700b447b13e7b35c0436dc58
+  Status: Downloaded newer image for debian:latest
+</PRE>
+
+<P>
+As we didn't specify, it has downloaded the debian image that has the <I>latest</I> tag.
+If we do not provide tag, Docker uses <I>:latest</I> tag as default.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker images</B>
+  REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+  debian              latest              c414a505803e        46 hours ago        123.4 MB
+</PRE>
+
+<P>
+Unfortunately, there is no way yet to see tags with <I>docker search</I> command. Anyway, we can
+check the tags in the <A HREF="https://hub.docker.com/">Docker Registry Hub website</A>.
+You can download a image with a specific tag:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker pull debian:jessie</B>
+  jessie: Pulling from debian
+  32a8b9923ae3: Already exists
+  c414a505803e: Already exists
+  Digest: sha256:ddb450fdb097cd7f53489eaee1dc1aa63529d94048192ac32b6f86afce461faa
+  Status: Downloaded newer image for debian:jessie
+  
+<B>  prompt&gt; docker pull debian:wheezy</B>
+  wheezy: Pulling from debian
+  716a38cc016f: Pull complete
+  adaa258bc97c: Pull complete
+  Digest: sha256:ffa59cca98e0d7a41ca0f64b6d3319f74da954a3f867901bd023580b3d036712
+  Status: Downloaded newer image for debian:wheezy
+  
+<B>  prompt&gt; docker images</B>
+  REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+  debian              wheezy              adaa258bc97c        46 hours ago        85.25 MB
+  debian              jessie              c414a505803e        46 hours ago        123.4 MB
+  debian              latest              c414a505803e        46 hours ago        123.4 MB
+</PRE>
+
+<P>
+As you can notice in the <I>IMAGE ID</I> column, the images with tags <I>latest</I> and <I>jessie</I> are the same image.
+At the time I am writing this document, jessie is the latest debian version.
+</P>
+<P>
+Images can be removed with <I>docker rmi</I> command:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker rmi debian:latest</B>
+  Untagged: debian:latest
+  
+<B>  prompt&gt; docker images</B>
+  REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+  debian              wheezy              adaa258bc97c        46 hours ago        85.25 MB
+  debian              jessie              c414a505803e        46 hours ago        123.4 MB
+  
+<B>  prompt&gt; docker rmi debian:jessie</B>
+  Untagged: debian:jessie
+  Deleted: c414a505803e5f9c55e97819da4a3a4416e84928917ae731a38f3e157d88f61a
+  Deleted: 32a8b9923ae33c5bf8a4f41f780ddf66160770fb2a7ba7d516a40c10059e9830
+  
+<B>  prompt&gt; docker images</B>
+  REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+  debian              wheezy              adaa258bc97c        46 hours ago        85.25 MB
+  
+<B>  prompt&gt; docker rmi debian:wheezy</B>
+  Untagged: debian:wheezy
+  Deleted: adaa258bc97c17394dcd74e4ccfb9994abc97244bd50e141286d5087b6def712
+  Deleted: 716a38cc016fa4b59dde313629025bac5b63f866cf2cf0e89789c77da1997eb4
+  
+<B>  prompt&gt; docker images</B>
+  REPOSITORY          TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+</PRE>
+
+<A NAME="toc3"></A>
+<H2>2.1. Copy image to other host</H2>
+
+<P>
+We can use <I>docker save</I> and <I>docker load</I> to copy an image to another host.
+</P>
+<P>
+<I>Docker save</I> command saves an image to a tar file.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker pull debian:jessie</B>
+  jessie: Pulling from library/debian
+  10a267c67f42: Pull complete 
+  Digest: sha256:476959f29a17423a24a17716e058352ff6fbf13d8389e4a561c8ccc758245937
+  Status: Downloaded newer image for debian:jessie
+<B>  prompt&gt; ls</B>
+<B>  prompt&gt; docker images</B>
+  REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+  debian              jessie              3e83c23dba6a        20 hours ago        124 MB
+<B>  prompt&gt; docker save -o debian_jessie_image.tar debian:jessie</B>
+<B>  prompt&gt; ls -l debian_jessie_image.tar </B>
+  -rw------- 1 root root 129394176 May  9 16:34 debian_jessie_image.tar
+</PRE>
+
+<P>
+<I>Docker load</I> command loads an image from a tar file.
+After copying the image file (debian_jessie_image.tar) to another host, we can load the image.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker images</B>
+  REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+<B>  prompt&gt; docker load -i debian_jessie_image.tar </B>
+  8d4d1ab5ff74: Loading layer [==================================================&gt;] 129.4 MB/129.4 MB
+  Loaded image: debian:jessie
+<B>  prompt&gt; docker images</B>
+  REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+  debian              jessie              3e83c23dba6a        20 hours ago        124 MB
+</PRE>
+
+<A NAME="toc4"></A>
+<H1>3. Container</H1>
+
+<A NAME="toc5"></A>
+<H2>3.1. Run</H2>
+
+<P>
+A container is a runnable instance of an image. We use the <I>docker run</I> command
+to create a new container from a image.
+</P>
+<P>
+Let's create a container from the hello-world image. First, we need to download the image.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker pull hello-world</B>
+  Using default tag: latest
+  latest: Pulling from library/hello-world
+  78445dd45222: Pull complete 
+  Digest: sha256:c5515758d4c5e1e838e9cd307f6c6a0d620b5e07e6f927b07d05f6d12a1ac8d7
+  Status: Downloaded newer image for hello-world:latest
+  
+<B>  prompt&gt; docker images</B>
+  REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+  hello-world         latest              48b5124b2768        3 months ago        1.84 kB
+</PRE>
+
+<P>
+Launching the container with <I>docker run</I> command.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run hello-world</B>
+  
+  Hello from Docker!
+  This message shows that your installation appears to be working correctly.
+  
+  To generate this message, Docker took the following steps:
+   1. The Docker client contacted the Docker daemon.
+   2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+   3. The Docker daemon created a new container from that image which runs the
+      executable that produces the output you are currently reading.
+   4. The Docker daemon streamed that output to the Docker client, which sent it
+      to your terminal.
+  
+  To try something more ambitious, you can run an Ubuntu container with:
+   $ docker run -it ubuntu bash
+  
+  Share images, automate workflows, and more with a free Docker ID:
+   https://cloud.docker.com/
+  
+  For more examples and ideas, visit:
+   https://docs.docker.com/engine/userguide/
+  
+<B>  prompt&gt;</B>
+</PRE>
+
+<P>
+The container was created, it printed the output text message and finally stopped. It is important to understand
+that containers are designed to stop once the command they executed has finished.
+</P>
+<P>
+The <I>docker ps</I> command is used to show which containers are running.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+</PRE>
+
+<P>
+There is no container running.
+The <I>hello-world</I> container got stopped after it showed the message.
+We can use the <I>docker ps</I> command with <I>-a</I> flag to display all containers.
+The default of <I>docker ps</I> is to show just running ones.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker ps -a</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                      PORTS               NAMES
+  9b82777cd3fc        hello-world         "/hello"            19 seconds ago      Exited (0) 18 seconds ago                       amazing_wozniak
+</PRE>
+
+<P>
+The container we created is stopped. We can start it again with <I>docker start</I>:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker start -a 9b82777cd3fc</B>
+  
+  Hello from Docker!
+  This message shows that your installation appears to be working correctly.
+  
+  To generate this message, Docker took the following steps:
+   1. The Docker client contacted the Docker daemon.
+   2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+   3. The Docker daemon created a new container from that image which runs the
+      executable that produces the output you are currently reading.
+   4. The Docker daemon streamed that output to the Docker client, which sent it
+      to your terminal.
+  
+  To try something more ambitious, you can run an Ubuntu container with:
+   $ docker run -it ubuntu bash
+  
+  Share images, automate workflows, and more with a free Docker ID:
+   https://cloud.docker.com/
+  
+  For more examples and ideas, visit:
+   https://docs.docker.com/engine/userguide/
+</PRE>
+
+<P>
+In order to remove a container, we use the <I>docker rm</I> command.
+It removes only that container, not the image. As we saw before, images and containers are not the same thing.
+Images are a read only template and container is a runnable instance based on an image.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker rm 9b82777cd3fc</B>
+  9b82777cd3fc
+  
+<B>  prompt&gt; docker ps -a</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+  
+<B>  prompt&gt; docker images</B>
+  REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+  hello-world         latest              48b5124b2768        3 months ago        1.84 kB
+</PRE>
+
+<P>
+Let's create a container based on debian:jessie image. First we need to download the image using <I>docker pull</I>.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker pull debian:jessie</B>
+  jessie: Pulling from library/debian
+  cd0a524342ef: Pull complete 
+  Digest: sha256:c3f000ba6bbe71906ca249be92bd04dc3f514d2dd905e0c5f226e8035ee55031
+  Status: Downloaded newer image for debian:jessie
+</PRE>
+
+<P>
+Using -i and -t option, docker creates a container with pseudo-tty and keep stdin open for interaction, in other
+words, we start a container and get a shell inside it. Inside the container we are going to create the /tmp/test file.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -it debian:jessie</B>
+<span style="color:#0000FF">  root@96026d0dcb4b:/# ls</span>
+  bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  var
+<span style="color:#0000FF">  root@96026d0dcb4b:/# ls /tmp/</span>
+<span style="color:#0000FF">  root@96026d0dcb4b:/# touch /tmp/test</span>
+<span style="color:#0000FF">  root@96026d0dcb4b:/# exit</span>
+  exit
+</PRE>
+
+<P>
+Once we exited the shell the container got stopped, as there is no command running. Column "STATUS" show that
+the container has exited 9 seconds ago with return code 0.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker ps -a</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED              STATUS                     PORTS               NAMES
+  96026d0dcb4b        debian:jessie       "/bin/bash"         About a minute ago   Exited (0) 9 seconds ago                       naughty_lamport
+</PRE>
+
+<P>
+If we start the container again with <I>docker start</I>, we can see that file /tmp/test is still there:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker start -i 96026d0dcb4b</B>
+<span style="color:#0000FF">  root@96026d0dcb4b:/# ls /tmp</span>
+  test
+<span style="color:#0000FF">  root@96026d0dcb4b:/# exit</span>
+<B>  prompt&gt;</B>
+</PRE>
+
+<P>
+However, if we stop and remove that container, the /tmp/test file will be deleted.
+When we remove a container all its data gets removed too. There are some techniques to preserve the data, but
+we will discuss it later.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker rm 96026d0dcb4b</B>
+  96026d0dcb4b
+<B>  prompt&gt; docker ps -a</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED              STATUS                     PORTS               NAMES
+<B>  prompt&gt;</B>
+</PRE>
+
+<P>
+Everytime we execute <I>docker run</I>, it creates a brand new container based on the source image.
+If we create a new container, we can see that there is no /tmp/test file.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -it debian:jessie </B>
+<span style="color:#0000FF">  root@e4ea0b1abb70:/# ls /tmp</span>
+<span style="color:#0000FF">  root@e4ea0b1abb70:/# </span>
+</PRE>
+
+<P>
+Changes inside the container do not affect the image it was based on.
+You can run a container and perform a <I>rm -rf /bin</I> and then create a new container to test.
+</P>
+
+<PRE>
+<B>  prompt&gt;docker run -it debian:jessie</B>
+<span style="color:#0000FF">  root@3f037320c92b:/# rm -rf /bin</span>
+<span style="color:#0000FF">  root@3f037320c92b:/# ls</span>
+  bash: ls: command not found
+<span style="color:#0000FF">  root@3f037320c92b:/# exit</span>
+  exit
+  
+<B>  prompt&gt; docker run -it debian:jessie</B>
+<span style="color:#0000FF">  root@2fcb715f498e:/# ls /bin/ls</span>
+  /bin/ls
+</PRE>
+
+<P>
+Containers can be created with root filesystem mounted as read only.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run --read-only -ti debian:jessie</B>
+<span style="color:#0000FF">  root@a6e173f97e0c:/# touch /tmp/test</span>
+  touch: cannot touch '/tmp/test': Read-only file system
+<span style="color:#0000FF">  root@a6e173f97e0c:/# </span>
+<span style="color:#0000FF">  root@a6e173f97e0c:/# rm /etc/passwd</span>
+  rm: cannot remove '/etc/passwd': Read-only file system
+</PRE>
+
+<P>
+Docker commands accept as input the container's name too.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -it debian:jessie</B>
+<span style="color:#0000FF">  root@7057156b5d59:/# exit</span>
+  exit
+<B>  prompt&gt; docker ps -a</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                     PORTS               NAMES
+  7057156b5d59        debian:jessie       "/bin/bash"         7 seconds ago       Exited (0) 3 seconds ago                       goofy_saha
+<B>  prompt&gt; docker rm goofy_saha</B>
+  goofy_saha
+<B>  prompt&gt; docker ps -a</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+<B>  prompt&gt;</B>
+</PRE>
+
+<A NAME="toc6"></A>
+<H2>3.2. Network</H2>
+
+<A NAME="toc7"></A>
+<H2>3.3. Networks Details</H2>
+
+<P>
+By default, Docker has three networks available (bridge, host and none). <I>Docker network ls</I> comand is
+used to list all networks.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker network ls</B>
+  NETWORK ID          NAME                DRIVER              SCOPE
+  b9c255154b6c        bridge              bridge              local
+  546cabe0c10c        host                host                local
+  c34692c016b3        none                null                local
+</PRE>
+
+<A NAME="toc8"></A>
+<H3>3.3.1. none</H3>
+
+<P>
+The "none" network means that the container has a network stack,
+but it does not have an external network interface. In other words, it only has the loopback interface (lo).
+You can use <I>--net=</I> option to specify which network the
+container will use.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -it --net=none debian:jessie</B>
+<span style="color:#0000FF">  root@d460fc025f67:/# ip a</span>
+  1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default 
+      link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+      inet 127.0.0.1/8 scope host lo
+         valid_lft forever preferred_lft forever
+      inet6 ::1/128 scope host 
+         valid_lft forever preferred_lft forever
+</PRE>
+
+<A NAME="toc9"></A>
+<H3>3.3.2. host</H3>
+
+<P>
+The "host" network means that the container will share the host network. There is no isolation
+between host and container network. The container has access to all host's network interfaces, so
+an <I>ifconfig</I> in the host and an <I>ifconfig</I> in the container will have the same output.
+</P>
+<P>
+Fist, let's see which port the host is listening:
+</P>
+
+<PRE>
+<B>  prompt&gt; netstat -ntlp</B>
+  Active Internet connections (only servers)
+  Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+  tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      432/sshd        
+  tcp6       0      0 :::22                   :::*                    LISTEN      432/sshd        
+</PRE>
+
+<P>
+Now we need to download a container with Apache.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker pull httpd</B>
+  Using default tag: latest
+  latest: Pulling from library/httpd
+  cd0a524342ef: Already exists 
+  e01bb42cce87: Pull complete 
+  6e7c7be0ea3d: Pull complete 
+  403df65071ee: Pull complete 
+  4795d7c9e991: Pull complete 
+  d0d8d0f92d6a: Pull complete 
+  196c9e8739e3: Pull complete 
+  Digest: sha256:45feefe8aea3498417b6b98f63bbe7b51fb106ee6aa1cd0a4b0b38d3a4f36be1
+  Status: Downloaded newer image for httpd:latest
+</PRE>
+
+<P>
+Let's start the container in detach mode (leave container running in background) and check again
+which port the host is listening.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -d --net=host httpd</B>
+  fb19e74e58a24260297d5a63e236872370c6ba0e3a9bd867131bf6f2f12e8767
+  
+<B>  prompt&gt; netstat -ntlp</B>
+  Active Internet connections (only servers)
+  Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+  tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      432/sshd        
+  tcp6       0      0 :::22                   :::*                    LISTEN      432/sshd        
+  tcp6       0      0 :::80                   :::*                    LISTEN      5618/httpd      
+  
+<B>  prompt&gt; curl localhost 80</B>
+  &lt;html&gt;&lt;body&gt;&lt;h1&gt;It works!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;
+</PRE>
+
+<P>
+So, the container opened port 80 on host.
+</P>
+
+<A NAME="toc10"></A>
+<H3>3.3.3. bridge</H3>
+
+<P>
+Bridge is the default network mode when you create a container without '<I>--net</I>' option.
+The Docker daemon which runs on the host creates the 'docker0', a virtual interface.
+</P>
+
+<PRE>
+<B>  prompt&gt; ifconfig docker0</B>
+  docker0   Link encap:Ethernet  HWaddr 02:42:b6:64:9b:50  
+            inet addr:172.17.42.1  Bcast:0.0.0.0  Mask:255.255.0.0
+            inet6 addr: fe80::42:b6ff:fe64:9b50/64 Scope:Link
+            UP BROADCAST MULTICAST  MTU:1500  Metric:1
+            RX packets:104 errors:0 dropped:0 overruns:0 frame:0
+            TX packets:19 errors:0 dropped:0 overruns:0 carrier:0
+            collisions:0 txqueuelen:0 
+            RX bytes:6768 (6.6 KiB)  TX bytes:3282 (3.2 KiB)
+  
+<B>  prompt&gt; docker network inspect bridge</B>
+  [
+      {
+          "Name": "bridge",
+          "Id": "757e4f257be88f83c7fc54960f4e1ea988e47185597f503a7fba7c3c218825f7",
+          "Created": "2017-05-10T12:32:33.863821524-03:00",
+          "Scope": "local",
+          "Driver": "bridge",
+          "EnableIPv6": false,
+          "IPAM": {
+              "Driver": "default",
+              "Options": null,
+              "Config": [
+                  {
+                      "Subnet": "172.17.0.0/16",
+                      "Gateway": "172.17.42.1"
+                  }
+              ]
+          },
+          "Internal": false,
+          "Attachable": false,
+          "Containers": {},
+          "Options": {
+              "com.docker.network.bridge.default_bridge": "true",
+              "com.docker.network.bridge.enable_icc": "true",
+              "com.docker.network.bridge.enable_ip_masquerade": "true",
+              "com.docker.network.bridge.host_binding_ipv4": "0.0.0.0",
+              "com.docker.network.bridge.name": "docker0",
+              "com.docker.network.driver.mtu": "1500"
+          },
+          "Labels": {}
+      }
+  ]
+</PRE>
+
+<P>
+Using bridge, every container receives an IP on the network bridge "172.17.0.0/16".
+The default gateway is "172.17.42.1" (the IP of host docker0 interface).
+</P>
+<P>
+The bridge provides a network so that host can communicate to containers and containers
+running on the same host can communicate to each other.
+</P>
+<P>
+As example, let's start a httpd container in background and see if it open port 80 on the host.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -d httpd </B>
+  b274942677ca3873851a7ad49b3c7c308849f4b582606f48914d23ee46f8391c
+  
+<B>  prompt&gt; netstat -ntlp</B>
+  Active Internet connections (only servers)
+  Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+  tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      432/sshd        
+  tcp6       0      0 :::22                   :::*                    LISTEN      432/sshd        
+</PRE>
+
+<P>
+As expected, it did not. Anyway, we can ping the container IP. <I>Docker inspect</I> (explained later on this tutorial)
+can be used to find out the container's IP.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS               NAMES
+  b274942677ca        httpd               "httpd-foreground"   2 minutes ago       Up 2 minutes        80/tcp              happy_shirley
+  
+<B>  prompt&gt; docker inspect --format "{{.Name}} - {{.NetworkSettings.IPAddress }}" b274942677ca</B>
+  /happy_shirley - 172.17.0.3
+  
+<B>  prompt&gt; ping -c 2 172.17.0.3</B>
+  PING 172.17.0.3 (172.17.0.3) 56(84) bytes of data.
+  64 bytes from 172.17.0.3: icmp_seq=1 ttl=64 time=0.034 ms
+  64 bytes from 172.17.0.3: icmp_seq=2 ttl=64 time=0.042 ms
+  
+  --- 172.17.0.3 ping statistics ---
+  2 packets transmitted, 2 received, 0% packet loss, time 999ms
+  rtt min/avg/max/mdev = 0.034/0.038/0.042/0.004 ms
+</PRE>
+
+<P>
+However, the container's IP is not accessible from outside the host.
+</P>
+<P>
+Docker network bridge uses iptables and NAT to allow the containers to communicate to external host
+using host's public interface.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -ti debian:jessie /bin/bash</B>
+<span style="color:#0000FF">  root@32c39d5149d6:/# ip a</span>
+  1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default 
+      link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+      inet 127.0.0.1/8 scope host lo
+         valid_lft forever preferred_lft forever
+      inet6 ::1/128 scope host 
+         valid_lft forever preferred_lft forever
+  54: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default 
+      link/ether 02:42:ac:11:00:01 brd ff:ff:ff:ff:ff:ff
+      inet 172.17.0.1/16 scope global eth0
+         valid_lft forever preferred_lft forever
+      inet6 fe80::42:acff:fe11:1/64 scope link tentative 
+         valid_lft forever preferred_lft forever
+<span style="color:#0000FF">  root@32c39d5149d6:/#</span>
+<span style="color:#0000FF">  root@32c39d5149d6:/# ping -c 2 www.google.com</span>
+  PING www.google.com (74.125.141.106): 56 data bytes
+  64 bytes from 74.125.141.106: icmp_seq=0 ttl=61 time=162.910 ms
+  64 bytes from 74.125.141.106: icmp_seq=1 ttl=61 time=161.221 ms
+  --- www.google.com ping statistics ---
+  2 packets transmitted, 2 packets received, 0% packet loss
+  round-trip min/avg/max/stddev = 161.221/162.065/162.910/0.845 ms
+</PRE>
+
+<H4>3.3.3.1. Mapping host ports to container ports</H4>
+
+<P>
+In order to map host ports to containers ports we have to use the -p flag: 
+(<I>-p, --publish list     Publish a container's port(s) to the host (default [])</I>). Docker uses iptables and NAT
+to perform the port mapping.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -p 8080:80 httpd</B>
+  AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.1. Set the 'ServerName' directive globally to suppress this message
+  AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.1. Set the 'ServerName' directive globally to suppress this message
+  [Thu Apr 27 17:56:42.188635 2017] [mpm_event:notice] [pid 1:tid 139711252735872] AH00489: Apache/2.4.25 (Unix) configured -- resuming normal operations
+  [Thu Apr 27 17:56:42.188744 2017] [core:notice] [pid 1:tid 139711252735872] AH00094: Command line: 'httpd -D FOREGROUND'
+</PRE>
+
+<P>
+If we open another shell on host system and try to access port 8080, It will forward packages to the container port 80.
+We can also see that docker started a docker-proxy daemon to listen to host port 8080.
+</P>
+
+<PRE>
+<B>  prompt&gt; curl localhost:8080</B>
+  &lt;html&gt;&lt;body&gt;&lt;h1&gt;It works!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;
+  
+<B>  prompt&gt; netstat -ntlp</B>
+  Active Internet connections (only servers)
+  Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+  tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      432/sshd        
+  tcp6       0      0 :::22                   :::*                    LISTEN      432/sshd        
+  tcp6       0      0 :::8080                 :::*                    LISTEN      6713/docker-proxy
+</PRE>
+
+<P>
+And the container will show the access (last line).
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -p 8080:80 httpd</B>
+  AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.1. Set the 'ServerName' directive globally to suppress this message
+  AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.1. Set the 'ServerName' directive globally to suppress this message
+  [Thu Apr 27 17:56:42.188635 2017] [mpm_event:notice] [pid 1:tid 139711252735872] AH00489: Apache/2.4.25 (Unix) configured -- resuming normal operations
+  [Thu Apr 27 17:56:42.188744 2017] [core:notice] [pid 1:tid 139711252735872] AH00094: Command line: 'httpd -D FOREGROUND'
+  172.17.42.1 - - [27/Apr/2017:17:57:39 +0000] "GET / HTTP/1.1" 200 45
+</PRE>
+
+<P>
+One information that resides on docker images is about which ports the image expose.
+You can use the <I>-P</I> option to tell <I>docker run</I> command to Publish all exposed ports to random host ports.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -P -d httpd</B>
+  a9fd188198907763c7ae5ea29a3839092c7af276d99cf81b71cc1609a0664602
+  
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                   NAMES
+  a9fd18819890        httpd               "httpd-foreground"   5 seconds ago       Up 4 seconds        0.0.0.0:32772-&gt;80/tcp   clever_beaver
+</PRE>
+
+<P>
+In the above example, docker mapped host port 32772 to container 80.
+</P>
+<P>
+<I>Docker port</I> command can be used to see which container port is mapped to which host port.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker port a9fd18819890</B>
+  80/tcp -&gt; 0.0.0.0:32772
+  
+<B>  prompt&gt; docker port clever_beaver</B>
+  80/tcp -&gt; 0.0.0.0:32772
+  
+</PRE>
+
+<A NAME="toc11"></A>
+<H2>3.4. Detach/Attach</H2>
+
+<P>
+We can use the docker run with -d option to detach the container:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -p 8080:80 -d httpd</B>
+  25375e3f360b981feb7bef9955e3c166ed8ae48d2b1701111be53b1dd0944120
+  
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                  NAMES
+  25375e3f360b        httpd               "httpd-foreground"   2 seconds ago       Up 2 seconds        0.0.0.0:8080-&gt;80/tcp   xenodochial_beaver
+</PRE>
+
+<P>
+We can again check with curl that container is still running:
+</P>
+
+<PRE>
+<B>  prompt&gt; curl localhost:8080</B>
+  &lt;html&gt;&lt;body&gt;&lt;h1&gt;It works!&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;
+</PRE>
+
+<P>
+Another useful command is the docker logs, where we can see the stdout logs/messages from a container:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker logs 25375e3f360b</B>
+  AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.1. Set the 'ServerName' directive globally to suppress this message
+  AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.1. Set the 'ServerName' directive globally to suppress this message
+  [Thu Apr 27 18:01:05.208767 2017] [mpm_event:notice] [pid 1:tid 140114843477888] AH00489: Apache/2.4.25 (Unix) configured -- resuming normal operations
+  [Thu Apr 27 18:01:05.208882 2017] [core:notice] [pid 1:tid 140114843477888] AH00094: Command line: 'httpd -D FOREGROUND'
+  172.17.42.1 - - [27/Apr/2017:18:02:51 +0000] "GET / HTTP/1.1" 200 45
+<B>  prompt&gt;</B>
+</PRE>
+
+<P>
+We can also use <I>-f</I> option to follow the output, just like a <I>tail -f</I>.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker logs -f 25375e3f360b</B>
+  AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.1. Set the 'ServerName' directive globally to suppress this message
+  AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 172.17.0.1. Set the 'ServerName' directive globally to suppress this message
+  [Thu Apr 27 18:01:05.208767 2017] [mpm_event:notice] [pid 1:tid 140114843477888] AH00489: Apache/2.4.25 (Unix) configured -- resuming normal operations
+  [Thu Apr 27 18:01:05.208882 2017] [core:notice] [pid 1:tid 140114843477888] AH00094: Command line: 'httpd -D FOREGROUND'
+  172.17.42.1 - - [27/Apr/2017:18:02:51 +0000] "GET / HTTP/1.1" 200 45
+  172.17.42.1 - - [27/Apr/2017:18:03:28 +0000] "GET / HTTP/1.1" 200 45
+</PRE>
+
+<P>
+The container was started with -d option. However, we can attach it back to a running container with <I>attach</I> command:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                  NAMES
+  33395d43309b        httpd               "httpd-foreground"   2 minutes ago       Up About a minute   0.0.0.0:8080-&gt;80/tcp   optimistic_tesla
+  
+<B>  prompt&gt; docker attach 33395d43309b</B>
+</PRE>
+
+<P>
+It seems nothing happens, but the terminal is attached to the container.
+If we open a new host shell and perform a curl access to port 8080, apache log will be shown on the screen:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker attach 33395d43309b</B>
+  172.17.42.1 - - [27/Apr/2017:18:20:22 +0000] "GET / HTTP/1.1" 200 45
+</PRE>
+
+<P>
+And If we press 'ctrl+c' in the attached screen, the command the container is running (httpd-foreground) will finish and the container will be stopped.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker attach 33395d43309b</B>
+  172.17.42.1 - - [27/Apr/2017:18:20:22 +0000] "GET / HTTP/1.1" 200 45
+  ^C[Thu Apr 27 18:25:05.095862 2017] [mpm_event:notice] [pid 1:tid 140664467150720] AH00491: caught SIGTERM, shutting down
+  
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+  
+<B>  prompt&gt; docker ps -a</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS                          PORTS               NAMES
+  33395d43309b        httpd               "httpd-foreground"   9 minutes ago       Exited (0) About a minute ago                       optimistic_tesla
+</PRE>
+
+<P>
+Let's start the container again:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker start 33395d43309b</B>
+  33395d43309b
+  
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                  NAMES
+  33395d43309b        httpd               "httpd-foreground"   11 minutes ago      Up 23 seconds       0.0.0.0:8080-&gt;80/tcp   optimistic_tesla
+</PRE>
+
+<P>
+If we want to get access to a shell inside the container, we can use the exec command:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker exec -ti 33395d43309b /bin/bash</B>
+<span style="color:#0000FF">  root@33395d43309b:/usr/local/apache2# ps afux</span>
+  USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+  root        90  0.0  0.3  20244  3264 ?        Ss   20:46   0:00 /bin/bash
+  root        94  0.0  0.2  17496  2100 ?        R+   20:46   0:00  \_ ps -afux
+  root         1  0.0  0.4  77208  4544 ?        Ss   18:27   0:00 httpd -DFOREGROUND
+  daemon       6  0.0  0.3 366388  3420 ?        Sl   18:27   0:01 httpd -DFOREGROUND
+  daemon       7  0.0  0.3 366388  3420 ?        Sl   18:27   0:01 httpd -DFOREGROUND
+  daemon       8  0.0  0.3 366388  3420 ?        Sl   18:27   0:01 httpd -DFOREGROUND
+<span style="color:#0000FF">  root@33395d43309b:/usr/local/apache2#</span>
+<span style="color:#0000FF">  root@33395d43309b:/usr/local/apache2# df -h</span>
+  Filesystem      Size  Used Avail Use% Mounted on
+  none            9.3G  1.3G  7.6G  15% /
+  tmpfs           501M     0  501M   0% /dev
+  tmpfs           501M     0  501M   0% /sys/fs/cgroup
+  /dev/sda1       9.3G  1.3G  7.6G  15% /etc/hosts
+  shm              64M     0   64M   0% /dev/shm
+  tmpfs           501M     0  501M   0% /sys/firmware
+<span style="color:#0000FF">  root@33395d43309b:/usr/local/apache2# exit</span>
+  exit
+  
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                  NAMES
+  33395d43309b        httpd               "httpd-foreground"   2 hours ago         Up 2 hours          0.0.0.0:8080-&gt;80/tcp   optimistic_tesla
+  
+</PRE>
+
+<P>
+After we exited the shell, Docker has not stopped the container, as we exited from the exec shell,
+not the attached session that was running the httpd in foreground.
+</P>
+
+<A NAME="toc12"></A>
+<H2>3.5. Exec and Getting shell</H2>
+
+<P>
+<I>Docker exec</I> command is used to execute a command in a running container.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -d httpd</B>
+  6cd0ad472ecc07534160542a57e39653233d5cf14679154673d9551ca2cd6f70
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS               NAMES
+  6cd0ad472ecc        httpd               "httpd-foreground"   2 seconds ago       Up 1 second         80/tcp              condescending_torvalds
+  
+<B>  prompt&gt; docker exec condescending_torvalds date</B>
+  Tue May  9 19:10:35 UTC 2017
+<B>  prompt&gt; docker exec condescending_torvalds whoami</B>
+  root
+</PRE>
+
+<P>
+In order to execute more than one command, we can use <I>bash -c</I>.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker exec condescending_torvalds bash -c 'date; cd /var/log; ls -tlr; ps -afux'</B>
+  Tue May  9 19:19:04 UTC 2017
+  total 236
+  -rw-rw-r-- 1 root utmp      0 Apr 24 16:36 wtmp
+  -rw-rw---- 1 root utmp      0 Apr 24 16:36 btmp
+  drwxr-xr-x 2 root root   4096 Apr 24 16:40 fsck
+  -rw-r----- 1 root adm      31 Apr 24 16:40 dmesg
+  -rw-rw-r-- 1 root utmp  30368 Apr 24 16:40 lastlog
+  -rw-r--r-- 1 root root   3328 Apr 24 16:40 faillog
+  -rw-r--r-- 1 root root  49129 Apr 24 16:40 bootstrap.log
+  drwxr-xr-x 2 root root   4096 Apr 24 23:31 apt
+  -rw-r--r-- 1 root root   3476 Apr 24 23:32 alternatives.log
+  -rw-r--r-- 1 root root 138123 Apr 24 23:32 dpkg.log
+  USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+  root       155  0.0  0.2  20048  2792 ?        Ss   19:19   0:00 bash -c date; cd /var/log; ls -tlr; ps -afux
+  root       160  0.0  0.2  17496  2120 ?        R    19:19   0:00  \_ ps -afux
+  root         1  0.0  0.4  77208  4468 ?        Ss   19:10   0:00 httpd -DFOREGROUND
+  daemon       6  0.0  0.3 366388  3440 ?        Sl   19:10   0:00 httpd -DFOREGROUND
+  daemon       7  0.0  0.3 366388  3440 ?        Sl   19:10   0:00 httpd -DFOREGROUND
+  daemon       8  0.0  0.3 366388  3440 ?        Sl   19:10   0:00 httpd -DFOREGROUND
+</PRE>
+
+<P>
+The options <I>-i (Keep STDIN open even if not attached)</I> and <I>-t Allocate a pseudo-TTY</I> can be used to get a
+interactive shell in a container.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker exec -ti condescending_torvalds /bin/bash</B>
+<span style="color:#0000FF">  root@6cd0ad472ecc:/usr/local/apache2# ls</span>
+  bin  build  cgi-bin  conf  error  htdocs  icons  include  logs  modules
+<span style="color:#0000FF">  root@6cd0ad472ecc:/usr/local/apache2# cd</span>
+<span style="color:#0000FF">  root@6cd0ad472ecc:~# exit</span>
+  exit
+  
+<B>  prompt&gt; docker exec -ti 6cd0ad472ecc /bin/bash</B>
+<span style="color:#0000FF">  root@6cd0ad472ecc:/usr/local/apache2# uptime</span>
+  19:22:05 up  1:06,  0 users,  load average: 0.00, 0.00, 0.00
+<span style="color:#0000FF">  root@6cd0ad472ecc:/usr/local/apache2# exit</span>
+  exit
+</PRE>
+
+<P>
+Docker commands accept "CONTAINER ID" or "NAMES" as input.
+</P>
+
+<A NAME="toc13"></A>
+<H2>3.6. Stop Container</H2>
+
+<P>
+If we want to stop the container:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                  NAMES
+  25375e3f360b        httpd               "httpd-foreground"   4 minutes ago       Up 4 minutes        0.0.0.0:8080-&gt;80/tcp   xenodochial_beaver
+  
+<B>  prompt&gt; docker stop 25375e3f360b</B>
+  25375e3f360b
+  
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+  
+<B>  prompt&gt; docker ps -a</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS                     PORTS               NAMES
+  25375e3f360b        httpd               "httpd-foreground"   4 minutes ago       Exited (0) 3 seconds ago                       xenodochial_beaver
+</PRE>
+
+<A NAME="toc14"></A>
+<H2>3.7. Copy files to/from container</H2>
+
+<P>
+Docker cp command is used to copy files from/to a container.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker cp --help</B>
+  
+  Usage:  docker cp [OPTIONS] CONTAINER:SRC_PATH DEST_PATH|-
+      docker cp [OPTIONS] SRC_PATH|- CONTAINER:DEST_PATH
+  
+  Copy files/folders between a container and the local filesystem
+  
+  Options:
+    -L, --follow-link   Always follow symbol link in SRC_PATH
+        --help          Print usage
+  
+<B>  prompt&gt; docker run -d httpd</B>
+  829560e348f2cb785b58965f77b82a6094cc45676eb8f17070be51492e68ff3e
+  
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS               NAMES
+  829560e348f2        httpd               "httpd-foreground"   2 seconds ago       Up 1 second         80/tcp              keen_curran
+</PRE>
+
+<P>
+Lets create a <I>file1</I> in the container:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker exec -ti 829560e348f2 /bin/bash</B>
+<span style="color:#0000FF">  root@829560e348f2:/usr/local/apache2# cd /tmp</span>
+<span style="color:#0000FF">  root@829560e348f2:/tmp# ls</span>
+<span style="color:#0000FF">  root@829560e348f2:/tmp# touch file1</span>
+<span style="color:#0000FF">  root@829560e348f2:/tmp# exit</span>
+  exit
+</PRE>
+
+<P>
+On host, create <I>file2</I>.
+</P>
+
+<PRE>
+<B>  prompt&gt; ls</B>
+  
+<B>  prompt&gt; touch file2</B>
+  
+<B>  prompt&gt; ls</B>
+  file2
+</PRE>
+
+<P>
+Copy file1 from container to host:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker cp 829560e348f2:/tmp/file1 .</B>
+  
+<B>  prompt&gt; ls</B>
+  file1  file2
+</PRE>
+
+<P>
+Copy file2 from host to container:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker cp file2 829560e348f2:/tmp</B>
+  
+<B>  prompt docker exec -ti 829560e348f2 /bin/bash</B>
+<span style="color:#0000FF">  root@829560e348f2:/usr/local/apache2# ls /tmp</span>
+  file1  file2
+</PRE>
+
+<A NAME="toc15"></A>
+<H2>3.8. Storage</H2>
+
+<P>
+Docker containers are ephemeral, i.e., when the container is terminated, all its data
+is deleted. There are some strategies to manage persistent data.
+You can check other way at 
+<A HREF="https://docs.docker.com/engine/tutorials/dockervolumes/">Manage data in containers</A>.
+</P>
+
+<A NAME="toc16"></A>
+<H3>3.8.1. Add a volume</H3>
+
+<P>
+You can add a volume to a container.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -it -v /app1 debian:jessie</B>
+<span style="color:#0000FF">  root@d3f2870736b9:/# df -h </span>
+  Filesystem      Size  Used Avail Use% Mounted on
+  none            9.3G  1.3G  7.6G  15% /
+  tmpfs           501M     0  501M   0% /dev
+  tmpfs           501M     0  501M   0% /sys/fs/cgroup
+  /dev/sda1       9.3G  1.3G  7.6G  15% /app1
+  shm              64M     0   64M   0% /dev/shm
+  tmpfs           501M     0  501M   0% /sys/firmware
+</PRE>
+
+<P>
+Behind the scenes, docker has created a directory on the host and mapped that to the container:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker inspect --format '{{ range .Mounts }}Source:{{ .Source }} Dest:{{.Destination}}{{ end }}' d3f2870736b9</B>
+  Source:/var/lib/docker/volumes/4355ab974b8c497aa5d990130d4590232417f7cabce1c16c187fbbba93f65e13/_data Dest:/app1
+  
+<B>  prompt&gt; docker inspect --format '{{ json .Mounts }}' d3f2870736b9</B>
+  [{"Type":"volume","Name":"4355ab974b8c497aa5d990130d4590232417f7cabce1c16c187fbbba93f65e13",
+  "Source":"/var/lib/docker/volumes/4355ab974b8c497aa5d990130d4590232417f7cabce1c16c187fbbba93f65e13/_data",
+  "Destination":"/app1","Driver":"local","Mode":"","RW":true,"Propagation":""}]
+  
+</PRE>
+
+<P>
+If you create a file on that container volume (/app1), it will appear in the host directory:
+</P>
+
+<PRE>
+<span style="color:#0000FF">  root@d3f2870736b9:/# cd /app1</span>
+<span style="color:#0000FF">  root@d3f2870736b9:/app1# ls         </span>
+<span style="color:#0000FF">  root@d3f2870736b9:/app1# touch file1</span>
+<span style="color:#0000FF">  root@d3f2870736b9:/app1# ls -l</span>
+  total 0
+  -rw-r--r-- 1 root root 0 Apr 28 17:45 file1
+<span style="color:#0000FF">  root@d3f2870736b9:/app1# </span>
+  
+<B>  prompt&gt; ls /var/lib/docker/volumes/4355ab974b8c497aa5d990130d4590232417f7cabce1c16c187fbbba93f65e13/_data</B>
+  file1
+</PRE>
+
+<P>
+If you create a file on host directory, it will appear in the container:
+</P>
+
+<PRE>
+<B>  prompt&gt; touch /var/lib/docker/volumes/4355ab974b8c497aa5d990130d4590232417f7cabce1c16c187fbbba93f65e13/_data/file2</B>
+<B>  prompt&gt;</B>
+  
+<span style="color:#0000FF">  root@d3f2870736b9:/app1# ls </span>
+  file1  file2
+</PRE>
+
+<A NAME="toc17"></A>
+<H3>3.8.2. Map a host directory</H3>
+
+<P>
+We can map a host directory to the container:
+</P>
+
+<PRE>
+<B>  prompt&gt; mkdir /tmp/myapp</B>
+<B>  prompt&gt; touch /tmp/myapp/file1</B>
+<B>  prompt&gt; docker run -it -v /tmp/myapp:/myapp debian:jessie</B>
+<span style="color:#0000FF">  root@c88520e62afc:/# df -h</span>
+  Filesystem      Size  Used Avail Use% Mounted on
+  none            9.3G  1.3G  7.6G  15% /
+  tmpfs           501M     0  501M   0% /dev
+  tmpfs           501M     0  501M   0% /sys/fs/cgroup
+  /dev/sda1       9.3G  1.3G  7.6G  15% /myapp
+  shm              64M     0   64M   0% /dev/shm
+  tmpfs           501M     0  501M   0% /sys/firmware
+<span style="color:#0000FF">  root@c88520e62afc:/# ls /myapp/</span>
+  file1
+</PRE>
+
+<P>
+If you create a file inside container on /myapp volume, the file will appear on host /tmp/myapp directory.
+</P>
+
+<PRE>
+<span style="color:#0000FF">  root@c88520e62afc:/# cd myapp/</span>
+<span style="color:#0000FF">  root@c88520e62afc:/myapp# ls</span>
+  file1
+<span style="color:#0000FF">  root@c88520e62afc:/myapp# touch file2</span>
+<span style="color:#0000FF">  root@c88520e62afc:/myapp# exit</span>
+  exit
+  
+<B>  prompt&gt; ls /tmp/myapp/</B>
+  file1  file2
+</PRE>
+
+<P>
+You can also map a directory in read-only mode, so the container will not be able to modify it.
+In order to map in read-only, just need to specify '<I>:ro</I>'.
+</P>
+
+<PRE>
+<B>  prompt&gt; ls /tmp/myapp/</B>
+  file1  file2
+  
+<B>  prompt&gt; docker run -it -v /tmp/myapp:/myapp:ro debian:jessie</B>
+<span style="color:#0000FF">  root@77d59335ec6e:/# cd /myapp/</span>
+<span style="color:#0000FF">  root@77d59335ec6e:/myapp# ls</span>
+  file1  file2
+<span style="color:#0000FF">  root@77d59335ec6e:/myapp# rm file2</span>
+  rm: cannot remove 'file2': Read-only file system
+<span style="color:#0000FF">  root@77d59335ec6e:/myapp# touch file3</span>
+  touch: cannot touch 'file3': Read-only file system
+</PRE>
+
+<A NAME="toc18"></A>
+<H1>4. Statistics</H1>
+
+<P>
+<I>Docker stats</I> command is used to show a live stream of container(s) resource usage statistics.
+</P>
+<P>
+In order to test, let's use the <I>stress</I> command. We can use the debian:jessie and during the container creation,
+install stress package and run it to stress CPU for 20 seconds.
+</P>
+<P>
+First, open a host shell and run <I>docker stats</I>:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker stats</B>
+  CONTAINER           CPU %               MEM USAGE / LIMIT   MEM %               NET I/O             BLOCK I/O           PIDS
+</PRE>
+
+<P>
+Then, open a new host shell and start the container:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run debian:jessie /bin/bash -c "apt-get update &amp;&amp; apt-get install -y stress &amp;&amp; /usr/bin/stress -c 4 --timeout 20"</B>
+  Get:1 http://security.debian.org jessie/updates InRelease [63.1 kB]
+  Get:2 http://security.debian.org jessie/updates/main amd64 Packages [508 kB]
+  Ign http://deb.debian.org jessie InRelease
+  Get:3 http://deb.debian.org jessie-updates InRelease [145 kB]
+  Get:4 http://deb.debian.org jessie Release.gpg [2373 B]
+  Get:5 http://deb.debian.org jessie-updates/main amd64 Packages [17.6 kB]
+  Get:6 http://deb.debian.org jessie Release [148 kB]
+  Get:7 http://deb.debian.org jessie/main amd64 Packages [9049 kB]
+  Fetched 9933 kB in 9s (1096 kB/s)
+  Reading package lists...
+  Reading package lists...
+  Building dependency tree...
+  Reading state information...
+  The following NEW packages will be installed:
+    stress
+  0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
+  Need to get 18.5 kB of archives.
+  After this operation, 44.0 kB of additional disk space will be used.
+  Get:1 http://deb.debian.org/debian/ jessie/main stress amd64 1.0.1-1+deb8u1 [18.5 kB]
+  debconf: delaying package configuration, since apt-utils is not installed
+  Fetched 18.5 kB in 1s (13.1 kB/s)
+  Selecting previously unselected package stress.
+  (Reading database ... 7562 files and directories currently installed.)
+  Preparing to unpack .../stress_1.0.1-1+deb8u1_amd64.deb ...
+  Unpacking stress (1.0.1-1+deb8u1) ...
+  Setting up stress (1.0.1-1+deb8u1) ...
+  stress: info: [51] dispatching hogs: 4 cpu, 0 io, 0 vm, 0 hdd
+  stress: info: [51] successful run completed in 20s
+</PRE>
+
+<P>
+<I>Docker stats</I> will start displaying statistics about the container:
+</P>
+
+<PRE>
+  CONTAINER           CPU %               MEM USAGE / LIMIT   MEM %               NET I/O             BLOCK I/O           PIDS
+  fb8b461b33a9        57.20%              0 B / 0 B           0.00%               10.3 MB / 331 kB    4.1 kB / 4.1 kB     0
+</PRE>
+
+<P>
+We can start more containers in deatch mode.
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -d debian:jessie /bin/bash -c "apt-get update &amp;&amp; apt-get install -y stress &amp;&amp; /usr/bin/stress -c 4 --timeout 20"</B>
+  630db0cc729e2f17650c4e33a037ecf7c9dec1cf6c95391736d01cc049371454
+  
+<B>  prompt&gt; docker run -d debian:jessie /bin/bash -c "apt-get update &amp;&amp; apt-get install -y stress &amp;&amp; /usr/bin/stress -c 4 --timeout 20"</B>
+  578a69da36ec254ba452110e36ccec06a34a89356e2cf304f1d74d266bf81020
+  
+<B>  prompt&gt; docker run -d debian:jessie /bin/bash -c "apt-get update &amp;&amp; apt-get install -y stress &amp;&amp; /usr/bin/stress -c 4 --timeout 20"</B>
+  d31b030e47b8600300953d10474ac61e86620a005a18a34f344d1ffd60f22d2a
+  
+<B>  prompt&gt; docker run -d debian:jessie /bin/bash -c "apt-get update &amp;&amp; apt-get install -y stress &amp;&amp; /usr/bin/stress -c 4 --timeout 20"</B>
+  4e6cc30500ebe327456869ba71b44e484fdc073ba6b4174e969c4d26dce6de12
+  
+</PRE>
+
+<P>
+We can see stats showing all containers:
+</P>
+
+<PRE>
+  CONTAINER           CPU %               MEM USAGE / LIMIT   MEM %               NET I/O             BLOCK I/O           PIDS
+  630db0cc729e        60.71%              0 B / 0 B           0.00%               10.3 MB / 330 kB    0 B / 332 kB        0
+  578a69da36ec        52.81%              0 B / 0 B           0.00%               10.3 MB / 337 kB    0 B / 8.19 kB       0
+  d31b030e47b8        57.44%              0 B / 0 B           0.00%               10.3 MB / 334 kB    0 B / 0 B           0
+  4e6cc30500eb        56.73%              0 B / 0 B           0.00%               10.3 MB / 338 kB    0 B / 0 B           0
+</PRE>
+
+<A NAME="toc19"></A>
+<H1>5. Inspect</H1>
+
+<P>
+Sometimes you need to get details about docker images and containers. We can use <I>docker insepct</I> command
+to see details:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker images</B>
+  REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+  httpd               latest              ef0aca83ba5a        4 days ago          177 MB
+  debian              jessie              054abe38b1e6        4 days ago          123 MB
+  hello-world         latest              48b5124b2768        3 months ago        1.84 kB
+  
+<B>  prompt&gt; docker inspect hello-world</B>
+  [
+      {
+          "Id": "sha256:48b5124b2768d2b917edcb640435044a97967015485e812545546cbed5cf0233",
+          "RepoTags": [
+              "hello-world:latest"
+          ],
+          "RepoDigests": [
+              "hello-world@sha256:c5515758d4c5e1e838e9cd307f6c6a0d620b5e07e6f927b07d05f6d12a1ac8d7"
+          ],
+          "Parent": "",
+          "Comment": "",
+          "Created": "2017-01-13T22:50:56.415736637Z",
+          "Container": "d7e9f7ed9c135402fba7227d8da07c250126181eee0cfd2743b5736b80108625",
+          "ContainerConfig": {
+              "Hostname": "b3e3b3843b7f",
+              "Domainname": "",
+  ...
+</PRE>
+
+<P>
+Details about containers:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -d httpd</B>
+  9b9e62273b14d62ace97e52739cd4c2c072ab0be8ecfd44abcb883926b924b45
+  
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS               NAMES
+  9b9e62273b14        httpd               "httpd-foreground"   2 seconds ago       Up 2 seconds        80/tcp              happy_khorana
+  
+<B>  prompt&gt; docker inspect 9b9e62273b14</B>
+  [
+      {
+          "Id": "9b9e62273b14d62ace97e52739cd4c2c072ab0be8ecfd44abcb883926b924b45",
+          "Created": "2017-04-29T18:12:58.454897676Z",
+          "Path": "httpd-foreground",
+          "Args": [],
+          "State": {
+              "Status": "running",
+              "Running": true,
+              "Paused": false,
+  ...
+</PRE>
+
+<P>
+You can also use <I>--format</I> option to get specific parts of the inspect output. Follow some useful ones:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -d httpd</B>
+  d4213045339ea5415e31cd6d6f215963268624e7e82a4b458fc639fc6d4bf069
+  
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS               NAMES
+  d4213045339e        httpd               "httpd-foreground"   2 seconds ago       Up 1 second         80/tcp              silly_lovelace
+  
+<B>  prompt&gt; docker inspect --format '{{.NetworkSettings.IPAddress }}' d4213045339e</B>
+  172.17.0.1
+  
+<B>  prompt&gt; docker inspect --format '{{.NetworkSettings }}' d4213045339e</B>
+  {{ 1b7ec36ea138b15c4492913e570fa7de6f966f8f41898d168f800a104fb29167 false  0 map[80/tcp:[]] /var/run/docker/netns/1b7ec36ea138 [] []}
+  {d6994f986d8e2ea1e6476d4faffd95871cfdd53d3a14bca8e846bee415a83402 172.17.42.1  0 172.17.0.1 16  02:42:ac:11:00:01} map[bridge:0xc4200c2900]}
+</PRE>
+
+<P>
+Json output:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker inspect --format '{{json .NetworkSettings }}' d4213045339e</B>
+  {"Bridge":"","SandboxID":"1b7ec36ea138b15c4492913e570fa7de6f966f8f41898d168f800a104fb29167","HairpinMode":false,"LinkLocalIPv6Address":"",
+  "LinkLocalIPv6PrefixLen":0,"Ports":{"80/tcp":null},"SandboxKey":"/var/run/docker/netns/1b7ec36ea138","SecondaryIPAddresses":null,
+  "SecondaryIPv6Addresses":null,"EndpointID":"d6994f986d8e2ea1e6476d4faffd95871cfdd53d3a14bca8e846bee415a83402","Gateway":"172.17.42.1",
+  "GlobalIPv6Address":"","GlobalIPv6PrefixLen":0,"IPAddress":"172.17.0.1","IPPrefixLen":16,"IPv6Gateway":"","MacAddress":"02:42:ac:11:00:01",
+  "Networks":{"bridge":{"IPAMConfig":null,"Links":null,"Aliases":null,"NetworkID":"281217de15f9a46c09286c18902d3881d304511a467c971c71ab80030870a800",
+  "EndpointID":"d6994f986d8e2ea1e6476d4faffd95871cfdd53d3a14bca8e846bee415a83402","Gateway":"172.17.42.1","IPAddress":"172.17.0.1",
+  "IPPrefixLen":16,"IPv6Gateway":"","GlobalIPv6Address":"","GlobalIPv6PrefixLen":0,"MacAddress":"02:42:ac:11:00:01"}}}
+</PRE>
+
+<P>
+You can specify many containers ID for the inspect command:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+  
+<B>  prompt&gt; docker ps -a</B>
+  
+<B>  prompt&gt; docker run -d httpd</B>
+  af0f28272c0fb42d0d7a35aa5c7fda361ca5fdbc7128a83612a67f4919348a68
+  
+<B>  prompt&gt; docker run -p 8080:80 -d httpd</B>
+  decba8896532e11cbb4d8d8ea96a7f27d2c55609966f2c2282b905471ccb133e
+  
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                  NAMES
+  decba8896532        httpd               "httpd-foreground"   4 seconds ago       Up 3 seconds        0.0.0.0:8080-&gt;80/tcp   stoic_noyce
+  af0f28272c0f        httpd               "httpd-foreground"   17 seconds ago      Up 16 seconds       80/tcp                 clever_rosalind
+  
+<B>  prompt&gt; docker ps -q</B>
+  decba8896532
+  af0f28272c0f
+  
+<B>  prompt&gt; docker inspect --format '{{.Name}} -- IP: {{.NetworkSettings.IPAddress }} -- GW: {{.NetworkSettings.Gateway }} -- ExposedPorts: {{.Config.ExposedPorts}} -- MappedPorts: {{.HostConfig.PortBindings }}' $(docker ps -q)</B>
+  /stoic_noyce -- IP: 172.17.0.2 -- GW: 172.17.42.1 -- ExposedPorts: map[80/tcp:{}] -- MappedPorts: map[80/tcp:[{ 8080}]]
+  /clever_rosalind -- IP: 172.17.0.1 -- GW: 172.17.42.1 -- ExposedPorts: map[80/tcp:{}] -- MappedPorts: map[]
+</PRE>
+
+<P>
+Volume binds:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -v /tmp:/app1 -d httpd</B>
+  73a09492cd4b2447ed1f6c8c785143388a35056fc75d17099099b4409bc7ad67
+<B>  prompt&gt; docker run -v /app2 -d httpd</B>
+  ab1fe65892df21743522a6f5bed9836506e7c6e4edf4c64ff0008225c8c55233
+  
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS               NAMES
+  ab1fe65892df        httpd               "httpd-foreground"   21 seconds ago      Up 21 seconds       80/tcp              distracted_mahavira
+  73a09492cd4b        httpd               "httpd-foreground"   28 seconds ago      Up 28 seconds       80/tcp              nifty_goodall
+  
+<B>  prompt&gt; docker inspect --format '{{.Name}} -- {{ range .Mounts }}Source:{{ .Source }} Dest:{{.Destination}}{{ end }}' $(docker ps -q)</B>
+  /distracted_mahavira -- Source:/var/lib/docker/volumes/cbad639ddc2b2726887f7cb91e943202e8ce5977f05bbe779e1ba33ce7dd6962/_data Dest:/app2
+  /nifty_goodall -- Source:/tmp Dest:/app1
+</PRE>
+
+<P>
+Network details:
+</P>
+
+<PRE>
+<B>  prompt&gt; docker run -d httpd</B>
+  e9eeb41bf98cb46608e3fc57736a8b5f5ba10190d6988a124140bdb53913ee4c
+  
+<B>  prompt&gt; docker run -p 8080:80 -d httpd</B>
+  e9792f28e8ea3a276ff24262bc634c2a19fb7ab38ef2697e7aaea120c0d68743
+  
+<B>  prompt&gt; docker run -P -d httpd</B>
+  50be9dc37f67032f80c077a3a59c79247cc677f08a52f077655f85bc408d8f28
+  
+<B>  prompt&gt; docker run -P -d httpd</B>
+  396b8f53cab5186977674f27c9683439850ce952fdfdf64b7503c535d951ee40
+  
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                   NAMES
+  396b8f53cab5        httpd               "httpd-foreground"   15 seconds ago      Up 14 seconds       0.0.0.0:32771-&gt;80/tcp   naughty_jepsen
+  50be9dc37f67        httpd               "httpd-foreground"   17 seconds ago      Up 16 seconds       0.0.0.0:32770-&gt;80/tcp   relaxed_curran
+  e9792f28e8ea        httpd               "httpd-foreground"   24 seconds ago      Up 23 seconds       0.0.0.0:8080-&gt;80/tcp    peaceful_fermat
+  e9eeb41bf98c        httpd               "httpd-foreground"   32 seconds ago      Up 31 seconds       80/tcp                  infallible_boyd
+  
+<B>  prompt&gt; docker inspect --format '{{.Name}} -- IP: {{.NetworkSettings.IPAddress }} -- GW: {{.NetworkSettings.Gateway }} -- ExposedPorts: {{.Config.ExposedPorts}} -- MappedPorts {{.NetworkSettings.Ports}}' $(docker ps -q) </B>
+  /naughty_jepsen -- IP: 172.17.0.4 -- GW: 172.17.42.1 -- ExposedPorts: map[80/tcp:{}] -- MappedPorts map[80/tcp:[{0.0.0.0 32771}]]
+  /relaxed_curran -- IP: 172.17.0.3 -- GW: 172.17.42.1 -- ExposedPorts: map[80/tcp:{}] -- MappedPorts map[80/tcp:[{0.0.0.0 32770}]]
+  /peaceful_fermat -- IP: 172.17.0.2 -- GW: 172.17.42.1 -- ExposedPorts: map[80/tcp:{}] -- MappedPorts map[80/tcp:[{0.0.0.0 8080}]]
+  /infallible_boyd -- IP: 172.17.0.1 -- GW: 172.17.42.1 -- ExposedPorts: map[80/tcp:{}] -- MappedPorts map[80/tcp:[]]
+</PRE>
+
+<A NAME="toc20"></A>
+<H1>6. Useful commands</H1>
+
+<P>
+List with most common commands:
+</P>
+
+<TABLE ALIGN="center" BORDER="1" CELLPADDING="4">
+<TR>
+<TH>Type</TH>
+<TH>Action</TH>
+<TH>Command</TH>
+</TR>
+<TR>
+<TD>Images</TD>
+<TD>List images</TD>
+<TD>docker images</TD>
+</TR>
+<TR>
+<TD>Images</TD>
+<TD>List only images ID</TD>
+<TD>docker images -q</TD>
+</TR>
+<TR>
+<TD>Images</TD>
+<TD>List all images (intermediate image layers too)</TD>
+<TD>docker images -a</TD>
+</TR>
+<TR>
+<TD>Images</TD>
+<TD>Remove one or more images</TD>
+<TD>docker rmi <I>image_id</I></TD>
+</TR>
+<TR>
+<TD>Images</TD>
+<TD>Save an image to a tar file</TD>
+<TD>docker save -o file.tar <I>image</I></TD>
+</TR>
+<TR>
+<TD>Images</TD>
+<TD>Load an image from a tar file</TD>
+<TD>docker load -i file.tar</TD>
+</TR>
+<TR>
+<TD>Images</TD>
+<TD>Display low-level information about an image</TD>
+<TD>docker inspect <I>image</I></TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>List running containers</TD>
+<TD>docker ps</TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>List only the container's ID of running containers</TD>
+<TD>docker ps -q</TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>List all containers</TD>
+<TD>docker ps -a</TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>List only the container's ID of all containers</TD>
+<TD>docker ps -qa</TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Display live stream of containers' resource usage statistics</TD>
+<TD>docker stats</TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Display low-level information about a container</TD>
+<TD>docker inspect <I>container</I></TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Create a container and get a shell inside it</TD>
+<TD>docker run -it <I>image</I> /bin/bash</TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Create container in background</TD>
+<TD>docker run -d <I>image</I></TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Create container and map ports between host and container</TD>
+<TD>docker run -d -p 8080:80 <I>image</I></TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Create container and map a host directory to container</TD>
+<TD>docker run -it -v /tmp/myapp:/myapp <I>image</I></TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Create container and map a host directory as read-only to container</TD>
+<TD>docker run -it -v /tmp/myapp:/myapp:ro <I>image</I></TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Get a shell in a running container</TD>
+<TD>docker exec -ti <I>container</I> /bin/bash</TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Display logs of a container</TD>
+<TD>docker logs <I>container</I></TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Stop a container</TD>
+<TD>docker stop <I>container</I></TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Remove one or more containers</TD>
+<TD>docker rm <I>container</I></TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Stop all running containers</TD>
+<TD>docker stop $(docker ps -q)</TD>
+</TR>
+<TR>
+<TD>Containers</TD>
+<TD>Remove all stopped containers</TD>
+<TD>docker rm $(docker ps -q -f status=exited)</TD>
+</TR>
+</TABLE>
+
+<P>
+There are some common docker commands that probably you will use a lot. It maybe a good idea
+to create some bash alias to save some time.
+</P>
+
+<TABLE ALIGN="center" BORDER="1" CELLPADDING="4">
+<TR>
+<TH>Action</TH>
+<TH>Alias/Command</TH>
+</TR>
+<TR>
+<TD>Stop all running containers</TD>
+<TD>alias dstopall='docker stop $(docker ps -q)'</TD>
+</TR>
+<TR>
+<TD>Remove all stopped containers</TD>
+<TD>alias drmstopped='docker rm $(docker ps -q -f status=exited)'</TD>
+</TR>
+<TR>
+<TD>Remove all containers. Even the ones running</TD>
+<TD>alias drmall='docker rm -f $(docker ps -qa)'</TD>
+</TR>
+<TR>
+<TD>Remove all images</TD>
+<TD>alias drmiall='docker rmi $(docker images -q)'</TD>
+</TR>
+<TR>
+<TD>Get into a running container. Specify the container ID</TD>
+<TD>alias dshell='_dshell() { docker exec -ti "$1" /bin/bash; }; _dshell'</TD>
+</TR>
+<TR>
+<TD>List IP of all running containers</TD>
+<TD>alias dip='docker inspect --format "{{.Name}} - {{.NetworkSettings.IPAddress }}" $(docker ps -q)'</TD>
+</TR>
+<TR>
+<TD>List all IP, exposed and mapped ports</TD>
+<TD>alias dtcp='docker inspect --format "{{.Name}} - {{.NetworkSettings.IPAddress }} - {{.Config.ExposedPorts}} - {{.NetworkSettings.Ports}}" $(docker ps -q)'</TD>
+</TR>
+<TR>
+<TD>List containers volume mapping</TD>
+<TD>alias dvol='docker inspect --format "{{.Name}} - {{ range .Mounts }}{{ .Source }} -&gt; {{.Destination}}{{ end }}" $(docker ps -q)'</TD>
+</TR>
+</TABLE>
+
+<PRE>
+<B>  prompt&gt; docker ps -a</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+<B>  prompt&gt; docker run -d httpd</B>
+  72f2036155b0a602551760179c2eb64c918a3a18c338e62cea5509a2ab28374d
+<B>  prompt&gt; docker run -d httpd</B>
+  bb35287df72dbb4351b04807c6685a709982c2ed65715625cc5b2e5fcf0ff22a
+<B>  prompt&gt; docker run -d debian:jessie</B>
+  4aaf924145c35632f2707d5694356f3623029a9516c27d3adcea764656272547
+<B>  prompt&gt; </B>
+<B>  prompt&gt; docker ps -a</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS                      PORTS               NAMES
+  4aaf924145c3        debian:jessie       "/bin/bash"          35 seconds ago      Exited (0) 35 seconds ago                       pedantic_borg
+  bb35287df72d        httpd               "httpd-foreground"   40 seconds ago      Up 40 seconds               80/tcp              wonderful_yalow
+  72f2036155b0        httpd               "httpd-foreground"   45 seconds ago      Up 44 seconds               80/tcp              confident_kalam
+<B>  prompt&gt; </B>
+<B>  prompt&gt; dip</B>
+  /wonderful_yalow - 172.17.0.2
+  /confident_kalam - 172.17.0.1
+<B>  prompt&gt; dshell wonderful_yalow</B>
+<span style="color:#0000FF">  root@bb35287df72d:/usr/local/apache2# exit</span>
+  exit
+<B>  prompt&gt; dstopall</B>
+  bb35287df72d
+  72f2036155b0
+<B>  prompt&gt; docker ps</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+<B>  prompt&gt; </B>
+<B>  prompt&gt; docker ps -a</B>
+  CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS                      PORTS               NAMES
+  4aaf924145c3        debian:jessie       "/bin/bash"          2 minutes ago       Exited (0) 2 minutes ago                        pedantic_borg
+  bb35287df72d        httpd               "httpd-foreground"   2 minutes ago       Exited (0) 22 seconds ago                       wonderful_yalow
+  72f2036155b0        httpd               "httpd-foreground"   2 minutes ago       Exited (0) 22 seconds ago                       confident_kalam
+<B>  prompt&gt; </B>
+<B>  prompt&gt; drmall </B>
+  4aaf924145c3
+  bb35287df72d
+  72f2036155b0
+<B>  prompt&gt; docker ps -a</B>
+  CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS              PORTS               NAMES
+<B>  prompt&gt; </B>
+<B>  prompt&gt; docker run -d -p 8080:80 httpd</B>
+  742ed467b193d82f62c419ca72e5c2778e88bcb295cef6053e1ddbfd93883742
+<B>  prompt&gt; dtcp</B>
+  /affectionate_dijkstra - 172.17.0.3 - map[80/tcp:{}] - map[80/tcp:[{0.0.0.0 8080}]]
+</PRE>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2229503-1";
+urchinTracker();
+</script>
+
+<!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
+<!-- cmdline: txt2tags index.t2t -->
+</BODY></HTML>

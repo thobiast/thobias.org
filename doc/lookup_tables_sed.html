@@ -1,0 +1,511 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.sf.net">
+<LINK REL="stylesheet" TYPE="text/css" HREF="sed.css">
+<TITLE>Lookup Tables &amp; Incrementando em sed</TITLE>
+</HEAD><BODY BGCOLOR="white" TEXT="black">
+<P ALIGN="center"><CENTER><H1>Lookup Tables &amp; Incrementando em sed</H1>
+<FONT SIZE=4>
+<I>Thobias Salazar Trevisan</I><BR>
+20/07/2003
+</FONT></CENTER>
+
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<P>
+ <UL>
+ <LI><A HREF="#toc1">Usando lookup-tables</A>
+  <UL>
+  <LI><A HREF="#toc2">Lookup Tables</A>
+  </UL>
+ <LI><A HREF="#toc3">Contador com Lookup Table</A>
+ <LI><A HREF="#toc4">SED o Matemático</A>
+ </UL>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<P>
+<a name="toc1"></a>
+<H1>Usando lookup-tables</H1>
+<P>
+Macacos me mordam Batman. Mas eu já tenho let, expr, bc, dc, $(( )), 
+além do <A HREF="inc_sed.html">Usando o sed para contar</A>, para que complicar mais ?!
+<P>
+Hei garoto-prodígio, para se ter conhecimento é preciso praticar. Lembre-se
+sempre do Sr. Miyagi: 
+<P>
+<BLOCKQUOTE>
+	Daniel-San, pinte a cerca! Lixe o assoalho!! Lixe com a mão esquerda, lixe com a mão direita....
+</BLOCKQUOTE>
+<P>
+Utilizando a técnica de 
+<A HREF="http://sed.sourceforge.net/grabbag/tutorials/lookup_tables.txt">lookup tables</A>,
+podemos diminuir aquele sed para incrementar um número. Primeiro uma 
+explicação sobre esta técnica.
+<P>
+<a name="toc2"></a>
+<H2>Lookup Tables</H2>
+<P>
+Lookup tables é uma técnica ninja, onde utilizamos uma espada (<CODE>s///</CODE>) afiada 
+para cortar nossa entrada e deixar somente o pedaço que nos interessa.
+<P>
+Vamos introduzir (ops) o assunto aos poucos.
+Imagine que tenhamos a seguinte entrada 12345678901, e queremos pegar o caractere 
+após o 3, no caso o 4. Então nós usaríamos este sed:
+<P>
+<PRE>
+  prompt&gt; echo 12345678901 | sed 's/.*3\(.\).*/\1/'
+  4
+  prompt&gt;
+</PRE>
+<P>
+Qualquer coisa até encontrarmos o 3 (<CODE>.*3</CODE>), depois que encontrarmos,
+criamos um grupo com o próximo caractere (<CODE>\(.\)</CODE>), no caso o 4, 
+mais um <CODE>.*</CODE> para pegar o resto da linha e, trocamos tudo isto, pelo 
+grupo que criamos, ou seja, o próximo caractere depois do 3.
+<P>
+Com o sed acima, podemos colocar no lugar do 3 qualquer número que 
+irá retornar sempre o próximo, como se fosse uma lista circular
+(round-robin). Agora imagine que nós não sabemos qual vai ser o
+valor que estará no lugar do 3 ou que nós queremos passá-lo junto no
+echo. Para isto, criamos um caractere especial para separá-lo da nossa
+lista e, usamos backreference para achá-lo na lista. Exemplo:
+<P>
+<PRE>
+  prompt&gt; echo 3=12345678901 | sed 's/^\(.\)=.*\1\(.\).*/\2/'
+  4
+  prompt&gt; echo 9=12345678901 | sed 's/^\(.\)=.*\1\(.\).*/\2/'
+  0
+  prompt&gt;
+</PRE>
+<P>
+Criamos um grupo com o primeiro caractere, e dizemos ao sed para procurar
+qualquer caractere repetido 0 ou mais vezes <CODE>.*</CODE> até encontrar esse
+caractere que está no primeiro grupo (<CODE>\1</CODE>). Após encontrá-lo, cria um novo 
+grupo com o próximo caractere e substitua tudo isto por este segundo grupo. 
+No primeiro exemplo, seria a mesma coisa que:
+<P>
+<PRE>
+  prompt&gt; echo 3=12345678901 | sed 's/^3=.*3\(.\).*/\1/'
+</PRE>
+<P>
+Agora imagine que este sed esteje em um script, é muito mais fácil usar uma
+solução genérica do que, para cada número, ter que editar o script para
+colocar o número desejado. Na solução genérica, você passa o número
+quando chama o script.
+<P>
+Vamos a mais um exemplo para fixar na mente:
+<P>
+<PRE>
+  prompt&gt; cat lookup_table.sed 
+  #!/bin/sed -f
+  
+  G
+  s/$/12345678901/
+  s/^\(.*\)\(.\)\n.*\2\(.\).*/\1\3/
+  prompt&gt;
+</PRE>
+<P>
+Calma que é a mesma coisa.
+A grande diferença deste script para o anterior é que aqui o
+caractere que separa o caractere desejado da lista é o newline (<CODE>\n</CODE>) e,
+nos colocamos a lista dentro do script sed. <A HREF="http://sedsed.sourceforge.net/">sedsed</A>
+vai nos ajudar a entender. sedsed é um programa em python para sed escrito
+pelo Aurélio. A saída dele é para console, assim vou utilizar um sed para
+deixar sua saída mais legível para o nosso exemplo:
+<P>
+<PRE>
+  prompt&gt; cat limpa.sed 
+  #!/bin/sed -f
+  
+  s/^[^:]*:\(.*\)\$$/\1/
+  s/^COMM:/    /
+  prompt&gt;
+</PRE>
+<P>
+Testando:
+<P>
+<PRE>
+  prompt&gt; echo 0 | sedsed -d --hide=HOLD -f lookup_table.sed | limpa.sed 
+  0
+      G
+  0\n
+      s/$/12345678901/
+  0\n12345678901
+      s/^\(.*\)\(.\)\n.*\2\(.\).*/\1\3/
+  1
+  1
+  prompt&gt;
+</PRE>
+<P>
+Entendendo a saída:
+<P>
+<UL>
+<LI>as linhas que começam com um número mostram a entrada ou a saída para cada instrução.
+<LI>as linhas que começam com espaços em branco são as instruções sed.
+</UL>
+O comando G anexa o que está no hold space (neste caso uma linha em branco) 
+no pattern space. Repare que após sua execução nossa entrada vira (<CODE>0\n</CODE>). 
+Com a próxima instrução (<CODE>s/$/12345678901/</CODE>), colocamos após o (<CODE>\n</CODE>) a 
+ordem de como incrementamos um número, em outras palavras, depois 
+do 1 vem o 2, depois 3 até 0, que vira 1 e recomeça o incremento. 
+<P>
+O pattern space após a segunda instrução está assim:
+<P>
+<PRE>
+  0\n12345678901
+  
+  que é igual a:
+  
+  0
+  12345678901
+</PRE>
+<P>
+É como no exemplo anterior, só que neste caso, nós passamos para o script
+só a entrada, ele te devolve o próximo caractere após o que você passou.
+Agora, com muita calma, vamos analisar o último comando, que é a chave da
+porta do tesouro. Como Jack, vamos por partes nesta expressão regular.
+<P>
+Primeiro, repare que o segundo grupo é de apenas 1 caractere e logo após
+este caractere vem o newline (<CODE>\n</CODE>). No exemplo, o primeiro grupo será
+vazio. Até agora o que temos é o último caractere antes do (<CODE>\n</CODE>) no grupo 2.
+Com este grupo nós vamos indexar o que vem após o (<CODE>\n</CODE>) para pegar o
+caractere depois do que estiver no grupo 2. Usamos o grupo 2 para marcar um
+ponto da nossa cadeia (12345678901), e pegamos o próximo caractere. Para
+pegar o próximo caractere após o (<CODE>\2</CODE>) criamos um terceiro grupo com ele. 
+<P>
+Vamos executar mais uma vez este script com uma entrada diferente:
+<P>
+<PRE>
+  prompt&gt; echo 123 | sedsed -d --hide=HOLD -f lookup_table.sed | limpa.sed 
+  123
+      G
+  123\n
+      s/$/12345678901/
+  123\n12345678901
+      s/^\(.*\)\(.\)\n.*\2\(.\).*/\1\3/
+  124
+  124
+  prompt&gt;
+</PRE>
+<P>
+Agora, no grupo 1 vai ter os caracteres 1 e 2. No grupo 2 vai estar o
+caractere antes do (<CODE>\n</CODE>), no caso o 3. Como criamos um grupo com o
+caractere 3, que está em (<CODE>\2</CODE>), vamos utilizá-lo para indexar a nossa lista de
+caracteres, ou seja, após o (<CODE>\n</CODE>) qualquer caractere repetido 0 ou 
+mais vezes até encontrar o que está no grupo 2, no caso o caractere 3.
+Criamos um grupo com este próximo caractere, e trocamos tudo isto, pelo
+grupo 1, que contém os caracteres 1e 2, e o grupo 3, que vai ter o 
+caractere 4. Calma, respire fundo e releia a última execução e este parágrafo.
+<P>
+Sacaram o poder das lookup tables =8)
+<P>
+Você pode fazer mapeamento n:1, 1:n, n:m. Vamos a um exemplo de 1:n, onde
+passamos um número e o sed nos devolve a fruta relativa a este número:
+<P>
+<PRE>
+  prompt&gt; cat exemplo2.sed 
+  #!/bin/sed -f
+  
+  G
+  s/$/1banana2maca3pera4abacaxi5uva/
+  s/^\(.\)\n.*\1\([a-z]*\).*/\2/
+  /[0-9]/s/.*/numero invalido/
+  prompt&gt;
+</PRE>
+<P>
+Testando:
+<P>
+<PRE>
+  prompt&gt; echo 1 | ./exemplo2.sed 
+  banana
+  prompt&gt; echo 3 | ./exemplo2.sed 
+  pera
+  prompt&gt; echo 8 | ./exemplo2.sed 
+  numero invalido
+  prompt&gt;
+</PRE>
+<P>
+Criamos um grupo com o primeiro caractere (antes do <CODE>\n</CODE>), depois usamos
+este caractere para indexar a nossa lista, e criamos um segundo grupo com 
+as letras após este número. A última instrução é para garatir que, 
+encontramos alguma fruta com o número que recebemos como entrada.
+<P>
+Último exemplo, vamos criar um mapeamento n:m
+<P>
+Vamos supor que você tenha uma lista de palavras, e que você tenha que
+sempre pegar a próxima da lista. Exemplo:
+<P>
+<PRE>
+  prompt&gt; cat exemplo3.sed 
+  #!/bin/sed -f
+  
+  G
+  s/$/arroz feijao massa batata arroz/
+  s/^\(.*\)\n.*\1 \([^ ]*\).*/\2/
+  prompt&gt;
+</PRE>
+<P>
+<PRE>
+  prompt&gt; echo arroz | exemplo3.sed 
+  feijao
+  prompt&gt; echo feijao | exemplo3.sed 
+  massa
+  prompt&gt; echo batata | exemplo3.sed 
+  arroz
+  prompt&gt;
+</PRE>
+<P>
+Usando o sedsed para ajudar:
+<P>
+<PRE>
+  prompt&gt; echo arroz | sedsed -d --hide=HOLD -f exemplo3.sed | limpa.sed 
+  arroz
+      G
+  arroz\n
+      s/$/arroz feijao massa batata arroz/
+  arroz\narroz feijao massa batata arroz
+      s/^\(.*\)\n.*\1 \([^ ]*\).*/\2/
+  feijao
+  feijao
+  prompt&gt;
+</PRE>
+<P>
+<a name="toc3"></a>
+<H1>Contador com Lookup Table</H1>
+<P>
+Recomendo que, antes de seguir em frente, você leia 
+<A HREF="inc_sed.html">Usando o sed para contar</A>, para entender como 
+o algoritmo abaixo funciona.
+<P>
+O que o algoritmo de somar faz basicamente é, trocar todos os 9s no
+final da linha por _, testar se precisa aumentar o número de
+casa decimais e depois incrementar o último dígito da linha. Para fazer esta
+última parte podemos usar uma lookup table. Vamos a mais uma tentativa:
+<P>
+<PRE>
+  prompt&gt; cat incr_tentativa_6.sed 
+  #!/bin/sed -f
+  
+  s/^\(9*\)$/0\1/
+  :nove
+  s/\(.*\)9\(_*\)$/\1_\2/
+  tnove
+  G
+  s/$/12345678901/
+  s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/
+  s/_/0/g
+  prompt&gt;
+</PRE>
+<P>
+Repare que temos o loop inicial para trocar os 9s por _ e o teste (primeira
+instrução) para testar se devemos ou não aumentar o número de casas
+decimais. Na última instrução, trocamos todos os _ por 0. A diferença está
+em como vamos incrementar um número entre 0 e 9. Ao invés de fazer uma
+instrução para cada substituição, ou seja, <CODE>s/0/1/</CODE>, <CODE>s1/2/</CODE>, <CODE>s/2/3/</CODE>...
+utilizamos esta técnica. Vamos testar:
+<P>
+<PRE>
+  prompt&gt; echo 0 | incr_tentativa_6.sed  
+  1
+  prompt&gt; echo 9 | incr_tentativa_6.sed 
+  10
+  prompt&gt; echo 99 | incr_tentativa_6.sed 
+  100
+  prompt&gt; echo 1499 | incr_tentativa_6.sed 
+  1500
+  prompt&gt; echo 1459 | incr_tentativa_6.sed 
+  1460
+  prompt&gt;
+</PRE>
+<P>
+Para nos ajudar de novo, chamamos o Mr. sedsed.
+<P>
+<PRE>
+  prompt&gt; echo 0 | sedsed -d --hide=HOLD -f incr_tentativa_6.sed | limpa.sed 
+  0
+      s/^\(9*\)$/0\1/
+  0
+      : nove
+      s/\(.*\)9\(_*\)$/\1_\2/
+  0
+      t nove
+      G                                          &lt;&lt;&lt; --- adiciona o \n
+  0\n
+      s/$/12345678901/                           &lt;&lt;&lt; --- adiciona a lista após o \n
+  0\n12345678901
+      s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/  &lt;&lt;&lt; --- pegamos o que vem após o 0
+  1
+      s/_/0/g
+  1
+  1
+  prompt&gt;
+</PRE>
+<P>
+Como no nosso exemplo não tem 9, as primeiras instruções não têm efeito, 
+ou seja, não mudam a entrada.
+<P>
+A instrução <CODE>G</CODE>, anexa uma linha em branco no patter space, repare que
+após sua execução nossa entrada vira (<CODE>0\n</CODE>). Com a próxima instrução
+(<CODE>s/$/12345678901/</CODE>), colocamos após o <CODE>\n</CODE> a ordem de como incrementamos
+um número.
+<P>
+O grande esquema está na próxima instrução.
+(<CODE>s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/</CODE>), passando um número à ela, o
+que retorna é o mesmo número, mmmmmaaassssss o último dígito será o 
+próximo na cadeia. 
+<P>
+Mais 2 exemplos:
+<P>
+<PRE>
+  prompt&gt; echo 1499 | sedsed -d --hide=HOLD -f incr_tentativa_6.sed | limpa.sed 
+  1499
+      s/^\(9*\)$/0\1/
+  1499
+      : nove
+      s/\(.*\)9\(_*\)$/\1_\2/             &lt;&lt;&lt; --- troca 9 por _
+  149_
+      t nove
+      s/\(.*\)9\(_*\)$/\1_\2/             &lt;&lt;&lt; --- troca 9 por _
+  14__
+      t nove
+      s/\(.*\)9\(_*\)$/\1_\2/
+  14__
+      t nove
+      G
+  14__\n
+      s/$/12345678901/                    &lt;&lt;&lt; --- adicionamos a lista
+  14__\n12345678901
+      s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/  &lt;&lt;&lt; --- retorna o mesmo número mas com o **último** dígito "mais" 1
+  15__
+      s/_/0/g
+  1500
+  1500
+  prompt&gt;
+</PRE>
+<P>
+<PRE>
+  prompt&gt; echo 1449 | sedsed -d --hide=HOLD -f incr_tentativa_6.sed | limpa.sed 
+  1449
+      s/^\(9*\)$/0\1/
+  1449
+      : nove
+      s/\(.*\)9\(_*\)$/\1_\2/
+  144_
+      t nove
+      s/\(.*\)9\(_*\)$/\1_\2/
+  144_
+      t nove
+      G
+  144_\n
+      s/$/12345678901/
+  144_\n12345678901
+      s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/   &lt;&lt;&lt; --- último dígito mais 1
+  145_
+      s/_/0/g
+  1450
+  1450
+  prompt&gt;
+</PRE>
+<P>
+O princípio de fazer a some é o mesmo de antes, a diferença está em como
+"somar" 1 ao último "dígito".
+<P>
+<a name="toc4"></a>
+<H1>SED o Matemático</H1>
+<P>
+Seu filho está crescendo e já sabe contar. Hora de ensiná-lo que na vida
+nem sempre se soma, também temos que diminuir e, em certas
+ocisiões, ficamos devendo alguma coisa. =8) 
+<P>
+Depois de aprender a somar utilizando lookup table, vamos a um exemplo onde
+passamos o valor e o tipo de operação que desejamos fazer sobre este número.
+<P>
+<PRE>
+  prompt&gt; cat count.sed 
+  #!/bin/sed -f
+  
+  bmain
+  
+  :add
+          :nine 
+          s/\(.*\)9\(_*\)$/\1_\2/
+          tnine 
+          s/^\(-\)\?\(_*\)$/\10\2/
+          G
+          s/$/12345678901/
+          s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/
+          s/_/0/g
+          s/^[+-]0$/0/
+          q
+  
+  :sub
+          :zero 
+          s/\(.*\)0\(_*\)$/\1_\2/
+          tzero 
+          s/^1\(_\+\)$/\1/;tfim
+          /^_$/{s//-1/;q;}
+          G
+          s/$/98765432109/
+          s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/
+          :fim
+          s/_/9/g
+          s/^[+-]0$/0/
+          q
+  
+  :main
+          s/-\([0-9]*\) *+$/-\1/;tsub
+          s/-\([0-9]*\) *-$/-\1/;tadd
+          s/ *+$//;tadd
+          s/ *-$//;tsub
+  prompt&gt;
+</PRE>
+<P>
+Exemplos de uso:
+<P>
+<PRE>
+  prompt&gt; echo 0 + | count.sed 
+  1
+  prompt&gt; echo 0 - | count.sed 
+  -1
+  prompt&gt; echo -10 + | count.sed 
+  -09
+  prompt&gt; echo -10 - | count.sed 
+  -11
+  prompt&gt; echo 100 - | count.sed 
+  99
+  prompt&gt; echo 100 + | count.sed 
+  101
+  prompt&gt; echo 99 + | count.sed 
+  100
+  prompt&gt; echo -99 + | count.sed 
+  -98
+  prompt&gt; echo -99 - | count.sed 
+  -100
+  prompt&gt;
+</PRE>
+<P>
+Para subtrair temos que cuidar se o número é 0 e inverter a nossa tabela,
+ou seja, 98765432109.
+<P>
+Com um pouco de análise você verá que os princípos são os mesmo.
+<P>
+E assim, terminamos mais um tour pelo maravilhoso mundo do sed! =8)
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+This HTML page is <A HREF="http://txt2tags.sf.net"><IMG ALIGN="middle" SRC="pwrbytxt2tags-2.png" BORDER="0"></A>
+(see <A HREF="lookup_tables_sed.t2t">source</A>)
+<P>
+
+<!-- html code generated by txt2tags 1.6 (http://txt2tags.sf.net) -->
+<!-- cmdline: txt2tags -\-style sed.css -\-toc -t html lookup_tables_sed.t2t -->
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2229503-1";
+urchinTracker();
+</script>
+</BODY></HTML>

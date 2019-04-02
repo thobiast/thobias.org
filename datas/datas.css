@@ -1,0 +1,66 @@
+div.header {
+	margin-top: 0em;
+	margin-bottom: 2em;
+	margin-left: 0em;
+	float: left;
+	text-align: center;
+	width: 55%;
+	font-family: monospace;
+	font-size:  120%;
+}
+
+div.header h2 {
+	text-align: center;
+	font-size: 100%;
+}
+
+div.mini {
+	float: right;
+	width: 45%;
+}
+
+div.toc {
+	clear: both;
+	font-family: Geneva, sans-serif;
+	margin: 2.5em;
+	width: 80%;
+	text-align: left;
+	border: 1px solid silver;
+	border-color: black;
+	border-right-width: 0em;
+	border-left-width: 0em;
+}
+
+div.lastrelease table {
+	text-align: center;
+	font-family: monospace;
+	font-size: 140%;
+	border: 3px solid silver;
+	border-color: black;
+	background-color: #add8e6;
+	padding-left: 2%;
+	padding-right: 2%;
+}
+
+div.body {
+	clear: both;
+	background-color: white	;
+	color: black;
+	margin: 2.5em;
+	text-align: justify;
+}
+
+pre {
+	font-size: 12;
+	margin-left: 5em;
+	margin-right: 5em;
+	padding: 8px;
+	background-color: lightblue;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 1px;
+}
+
+dl {
+	margin: 2em;
+}

@@ -1,0 +1,1068 @@
+                               Programas Residentes e do Genero para DOS
+                                              Abril de 1997
+
+
+/*************************************************************************
+*                                                                        *
+*               PROGRAMA RESIDENTE QUE RESETA COM A TELCA Z              *
+*                                                                        *
+*------------------------------------------------------------------------*
+*                                                                        *
+* Autor: Thobias Salazar Trevisan                                        *
+*                                                                        *
+*------------------------------------------------------------------------*
+*    Programa residente na memória que se pressionar a tecla 'z' o       *
+* computador é resetado.                                                 *
+*                                                                        *
+*************************************************************************/
+
+#include <dos.h>
+#include <conio.h>
+
+unsigned _heaplen = 1;
+unsigned _stklen  = 128;
+unsigned char tecla;
+unsigned char aux;
+
+void interrupt (*velha_int_19h)(void);
+void interrupt (*velha_int_09h)(void);
+
+void interrupt int_09h()
+{
+     if ((inportb(0x60) & 0x80) == 0)
+        {
+         tecla = inportb(0x60);
+         aux = inportb (0x61);
+         outportb (0x61,aux | 0x80);
+         outportb (0x61, aux);
+         outportb (0x20, 0x20);
+             if (tecla == 44)
+                (*velha_int_19h)();
+        }
+    (*velha_int_09h)();
+}
+
+
+void main (void)
+{
+     velha_int_19h = getvect (0x19);
+     velha_int_09h = getvect (0x09);
+     setvect (0x09, int_09h);
+     keep (0, _SS + (_SP/16) - _psp + 10);
+}
+
+               ---------------------------------------------------------------------------
+
+
+/*************************************************************************
+*                                                                        *
+*               PROGRAMA RESIDENTE QUE REPETE UMA TECLA                  *
+*                                                                        *
+*------------------------------------------------------------------------*
+*                                                                        *
+* Autor: Thobias Salazar Trevisan                                        *
+*                                                                        *
+*------------------------------------------------------------------------*
+*   Programa residente na memória cada vez que uma tecla é pressionado   *
+*  o programa repete a tecla.                                                                                    *
+*  Ex: c:\> ccllss                                                    *
+*                                                                        *
+*************************************************************************/
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <conio.h>
+#include <dos.h>
+
+unsigned _heaplen = 1;
+unsigned _stklen  = 256;
+unsigned char tecla;
+unsigned char aux;
+
+void interrupt (*velha_int_09h)();
+
+void escreve_string(int,int,char*,int);
+void seta_memoria_video(void);
+int  modo_video_corrente(void);
+
+struct endereco_int
+{
+  char far *posicao;
+};
+
+char   far *memoria_video;
+
+modo_video_corrente()
+{
+  union REGS registradores;
+
+  registradores.h.ah = 0xF;
+  return int86(0x10,&registradores,&registradores) & 0xFF;
+}
+
+void seta_memoria_video()
+{
+  int modo_video;
+
+  modo_video = modo_video_corrente();
+  if ((modo_video != 2) && (modo_video != 3) && (modo_video != 7))
+  {
+    printf("O video deve estar no modo de 80 colunas");
+    exit(1);
+  }
+  if (modo_video == 7)
+    memoria_video = (char far *) 0xB0000000l;
+  else
+    memoria_video = (char far *) 0xB8000000l;
+}
+
+void escreve_string(int x,int y,char *string,int atributo)
+{
+  char far *posicao_video;
+
+  posicao_video = memoria_video;
+  posicao_video += ((y-1) * 160) + ((x-1) * 2);
+  for(;*string;)
+  {
+    *posicao_video++ = *string++;
+    *posicao_video++ = atributo;
+  }
+}
+
+void interrupt int_09h()
+{
+if ((inportb(0x60) & 0x80) == 0)
+        {
+         tecla = inportb(0x60);
+         aux = inportb (0x61);
+         outportb (0x61,aux | 0x80);
+         outportb (0x61, aux);
+         outportb (0x20, 0x20);
+                 (*velha_int_09h)();
+                 (*velha_int_09h)();
+        }
+    aux = inportb (0x61);
+    outportb (0x61,aux | 0x80);
+    outportb (0x61, aux);
+    outportb (0x20, 0x20);
+}
+
+void main(void)
+{
+    seta_memoria_video();
+    velha_int_09h = getvect (0x09);
+    setvect (0x09, int_09h);
+    keep (0,_SS + (_SP/16) - _psp + 10);
+}
+
+
+
+               ---------------------------------------------------------------------------
+
+
+/*************************************************************************
+*                                                                        *
+*               PROGRAMA RESIDENTE QUE TESTA TECLAS LIGADAS              *
+*                                                                        *
+*------------------------------------------------------------------------*
+*                                                                        *
+* Autor: Thobias Salazar Trevisan                                        *
+*                                                                        *
+*------------------------------------------------------------------------*
+*   Programa residente na memória cada vez que pressionado as teclas ALT *
+* e a tecla ESC ao mesmo tempo, ele mostra tudo o que esta ligado do     *
+* teclado. insert, num_lock, caps_lock, scroll_lock, alt, ctrl, shift    *
+* esquerda, shift direita. E mostra na tela.                             *
+*   Para voltar a tela que voce estava pressione ALT + ESC novamente.    *
+*                                                                        *
+*************************************************************************/
+
+#include <dos.h>
+#include <conio.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+unsigned _heaplen = 1;
+unsigned _stklen  = 128;
+
+unsigned char esc     = 1;
+unsigned char alteste = 8;
+unsigned char insert  = 128;
+unsigned char caps    = 64;
+unsigned char num_lock= 32;
+unsigned char scroll  = 16;
+unsigned char alt     = 8;
+unsigned char ctrl    = 4;
+unsigned char shift_es= 2;
+unsigned char shift_di= 1;
+
+char tela[4000], estado = 0;
+int coluna,linha;
+
+void interrupt (*velha_int_09h)(void);
+void mostra (void);
+void salva_tela(void);
+void recupera_tela(void);
+int  modo_video_corrente(void);
+void seta_memoria_video(void);
+void escreve_string(int,int,char*,int);
+
+struct endereco_int
+{
+  char far *posicao;
+};
+
+char   far *memoria_video;
+
+
+modo_video_corrente()
+{
+  union REGS registradores;
+
+  registradores.h.ah = 0xF;
+  return int86(0x10,&registradores,&registradores) & 0xFF;
+}
+
+void seta_memoria_video()
+{
+  int modo_video;
+
+  modo_video = modo_video_corrente();
+  if ((modo_video != 2) && (modo_video != 3) && (modo_video != 7))
+  {
+    printf("O video deve estar no modo de 80 colunas");
+    exit(1);
+  }
+  if (modo_video == 7)
+    memoria_video = (char far *) 0xB0000000l;
+  else
+    memoria_video = (char far *) 0xB8000000l;
+}
+
+void escreve_string(int x,int y,char *string,int atributo)
+{
+  char far *posicao_video;
+
+  posicao_video = memoria_video;
+  posicao_video += ((y-1) * 160) + ((x-1) * 2);
+  for(;*string;)
+  {
+    *posicao_video++ = *string++;
+    *posicao_video++ = atributo;
+  }
+}
+
+void salva_tela()
+{
+  register int contador;
+
+  for(contador = 0;contador < 4000;contador++)
+    tela[contador] = memoria_video[contador];
+}
+
+void recupera_tela()
+{
+  register int contador;
+
+  for(contador = 0;contador < 4000;contador++)
+    memoria_video[contador] = tela[contador];
+}
+
+
+void mostra(void)
+{
+  clrscr();
+  if ((peekb (0x40,0x17) & shift_di) != 0)
+      escreve_string(23,9,"Sim o shift da direita esta ligado",1);
+  else
+      escreve_string(23,9,"Nao o shift da direita nao esta ligado",4);
+
+  if ((peekb (0x40,0x17) & shift_es) != 0)
+      escreve_string(23,10,"Sim o shift da esquerda esta ligado",1);
+  else
+      escreve_string(23,10,"Nao o shift da esquerda nao esta ligado",4);
+
+  if ((peekb (0x40,0x17) & ctrl) != 0)
+      escreve_string(23,11,"Sim o ctrl esta ligado",1);
+  else
+      escreve_string(23,11,"Nao o ctrl nao esta ligado",4);
+
+  if ((peekb (0x40,0x17) & alt) != 0)
+      escreve_string(23,12,"Sim o alt esta ligado",1);
+  else
+      escreve_string(23,12,"Nao o alt nao esta ligado",4);
+
+  if ((peekb (0x40,0x17) & scroll) != 0)
+      escreve_string(23,13,"Sim o scroll esta ligado",1);
+  else
+      escreve_string(23,13,"Nao o scroll nao esta ligado",4);
+
+  if ((peekb (0x40,0x17) & num_lock) != 0)
+      escreve_string(23,14,"Sim o num lock esta ligado",1);
+  else
+      escreve_string(23,14,"Nao o num lock nao esta ligado",4);
+
+  if ((peekb (0x40,0x17) & caps) != 0)
+      escreve_string(23,15,"Sim o capslock esta ligado",1);
+  else
+      escreve_string(23,15,"Nao o capslock nao esta ligado",4);
+
+  if ((peekb (0x40,0x17) & insert) != 0)
+      escreve_string(23,16,"Sim o insert esta ligado",1);
+  else
+      escreve_string(23,16,"Nao o insert nao esta ligado",4);
+  (*velha_int_09h)();
+}
+
+void interrupt int_09h()
+{
+
+     if ((inportb (0x60) == esc) && ((peekb (0x40,0x17) & alteste) != 0))
+        {
+         if (estado == 0)
+            {
+             coluna = wherex();
+             linha = wherey();
+             salva_tela();
+             mostra();
+             estado = 1;
+            }
+         else
+            {
+             recupera_tela();
+             estado = 0;
+             gotoxy(coluna,linha);
+             (*velha_int_09h)();
+            }
+        }
+     else
+        (*velha_int_09h)();
+}
+
+
+void main(void)
+{
+    seta_memoria_video();
+    velha_int_09h = getvect (0x09);
+    setvect (0x09,int_09h);
+    keep (0,_SS + (_SP/16) - _psp + 10);
+}
+
+
+               ---------------------------------------------------------------------------
+
+
+
+/*************************************************************************
+*                                                                        *
+*         PROGRAMA RESIDENTE COM CARINHAS SE MEXENDO NA TELA             *
+*                                                                        *
+*------------------------------------------------------------------------*
+*                                                                        *
+* Autor: Thobias Salazar Trevisan                                        *
+*                                                                        *
+*************************************************************************/
+
+#include <dos.h>
+#include <conio.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+#define ESQ     0
+#define DIR     1
+#define CIM     2
+#define BAI     3
+#define CIM_DIR 4
+#define CIM_ESQ 5
+#define BAI_ESQ 6
+#define BAI_DIR 7
+#define MAX     4
+
+int x1=20,y1=10,x2=18,y2=15,x3=20,y3=22,x4=55,y4=15;
+int p1,p2,p3,p4,c=0,t=0;
+int filho1=0, filho2=0;
+
+unsigned _heaplen = 1;
+unsigned _stklen  = 256;
+
+void interrupt (*velha_int_08h)(void);
+
+void filho(void);
+void escreve_string(int,int,char*,int);
+void seta_memoria_video(void);
+int  modo_video_corrente(void);
+int i = 0;
+
+struct endereco_int
+{
+  char far *posicao;
+};
+
+char   far *memoria_video;
+
+
+modo_video_corrente()
+{
+  union REGS registradores;
+
+  registradores.h.ah = 0xF;
+  return int86(0x10,&registradores,&registradores) & 0xFF;
+}
+
+void seta_memoria_video()
+{
+  int modo_video;
+
+  modo_video = modo_video_corrente();
+  if ((modo_video != 2) && (modo_video != 3) && (modo_video != 7))
+  {
+    printf("O video deve estar no modo de 80 colunas");
+    exit(1);
+  }
+  if (modo_video == 7)
+    memoria_video = (char far *) 0xB0000000l;
+  else
+    memoria_video = (char far *) 0xB8000000l;
+}
+
+void escreve_string(int x,int y,char *string,int atributo)
+{
+  char far *posicao_video;
+
+  posicao_video = memoria_video;
+  posicao_video += ((y-1) * 160) + ((x-1) * 2);
+  for(;*string;)
+  {
+    *posicao_video++ = *string++;
+    *posicao_video++ = atributo;
+  }
+}
+
+void filho(void)
+{
+    if (x1 == x2 && y1 == y2)
+       filho1 = 1;
+    if (x2 == x3 && y2 == y3)
+       filho2 = 1;
+    if (filho1 == 1)
+       {
+        p3 = random(8);
+        if (x3>=2 && x3<=80)
+           if (y3>=2 && y3<=25)
+              {
+               if (p3 == ESQ)       //0
+                  {
+                   escreve_string(x3,y3," ",0);
+                   x3 = x3-1;
+                   escreve_string(x3,y3,"",2);
+                  }
+               if (p3 == DIR)       //1
+                  {
+                   escreve_string(x3,y3," ",0);
+                   x3 = x3+1;
+                   escreve_string(x3,y3,"",2);
+                  }
+               if (p3 == CIM)       //2
+                  {
+                   escreve_string(x3,y3," ",0);
+                   y3 = y3-1;
+                   escreve_string(x3,y3,"",2);
+                  }
+               if (p3 == BAI)       //3
+                  {
+                   escreve_string(x3,y3," ",0);
+                   y3 = y3+1;
+                   escreve_string(x3,y3,"",2);
+                  }
+               if (p3 == CIM_DIR)   //4
+                  {
+                   escreve_string(x3,y3," ",0);
+                   x3 = x3+1;
+                   y3 = y3-1;
+                   escreve_string(x3,y3,"",2);
+                  }
+               if (p3 == CIM_ESQ)   //5
+                  {
+                   escreve_string(x3,y3," ",0);
+                   x3 = x3-1;
+                   y3 = y3-1;
+                   escreve_string(x3,y3,"",2);
+                  }
+               if (p3 == BAI_ESQ)   //6
+                  {
+                   escreve_string(x3,y3," ",0);
+                   x3 = x3-1;
+                   y3 = y3+1;
+                   escreve_string(x3,y3,"",2);
+                  }
+               if (p3 == BAI_DIR)   //7
+                  {
+                   escreve_string(x3,y3," ",0);
+                   x3 = x3+1;
+                   y3 = y3+1;
+                   escreve_string(x3,y3,"",2);
+                  }
+              }
+        if (x3 == 1)
+           {
+            escreve_string(x3,y3," ",0);
+            x3 = x3+1;
+            escreve_string(x3,y3,"",2);
+           }
+        if (x3 == 81)
+           {
+            escreve_string(x3,y3," ",0);
+            x3 = x3-1;
+            escreve_string(x3,y3,"",2);
+           }
+        if (y3 == 1)
+           {
+            escreve_string(x3,y3," ",0);
+            y3 = y3+1;
+            escreve_string(x3,y3,"",2);
+           }
+        if (y3 == 26)
+           {
+            escreve_string(x3,y3," ",0);
+            y3 = y3-1;
+            escreve_string(x3,y3,"",2);
+           }
+       }
+    if (filho2 == 1)
+       {
+        p4 = random(8);
+        if (x4>=2 && x4<=80)
+           if (y4>=2 && y4<=25)
+              {
+               if (p4 == ESQ)       //0
+                  {
+                   escreve_string(x4,y4," ",0);
+                   x4 = x4-1;
+                   escreve_string(x4,y4,"",14);
+                  }
+               if (p4 == DIR)       //1
+                  {
+                   escreve_string(x4,y4," ",0);
+                   x4 = x4+1;
+                   escreve_string(x4,y4,"",14);
+                  }
+               if (p4 == CIM)       //2
+                  {
+                   escreve_string(x4,y4," ",0);
+                   y4 = y4-1;
+                   escreve_string(x4,y4,"",14);
+                  }
+               if (p4 == BAI)       //3
+                  {
+                   escreve_string(x4,y4," ",0);
+                   y4 = y4+1;
+                   escreve_string(x4,y4,"",14);
+                  }
+               if (p4 == CIM_DIR)   //4
+                  {
+                   escreve_string(x4,y4," ",0);
+                   x4 = x4+1;
+                   y4 = y4-1;
+                   escreve_string(x4,y4,"",14);
+                  }
+               if (p4 == CIM_ESQ)   //5
+                  {
+                   escreve_string(x4,y4," ",0);
+                   x4 = x4-1;
+                   y4 = y4-1;
+                   escreve_string(x4,y4,"",14);
+                  }
+               if (p4 == BAI_ESQ)   //6
+                  {
+                   escreve_string(x4,y4," ",0);
+                   x4 = x4-1;
+                   y4 = y4+1;
+                   escreve_string(x4,y4,"",14);
+                  }
+               if (p4 == BAI_DIR)   //7
+                  {
+                   escreve_string(x4,y4," ",0);
+                   x4 = x4+1;
+                   y4 = y4+1;
+                   escreve_string(x4,y4,"",14);
+                  }
+              }
+        if (x4 == 1)
+           {
+            escreve_string(x4,y4," ",0);
+            x4 = x4+1;
+            escreve_string(x4,y4,"",14);
+           }
+        if (x4 == 81)
+           {
+            escreve_string(x4,y4," ",0);
+            x4 = x4-1;
+            escreve_string(x4,y4,"",14);
+           }
+        if (y4 == 1)
+           {
+            escreve_string(x4,y4," ",0);
+            y4 = y4+1;
+            escreve_string(x4,y4,"",14);
+           }
+        if (y4 == 26)
+           {
+            escreve_string(x4,y4," ",0);
+            y4 = y4-1;
+            escreve_string(x4,y4,"",14);
+           }
+       }
+}
+
+void interrupt int_08h()
+{
+    if (c == 2)
+       {
+        _setcursortype(_NOCURSOR);
+        p1 = random(7);
+        p2 = random(8);
+        if (x1>=2 && x1<=80)
+           if (y1>=2 && y1<=25)
+              {
+               if (p1 == ESQ)       //0
+                  {
+                   escreve_string(x1,y1," ",0);
+                   x1 = x1-1;
+                   escreve_string(x1,y1,"",1);
+                  }
+               if (p1 == DIR)       //1
+                  {
+                   escreve_string(x1,y1," ",0);
+                   x1 = x1+1;
+                   escreve_string(x1,y1,"",1);
+                  }
+               if (p1 == CIM)       //2
+                  {
+                   escreve_string(x1,y1," ",0);
+                   y1 = y1-1;
+                   escreve_string(x1,y1,"",1);
+                  }
+               if (p1 == BAI)       //3
+                  {
+                   escreve_string(x1,y1," ",0);
+                   y1 = y1+1;
+                   escreve_string(x1,y1,"",1);
+                  }
+               if (p1 == CIM_DIR)   //4
+                  {
+                   escreve_string(x1,y1," ",0);
+                   x1 = x1+1;
+                   y1 = y1-1;
+                   escreve_string(x1,y1,"",1);
+                  }
+               if (p1 == CIM_ESQ)   //5
+                  {
+                   escreve_string(x1,y1," ",0);
+                   x1 = x1-1;
+                   y1 = y1-1;
+                   escreve_string(x1,y1,"",1);
+                  }
+               if (p1 == BAI_ESQ)   //6
+                  {
+                   escreve_string(x1,y1," ",0);
+                   x1 = x1-1;
+                   y1 = y1+1;
+                   escreve_string(x1,y1,"",1);
+                  }
+               if (p1 == BAI_DIR)   //7
+                  {
+                   escreve_string(x1,y1," ",0);
+                   x1 = x1+1;
+                   y1 = y1+1;
+                   escreve_string(x1,y1,"",1);
+                  }
+              }
+        if (x1 == 1)
+           {
+            escreve_string(x1,y1," ",0);
+            x1 = x1+1;
+            escreve_string(x1,y1,"",1);
+           }
+        if (x1 == 81)
+           {
+            escreve_string(x1,y1," ",0);
+            x1 = x1-1;
+            escreve_string(x1,y1,"",1);
+           }
+        if (y1 == 1)
+           {
+            escreve_string(x1,y1," ",0);
+            y1 = y1+1;
+            escreve_string(x1,y1,"",1);
+           }
+        if (y1 == 26)
+           {
+            escreve_string(x1,y1," ",0);
+            y1 = y1-1;
+            escreve_string(x1,y1,"",1);
+           }
+        if (x2>=2 && x2<=80)
+           if (y2>=2 && y2<=25)
+              {
+               if (p2 == ESQ)       //0
+                  {
+                   escreve_string(x2,y2," ",0);
+                   x2 = x2-1;
+                   escreve_string(x2,y2,"",4);
+                  }
+               if (p2 == DIR)       //1
+                  {
+                   escreve_string(x2,y2," ",0);
+                   x2 = x2+1;
+                   escreve_string(x2,y2,"",4);
+                  }
+               if (p2 == CIM)       //2
+                  {
+                   escreve_string(x2,y2," ",0);
+                   y2 = y2-1;
+                   escreve_string(x2,y2,"",4);
+                  }
+               if (p2 == BAI)       //3
+                  {
+                   escreve_string(x2,y2," ",0);
+                   y2 = y2+1;
+                   escreve_string(x2,y2,"",4);
+                  }
+               if (p2 == CIM_DIR)   //4
+                  {
+                   escreve_string(x2,y2," ",0);
+                   x2 = x2+1;
+                   y2 = y2-1;
+                   escreve_string(x2,y2,"",4);
+                  }
+               if (p2 == CIM_ESQ)   //5
+                  {
+                   escreve_string(x2,y2," ",0);
+                   x2 = x2-1;
+                   y2 = y2-1;
+                   escreve_string(x2,y2,"",4);
+                  }
+               if (p2 == BAI_ESQ)   //6
+                  {
+                   escreve_string(x2,y2," ",0);
+                   x2 = x2-1;
+                   y2 = y2+1;
+                   escreve_string(x2,y2,"",4);
+                  }
+               if (p2 == BAI_DIR)   //7
+                  {
+                   escreve_string(x2,y2," ",0);
+                   x2 = x2+1;
+                   y2 = y2+1;
+                   escreve_string(x2,y2,"",4);
+                  }
+              }
+        if (x2 == 1)
+           {
+            escreve_string(x2,y2," ",0);
+            x2 = x2+1;
+            escreve_string(x2,y2,"",4);
+           }
+        if (x2 == 81)
+           {
+            escreve_string(x2,y2," ",0);
+            x2 = x2-1;
+            escreve_string(x2,y2,"",4);
+           }
+        if (y2 == 1)
+           {
+            escreve_string(x2,y2," ",0);
+            y2 = y2+1;
+            escreve_string(x2,y2,"",4);
+           }
+        if (y2 == 26)
+           {
+            escreve_string(x2,y2," ",0);
+            y2 = y2-1;
+            escreve_string(x2,y2,"",4);
+           }
+       filho();
+       c = 0;
+      }
+    c++;
+    _setcursortype(_NORMALCURSOR);
+    (velha_int_08h)();
+}
+
+void main(void)
+{
+    seta_memoria_video();
+    velha_int_08h = getvect (0x08);
+    setvect (0x08, int_08h);
+    keep (0,_SS + (_SP/16) - _psp + 10);
+}
+
+
+               ---------------------------------------------------------------------------
+
+
+
+/*************************************************************************
+*                                                                        *
+*               PROGRAMA PROTETOR DE TECLADO E VIDEO                     *
+*                                                                        *
+*------------------------------------------------------------------------*
+*                                                                        *
+* Autor: Thobias Salazar Trevisan                                        *
+* Data: 1997/1                                                           *
+*                                                                        *
+*------------------------------------------------------------------------*
+*                                                                        *
+* Programa residente em memória. Ele tem uma proteção que só pode ser    *
+* instalado uma única vez, caso tente executá-lo novamente ele mostrará  * 
+* uma mensagem avisando que já está instalado.                           *
+* Para executá-lo pressione as teclas ALT + ESC                          *
+*************************************************************************/
+
+#include <dos.h>
+#include <conio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+unsigned _heaplen = 1;
+unsigned _stklen  = 128;
+
+unsigned char esc = 1;
+unsigned char alt = 8;
+unsigned char aux, tecla, tecla_scan;
+unsigned char tec;
+
+int scan[36]  = {30,48,46,32,18,33,34,35,23,36,37,38,50,49,24,25,
+                 16,19,31,20,22,47,17,45,21,44,2,3,4,5,6,7,8,9,10,11};
+
+int asci[36]  = {97,98,99,100,101,102,103,104,105,106,
+                 107,108,109,110,111,112,113,114,115,116,
+                 117,118,119,120,121,122,49,50,51,52,53,54,55,56,57,48};
+
+int cursor[2];
+
+int coluna,linha;
+char senha[10], tecla_senha, senha_verdade[10];
+int i = 0,c=19;
+int temp;
+int instalado;
+
+char tela[4000], estado = 0;
+struct endereco_int far *int9  = (struct endereco_int far *) 36;
+struct endereco_int far *int60 = (struct endereco_int far *) 240;
+
+void interrupt (*velha_int_09h)(void);
+void salva_tela(void);
+void recupera_tela(void);
+int  modo_video_corrente(void);
+void seta_memoria_video(void);
+void escreve_string(int,int,char*,int);
+void scan_asci(void);
+void ja_instalado(void);
+
+struct endereco_int
+{
+  char far *posicao;
+};
+
+char   far *memoria_video;
+
+modo_video_corrente()
+{
+  union REGS registradores;
+
+  registradores.h.ah = 0xF;
+  return int86(0x10,&registradores,&registradores) & 0xFF;
+}
+
+void seta_memoria_video()
+{
+  int modo_video;
+
+  modo_video = modo_video_corrente();
+  if ((modo_video != 2) && (modo_video != 3) && (modo_video != 7))
+  {
+    printf("O video deve estar no modo de 80 colunas");
+    exit(1);
+  }
+  if (modo_video == 7)
+    memoria_video = (char far *) 0xB0000000l;
+  else
+    memoria_video = (char far *) 0xB8000000l;
+}
+
+void escreve_string(int x,int y,char *string,int atributo)
+{
+  char far *posicao_video;
+
+  posicao_video = memoria_video;
+  posicao_video += ((y-1) * 160) + ((x-1) * 2);
+  for(;*string;)
+  {
+    *posicao_video++ = *string++;
+    *posicao_video++ = atributo;
+  }
+}
+
+void salva_tela()
+{
+  register int contador;
+
+  for(contador = 0;contador < 4000;contador++)
+    tela[contador] = memoria_video[contador];
+}
+
+void recupera_tela()
+{
+  register int contador;
+
+  for(contador = 0;contador < 4000;contador++)
+    memoria_video[contador] = tela[contador];
+}
+
+void ja_instalado()
+{
+  if (int60->posicao != (int60+1)->posicao)
+     {
+      printf("\n O programa tela ja esta instalado !");
+      printf("\n Use as teclas [ALT + ESC] para ativa-lo !\n");
+      exit(1);
+     }
+}
+
+void interrupt int_09h()
+{
+     if ((inportb(0x60) & 0x80) == 0)
+        {
+         tecla_senha = inportb(0x60);
+         aux = inportb (0x61);
+         outportb (0x61,aux | 0x80);
+         outportb (0x61, aux);
+         outportb (0x20, 0x20);
+         tecla_scan = tecla_senha;
+         scan_asci();
+         if (estado == 1)
+            {
+             escreve_string(5,5,"                 ",0);
+             escreve_string(2,2,"Digite a senha : ",9);
+             if (tecla_scan != 28 && tecla_scan != 14)
+                {
+                 senha[i] = tecla_senha;
+                 escreve_string(c,2,"*",15);
+                 i++;
+                 c++;
+                }
+             if (tecla_scan == 14 && i >= 1)
+                {
+                 i--;
+                 c--;
+                 escreve_string(c,2," ",0);
+                }
+             gotoxy(c,2);
+             if (tecla_scan == 28 || i == 10)
+                {
+                 senha[i] = NULL;
+                 c = 19;
+                 i = 0;
+                 if (strcmp(senha,senha_verdade) == 0)
+                    {
+                     recupera_tela();
+                     gotoxy(cursor[0],cursor[1]);
+                     estado = 0;
+                    }
+                 else
+                    {
+                     escreve_string(19,2,"            ",0);
+                     escreve_string(5,5,"Senha Invalida !",11);
+                    }
+                }
+            }
+        }
+     if ((inportb (0x60) == esc) && ((peekb (0x40,0x17) & alt) != 0))
+        {
+         if (estado == 0)
+            {
+             coluna = wherex();
+             linha = wherey();
+             cursor[0] = coluna;
+             cursor[1] = linha;
+             salva_tela();
+             clrscr();
+             escreve_string(30,15,"MONITOR PROTEGIDO",33);
+             estado = 1;
+            }
+        }
+     aux = inportb (0x61);
+     outportb (0x61,aux | 0x80);
+     outportb (0x61, aux);
+     outportb (0x20, 0x20);
+     if (estado == 0)
+        (*velha_int_09h)();
+}
+
+void scan_asci(void)
+{
+    int j;
+
+     temp = tecla_senha;
+     for(j=0; j<36;j++)
+        {
+         if (temp == scan[j])
+             tecla_senha = asci[j];
+        }
+}
+
+void main (int argc)
+{
+    int y,x;
+
+    if (argc != 1)
+       {
+        printf("\n PROTETOR DE TECLADO E VIDEO !!\n\n");
+        printf(" SINTAXE : tela \n");
+        printf("     Senha, maximo 10 caracteres [letras e numeros].\n");
+        printf("     Letras minusculas e maiusculas sao iguais !\n");
+        printf("\n Para ativacao do programa use as teclas [ALT + ESC] !!\n");
+       }
+    else
+       {
+        ja_instalado();
+        printf(" Senha, maximo de 10 caracteres [letras e numeros].\n");
+        printf(" Letras maiusculas e minusculas sao iguais !!\n");
+        printf("\n Digite a senha a ser usada : ");
+        do {
+            tecla = getch();
+            if (tecla != 13 && tecla != 8)
+               {
+                senha[i] = tecla;
+                printf("x");
+                i++;
+               }
+            if (tecla == 8 && i >= 1)
+               {
+                i--;
+                printf("\b \b");
+               }
+           } while (tecla != 13 && i < 10);
+        senha[i] = NULL;
+        strcpy(senha_verdade,senha);
+        i = 0;
+        printf("\n Deseja ver a senha digitada (s/n) ? ");
+        y = wherey() + 1;
+        x = wherex();
+        do {
+            gotoxy(x,y-1);
+            tecla = getche();
+           }while (!strchr("SNsn",tecla));
+        if (tecla == 'S' || tecla == 's')
+           printf("\n\n Senha digitada foi : %s",senha_verdade);
+        printf("\n");
+        seta_memoria_video();
+        velha_int_09h = getvect (0x09);
+        setvect (0x09,int_09h);
+        int60->posicao = int9->posicao;
+        keep (0,_SS + (_SP/16) - _psp + 10);
+       }
+}
+

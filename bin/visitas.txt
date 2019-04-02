@@ -1,0 +1,182 @@
+#!/bin/bash
+#
+# Livro de Visitas
+# Thobias Salazar Trevisan 
+#
+# atualizações:
+# 25/03/2004 - Primeira versão
+# 
+#
+########################################################################
+#
+### CONFIGS
+#
+# arquivo que conterá todas as mensagens do livro
+# quando criar este arquivo é necessário que ele tenha pelo menos
+# um caractere para podermos utilizar 'sed 1r arquivo', então
+# use 'echo > $arq_visita'
+arq_visita='/tmp/visitas_meu_site.html'
+#
+# arquivo temporário para guardar a mensagem vinda do POST
+temp_file='/tmp/visitas_post.txt'
+#
+# diretório para criar arquivos temporários
+temp_dir='/tmp'
+#
+# diretório utilizado como lock pelo script
+# podemos utilizar está abordagem por sabermos que a
+# criação de um diretório é atômica
+dir_lock='/tmp/lock_diretorio_livro_de_visitas'
+#
+# título da página
+titulo='Livro de Visitas'
+#
+# cores da página
+page_color='black'
+text_color='snow'
+link_color='lightgreen'
+#
+# coloque 1 para quando receber uma mensagem no livro receber também 
+# uma cópia por email
+SEND_MAIL=0
+# email que receberá uma cópia
+MAIL='seu_email'
+#
+########################################################################
+
+# ----------------------------------------------------------------------
+# monta o formulário para a postagem de uma nova mensgem no livro
+# ----------------------------------------------------------------------
+monta_formulario(){
+local estados="AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ \
+RN RO RR RS SC SE SP TO"
+
+echo "
+<form method=\"post\" action=\"${0##*/}\">
+nome: <input type=\"text\" name=\"nome\" maxlength=\"50\" size=\"30\">
+<p>
+email: <input type=\"text\" name=\"mail\" maxlength=\"50\" size=\"30\">
+<p>
+cidade: <input type=\"text\" name=\"cidade\" maxlength=\"50\" size=\"30\">
+Estado:
+  <select name=\"estado\">
+  <option value=\"none\">---
+  $(for i in $estados;do echo \<option value=\"$i\"\> $i;done)
+  </select>
+  <p>
+  Sua mensagem:<br>
+  <textarea name=\"mensagem\" wrap=\"physical\" rows=\"6\" cols=\"50\">
+  </textarea>
+  <p>
+  <input type=\"submit\" value=\"Enviar Mensagem\">
+  <input type=\"reset\" value=\"Limpar\">
+  </form>
+"
+}
+
+# ----------------------------------------------------------------------
+# adiciona uma nova mensagem no livro
+# ----------------------------------------------------------------------
+adiciona_msg(){
+# temp_html arquivo que conterá a mensagem recebia via POST
+# já formatada para o livro de visitas, isto é, em html
+local tem temp_html="$temp_dir/livro_visitas_temp.html"
+
+# link de fd 6 com a stdout e redireciona a stdout para um arquivo.
+# a partir daqui toda a stdout vai para $temp_html
+exec 6>&1; exec > $temp_html
+
+echo "<!--  ========== INÍCIO DA MENSAGEM ==========  -->"
+
+date '+%d/%m/%Y'
+
+# pega somente o nome 
+tem=$(sed -n '1s/nome=\([^&]*\)&.*/\1/p' $temp_file)
+[ "$tem" ] && echo "<b>$tem</b>" || echo '<b>anônimo</b>'
+
+# pega somente o mail 
+tem=$(sed -n '1s/.*mail=\([^&]*\)&.*/\1/p' $temp_file)
+[ "$tem" ] && echo "< $tem >" || echo '< none@somewhere >'
+
+# pega o estado
+sed -n '1s/.*cidade=\([^&]*\)&estado=\([^&]*\)&.*/(\1 - \2)/p' $temp_file
+echo "<br>"
+# imprime a mensagem trocando o final de linha por <BR>
+sed '1s/.*&mensagem=//;s/$/<br>/' $temp_file
+echo "<hr noshade>
+
+<!--  ==========   FIM DA MENSAGEM  ==========  -->
+"
+# restaura a stdout e fecha o fd 6
+exec 1>&6 6>&- ;
+
+# testa se já existe o arquivo com as mensagens
+[ -f "$arq_visita" ] || echo > $arq_visita # precisamos de pelo menos um char
+
+# adiciona a nova mensagem no início do arquivo
+( rm -f $arq_visita; sed "1r $temp_html" > $arq_visita  ) < $arq_visita
+
+# envia uma cópia da mensagem recebia para um e-mail
+[ "$SEND_MAIL" = "1" ] && mail -s 'Livro de Visitas' $MAIL < $temp_file
+}
+
+# ----------------------------------------------------------------------
+# testa se o script está recebendo dados via POST e trata
+# os mesmos se necessário
+# ----------------------------------------------------------------------
+testa_post(){
+
+# utilizamos um diretório como lock para não sobrescrevermos o arquivo
+# com os dados recebidos via POST enquanto o mesmo está sendo processado
+trap 'rmdir ${dir_lock:-VARIAVEL_VAZIA} >/dev/null 2>&1;return' 1 2 3 15
+while ! mkdir $dir_lock >/dev/null 2>&1 ; do sleep 1;done
+
+# faz o urldecode. copiado com algumas modificações de 
+# http://aurelio.net/sed/programas/unescape.sed
+sed 's/+/ /g;s/%40/@/g;s/%0[Dd]%0[Aa]/\
+/g;s/%09/	/g;s/%21/!/g;s/%22/"/g;s/%23/#/g;s/%24/$/g;s/%26/\&/g;s/%27/'\''/g
+s/%28/\(/g;s/%29/\)/g;s/%2B/+/g;s/%2C/,/g;s/%2F/\//g;s/%3A/:/g;s/%3B/;/g
+s/%3C/</g;s/%3D/=/g;s/%3E/>/g;s/%3F/?/g;s/%5B/[/g;s/%5C/\\/g;s/%5D/]/g
+s/%5E/^/g;s/%60/`/g;s/%7B/{/g;s/%7C/|/g;s/%7D/}/g;s/%7E/~/g;s/%A1/¡/g
+s/%A2/¢/g;s/%A3/£/g;s/%A4/¤/g;s/%A5/¥/g;s/%A6/¦/g;s/%A7/§/g;s/%A8/¨/g
+s/%A9/©/g;s/%AA/ª/g;s/%AB/«/g;s/%AC/¬/g;s/%AD/­/g;s/%AE/®/g;s/%AF/¯/g
+s/%B0/°/g;s/%B1/±/g;s/%B2/²/g;s/%B3/³/g;s/%B4/´/g;s/%B5/µ/g;s/%B6/¶/g
+s/%B7/·/g;s/%B8/¸/g;s/%B9/¹/g;s/%BA/º/g;s/%BB/»/g;s/%BC/¼/g;s/%BD/½/g
+s/%BE/¾/g;s/%BF/¿/g;s/%C0/À/g;s/%C1/Á/g;s/%C2/Â/g;s/%C3/Ã/g;s/%C4/Ä/g
+s/%C5/Å/g;s/%C6/Æ/g;s/%C7/Ç/g;s/%C8/È/g;s/%C9/É/g;s/%CA/Ê/g;s/%CB/Ë/g
+s/%CC/Ì/g;s/%CD/Í/g;s/%CE/Î/g;s/%CF/Ï/g;s/%D0/Ð/g;s/%D1/Ñ/g;s/%D2/Ò/g
+s/%D3/Ó/g;s/%D4/Ô/g;s/%D5/Õ/g;s/%D6/Ö/g;s/%D7/×/g;s/%D8/Ø/g;s/%D9/Ù/g
+s/%DA/Ú/g;s/%DB/Û/g;s/%DC/Ü/g;s/%DD/Ý/g;s/%DE/Þ/g;s/%DF/ß/g;s/%E0/à/g
+s/%E1/á/g;s/%E2/â/g;s/%E3/ã/g;s/%E4/ä/g;s/%E5/å/g;s/%E6/æ/g;s/%E7/ç/g
+s/%E8/è/g;s/%E9/é/g;s/%EA/ê/g;s/%EB/ë/g;s/%EC/ì/g;s/%ED/í/g;s/%EE/î/g
+s/%EF/ï/g;s/%F0/ð/g;s/%F1/ñ/g;s/%F2/ò/g;s/%F3/ó/g;s/%F4/ô/g;s/%F5/õ/g
+s/%F6/ö/g;s/%F7/÷/g;s/%F8/ø/g;s/%F9/ù/g;s/%FA/ú/g;s/%FB/û/g;s/%FC/ü/g
+s/%FD/ý/g;s/%FE/þ/g;s/%FF/ÿ/g;s/%25/%/g' > $temp_file
+
+# se temos input ele está em $temp_file
+[ -s $temp_file ] && adiciona_msg 
+
+# apaga o nosso diretório de lock 
+rmdir "${dir_lock:-VARIAVEL_VAZIA}"
+}
+
+
+########################################################################
+#
+# ----------------------------------------------------------------------
+#    Principal
+# ----------------------------------------------------------------------
+
+
+echo "content-type: text/html"
+echo
+echo "<html> <head> <title> $titulo </title> </head>"
+echo "<body bgcolor=\"$page_color\" text=\"$text_color\" link=\"$link_color\">"
+echo "<center><h1>$titulo</h1></center><hr size=6 noshade>"
+monta_formulario
+echo "<hr size=6 noshade>"
+testa_post
+cat $arq_visita
+echo "</body>"
+echo "</html>"
+

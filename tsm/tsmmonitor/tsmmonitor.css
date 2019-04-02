@@ -1,0 +1,99 @@
+div.header {
+	background: #eee;
+	border-bottom: 2px solid black;
+    border-top: 2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+}
+
+div.header h1 {
+	float: left;
+	margin-left: 12pt;
+	font-family: Verdana, Arial, Helvetica, Sans-Serif;
+	font-size: 18pt;
+	font-weight: bold;
+}
+
+div.header h2 {
+	text-align: right;
+	margin-right: 12pt;
+	font-family: Verdana, Arial, Helvetica, Sans-Serif;
+	font-size: 8pt;
+}
+
+div.header h3 {
+	text-align: right;
+	margin-right: 12pt;
+	margin-bottom: 24pt;
+	font-family: Verdana, Arial, Helvetica, Sans-Serif;
+	font-size: 8pt;
+	font-weight: normal;
+}
+
+div.toc {
+	float: left;
+	width: 180px;
+	padding-left: 7pt;
+	padding-right: 0;
+	background: #eee;
+	line-height	: 175%;
+	border-bottom: 2px solid black;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+}
+
+div.toc ul {
+	padding-left: 6pt;
+}
+
+div.toc li {
+	font-size: 8pt;
+	color: #eee;
+}
+
+div.toc a {
+	font-family: Verdana, Arial, Helvetica, Sans-Serif;
+	font-weight: bold;
+	color: blue;
+	text-decoration: none;
+}
+
+div.toc a:hover {
+	text-decoration: underline;
+}
+
+
+div.body H1 {
+	font-size: 16pt;
+	border-left: 4px solid black;
+	        border-bottom: 2px solid black;
+}
+div.body {
+	margin-left	: 140px;
+	padding-left	: 4em;
+	padding-right	: 2em;
+	color		: #222;
+}
+
+pre {
+	font-size: 12;
+	margin-left: 4em;
+	margin-right: 4em;
+	padding: 8px;
+  	background-color: white;
+	border-style: solid;
+	border-color: black;
+	color		: black;
+	border-width: 1px 1px;
+}
+
+a {
+	text-decoration: none;
+}
+a:hover, a:hover img {
+	background-color: #ddf;
+	text-decoration: none;
+}
+
+
+

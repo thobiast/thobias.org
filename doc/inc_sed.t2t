@@ -1,0 +1,947 @@
+Usando o sed para contar
+Thobias Salazar Trevisan 
+%%date(%d/%m/%Y)
+
+%! Cmdline : --style sed.css --toc -t html
+
+= Usar o sed para contar ? =
+
+Todos sabemos que o sed é um canivete suíço e que trabalha com caracteres, ou seja,
+ele não sabe a diferença entre um dígito e uma letra. Para ele, tudo são
+caracteres. Então como poderíamos utilizar o sed para contar ?
+
+Neste texto tentarei explicar uma técnica proposta por Bruno Haible 
+([incr_num.sed http://sed.sourceforge.net/local/scripts/incr_num.sed.html])
+para incrementar um número em SED e, no final, vamos extrapolá-la para letras. 
+Existem outras técnicas, como a utilizada por Greg Ubben na lendária implementação da 
+calculadora DC em sed. O que, você não conhece ?! Então acesse 
+http://sed.sourceforge.net/local/scripts/dc.sed.html e tenha uma boa diversão =8)
+
+= Técnica Inicial =
+
+Bom, tudo são caracteres, então temos que tratá-los como tal. Para incrementarmos
+um número de 0 a 9 é fácil. Trocamos 0 por 1, 1 por 2, 2 por 3.... até 9. Ficando 
+assim:
+
+---
+prompt> cat incr_tentativa_1.sed
+#!/bin/sed -f
+
+s/0/1/
+s/1/2/
+s/2/3/
+s/3/4/
+s/4/5/
+s/5/6/
+s/6/7/
+s/7/8/
+s/8/9/
+s/9/mais de 1 digito/
+---
+
+Pronto, vamos testar:
+
+---
+prompt> echo 1 | ./incr_tentativa_1.sed
+mais de 1 digito
+prompt>
+prompt> echo 5 | ./incr_tentativa_1.sed
+mais de 1 digito
+prompt>
+---
+
+ops! não funcionou =8(
+
+Bom, para nos auxiliar no compreendimento da execução e entender o que o sed está
+fazendo, vamos utilizar a ferramenta [sedsed http://sedsed.sourceforge.net/]
+(http://sedsed.sourceforge.net), escrita pelo nosso grande amigo
+Aurélio. sedsed é um programa escrito em python para sed :) Ele é um debug
+(mostrando passo a passo o hold space, o pattern space e a instrução executada),
+ele indenta script sed e gera um html colorido do script. Vale a pena conferir
+este programa.
+
+Vamos utilizar o sedsed para vermos o que está acontecendo. Como não estamos
+utilizando o hold space em nosso script, vou passar uma opção (`--hide=HOLD`)
+para omití-lo. Além disso, a saída do sedsed foi feita para console,
+utilizando cores para facilitar. Como aqui é html, vou utilizar o script 
+abaixo para deixar sua saída mais visual para o nosso exemplo.
+
+---
+prompt> cat limpa.sed 
+#!/bin/sed -f
+
+s/^[^:]*:\(.*\)\$$/\1/
+s/^COMM:/    /
+prompt> 
+---
+
+Vamos testar nossa primeira solução para contar:
+
+---
+prompt> echo 1 | sedsed -d --hide=HOLD -f incr_tentativa_1.sed | limpa.sed 
+1
+    s/0/1/
+1
+    s/1/2/
+2
+    s/2/3/
+3
+    s/3/4/
+4
+    s/4/5/
+5
+    s/5/6/
+6
+    s/6/7/
+7
+    s/7/8/
+8
+    s/8/9/
+9
+    s/9/mais de 1 digito/
+mais de 1 digito
+mais de 1 digito
+prompt>
+---
+
+Destrinchando a saída. 
+
+- as linhas que começam com um número mostram a entrada ou a saída para cada
+  instrução.
+- as linhas que começam com espaços em branco são as instruções sed.
+
+
+Repare que **TODAS** as instruções são executadas com sucesso, pois o sed
+executa a próxima instrução com a entrada da anterior. Então, quando entramos
+com 1, ele vira 2, que casa com a próxima substituição (`s/2/3/`), assim
+virando 3. Este processo ocorre até a última instrução e, assim, temos
+a saída `mais de 1 digito`.
+
+Mais um exemplo:
+
+---
+prompt> echo 5 | sedsed -d --hide=HOLD -f incr_tentativa_1.sed | limpa.sed 
+5
+    s/0/1/
+5
+    s/1/2/
+5
+    s/2/3/
+5
+    s/3/4/
+5
+    s/4/5/
+5
+    s/5/6/
+6
+    s/6/7/
+7
+    s/7/8/
+8
+    s/8/9/
+9
+    s/9/mais de 1 digito/
+mais de 1 digito
+mais de 1 digito
+prompt> 
+---
+
+Note que usamos como entrada o número 5 e, assim, não ocorreu sucesso na substituição
+até a instrução (`s/5/6/`). Como esperado, após a primeira substituição com sucesso
+as demais também tiveram sucesso.
+
+Moral da história. Temos que cuidar a ordem das substituições, senão.... =8)
+
+Vamos inverter a ordem para garantir que tenhamos somente 1 execução com sucesso.
+
+---
+prompt> cat ./incr_tentativa_2.sed
+#!/bin/sed -f
+
+s/9/mais de 1 digito/
+s/8/9/
+s/7/8/
+s/6/7/
+s/5/6/
+s/4/5/
+s/3/4/
+s/2/3/
+s/1/2/
+s/0/1/
+prompt>
+---
+
+Testando:
+
+---
+prompt> echo 0 | ./incr_tentativa_2.sed
+1
+prompt>
+prompt> echo 1 | ./incr_tentativa_2.sed
+2
+prompt>
+prompt> echo 4 | ./incr_tentativa_2.sed
+5
+prompt> echo 8 | ./incr_tentativa_2.sed
+9
+prompt> echo 9 | ./incr_tentativa_2.sed
+mais de 2 digito
+prompt>
+---
+
+Massa!! sabemos contar até 9. =8)
+
+E agora, como ultrapassar a barreira de 1 dígito ?!
+
+
+= Usando 2 dígitos =
+
+A primeira técnica que poderíamos tentar era fazer o 9 virar 10 :)
+
+---
+prompt> cat incr_tentativa_3.sed
+#!/bin/sed -f
+
+s/9/10/
+s/8/9/
+s/7/8/
+s/6/7/
+s/5/6/
+s/4/5/
+s/3/4/
+s/2/3/
+s/1/2/
+s/0/1/
+prompt>
+---
+
+---
+prompt> echo 22 | ./incr_tentativa_3.sed
+32
+prompt>
+prompt> echo 9 | ./incr_tentativa_3.sed
+21
+prompt>
+---
+
+Que isso, esse negócio está louco ?! Vamos chamar o nosso amigo para nos dar
+uma ajudinha.
+
+Eu usei esta solução para nós enxergarmos 2 problemas que teremos que resolver
+mais adiante. Primeiro:  olhando para este sed, nós achamos que ele
+deveria funcionar para números como 22, 45, 78, etc, ou seja, números fáceis que
+basta trocar um caractere, mas não funciona:
+
+---
+prompt> echo 22 | sedsed -d --hide=HOLD -f incr_tentativa_3.sed | limpa.sed 
+22
+    s/9/10/
+22
+    s/8/9/
+22
+    s/7/8/
+22
+    s/6/7/
+22
+    s/5/6/
+22
+    s/4/5/
+22
+    s/3/4/
+22
+    s/2/3/    <<< --- trocou o 2 por 3
+32
+    s/1/2/
+32
+    s/0/1/
+32
+32
+prompt> 
+---
+
+Note que a nossa entrada só muda quando chegarmos à instrução (`s/2/3`). Mas 
+o sed irá trocar somente a primeira ocorrência de 2 e não a última como
+nós gostaríamos.
+
+---
+prompt> echo 22 | sed 's/2/3/'
+32
+prompt>
+---
+
+Para resolver o problema teremos que usar o cifrão, para dizer ao sed que,
+nesses casos simples, ele deve só "somar" 1 no último "dígito".
+
+---
+prompt> echo 22 | sed 's/2$/3/'
+23
+prompt>
+---
+
+Beleza, primeiro problema resolvido, vamos ao segundo: o que nós esperávamos
+que funcionasse também não funcionou, que era fazer 9 virar 10.
+
+---
+prompt> echo 9 | sedsed -d --hide=HOLD -f incr_tentativa_3.sed | limpa.sed 
+9
+    s/9/10/       <<< --- beleza, o 9 virou 10
+10
+    s/8/9/
+10
+    s/7/8/
+10
+    s/6/7/
+10
+    s/5/6/
+10
+    s/4/5/
+10
+    s/3/4/
+10
+    s/2/3/
+10
+    s/1/2/        <<< --- entrada 10, casou o 1 virando 20
+20
+    s/0/1/        <<< --- casou o 0, virou 21
+21
+21
+prompt>
+---
+
+Note que o nosso 9, após a primeira instrução vira 10, mas vai casar também lá
+em baixo, com `s/1/2/` e `s/0/1/` e assim virando o 21 :(
+
+Para contornar, vamos adicionar um caractere diferente para não casar
+nas demais instruções. Utilizaremos o caractere underscore `_`. E somente no fim,
+trocaremos o _ por 0.
+
+---
+prompt> cat ./teste_underscore.sed
+#!/bin/sed -f
+
+s/9/0_/
+s/8/9/
+s/7/8/
+s/6/7/
+s/5/6/
+s/4/5/
+s/3/4/
+s/2/3/
+s/1/2/
+s/0/1/
+s/_/0/
+prompt>
+---
+
+passo a passo:
+
+---
+prompt> echo 9 | ./teste_underscore.sed
+10
+prompt>
+prompt> echo 9 | sedsed -d --hide=HOLD -f teste_underscore.sed | limpa.sed 
+9
+    s/9/0_/          <<< --- casou, 9 virou 0_
+0_
+    s/8/9/
+0_
+    s/7/8/
+0_
+    s/6/7/
+0_
+    s/5/6/
+0_
+    s/4/5/
+0_
+    s/2/3/
+0_
+    s/1/2/
+0_
+    s/0/1/           <<< --- trocou o 0 para 1
+1_
+    s/_/0/           <<< --- trocou 0 _ para 0
+10
+10
+prompt>
+---
+
+Barbada. Trocamos 9 por 0_, depois `0 -> 1` e `_  -> 0`.
+
+Mas isso só funciona para o 9, outros casos como 19, 29... não vai funcionar.
+Exemplo: 19, vira 10_ e no fim, trocando o 1 por 2 vira 20_, 0 por 1 vira 21_, 
+que finalmente vira 210. Tudo bem, mas isso foi só para introduzir a tática
+que usaremos a seguir.
+
+Chega de enrolar, hora de contar até 99 :D
+
+---
+prompt> cat incr_tentativa_4.sed
+#!/bin/sed -f
+
+s/9/_/
+s/^_/0_/
+s/8\(_\)\?$/9\1/
+s/7\(_\)\?$/8\1/
+s/6\(_\)\?$/7\1/
+s/5\(_\)\?$/6\1/
+s/4\(_\)\?$/5\1/
+s/3\(_\)\?$/4\1/
+s/2\(_\)\?$/3\1/
+s/1\(_\)\?$/2\1/
+s/0\(_\)\?$/1\1/
+s/_/0/
+prompt>
+---
+
+OPA! Agora confundiu. Mas tudo bem, vamos testar antes:
+
+---
+prompt> echo 0 | ./incr_tentativa_4.sed
+1
+prompt> echo 5 | ./incr_tentativa_4.sed
+6
+prompt> echo 9 | ./incr_tentativa_4.sed
+10
+prompt> echo 19 | ./incr_tentativa_4.sed
+20
+prompt> echo 45 | ./incr_tentativa_4.sed
+46
+prompt> echo 79 | ./incr_tentativa_4.sed
+80
+prompt>
+---
+
+Funciona! Por favor Mr. sedsed, nos ajude a entender que mágica é esta!! :)
+
+Vamos analisar três casos especiais:
+
++ Quando recebemos o caractere 9 como entrada:
+
+---
+prompt> echo 9 | sedsed -d --hide=HOLD -f incr_tentativa_4.sed | limpa.sed 
+9
+    s/9/_/              <<< --- o 9 virou _
+_
+    s/^_/0_/            <<< --- tática. se começa com _, então temos que aumentar o número de casas deciamis virando 0_
+0_
+    s/8\(_\)\?$/9\1/
+0_
+    s/7\(_\)\?$/8\1/
+0_
+    s/6\(_\)\?$/7\1/
+0_
+    s/5\(_\)\?$/6\1/
+0_
+    s/4\(_\)\?$/5\1/
+0_
+    s/3\(_\)\?$/4\1/
+0_
+    s/2\(_\)\?$/3\1/
+0_
+    s/1\(_\)\?$/2\1/
+0_
+    s/0\(_\)\?$/1\1/    <<< --- trocamos o 0 por 1, assim temos 1_
+1_
+    s/_/0/              <<< --- trocamos o _ por 0, e assim temos 10
+10
+10
+prompt> 
+---
+
+Primeira instrução, trocamos 9 por _. Na segunda instrução testamos 
+se _ é o primeiro caractere. Se for, então era o dígito 9 e
+precisamos aumentar uma casa decimal. Assim ficando 0_. 
+Note que as próximas instruções não alteraram o pattern space (`0_`).
+Só casaremos lá em baixo com `s/0\(_\)\?$/1\1/`, ou seja, é a mesma coisa que
+`s/0(_)?$/1_/`, assim 0_ vira 1_,. Na última instrução trocamos o _ por zero 
+e temos o número 10.
+
+Mas por que o underscore '_' precisa ser opcional ? Próximo caso :)
+
++ recebemos o valor 5.
+
+---
+prompt> echo 5 | sedsed -d --hide=HOLD -f incr_tentativa_4.sed | limpa.sed 
+5
+    s/9/_/
+5
+    s/^_/0_/
+5
+    s/8\(_\)\?$/9\1/
+5
+    s/7\(_\)\?$/8\1/
+5
+    s/6\(_\)\?$/7\1/
+5
+    s/5\(_\)\?$/6\1/     <<< --- casou, 5 vira 6. Mas note que não existe o underscore aqui
+6
+    s/4\(_\)\?$/5\1/
+6
+    s/3\(_\)\?$/4\1/
+6
+    s/2\(_\)\?$/3\1/
+6
+    s/1\(_\)\?$/2\1/
+6
+    s/0\(_\)\?$/1\1/
+6
+    s/_/0/
+6
+6
+prompt>
+---
+
+Para ele virar 6, o underscore precisa ser opcional. No caso
+vai ser a mesma coisa que antes: `s/5$/6/`. Podemos ver que o valor só se altera
+na instrução `s/5\(_\)\?\$/6\1/`. Como não existe o underscore, o retrovisor
+`\1`, não vai ter nada, não alterando o comportamento da saída.
+
++ Mas se tivermos o número 59 ?!
+
+Neste caso o undercore também entra em ação.
+
+---
+prompt> echo 59 | sedsed -d --hide=HOLD -f incr_tentativa_4.sed | limpa.sed 
+59
+    s/9/_/                 <<< --- trocamos o 9 por _, e assim temos 5_
+5_
+    s/^_/0_/
+5_
+    s/8\(_\)\?$/9\1/
+5_
+    s/7\(_\)\?$/8\1/
+5_
+    s/6\(_\)\?$/7\1/
+5_
+    s/5\(_\)\?$/6\1/       <<< --- casou, 5 seguido de 1 underscore e fim de linha, vira 6_
+6_
+    s/4\(_\)\?$/5\1/
+6_
+    s/3\(_\)\?$/4\1/
+6_
+    s/2\(_\)\?$/3\1/
+6_
+    s/1\(_\)\?$/2\1/
+6_
+    s/0\(_\)\?$/1\1/
+6_
+    s/_/0/                 <<< --- trocamos o _ por 0 virando o 60
+60
+60
+prompt>
+---
+
+Após a primeira instrução ele vira 5_ e ele não vai casar na segunda, pois
+não começa com _. Ele só casará na `s/5(_)?$/6\1/`, ficando 6_. Por fim, lá em
+baixo vira o tão esperado 60.
+
+
+= Golpe final =
+
+Okay, seu filho cresceu e está sendo alfabetizado. Já aprendeu a contar 
+até 99. Hora de ensiná-lo a quebrar barreiras e entender que, incrementar
+um número, é uma arte milenar. 
+
+Sr. Miyagi, cadê você ?
+
+Calma Daniel-San. Concentre-se no seu objetivo.
+
+---
+prompt> cat incr_tentativa_5.sed
+#!/bin/sed -f
+
+:p
+s/9\(_*\)$/_\1/
+tp
+s/^\(_*\)$/0\1/
+s/8\(_*\)$/9\1/
+s/7\(_*\)$/8\1/
+s/6\(_*\)$/7\1/
+s/5\(_*\)$/6\1/
+s/4\(_*\)$/5\1/
+s/3\(_*\)$/4\1/
+s/2\(_*\)$/3\1/
+s/1\(_*\)$/2\1/
+s/0\(_*\)$/1\1/
+s/_/0/g
+prompt>
+---
+
+A idéia é estender o uso do underscore. 
+
+ || repare que o underscore continua sendo opcional!! |
+
+Alguns exemplo de como as coisas funcionam. As três primeiras instruções 
+`:p;s/9\(_*\)$/_\1/;tp` significam: enquando existir 9 seguido de zero ou mais 
+undercores e fim de linha, troque o 9 por undercore. Exemplo: 
+
+ || entrada | saída | comentário  |
+ | 9        | _     | um _        |
+ | 99       | __    | dois _      |
+ | 999      | ___   | três _      |
+ | 49       | 4_    | 4 mais um _ |
+ | 91       | 91    | não casou   |
+ | 598      | 598   | não casou   |
+
+
+A quarta instrução (`s/^\(_*\)$/0\1/`) pega casos como 9, 99, 999, etc. Casos onde temos que 
+aumentar o número de casas decimais. Note que, temos que aumentar o número de casas 
+decimais  quando recebemos **todos** os caracteres sendo o dígito 9. Neste caso todos os 9s 
+virarão underscores e, assim, casando na quarta instrução, que adicionará um 0 no início. E, 
+como vimos, este 0 vai virar 1 e os underscores virarão 0s. Casos onde exista um número diferente 
+de 9 não casará nesta instrução, pois, o loop anterior só altera para undescore os 9 que 
+estiverem no final da linha. Exemplo: após as quatro primeiras instruções temos:
+
+ || entrada | saída | comentário    | 
+  | 9       | 0_    | 0 mais um _   |
+  | 99      | 0__   | 0 mais dois _ |
+  | 999     | 0___  | 0 mais três _ |
+  | 49      | 4_    | 4 mais um _   |
+
+Note que, por exemplo em 49, a quarta instrução não altera o valor, visto que, o 
+primeiro caractere não é underscore.
+
+Primeiro vamos testar:
+
+---
+prompt> echo 0 | ./incr_tentativa_5.sed
+1
+prompt> echo 9 | ./incr_tentativa_5.sed
+10
+prompt> echo 45 | ./incr_tentativa_5.sed
+46
+prompt> echo 99 | ./incr_tentativa_5.sed
+100
+prompt> echo 999 | ./incr_tentativa_5.sed
+1000
+prompt> echo 1499 | ./incr_tentativa_5.sed
+1500
+prompt> echo 1449 | ./incr_tentativa_5.sed
+1450
+prompt>
+---
+
+Analise de novo as tabelas acima, pois o esquema está nas 4 primeiras instruções.
+Nas próximas instruções será como antes. Quer ver ?! 
+
+sedsed, me dê a visão além do alcance!!
+
+---
+prompt> echo 0 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed 
+0
+    : p
+    s/9\(_*\)$/_\1/
+0
+    t p
+    s/^\(_*\)$/0\1/
+0
+    s/8\(_*\)$/9\1/
+0
+    s/7\(_*\)$/8\1/
+0
+    s/6\(_*\)$/7\1/
+0
+    s/5\(_*\)$/6\1/
+0
+    s/4\(_*\)$/5\1/
+0
+    s/3\(_*\)$/4\1/
+0
+    s/2\(_*\)$/3\1/
+0
+    s/1\(_*\)$/2\1/
+0
+    s/0\(_*\)$/1\1/           <<< ----- alterou aqui.  zero vira 1
+1
+    s/_/0/g
+1
+1
+prompt> 
+---
+
+---
+prompt> echo 9 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed 
+9
+    : p
+    s/9\(_*\)$/_\1/        <<< ---- 9 virando _
+_
+    t p
+    s/9\(_*\)$/_\1/
+_
+    t p
+    s/^\(_*\)$/0\1/        <<< ---- aumentando uma casa decimal 0_
+0_
+    s/8\(_*\)$/9\1/
+0_
+    s/7\(_*\)$/8\1/
+0_
+    s/6\(_*\)$/7\1/
+0_
+    s/5\(_*\)$/6\1/
+0_
+    s/4\(_*\)$/5\1/
+0_
+    s/3\(_*\)$/4\1/
+0_
+    s/2\(_*\)$/3\1/
+0_
+    s/1\(_*\)$/2\1/
+0_
+    s/0\(_*\)$/1\1/         <<< --- casou, 0 vira 1
+1_
+    s/_/0/g                 <<< --- troque todos os _ por 0
+10
+10
+prompt>
+---
+
+---
+prompt> echo 45 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed 
+45
+    : p
+    s/9\(_*\)$/_\1/
+45
+    t p
+    s/^\(_*\)$/0\1/
+45
+    s/8\(_*\)$/9\1/
+45
+    s/7\(_*\)$/8\1/
+45
+    s/6\(_*\)$/7\1/
+45
+    s/5\(_*\)$/6\1/   <<< ----- 45 virando 46, não esqueça do $ marcando fim de linha. trocamos somente o último caractere
+46
+    s/4\(_*\)$/5\1/
+46
+    s/3\(_*\)$/4\1/
+46
+    s/2\(_*\)$/3\1/
+46
+    s/1\(_*\)$/2\1/
+46
+    s/0\(_*\)$/1\1/
+46
+    s/_/0/g
+46
+46
+prompt>
+---
+
+---
+prompt> echo 999 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed 
+999
+    : p
+    s/9\(_*\)$/_\1/      <<< --- trocamos o último 9 por _ saída = 99_
+99_
+    t p
+    s/9\(_*\)$/_\1/      <<< --- casa também 99_, vira 9__
+9__
+    t p
+    s/9\(_*\)$/_\1/      <<< --- 9 seguido de 0 ou mais _ e fim de linha, troca o 9 por _
+___
+    t p
+    s/9\(_*\)$/_\1/
+___
+    t p
+    s/^\(_*\)$/0\1/      <<< --- primeiro caractere é _ então aumenta as casas decimais
+0___
+    s/8\(_*\)$/9\1/
+0___
+    s/7\(_*\)$/8\1/
+0___
+    s/6\(_*\)$/7\1/
+0___
+    s/5\(_*\)$/6\1/
+0___
+    s/4\(_*\)$/5\1/
+0___
+    s/3\(_*\)$/4\1/
+0___
+    s/2\(_*\)$/3\1/
+0___
+    s/1\(_*\)$/2\1/
+0___
+    s/0\(_*\)$/1\1/      <<< --- troca o 0 por 1, ficando 1___
+1___
+    s/_/0/g              <<< --- troca os _s por 0s, resultando em 1000
+1000
+1000
+prompt>
+---
+
+---
+prompt> echo 1499 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed
+1499
+    : p
+    s/9\(_*\)$/_\1/      <<< --- troca o 9 por _
+149_
+    t p
+    s/9\(_*\)$/_\1/      <<< --- temos mais um 9 pra trocar
+14__
+    t p
+    s/9\(_*\)$/_\1/
+14__
+    t p
+    s/^\(_*\)$/0\1/
+14__
+    s/8\(_*\)$/9\1/
+14__
+    s/7\(_*\)$/8\1/
+14__
+    s/6\(_*\)$/7\1/
+14__
+    s/5\(_*\)$/6\1/
+14__
+    s/4\(_*\)$/5\1/       <<< --- 4 seguido de 0 ou mais _s, "soma" 1 no último dígito = 15__
+15__
+    s/3\(_*\)$/4\1/
+15__
+    s/2\(_*\)$/3\1/
+15__
+    s/1\(_*\)$/2\1/
+15__
+    s/0\(_*\)$/1\1/
+15__
+    s/_/0/g               <<< --- troca os _s por 0, virando o 1500
+1500
+1500
+prompt>
+---
+
+E nosso último exemplo:
+
+---
+prompt> echo 1449 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed 
+1449
+    : p
+    s/9\(_*\)$/_\1/      <<< --- 9 por _ = 144_
+144_
+    t p
+    s/9\(_*\)$/_\1/
+144_
+    t p
+    s/^\(_*\)$/0\1/
+144_
+    s/8\(_*\)$/9\1/
+144_
+    s/7\(_*\)$/8\1/
+144_
+    s/6\(_*\)$/7\1/
+144_
+    s/5\(_*\)$/6\1/
+144_
+    s/4\(_*\)$/5\1/      <<< --- 4 seguido de zero ou mais _s troca pra 5 = 145_
+145_
+    s/3\(_*\)$/4\1/
+145_
+    s/2\(_*\)$/3\1/
+145_
+    s/1\(_*\)$/2\1/
+145_
+    s/0\(_*\)$/1\1/
+145_
+    s/_/0/g              <<< --- _ por 0 = 1450
+1450
+1450
+prompt>
+---
+
+**Resumão:**
+
+OBS: como primeira instrução eu coloquei o loop inteiro.
+
+Com a tabela abaixo espero deixar mais visual o processo de mudança sobre os caracteres, em outras
+palavras, ver como ocorre a "soma".
+
+ || Número | instrução         | N. de entrada = 4  | N. de entrada = 99 |  N. de entrada = 1499 | N. de entrada =  1449 |
+ |    1    | `:p`              |                    |                    |                       |                       |
+ |    1    | `s/9\(_*\)$/_\1/` |                    |      __            |      14__             |       144_            |
+ |    1    | `tp`              |                    |                    |                       |                       |
+ |    2    | `s/^\(_*\)$/0\1/` |                    |   0__              |                       |                       |
+ |    3    | `s/8\(_*\)$/9\1/` |                    |                    |                       |                       |
+ |    4    | `s/7\(_*\)$/8\1/` |                    |                    |                       |                       |
+ |    5    | `s/6\(_*\)$/7\1/` |                    |                    |                       |                       |
+ |    6    | `s/5\(_*\)$/6\1/` |                    |                    |                       |                       |
+ |    7    | `s/4\(_*\)$/5\1/` |       5            |                    |      15__             |       145_            |
+ |    8    | `s/3\(_*\)$/4\1/` |                    |                    |                       |                       |
+ |    9    | `s/2\(_*\)$/3\1/` |                    |                    |                       |                       |
+ |    10   | `s/1\(_*\)$/2\1/` |                    |                    |                       |                       |
+ |    11   | `s/0\(_*\)$/1\1/` |                    |   1__              |                       |                       |
+ |    12   | `s/_/0/g`         |                    |   100              |      1500             |       1450            |
+
+
+
+Como exemplo do uso "real" desta técnica, implementei um sed que conta quantas vezes uma determinada
+palavra aparece em um texto. Confira [conta_palavra.sed ../bin/conta_palavra.sed.html].
+
+= Letras =
+
+Com esta técnica podemos utilizar outra ou fazer nossa própria linguagem.
+Vamos supor que tenhamos que contar de '`a`' a '`f`'. Exemplo:
+
+ || entrada | saída |
+  | a       | b     |
+  | b       | c     |
+  | aa      | ab    |
+  | f       | ba    |
+  | cd      | ce    |
+  | ff      | baa   |
+
+Como nós tratamos tudo como caractere, basta trocar `0-9` por `a-f`.
+
+---
+prompt> cat inc_letras.sed
+#!/bin/sed -f
+
+:p
+s/f\(_*\)$/_\1/
+tp
+s/^\(_*\)$/a\1/
+s/e\(_*\)$/f\1/
+s/d\(_*\)$/e\1/
+s/c\(_*\)$/d\1/
+s/b\(_*\)$/c\1/
+s/a\(_*\)$/b\1/
+s/_/a/g
+prompt>
+---
+
+Câmbio - testando.
+
+---
+prompt> echo a | ./inc_letras.sed
+b
+prompt> echo d | ./inc_letras.sed
+e
+prompt> echo f | ./inc_letras.sed
+ba
+prompt> echo cd | ./inc_letras.sed
+ce
+prompt> echo ff | ./inc_letras.sed
+baa
+prompt>
+---
+
+Pronto. Se quiser fazer de `[a-z]` ou `[a-zA-Z]`, basta colocar na ordem todos 
+os caracteres permitidos.
+
+
+Neste outro texto, 
+[Lookup Tables & Incrementando em sed lookup_tables_sed.html],
+utilizo a técnica de lookup tables para somar e no
+final tem um exemplo de como somar e diminuir levando em consideração se o 
+valor é positivo ou negativo.
+
+Fim! Hora de ZZZzzzzz
+
+| **Agradecimentos:**
+- Aurélio Marinho Jargas
+
+
+---------------------------------------------------------------------
+
+This HTML page is [[pwrbytxt2tags-2.png] http://txt2tags.sf.net]
+(see [source inc_sed.t2t])
+
+

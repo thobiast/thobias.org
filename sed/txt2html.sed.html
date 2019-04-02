@@ -1,0 +1,40 @@
+<html>
+<head><meta name="Generator" content="sedsed --htmlize">
+<title>Colorized txt2html.sed</title></head><body bgcolor="#000000" text="#ffffff"
+link="#ff00ff" alink="#ff00ff" vlink="#ff00ff">
+<pre>
+<font color="#00ffff"><b>#!/bin/sed -f</b></font>
+<font color="#00ffff"><b>#</b></font>
+<font color="#00ffff"><b># Converte arquivo texto em html</b></font>
+<font color="#00ffff"><b># Última atualização Ter Mai  6 10:58:48 BRT 2003</b></font>
+<font color="#00ffff"><b>#</b></font>
+<font color="#00ffff"><b># Thobias Salazar Trevisan &lt;thobias at cos.ufrj.br&gt;	 </b></font>
+<font color="#00ffff"><b>#</b></font>
+
+<font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>&amp;</b></font><font color="#ff6060"><b>/</b></font>\<font color="#00ff00"><b>&amp;</b></font>amp;<font color="#ff6060"><b>/</b></font><font color="#00ff00"><b>g</b></font>
+<font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>&lt;</b></font><font color="#ff6060"><b>/</b></font>\<font color="#00ff00"><b>&amp;</b></font>lt;<font color="#ff6060"><b>/</b></font><font color="#00ff00"><b>g</b></font>
+<font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>&gt;</b></font><font color="#ff6060"><b>/</b></font>\<font color="#00ff00"><b>&amp;</b></font>gt;<font color="#ff6060"><b>/</b></font><font color="#00ff00"><b>g</b></font>
+<font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>"</b></font><font color="#ff6060"><b>/</b></font>\<font color="#00ff00"><b>&amp;</b></font>quot;<font color="#ff6060"><b>/</b></font><font color="#00ff00"><b>g</b></font>
+<font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>'</b></font><font color="#ff6060"><b>/</b></font>\<font color="#00ff00"><b>&amp;</b></font>#039;<font color="#ff6060"><b>/</b></font><font color="#00ff00"><b>g</b></font>
+
+<font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>,</b></font><font color="#8080ff"><b>\<font color="#ff00ff"><b>(</b></font>http\<font color="#ff00ff"><b>|</b></font>ftp\)://[\~A-Za-z0-9\.-/_-]\+[A-Za-z0-9]</b></font><font color="#ff6060"><b>,</b></font>&lt;a href=<font color="#00ff00"><b>&amp;</b></font>&gt;<font color="#00ff00"><b>&amp;</b></font>&lt;/a&gt;<font color="#ff6060"><b>,</b></font><font color="#00ff00"><b>g</b></font>
+<font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>\<font color="#ff00ff"><b>(</b></font>[A-Za-z0-9_\.-]\+@\)\<font color="#ff00ff"><b>(</b></font>[A-Za-z0-9_]\+\.\)\+\<font color="#ff00ff"><b>(</b></font>[A-Za-z]\)\+</b></font><font color="#ff6060"><b>/</b></font>&lt;a href=mailto:<font color="#00ff00"><b>&amp;</b></font>&gt;<font color="#00ff00"><b>&amp;</b></font>&lt;\/a&gt;<font color="#ff6060"><b>/</b></font><font color="#00ff00"><b>g</b></font>
+
+<font color="#8080ff"><b>1</b></font> <font color="#ffff00"><b>i</b></font> <font color="#00ff00"><b>\
+</b></font>&lt;html&gt;<font color="#00ff00"><b>\
+</b></font>&lt;head&gt;<font color="#00ff00"><b>\
+</b></font>&lt;title&gt;<font color="#00ff00"><b>\
+</b></font>txt2html.sed<font color="#00ff00"><b>\
+</b></font>&lt;/title&gt;<font color="#00ff00"><b>\
+</b></font>&lt;/head&gt;<font color="#00ff00"><b>\
+</b></font>&lt;body&gt;<font color="#00ff00"><b>\
+</b></font>&lt;pre&gt; 
+
+<font color="#8080ff"><b>$</b></font> <font color="#ffff00"><b>a</b></font> <font color="#00ff00"><b>\
+</b></font>&lt;\pre&gt;<font color="#00ff00"><b>\
+</b></font>&lt;\body&gt;<font color="#00ff00"><b>\
+</b></font>&lt;\html&gt;
+
+<font color="#00ffff"><b>### colorized by <a href="http://sedsed.sf.net">sedsed</a>, a sed script debugger/indenter/tokenizer/HTMLizer</b></font>
+
+</pre></body></html>

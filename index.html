@@ -1,0 +1,395 @@
+<html>
+<head>
+<title>Página do Thobias</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="Generator"          content="vim">
+<meta name="Author"             content="Thobias Salazar Trevisan">
+<meta name="Description"        content="thobias,
+software livre, linux, bash, shell, shell script, sed, regexp, er,
+expressão regular, CGI, tsm, tivoli storage manager, docker, python....">
+  <style type="text/css"> @import "links.css"; </style>
+</head>
+
+<!--                    ===== body =====                    -->
+
+<body bgcolor="black" text="#DEDEDE" vlink="blue">
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+ <tr><td valign="bottom">
+ Thobias Linux release 0.3 (beta)<br>
+ Kernel 2.4.31  on an i686<br><br>
+ Thobias login:&nbsp;guest<br>
+ Password:<br>
+ </td><td>
+ <img src="fig/pinguim2.gif" border="0" alt="Tux">
+ </td>
+ </tr>
+</table>
+
+<br>
+<div class=about>
+Olá!<br><br>
+Meu nome é Thobias Salazar Trevisan. Seja bem-vindo(a) à minha página.<br>
+Vou tentar mantê-la atualizada com alguns textos e programas
+(in)?úteis que escrevo.<br><br>
+
+Resumo dos links <I>mais interessantes</I>:<br><br>
+<center>Textos:<br><br>
+<a style="color: lightgreen" href="doc/cgi_shell.html">CGI em Shell</a> - 
+<a style="color: lightgreen" href="doc/shell_bd.html">Shell e Banco de Dados</a> - 
+<a style="color: lightgreen" href="doc/sosed.html">Só sed</a> - 
+<a style="color: lightgreen" href="doc/er_c.html">ER em C</a> - 
+<a style="color: lightgreen" href="doc/conv_audio.html">Converter Arquivos Áudio</a> -
+<a style="color: lightgreen" href="tsm/sql/index.html">SQL for TSM</a> -
+<a style="color: lightgreen" href="docker/index.html">Docker - First Steps</a>
+<br><br>
+Programas:<br><br>
+<a style="color: lightgreen" href="tsm/tsmmonitor/index.html">TSMmonitor</a> - 
+<a style="color: lightgreen" href="http://funcoeszz.net">Funções ZZ</a> - 
+<a style="color: lightgreen" href="http://aurelio.net/rac">RAC</a> - 
+<a style="color: lightgreen" href="datas/index.html">datas</a> - 
+<a style="color: lightgreen" href="fwchange/index.html">fwchange</a> - 
+<a style="color: lightgreen" href="rsshell/index.html">RSShell</a> - 
+<a style="color: lightgreen" href="bin/visitas.html">Livro de Visitas</a> - 
+<a style="color: lightgreen" href="bin/sig_dc">DC escrevendo</a> - 
+<a style="color: lightgreen" href="bin/bashwser">Browser em Bash</a>
+</center>
+<br>
+</div>
+
+<!--                   ===== ls -la =====                   -->
+
+	[guest@thobias ~]$ ls -la<br>
+
+    <br>
+    
+    drwxr-xr-x&nbsp;&nbsp;5 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Aug 20 22:00 <a href="index.html" class="dir"><b>.</b></a><br>
+
+    drwxr-xr-x&nbsp;33 root&nbsp;&nbsp;&nbsp;&nbsp;root&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Aug 20 22:00 <a href="javascript:alert(' Permissão negada =8)');" class="dir"><b>..</b></a><br>
+
+    -r-xr-xr-x&nbsp;&nbsp;1 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    933 Aug 20 22:59 <a href="halt.html" class="exe"><b>halt</b></a><br>
+
+    -rwxrwxrwx&nbsp;&nbsp;1 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    6402 Aug 20 22:59 <a href="cgi-bin/visitas.cgi" class="exe"><b>livro_de_visitas</b></a><br>
+
+    drwxr-xr-x&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 May 09 09:27 <a href="aix/index.html" class="dir"><b>aix</b></a><br>
+	
+    drwxr-xr-x&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Jul 15 11:06 <a href="bin/index.html" class="dir"><b>bin</b></a><br>
+	
+    drwxr-xr-x&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Jul 24 14:55 <a href="cluster/index.html" class="dir"><b>cluster</b></a><br>
+	
+    drwxr-xr-x&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Jan 15 15:23 <a href="datas/index.html" class="dir"><b>datas</b></a><br>
+	
+    drwxr-xr-x&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Jul 15 11:06 <a href="doc/index.html" class="dir"><b>doc</b></a><br>
+	
+    drwxr-xr-x&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Jun 18 14:58 <a href="docker/index.html" class="dir"><b>docker</b></a><br>
+	
+    drwxr-xr-x&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Feb 02 18:49 <a href="fwchange/index.html" class="dir"><b>fwchange</b></a><br>
+	
+    drwxr-xr-x&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Aug 25 23:00 <a href="MOMEMTO/index.html" class="dir"><b>MOMEMTO</b></a><br>
+
+    drwxr-xr-x&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Aug 25 23:00 <a href="programas_old/index.html"
+	class="dir"><b>Programas_old</b></a><br>
+
+    drwxr-xr-x&nbsp;&nbsp;1 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Oct 05 16:04 <a href="emc_vmax/index.html" class="dir"><b>EMC_VMAX</b></a><br>
+
+    drwxr-xr-x&nbsp;&nbsp;1 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Dec 12 18:40 <a href="rac/index.html" class="dir"><b>RAC</b></a><br>
+
+    drwxr-xr-x&nbsp;&nbsp;1 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Nov 05 12:33 <a href="rsshell/index.html" class="dir"><b>RSShell</b></a><br>
+
+    drwxr-xr-x&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Jul 15 11:06 <a href="scr/index.html" class="dir"><b>scr</b></a><br>
+	
+    drwxr-xr-x&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Jul 15 11:06 <a href="sed/index.html" class="dir"><b>sed</b></a><br>
+    
+    drwxr-xr-x&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    4096 Jul 11 14:39 <a href="tsm/index.html" class="dir"><b>TSM</b></a><br>
+	
+    lrwxrwxrwx&nbsp;&nbsp;2 guest&nbsp;&nbsp;&nbsp;users&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    21 Mar 10 10:12 <a href="http://funcoeszz.net" class="lks">
+<b>funcoeszz</b></a>&nbsp;->&nbsp;http://funcoeszz.net<br>
+    <br>
+     [guest@thobias ~]$<br>
+     [guest@thobias ~]$ sed -u 's/\([0-9]\{2\}:\)\{2\}[0-9][0-9] [^:]\+: /- /' /var/log/messages
+	 <br><br>
+
+<!--                   ===== noticias =====                              -->
+
+<div class=news>
+	 Mar 05 - As <a style="color: lightgreen" href="http://funcoeszz.net">Funções ZZ</a>
+	 completaram 8 anos. Para comemorar fizemos um mega release. Foram vários
+	 bugs corrigidos e duas funções novas. Ah, e uma grande novidade! O código foi limpo e identado.
+	 Está irreconhecível!! Agora poderá ser realmente utilizado por estudantes e entusiastas
+	 de shell scripts. Confira o 
+	 <a style="color: lightgreen" href="http://br-linux.org/2008/oito-anos-de-funcoes-zz/">press release oficial</a>.
+	 <br><center>==============================</center>
+	 <b><center>2007</center></b>
+	 <center>==============================</center><br>
+	 Jun 15 - Novo programa <a style="color: lightgreen" href="tsm/tsmmonitor/index.html">TSMmonitor</a>: 
+	 Um shell script que possibilita verificar o status de drives, paths, database, logs, processos,
+	 sessões, requisições, fitas, storage pools, nodes... de servidores iTSM (IBM Tivoli Storage Manager).
+	 Ah, este programa é em english.
+	 <br><center>==============================</center>
+	 <b><center>2006</center></b>
+	 <center>==============================</center><br>
+	 Nov 25 - Versão <a style="color: lightgreen" href="datas/index.html">1.2 do datas</a>: 
+	 O datas é um programa de calendário e compromissos que funciona na linha de comando.
+	 Simples, rápido e sem frescuras. É como se o comando "cal" soubesse
+	 quais são os seus compromissos e os mostrasse no lado direito da tela.
+	 Ele pode ainda te enviar um lembrete para mail e/ou celular com
+	 <i>N</i> dias de antecedência te avisando do compromisso.
+	 <center>==============================</center>
+	 Out 31 thobias -- MARK --
+	 <center>==============================</center>
+     Set 30 - As <a style="color: lightgreen" href="http://funcoeszz.net">Funcoes ZZ</a>
+	 completaram 5 anos, e para comemorar, lançamos uma edição limitada de 50
+	 <a style="color: lightgreen" href="http://funcoeszz.net/camiseta.html">camisetas</a>.
+	 É uma camiseta feita por nerds para nerds, compre já a sua. :)
+	 Outra grande mudança: as funcoeszz agora têm o seu próprio domínio
+	 (funcoeszz.net). O site também foi melhorado, confira. Ah, e não
+	 esqueça de atualizar o seu bookmark! :)
+	 <br><br>
+     Set 30 - Versão nova das 
+	 <a style="color: lightgreen" href="http://funcoeszz.net">funcoeszz</a>:
+	 Correções em funções quebradas e
+	 duas novas: zzcalculaip (Calcula o endereço da rede e o endereço de broadcast a partir
+	 de um ip e uma máscara de rede) e zzipinternet (Mostra o IP (válido) que você
+     está conectado na Internet).
+	 <br><br>
+     Set 24 - Versão 1.1 do
+	 <a style="color: lightgreen" href="datas/index.html">datas</a>:
+	 Um programa de calendário e compromissos que funciona na linha de comando.
+	 Extremamente simples, leve e sem frescuras. Fácil de usar e de gerenciar os
+	 compromissos. O programa pode ainda enviar um aviso dos compromissos
+	 por e-mail ou mensagem para celular. Mais informações na página do programa.
+	 <br><br>
+     Set 23 - O site ficou <i>fora</i> nos últimos dias. Agradeço ao
+	 Laboratório de Computação Paralela da UFRJ que hospedou o site
+	 nos últimos anos. Agora ele é hospedado no
+	 <a style="color: lightgreen" href="http://sourceforge.net">SourceForge</a>. Se você
+	 encontrar algum problema, me avise: (thobias at thobias dot org). Divirta-se =8) 
+	 <center>==============================</center>
+	 Ago 31 thobias -- MARK --
+	 <center>==============================</center>
+	  Jul 31 thobias -- MARK --
+	 <center>==============================</center><br>
+	 Jun 30 - 
+	 <a style="color: lightgreen" href="http://funcoeszz.net">funcoeszz v5.0630</a>:
+	 Função nova (zzlocale) e correções em várias funções quebradas. Teremos
+	 grandes mudanças logo logo. Fique ligado! 
+	 <br><br>
+	 Jun 29 -
+	 <a style="color: lightgreen" href="http://thobias.org/doc/conv_audio.html">Converter Arquivos de Áudio</a>:
+	 Adicionado comandos para converter entre os formatos 
+<a style="color: lightgreen" href="http://flac.sourceforge.net">FLAC</a> e WAV.
+	 <br><center>==============================</center><br>
+	 Mai 19 - Versão nova das 
+	 <a style="color: lightgreen" href="http://funcoeszz.net">funcoeszz</a>.
+	 Correção de funções quebradas, vários SEDs modificados visando
+	 melhorar a portabilidade das funcões e a leitura do arquivo
+	 <i>~/.zzextra</i>, que integra funções feitas pelo usuário ou por
+	 terceiros ao ambiente ZZ. 
+	 <br><center>==============================</center><br>
+	 Abr 11 - <a style="color: lightgreen" href="http://aurelio.net/rac">RAC v1.3</a>:
+	 ++Expressões_Regulares, ++ignore-case e ++bugfix.
+	 Mais informações você encontra na 
+	 <a style="color: lightgreen" href="http://aurelio.net/rac">página</a> do
+	 programa.
+	 <br><center>==============================</center><br>
+	 Mar 18 - Versão nova das
+	 <a style="color: lightgreen" href="http://funcoeszz.net">funcoeszz</a>. 
+	 Várias correções em funções quebradas. Nenhuma nova foi adicionada. <br><br>
+	 Mar 14 - Versão nova do
+	 <a style="color: lightgreen" href="cgi-bin/visitas.cgi">livro de visitas em shell script</a>. 
+	 O <a style="color: lightgreen" href="bin/visitas.html">código</a>
+	 foi quase todo reescrito. Está menor. Mais legível. Não usa
+	 arquivos temporários. Urldecode bem simples. <i>Mascara</i> email dos
+	 comentários e muito mais. Se você não assinou,
+	 assine :)
+	 <br><center>==============================</center><br>
+	 Fev 16 - Versão nova do 
+	 <a style="color: lightgreen" href="bin/sig_dc">sig_dc</a>.
+	 Agora não precisa mais de bc e gawk para funcionar.
+	 <br><br>
+	 Fev 02 - Programa novo:
+	 <b><a style="color: lightgreen" href="fwchange/index.html">fwchange</a></b>.
+	 Um shell-script feito para facilitar mudanças rápidas em um firewall.
+	 O fwchange oferece via linha de comando várias funções para facilitar e
+	 agilizar mudanças no firewall. Agora ficou bem mais simples
+	 bloquear/liberar IPs, Portas...
+	 <br><center>==============================</center><br>
+	 Jan 15 - Programa novo<b>
+	 <a style="color: lightgreen" href="datas/index.html">datas</a></b>.
+	 Um shell script que mostra o calendário destacando os dias
+	 importantes. Ajuda os <I>esquecidos</I> (como eu) a lembrar estes dias.
+	 <br><br>
+	 Jan 09 - Página reformulada! Novos links no início da página para
+	 ajudar na navegação.
+	 <br><center>==============================</center><br>
+	 Dez 23 - <b>Natal Aurélio & Thobias:</b> 
+	 "<i>Fim de ano, época de presentes, então hoje eu e o Thobias resolvemos presentear os 
+	 usuários com dois lançamentos de peso: versão 4.1223 das
+	 <a style="color: lightgreen" href="http://funcoeszz.net">Funções ZZ</a>
+	 com 5 funções novas: zznatal, zzcpf, zzcnpj, zzsecurity, zzlinha e versão 1.2 
+	 do <a style="color: lightgreen" href="http://aurelio.net/rac">RAC</a> com suporte a endereçamento
+	 usando strings. HO! HO! HO!</i>" - 
+	 <a style="color: lightgreen" href="http://aurelio.net">aurelio.net</a>
+	 <br><center>==============================</center><br>
+	 Nov 05 - Novo programa<b>
+	 <a style="color: lightgreen" href="http://thobias.org/rsshell/">RSShell</a></b>.
+	 Programa escrito em BASH que consulta diversos sites de notícias e monta um resumo 
+das últimas notícias. Funciona para qualquer site que tenha suporte a RSS.
+Simples de usar e fácil de configurar. Confira, pois este programinha vai
+poupar o seu tempo e sua conexão.
+	 <br><center>==============================</center><br>
+	 Out 29 - Versão nova das 
+	 <a style="color: lightgreen" href="http://funcoeszz.net/">funcoeszz</a>.
+	 Adicionada função zzwikipedia e alguns bugs concertados.<br>
+	 <br><center>==============================</center><br>
+	 Set 30 thobias -- MARK --
+	 <center>==============================</center><br>
+	 Ago 31 thobias -- MARK --
+	 <center>==============================</center><br>
+	 Jul 06 - 
+	 <a style="color: lightgreen" href="doc/er_c.html">regex em C</a>. 
+	 Adicionado tutorial explicando como utilizar expressões
+	 regulares na linguagem C. Confira!! Pode te economizar muito tempo.<br>
+	 <br><center>==============================</center><br>
+	 Jun 30 thobias -- MARK --
+	 <br><center>==============================</center><br>
+	 Mai 18 - 
+	 <a style="color: lightgreen"
+	 href="doc/conv_audio.html">Converter arquivos de áudio</a>. Texto com
+	 scripts <i>one-line</i> prontos para copiar e colar que convertem entre os
+	 principais formatos de áudio. Quer saber como converter de MP3 para
+	 WAV, WAV para OGG, MP3 para OGG, WMA para WAV... é só acessar o texto.
+	<br>
+	<br><center>==============================</center><br>
+	 Abr 20 - Lançado o 
+	 <b><a style="color: lightgreen"
+	 href="http://aurelio.net/rac">RAC-1.1</a></b>.
+	 Esta versão está mais rápida e consome menos memória. Não deixe de
+	 conferir, atualizar e se divertir!! =8)
+	 <br><br>
+	 Abr 16 - <a style="color: lightgreen" href="bin/fmt.sed">fmt.sed</a>
+	 identa parágrafos (linhas de texto consecutivas). Primeiro quebra o
+	 texto com um determinado número de caracteres e depois justifica as
+	 linhas adicionando espaços extras entre palavras. Número máximo de
+	 espaços entre palavras é 4. Precisa de sed >= 4.0
+	 <br><br>
+	 Abr 14 - Nova devel do <a style="color: lightgreen" href="rac/index.html">RAC</a> 
+	 (v1.1 devel3). O código foi todo reescrito e agora está menos tosco. Ah, o
+	 <a style="color: lightgreen" href="rac/tester">test-suite</a>
+	 também foi atualizado. Teste!!<br>
+	 <br><center>==============================</center><br>
+	 Mar 29 - Release novo das <a style="color: lightgreen" href="http://funcoeszz.net/">
+funcoeszz</a> com duas funções novas (zzhoracerta e zzmoeda). Muito massa!<br>
+	 <br>
+	 Mar 25 - Adicionei um <b>
+	 <a style="color: lightgreen" href="cgi-bin/visitas.cgi">livro de visitas</a></b>. 
+	 Fiz o CGI do livro em shell script. Quem quiser baixar o código
+	 <a style="color: lightgreen" href="bin/visitas.txt">visitas.cgi</a>.
+	 Ei, não deixe de assinar o livro! =8)<br>
+	 <br><center>==============================</center><br>
+	 Fev 29 thobias -- MARK --
+	 <br><center>==============================</center><br>
+	 Jan 31 thobias -- MARK --
+	 <br><center>==============================</center><br>
+	 <br><b><center>2003</center></b>
+	 <br><center>==============================</center><br>
+	 Dez 23 - Não tem ninguém em casa. Estou de férias! =8) Volto dia 4 de janeiro.
+	 Boas festas para todo mundo e até lá!!<br>
+	 <br>
+	 Dez 12 - 
+	 <a style="color: lightgreen" href="http://aurelio.net/rac">RAC - Rows and Columns</a>. 
+	 Lançado novo projeto em parceria com o Aurelio. 
+	 Não deixe de conferir mais esta maravilha!!! 
+	 <br>
+	 <br><center>==============================</center><br>
+	 Nov 30 thobias -- MARK --
+	 <br>
+	 <br><center>==============================</center><br>
+	 Out 01 - Já faz muito tempo que não atualizo minha página. A 
+	 mudança para o sul foi tranquila. Demorou um pouco para
+	 alugar um apartamento em Porto Alegre, comprar
+	 meus computadores e montar o mini-cluster para continuar o desenvolvimento
+	 do <a style="color: lightgreen" href="MOMEMTO/index.html">MOMEMTO</a>. Aos poucos 
+	 estou voltando às minhas atividades nerds. =8)
+	 <br>
+	 <br><center>==============================</center><br>
+	 Set 30 thobias -- MARK --
+	 <br>
+	 <br><center>==============================</center><br>
+	 <br>
+	 Ago 05 - É, parece que agosto é o mês das mudanças. Estou finalizando
+	 minhas atividades no Rio de Janeiro e voltando para o Rio Grande
+	 do Sul. Voltar para o frio e relembrar que existem as quatro
+	 estações do ano, porque no RJ só existe uma :/
+	 Até me ajeitar por lá vou ficar um tempo sem
+	 computador e internet, assim não espere que eu vá responder mail nas
+	 próximas semanas =8).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>mv thobias $HOME</b>
+	 <br><br>
+	 Ago 02 -  prompt> sed 's/Novidades/&!! &!! &!!/' <(echo Novidades)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Novidades!! Novidades!! Novidades!!</b><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Corto a faixa. Está inaugurado
+o <b><a style="color: lightgreen"
+href="http://thobias.org">thobias.org</a></b>. A sopa-de-letrinhas
+finalmente acabou!! Agora está muito mais fácil para você lembrar e contar
+para os amigos. Não se esqueça de anotar o novo endereço! =8)<br>
+	<br>
+	 Ago 01 - Como terminei o mestrado e a vida está mais calma, sobrou
+	 tempo para escrever alguns textos, como a maravilhosa 
+	 <a style="color: lightgreen" href="mim.html">man page thobias</a> ;)<br>
+	 <br><center>==============================</center><br>
+	 Jul 28 -  <a style="color: lightgreen"	 href="doc/shell_bd.html">shell_bd</a>
+	 tutorial sobre como integrar shell script com banco de dados com
+	 vários exemplos e dicas. Para fazer aplicações com banco de dados esqueça Perl, PHP, Python...
+	 shell script detona. =8)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Também fiz algumas modificações no html da página para melhorar o
+	 visual. arrrgghhhh<br>
+	 <br>
+	 Jul 24 - Adicionado diretório <a style="color: lightgreen" href=cluster/index.html>cluster</a>,
+	 onde colocarei códigos e informações sobre programação paralela.<br>
+	 <br>
+	 Jul 10 - <a style="color: lightgreen" href=doc/lookup_tables_sed.html>lookup_tables_sed.html</a>
+	 texto explicando a técnica de lookup tables em sed e um exemplo de
+	 como contar, inclusive com números negativos.<br>
+	 <br>
+	 Jul 09 - <a style="color: lightgreen" href=bin/einstein>einstein</a> esse programinha rolou na
+	 internet há uns anos atrás. Me diverti muito com ele. Só que a versão
+	 que eu tinha era para windows. Então, escrevi uma em shell =8)<br>
+	 <br>
+	 Jul 07 - <a style="color: lightgreen" href=doc/inc_sed.html>inc_sed.html</a> texto novo explicando como utilizar o 
+	 sed para incrementar um número ou uma letra.<br>
+	 <br>
+	 Jul 02 - Lançada nova versão do web shell. Bem mais limpa e sem todo
+	 aquele lixo.<br>
+	 <br><center>==============================</center><br>
+     Jun 30 - syslogd startup succeeded<br>
+     <br><br>
+</div>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2229503-1";
+urchinTracker();
+</script>
+</body>
+</html>

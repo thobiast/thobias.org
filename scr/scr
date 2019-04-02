@@ -1,0 +1,706 @@
+#!/bin/bash
+#
+# Author  : Thobias Salazar Trevisan <thobias[at]cos.ufrj.br>
+# Site    : http://www.lcp.coppe.ufrj.br/~thobias/scr
+#
+# License : GNU General Public License version 2 (GPL2)
+# Site    : http://www.gnu.org/copyleft/gpl.html
+#
+# Confira tambem as famosas funcoes ZZ do aurelio (verde666) 
+# 		URL: http://aurelio.net/zz
+# Extremamente recomendado!!!!!
+#
+# Requires:
+# Dependencias:
+#	lynx, wget, finger, util-linux, textutils, sed, bc, gawk, bash
+#
+# 
+# Last Update: Seg Jul 21 16:17:54 BRT 2003
+#
+# Changelog:
+# 12/12/2002	adicionada opcao cd (character to decimal) no converte
+# 25/01/2003	link da INFO arrumado
+# 31/03/2003	filtro linuxtoday
+# 04/04/2003	adicionada funcao ajuda
+#		scr --help agora mostra todas as funcoes lendo do 
+#		arquivo fonte (scr)
+#		funcao howto otimizada e procura tambem mini-howto
+#		funcao pp voltou a funcionar com um dicionario de portugal :P
+# 05/04/2003	funcao kill otimizada
+#		funcao check modificada (acho que agora funciona pra qq distro)
+#		reformulado todo o esquema de funcao --help ( antes tava 
+#		confuso e adicionava muito lixo as funcoes)
+# 09/04/2003	arrumado filtro clubedohardware
+# 10/04/2003	mais um tema na funcao tela (texto se mexendo)
+# 02/05/2003	adicionada funcao palavra (scr palavra --help :)
+# 06/05/2002	arrumado bug scr --help e scr ajuda (nao mostrava funcoes
+#		com o caracter '_'
+# 14/05/2003	otimizada funcao kernel
+# 25/06/2003	funcao check, faltava testar o cmd play (por dm1tri)
+#		arrumado filtro do site Linux Weekly News da linuxnews
+#		arrumado filtro do site Wired News das news
+# 27/06/2003	arrumado filtro da funcao tempo
+# 15/07/2003	contapalavra melhorado
+# 16/07/2003	adicionada funcao upgrade (dm1tri)
+#
+
+TMP=/tmp
+
+_mostra-help(){
+sed '1!G;h;$!d' < "$1" | sed -n "/^$2(){/,/^[^#]/s/^# \?//p" | sed '1!G;h;$!d'
+}
+
+# Test if you have all programs required by scr
+#
+# Testa se voce tem todos os programas necessarios para utilizar toda as funcoes
+#
+# uso: scr check
+check(){
+[ "$1" = "--help" ] && { _mostra-help "$0" check; exit; }
+if ! $(bash --version > /dev/null 2>&1);then
+	echo -e "Erro: programa bash nao instalado
+	Install the bash package
+	Instale o pacote bash";else  echo "bash....OK";fi
+if ! $(lynx --version > /dev/null 2>&1);then
+	echo -e "Erro: Programa lynx nao instalado
+	Install the lynx package
+	Instale o pacote lynx";else  echo "lynx....OK";fi
+if ! $(wget --version > /dev/null 2>&1);then
+	echo -e "Erro: Programa wget nao instalado
+Voce nao pode utilizar a funcao e rpmfind.
+	Install the wget package
+	Instale o pacote wget";else  echo "wget....OK";fi
+if ! $(finger > /dev/null 2>&1);then
+	echo -e "Erro: Programa [finger] nao instalado
+Voce nao pode utilizar a funcao kernel com a opcao finger
+	Install the finger package
+	Instale o pacote finger";else echo "finger..OK";fi
+if ! $(column < /dev/null > /dev/null 2>&1);then
+	echo -e "Erro: Programa column.
+Voce nao pode utilizar a funcao kernel sem a opcao finger
+	Install the util-linux package
+	Instale o pacote util-linux";else echo "column..OK";fi
+if ! $(wc --version > /dev/null 2>&1);then
+	echo -e "Erro: Programa wc.
+	Install the textutils package
+	Instale o pacote textutils";else echo "wc......OK";fi
+if ! $(bc --version > /dev/null 2>&1);then
+	echo -e "Erro: Programa bc.
+	Install the bc package
+	Instale o pacote bc";else echo "bc......OK";fi
+if ! $(gawk --version > /dev/null 2>&1);then
+	echo -e "Erro: Programa awk.
+	Install the gawk package
+	Instale o pacote gawk";else echo "gawk....OK";fi
+if ! $(sed --version > /dev/null 2>&1);then
+	echo -e "Erro: Programa sed.
+	Install the sed package
+	Instale o pacote sed";else echo "sed.....OK";fi
+if ! $(play --version > /dev/null 2>&1);then
+	echo -e "Erro: Programa sox. 
+Voce nao pode utilizar a funcao pronuncia sem o programa play
+	Install the sox package
+	Instale o pacote sox"; else echo "sox.....OK";fi
+}
+
+# It shows how many times a word appears in a text
+#
+# retorna quantas vezes uma determinada palavra aparece em um arquivo
+# obs.: o uso do -i faz procura sem levar em consideração
+# maiusculas e minusculas
+#
+# obs.2: o uso do -b faz procura por partes de palavras também, ex: se
+# procurar por se, e encontrar a palavra sed, será contada como 1
+# ocorrência
+#
+# uso: contapalavra [-i] [-b] palavra arquivo
+# ex.: contapalavra sed 
+#      contapalavra -i -b sed scr 
+contapalavra(){ 
+opt="";I="";L="\b"
+[ "$1" = "--help" ] && { _mostra-help "$0" contapalavra; exit; }
+while getopts ib opt; do [ $opt = i ] && I=I; [ $opt = b ] && L="";done
+shift $(($OPTIND - 1)); [ "$1" -a "$2" ] ||
+{ echo 'uso: contapalavra [-i] [-b] palavra arquivo';return; }
+sed -n "1{;x;s/^/0/;x;}
+/$L$1$L/$I{:c;s/$L$1$L//$I;ta;bb;:a;x
+:nove;s/9\(_*\)$/_\1/;tnove
+s/^\(_*\)$/0\1/;s/$/#12345678901/
+s/^\(.*\)\(.\)\(_*\)#.*\2\(.\).*/\1\4\3/
+s/_/0/g;x;tc;};:b;\${x;p;}" < $2
+} 
+
+# Show the latest 5 pieces of news of some sites about linux 
+#
+# Mostra as ultimas 5 noticias de alguns site sobre linux. Os sites sao:
+#
+# http://lwn.net
+# http://linuxtoday.com
+# http://freshmeat.net
+# http://slashdot.org
+# http://www.osnews.com
+# http://www.linuxdailynews.com
+# http://kerneltrap.com
+#
+# uso: scr linuxnews
+linuxnews(){
+[ "$1" = "--help" ] && { _mostra-help "$0" linuxnews; exit; }
+echo -e "\033[1m --- LWN - Linux Weekly News \033[m"
+lynx -dump -nolist -width=300 http://lwn.net/ | sed -n '/s headlines/{s/.*//;h;};${x;p;};H' |\
+sed -n '/[a-z]/{s/\[[^]]*\] *$//;s/^ *//;p;}' | sed 5q
+echo -e "\033[1m --- LinuxToday \033[m"
+lynx -dump -source http://linuxtoday.com/ |\
+sed -n '/ class="nav">/{s/<[^>]*>//g;p;}'  | sed 5q
+echo -e "\033[1m --- Freshmeat \033[m"
+lynx -dump -source http://freshmeat.net/ | sed -n '/href=\"\/releases/!d;/\<small\>/p' |\
+sed 's/<[^>]*>//g;s/^[^a-zA-Z0-9]*//g' | head -5
+echo -e "\033[1m --- Slashdot \033[m"
+lynx -dump -source http://slashdot.org/ | \
+sed -n '/SIZE="4" COLOR="#FFFFFF">/{s/^/</;s/<[^>]*>//g;p;}' | sed 5q
+echo -e "\033[1m --- OSNews \033[m"
+lynx -dump -source http://www.osnews.com |\
+sed '/font face="Arial, Helvetica" size=3 \+color="#000000"/!d;s/<[^>]*>//g;s/\&nbsp\; //g' \
+| sed '1,5!d'
+echo -e "\033[1m --- LinuxDailyNews \033[m"
+lynx -dump -source http://www.linuxdailynews.com | sed -n '/size\=\"4\" color\=\"\#101073\"/p' |\
+sed 's/<font face\=\"Arial.*//g;s/<[^>]*>//g;s/^ *//g;5q'
+echo -e "\033[1m --- KernelTrap \033[m"
+lynx -dump -source http://kerneltrap.com |\
+sed -n '/width=\"60%\"/p' | sed 's/<[^>]*>//g;1,5!d;s/  */ /g'
+}
+
+# Show the latest 5 pieces of news of some sites about computing
+# 
+# Funcao que mostra as ultimas 5 noticias de alguns sites sobre informatica.
+# Os sites sao:
+#
+# http://idgnow.terra.com.br
+# http://pcworld.terra.com.br
+# http://www2.uol.com.br/info/index.shl
+# http://busca.terra.com.br/wired/index2.html
+# http://www.clubedohardware.com.br
+#
+# uso: scr news
+news(){
+[ "$1" = "--help" ] && { _mostra-help "$0" news; exit; }
+echo -e "\033[1m --- IDG NOW! - http://idgnow.terra.com.br \033[m"
+lynx -dump -source http://idgnow.terra.com.br/idgnow/idgnow.html |\
+sed -n '/class\=atreze\>/p' | sed 's/<[^>]*>//g;5q'
+echo -e "\033[1m --- PC WORLD - http://pcworld.terra.com.br \033[m"
+lynx -dump -source http://pcworld.terra.com.br/pcw/pcworld.html |\
+sed -n '/<b>Hot News</,/<b>Colunistas/p' |\
+sed '/\&\#149\;\&nbsp\;/!d;s/<[^>]*>//g;s/^\&\#149\;\&nbsp\;//g' | sed 5q
+echo -e "\033[1m --- INFO - http://info.abril.com.br \033[m"
+lynx -dump -source http://info.abril.com.br |\
+sed '/size\=\"2\" color\=\"\#000000\">/!d;s/<[^>]*>//g;s/^\&nbsp\;//g' | sed 5q
+echo -e "\033[1m --- Wired News - http://http://br.wired.com/ \033[m"
+lynx -dump -source http://br.wired.com/ |\
+sed -n '/class="hd">/{s/<[^>]*>//g;s/^[[:blank:]]*//;p;}' | sed 5q
+echo -e "\033[1m --- Clube do Hardware -  http://www.clubedohardware.com.br \033[m"
+lynx -dump -source http://www.clubedohardware.com.br/noticias.php |\
+sed -n '/Últimas Notícias/,/Próxima >>/{/^<p>.*size=2/s/.*<b>\([^<]\+\)<\/b.*/\1/p;}'|\
+sed 5q
+}
+
+
+# Get a .wav file with the english pronunciation of a word
+#
+# Busca um .wav com a pronuncia de uma determinada palavra em ingles
+#
+# uso: scr pronuncia <palavra>
+# ex:  scr pronuncia illegal
+pronuncia(){  
+[ "$1" = "--help" ] && { _mostra-help "$0" pronuncia; exit; } 
+[ ! "$1" ] && { echo "Usage: scr pronuncia <palavra>"; exit; }
+PAL=`lynx -source -dump "http://www.m-w.com/cgi-bin/dictionary?va=${1}" | sed -n "/$1/p" |\
+sed -n "/audio.pl/{s/=$1'.*$//I;s/^.*audio.pl?//;/wav/{p;q;};}"`
+[ "$PAL" ] || { echo "Nao foi encontrado [$1]"; exit; }
+DIR=`echo $PAL | cut -c1`; TMPWAV="${TMP}/$PAL"
+lynx -source http://cheetah.eb.com/sound/${DIR}/$PAL > $TMPWAV; answer=s
+while [ "$answer" = "s" ]; do play "$TMPWAV"; echo -n "repetir?  (s/n) : "; read answer
+done
+}
+
+# Search for a howto document.
+# 
+# Pesquisa por um determinado howto
+#
+# uso: scr howto <palavra>
+# ex:  scr howto nfs
+howto(){
+[ "$1" = "--help" ] && { _mostra-help "$0" howto; exit; } 
+[ ! "$1" ] && { echo "Usage: scr howto <palavra>"; exit; }
+TMP_HOWTO="/tmp/howto_scr"
+lynx -dump http://www.ibiblio.org/pub/Linux/docs/HOWTO/      >  $TMP_HOWTO
+lynx -dump http://www.ibiblio.org/pub/Linux/docs/HOWTO/mini/ >> $TMP_HOWTO 
+cat $TMP_HOWTO | sed -n '/^ \+[0-9]\+\./{/\(\/?\|\/$\)/d;p;}' |\
+sed -n "/$1/Is/^[ ]*[0-9]\+\. //p"
+}
+
+# search the meaning of an acronym
+#
+# Pesquisa por uma sigla
+#
+# uso: scr sigla <sigla>
+# ex:  scr sigla IMHO
+sigla(){
+[ "$1" = "--help" ] && { _mostra-help "$0" sigla; exit; } 
+[ ! "$1" ] && { echo "Usage: scr sigla <sigla>"; exit; }
+ACRON=`echo $1 | tr '[a-z]' '[A-Z]'`
+lynx -dump "http://www.acronymfinder.com/af-query.asp?String=exact&Acronym=${1}&Find=Find" \
+| sed -n "/^[[:space:]]*$ACRON/p" | sed 's/\[.*$//;s/^ *//g' 
+}
+
+# Translate a word from english to portuguese (pt_br)
+#
+# Traduz uma palavra do ingles para portugues
+#
+# uso: scr ep <palavra>
+# ex:  scr ep computer
+ep(){
+[ "$1" = "--help" ] && { _mostra-help "$0" ep; exit; } 
+[ "$1" ] || { echo "Usage: scr ep <palavras>";exit; }
+lynx -dump "http://www.babylon.com/trans/bwt.cgi?ptg$1" \
+| sed '1,4d' | sed '/^.*\_\_\_\_\_/d;/^$/d'
+}
+
+# Show the word's meaning in english
+#
+# Mostra o significado de uma palavra em ingles
+#
+# uso: scr ee <palavra>
+# ex:  scr ee pirate
+ee(){
+[ "$1" = "--help" ] && { _mostra-help "$0" ee; exit; }
+[ "$1" ] || { echo "Usage: scr ee <palavra>"; exit; }
+lynx -dump -nolist "http://info.babylon.com/cgi-bin/info.cgi?word=${1}&lang=0&type=hp&layout=combo.html&n=10&list=" \
+| sed 's/^[ ]*\[.*//g' | sed -n '/Babylon English/,/all translations/p' | sed '1d;$d;/^$/d'
+}
+
+# show the english synonyms of a word
+#
+# Mostra sinonimos para uma palavra em ingles
+#
+# uso: scr esyn <palavra>
+# ex:  scr esyn evaluate
+esyn(){
+[ "$1" = "--help" ] && { _mostra-help "$0" esyn; exit; }
+lynx -dump -nolist "http://www.m-w.com/cgi-bin/thesaurus?book=Thesaurus&va=${1/ /%20}" |\
+sed -n '/Entry Word/,/Get the Top/p' | sed '$d'
+}
+
+# Show the words's meaning in portuguese
+#
+# Mostra o significado de uma palavra em portugues
+#
+# uso: scr pp <palavra>
+# ex:  scr pp utopia
+pp(){
+[ "$1" = "--help" ] && { _mostra-help "$0" pp; exit; }
+[ "$1" ] || { echo "Usage: scr pp <palavra>"; exit; }
+#echo "busca2=${1}&palavra=comeca&quantidade=15&morfologia=tudo&chk1=on&campo=verbete&busca=${1}" | \
+#lynx -post-data -nolist -dump http://cf6.uol.com.br/michaelis/resultados.cfm |\
+#sed '1,/___/d;/Quero participar/,/$/d;$d'
+echo "pal=$1" | lynx -dump  -post_data http://www.priberam.pt/DLPO/default.asp |\
+sed -n 's/^ *//;/^$/d;/^Foi [a-z]\+/,/^Se tiver/{/\(^\[\|Se tiver\)/d;p;}'
+}
+
+# Translate a word or a small sentence from portuguese to english
+#
+# Traduz uma palavra ou pequena frase do portugues para o ingles. 
+#
+# uso: scr pe <palavra>
+# ex:  scr pe elefante rosa
+pe(){
+[ "$1" = "--help" ] && { _mostra-help "$0" pe; exit; }
+[ "$1" ] || { echo "Usage: scr pe <palavras>"; exit; }; L=`echo "$@" | sed 's/ /%20/g'`
+lynx -dump -source "http://babelfish.altavista.com/tr?urltext=${L}&lp=pt_en" |\
+sed -n '/padding:10px/p' | sed 's/^.*>//'
+}
+
+# Search for the address of a CEP
+# Available only for Brazil
+#
+# Pesquisa qual o endereco de um CEP
+# uso: scr cep <00000-000>
+# ex:  scr 21920-400
+cep(){
+[ "$1" = "--help" ] && { _mostra-help "$0" cep; exit; }
+[ "$1" ] || { echo "Usage: scr cep <00000-000>";exit; }
+echo "_textCEP=${1}&_b_cep.x=1" | lynx -post-data -nolist -crawl -width=300 \
+-accept_all_cookies http://www.terra.com.br/cep/ceps.cgi | sed '1,2d'
+}
+
+# Display the current weather conditions in many countries 
+#
+# Mostra as condicoes do tempo em um determinado ponto
+#
+# Se nenhum parametro for passado, eh listado os possiveis paises.
+# Se soh o pais for especificado, eh listado os lugares neste pais
+# Para nomes como Porto Alegre e Porto Alegre Aero-Porto, voce pode utilizar
+# as siglas apresentadas para diferencia-los. Ex: SBCO = Porto Alegre.
+#
+# uso: scr tempo <pais> <local>
+# ex:  scr tempo "United Kingdom"  "London City Airport"
+#      scr tempo brazil SBRJ
+tempo(){
+[ "$1" = "--help" ] && { _mostra-help "$0" tempo; exit; }
+P=$(lynx -dump -source "http://weather.noaa.gov" |\
+sed -n '/internationalpage()/,/submit2/{s/.*value="\([a-zA-Z]*\)">\([^<]*\).*/\1 \2/p;}')
+[ ! "$1" ] && { echo "$P"; exit; } ; P1=$(echo "$P" | sed -n "s/^[^ ]* \+//;s/$1/&/Ip")
+[ "$P1" ] || { echo "$P"; echo -e "\nPais [$1] nao existe"; exit; }
+[ $(echo "$P1" | wc -l) -eq 1 ] && { LOCATE_P=$(echo "$P" | sed -n "/$1/Is/[ ].*//p"); } || 
+{ echo "$P1"; exit; }
+LOCATE_E=$(lynx -dump -source "http://weather.noaa.gov/weather/${LOCATE_P}_cc.html" |\
+sed -n 's/.*option value="\([a-zA-Z]*\)">\([^<]*\).*/\1 \2/Ip')
+[ ! "$2" ] && { echo "$LOCATE_E"; exit; }; L=`echo "$LOCATE_E" | sed -n "/${2}/Ip"`
+[ "$L" ] || { echo "$LOCATE_E"; echo -e "\n[$2] nao existe"; exit; }
+[ $(echo "$L" | wc -l) -eq 1 ] && { LOCATE=$(echo "$L" | sed 's/ .*//');
+lynx -dump -nolist "http://weather.noaa.gov/weather/current/${LOCATE}.html" |\
+sed -n '/Current Weather/,/24 Hour/p' | sed '/____/d;$d'; } || { echo "$L"; exit; }
+}
+
+# Display the current time in a specific place
+#
+# Mostra o horario em um determinado local e o horario GMT
+#
+# uso: scr timezone <local>
+# ex: scr timezone Brazil/West
+#     scr timezone Europe/London
+#     scr timezone
+timezone(){
+[ "$1" = "--help" ] && { _mostra-help "$0" timezone; exit; }
+S=`lynx -dump -source http://www.timezoneconverter.com |\
+sed -n '/\<option value\=/p' | awk -F\" '{print $2}'` ; [ "$1" ] || { echo "$S"; exit; }
+L=`echo "$S" | sed -n "/${1/\//\/}/p"`
+[ `echo "$L" | wc -l` -gt "1" ] && { echo "$L"; exit; }
+[ `echo "$L" | wc -c` -gt "1" ] && { echo "now=1&tozone=GMT&zone=$1" |\
+lynx -post-data -nolist -accept_all_cookies http://www.timezoneconverter.com/cgi-bin/tzc.tzc |\
+sed -n '/\([0-9]\{2\}\:\)\{2\}/p'; exit; } || echo "[$1] Nao existe"
+}
+
+# Search and get a package in rpmfind site.
+#
+# Procura e faz download de um pacote no site rpmfind.net
+#
+# uso: scr rpmfind <pacote> [system] [arch]
+# ex:  scr rpmfind kernel redhat i386
+rpmfind(){
+[ "$1" = "--help" ] && { _mostra-help "$0" rpmfind; exit; }
+echo "Search: $1    System: $2    Arch: $3"; echo
+arq=${TMP}/dump_rpmfind.txt
+lynx -width=300 -dump "http://rpmfind.net/linux/rpm2html/search.php?query=${1}&submit=Search+...&system=${2}&arch=${3}" > $arq
+cat "$arq" | sed -n "/RPM for $1/p" | sed 's/^[ ]*//g'
+cat "$arq" | sed -n "/RPM for ${1}/,/_________/p" | grep -m 1 Distribution | sed 's/^.*ge//;s/^[ ]*//'
+cat "$arq" | sed -n "/RPM for ${1}/,/_________/p" | sed '$d' | sed '1d' | sed 's/^.*.html//g;s/^[ ]*//g' | sed '1,2d'
+echo; echo -n "Qual rpm vc deseja fazer download : "
+read res;dow=`grep " $res. " "$arq"`;echo "$dow";echo
+echo -n "Deseja Fazer o Download (s/n) : "; read res2
+[ "$res2" = "s" ] && { wget -b --passive-ftp `echo "$dow" | awk '{print $2}'`; exit; } 
+rm -f "$arq"
+}
+
+# Look out the latest versions of the linux kernel
+# If you specify the finger parameter, the finger command will be used, 
+# otherwise, will be used the lynx browser
+#
+# Consulta as ultimas versoes do kernel do linux
+# se voce passar o parametro finger, ele usar o comando
+# finger para consultar, caso contrario usa o lynx
+#
+# uso: scr kernel [finger]
+# ex:  scr kernel
+kernel(){
+[ "$1" = "--help" ] && { _mostra-help "$0" kernel; exit; }
+echo -e "Consultando as ultimas versoes do kernel\n"
+[ "$1" = "finger" ] && { finger @kernel.org; exit; }
+lynx -dump -nolist --width=300 http://www.kernel.org |\
+sed -n '/The latest/{s/^[[:blank:]]*//g;s/200[0-9]-.*//;p;}'
+}
+
+# Get the size of files and directories, afterwards sort by size
+# You can use "." to specify the currrent dir 
+# 
+# Consulta o tamanho de arquivos e diretorio e depois ordena pelos maiores.
+# use "." para o diretorio atual
+#
+# uso: scr tamanho <DIR>
+# ex:  scr tamanho /home
+tamanho(){
+[ "$1" = "--help" ] && { _mostra-help "$0" tamanho; exit; }
+[ -d "$1" ] || { echo "scr Diretorio [$1] nao existe";exit; }
+TEMP=${TMP}/scr.tamanho; rm -f "$TEMP"
+for i in ${1}/*; do
+	tam=`{ du -sk $i || echo "ERRO"; } | awk '{print $1}'`
+	if [ "$tam" != "ERRO" ];then
+       		echo "# Tamanho DIR $i = $tam KB" >> $TEMP
+        	echo "# Tamanho DIR $i = $tam KB"
+	fi
+done; echo -e "\n Ordenando .....\n"
+cat "$TEMP" | sort -g -r -t ' ' -k 6; rm -f "$TEMP"
+}
+
+# Convert a LaTeX file (.tex) to PostScript (.ps)
+# If the second argument is "dvi", then is only created the .avi file  
+# If the argument is "clean", will be removed all  
+# .aux .dvi .log .ps files of the current directory 
+# 
+# Gera um arquivo PostScript (.ps) a partir de um arquivo LaTeX (.tex)
+# Se for especificado o parametro "dvi", nao eh gerado o arquivo 
+# PostScript, ie, eh somente gerado o arquivo .dvi
+# Se o parametro for "clean" sao removidos todos os arquivos 
+# .aux .dvi .log .ps do diretorio corrente
+#
+# uso: scr latex_ps <file.tex | clean> [dvi]
+# ex:  scr latex_os meu_doc.tex
+latex_ps(){
+[ "$1" = "--help" ] && { _mostra-help "$0" latex_ps; exit; }
+[ "$1" = "clean" ] && { rm *.{aux,dvi,log,ps}; exit; }
+[ -r "$1" ] || { echo -e "ERRO scr [$1] No such file \nUsage: scr latex_ps\
+<file | clean> [dvi]"; exit; }
+[ "$2" = "dvi" ] && { latex "$1"; exit; } ; latex "$1" &&\ 
+dvips `basename $1 tex`dvi -o `basename $1 tex`ps &> /dev/stdout
+}
+
+# Something like a screensaver (text mode) extremely primitive ;-)
+# You can specify the theme, the characters to print and a number to sleep 
+# in seconds. Use ctrl+c to terminate
+#
+# Alguma coisa como um protetor de tela (modo texto) muito primitivo ;-)
+# Voce pode especificar o tema, caracteres para imprimir e um numero com 
+# quantos segundo ele deve dormir
+# Use ctrl+c para terminar
+#
+# uso: scr tela [numero tema <1-4>] [caractere a ser impresso] [numero esperar seg]
+# ex:  scr tela 3 "Linux rlz"
+#      scr tela 1 "." 1
+#      scr tela 4 "linux rocks"
+#      scr tela
+tela(){
+[ "$1" = "--help" ] && { _mostra-help "$0" tela; exit; }
+ESQ=0;DIR=1;CIM=2;BAI=3
+CIM_DIR=4;CIM_ESQ=5;BAI_ESQ=6;BAI_DIR=7;x=15;y=20
+setterm -cursor off; trap "clear;setterm -cursor on;exit"  2 
+[ "$3" ] && pause="sleep $3" || pause=""; P=${2:-.}
+if [ $1 = 4 ]; then [ ${3//[0-9]/} ] || TIME=$3;SIZE="${#2}";clear;while :;do
+	MOV="$(($RANDOM%8))"
+	[ ! ${MOV#$ESQ} ] && y=$((y-1)); [ ! ${MOV/$DIR} ] && y=$((y+1))
+	[ ! ${MOV#$CIM} ] && x=$((x-1)); [ ! ${MOV/$BAI} ] && x=$((x+1))
+	[ ! ${MOV#$CIM_DIR} ] && { y=$((y+1)); x=$((x-1)); }
+	[ ! ${MOV#$CIM_ESQ} ] && { y=$((y-1)); x=$((x-1)); }
+	[ ! ${MOV#$BAI_ESQ} ] && { y=$((y-1)); x=$((x+1)); }
+	[ ! ${MOV#$BAI_DIR} ] && { y=$((y+1)); x=$((x+1)); }
+	[ ! ${x#1} ] && x=26; [ ! ${x/27} ] && x=1
+	[ ! ${y#1} ] && y="$((80-SIZE-2))"; [ $y = $((80-SIZE-1)) ] && y=1
+	if [ $x -gt 0 -a $x -lt 26 -a $y -gt 0 -a $y -lt $((80-SIZE)) ];then 
+	echo -ne "\033[${OLD%/*};${OLD/[0-9]*\/}H$(printf "%${SIZE}s")"
+	echo -ne "\033[$x;${y}H$2"; sleep ${TIME:-0}; OLD="$x/$y";fi
+done;fi
+while :;do for N1 in `seq 0 7`;do for N2 in `seq 0 7`;do
+	x=`echo $RANDOM | rev | cut -c -2 | rev`
+	y=`echo $RANDOM | rev | cut -c -2 | rev`
+	echo -ne "\033[${x};${y}H"
+        [ "$1" = 1 ] && echo -ne "\033[4$N1;3$N2;1m "$P" \033[m" ||\
+	{ [ "$1" = 2 ] && echo "$P" || echo -e "\033[40;3$N2;1m $P \033[m"; }
+	$pause
+done;done;done
+}
+
+# Display some information about the machine. CPU, MEM, disk, uptime...
+#
+# Mostra algumas informacoes sobre a maquina. CPU, MEM, disco, uptime..
+#
+# uso: scr about [carac para separar]
+# ex:  scr about
+#      scr about "\n"
+about(){
+[ "$1" = "--help" ] && { _mostra-help "$0" about; exit; }
+first="\033[40;32;1m";end="\033[m";D="${1:-|}"
+echo -n " You are using "
+echo -en "OS $first `uname -s` $end kernel $first `uname -r` $end $D "
+echo -en "Distro $first `cat /etc/*{release,version} 2> /dev/null` $end $D "
+echo -en "Number of processors $first ` cat /proc/cpuinfo | grep -i "^processor" |\
+wc -l | sed 's/^[^0-9]*//'` $end $D "
+cat /proc/cpuinfo | grep -iE "^model name|^cpu MHz|bogomips" |\
+sed 's/^.*\://g;s/CPU [0-9][0-9]*MHz//I' | ( read cpu;read speed;read bogo
+echo -en "CPU Model: $first $cpu $end $D CPU Speed: $first $speed MHz $end $D \
+bogomips: $first $bogo $end $D " )
+free -om | sed '2!d' | awk '{print $2"\n"$4}' | ( read total;read free 
+echo -en "RAM total $first $total M ${end}free$first $free M $end $D " )
+DISK=`df -l | sed '/File/d;/none/d' | awk '{print $2" "$4}'`
+echo -en "Disk:$first `echo "$DISK" | awk '{print $1}' | xargs |\
+sed 's/^/scale=1\;\(/;s/ /\+/g;s/$/\)\/1048576/' | bc`G $end"
+echo -en "free $first`echo "$DISK" | awk '{print $2}' | xargs |\
+sed 's/^/scale=1\;\(/;s/ /\+/g;s/$/\)\/1048576/' | bc`G $end $D "
+[ "$DISPLAY" ] && { xdpyinfo | sed  -n '/\(dimensions\|depth of root window\)/p' |\
+sed 's/^.*\://g;s/^  *//' | cut -d ' ' -f1 | ( read resol; read bpp; echo -en "Screen \
+Resolution: $first $resol/${bpp}bpp$end $D " ) ; }
+echo -en "Number of processes $first `top -b -n1 | sed '/processes\:/!d;s/[a-z].*$//'`$end $D "
+echo -en "uptime$first`uptime | sed 's/^.*up//;s/[0-9]* user.*//'`$end"
+echo -n "`uptime | rev | awk -F\, '{print $1 $2 $3 $4}' | rev | sed 's/^[ ]*//'`"; echo
+}
+
+
+
+# Kill processes that have a specific program name
+#
+# Mata processos que tenham no nome uma determinada palavra
+#
+# uso: scr kill <palavra>
+# ex:  scr kill netscape
+scr_kill(){
+[ "$1" = "--help" ] && { _mostra-help "$0" scr_kill; exit; }
+[ "$1" ] || { echo "Usage: scr kill <palavra>"; exit; }
+LISTA=$(ps -eo pid,cmd | sed -n "/\bpe -eo\b\|\bsed -n \/\|\bscr_kill\b/d
+/$1/Is/^ *\([0-9]\+\) .*/\1/p" | sed ':a;N;s/\n/ /;ta')
+[ "$LISTA" ] || { echo "Nenhum processo com [$1]" ; exit; }
+kill $LISTA && echo "Enviado SIGTERM PIDs $LISTA" 
+}
+
+# Convert between: 
+# Converte entre:
+#
+# cf = Celsius to Fahrenheit
+# fc = Fahrenheit to Celsius
+# km = Kilometers to Miles
+# mk = Miles to Kilometers
+# db = decimal to binary
+# bd = binary to decimal
+# cd = Character to decimal
+#
+# uso: scr converte <cf|fc|mk|km|db|bd|cd> <number>"
+# ex:  scr converte fc 98
+converte(){
+[ "$1" = "--help" ] && { _mostra-help "$0" converte; exit; } 
+[ "$1" = "cf" ] && { echo -n "Temperatura $2 C = ";\
+awk "BEGIN {printf (\"%0.1f F\n\", ($2*9/5)+32)}"; exit; }
+[ "$1" = "fc" ] && { echo -n "Temperatura $2 F = ";\
+awk "BEGIN {printf (\"%0.1f C\n\", ($2-32)*5/9)}"; exit; }
+[ "$1" = "mk" ] && { echo -n "Distancia $2 milhas = ";\
+K=`echo "scale=2;$2*1.609" | bc`; echo "$K km"; exit; }
+[ "$1" = "km" ] && { echo -n "Distancia $2 km = ";\
+m=`echo "scale=2;$2*0.6214" | bc`; echo "$m milhas"; exit; }
+[ "$1" = "db" ] && { R=`echo "obase=2;$2" | bc -l`; N=`echo "$R" |\
+wc -m | sed 's/^[ ]*//;s/$/\-1/'| bc`
+[ "$((${3:-32}-$N))" -lt 0 ] && echo -e "Este numero excede 32 bits\n"; echo "$R"; exit; }
+[ "$1" = "bd" ] && { echo "ibase=2;$2" | bc -l ; exit; }
+[ "$1" = "cd" ] && { echo -n "$2" | od -d | awk '{print $2}'| sed 1q ; exit; }
+echo "Usage: scr converte [--help] <cf|fc|mk|km|db|bd|cd> <numero>"
+}
+
+# Random password generator with a specify length. The default is 8
+# The length can be change specifying the new length as the first argument 
+#
+# Gera senhas aleatorias com um determinado tamanho. O tamanho padrao eh 8
+# O tamanho pode ser alterado passando como argumento para a funcao
+#
+# uso: scr gera_passwd [tamanho]
+# ex:  scr gera_passwd
+gera_passwd(){
+[ "$1" = "--help" ] && { _mostra-help "$0" gera_passwd;exit; }
+caract="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+for i in `seq 0 "${1:-8}"`;do C="$(($RANDOM%${#caract}))"; echo -n "$caract" |\
+sed "s/\(^.\{$C\}\)\(.\{1\}\)\(.*\)/\2/";done;echo
+}
+
+# Test if the hosts are UP.
+# File has the hosts that will be tested 
+#
+# Consulta se um conjunto de hosts estao respondendo
+# arquivo e um arquivo com os hosts a serem testados.
+#
+# uso: scr rping <arquivo>
+# ex:  scr rping <file>
+rping(){
+[ "$1" = "--help" ] && { _mostra-help "$0" rping; exit; }
+[ ! -r "$1" ] && { echo "scr ERRO: Arquivo [$1] nao existe ou sem permissao de leitura";exit; }
+for i in `cat "$1"`;do
+ 	if [ `ping -c1 -w1 "$i" &> /dev/null; echo $?` -ne "0" ]; then
+		echo -e "host $i: \033[40;31;1m Down \033[m"
+	else
+		echo -e "host $i: \033[40;32;1m UP \033[m"
+	fi
+done
+}
+
+# Calculate and show the network load of an interface
+#
+# Calcula o trafego em uma interface
+# Exemplo de interface: eth0, eth1, ppp0...
+#
+# uso: scr rede <interface>
+# ex:  scr rede eth0
+rede(){
+[ "$1" = "--help" ] && { _mostra-help "$0" rede; exit; }
+[ "$1" ] || { echo "Usage: scr rede <interface>"; exit; }
+while :;do
+        rede1=`cat /proc/net/dev | sed -n "/ ${1}:/s/^.*://pg"`
+	[ "$rede1" ] || { echo "Interface [$1] nao configurada"; exit; }
+        sleep 1
+        rede2=`cat /proc/net/dev | sed -n "/ ${1}:/s/^.*://pg"`
+        in1=`echo "$rede1" | awk '{print $1}'`
+        in2=`echo "$rede2" | awk '{print $1}'`
+        out1=`echo "$rede1" | awk '{print $9}'`
+        out2=`echo "$rede2" | awk '{print $9}'`
+        
+        var1=`awk "BEGIN {if (($in2-$in1)/1024 < 1) printf(\"%d bytes\\n\", $in2-$in1); else printf(\"%.2f kbytes\\n\", ($in2-$in1)/1024);}"`
+        var2=`awk "BEGIN {if (($out2-$out1)/1024 < 1) printf(\"%d bytes\\n\", $out2-$out1); else printf(\"%.2f kbytes\\n\", ($out2-$out1)/1024);}"`
+
+        echo "$2 in = $var1  out = $var2"
+done
+}
+
+# Shows the help of all functions
+#
+# Mostra o help de todas as funcoes
+# uso: scr ajuda
+ajuda(){
+[ "$1" = "--help" ] && { _mostra-help "$0" ajuda; exit; }
+for i in $(sed -n 's/^\([a-zA-Z_]\+\)(){/\1/p' < "$0");do
+echo -e "$(echo $i | sed 's/^\(.*$\)/\\n====\\033[1m \1 \\033[m/')" 
+"$0" "$i" --help;done
+}
+
+# Upgrade scr
+# 
+# Atualiza scr
+#
+# uso: scr upgrade
+# ex:  scr upgrade
+upgrade(){
+[ "$1" = "--help" ] && { _mostra-help "$0" upgrade; exit; }
+v1=$(sed -n 's/^# Last[A-Za-z ]*: //p' $0)
+lynx -source http://www.lcp.coppe.ufrj.br/~thobias/scr/scr > $TMP/scr_new
+v2=$(sed -n 's/^# Last[A-Za-z ]*: //p' $TMP/scr_new)
+[ "$v1" = "$v2" ] && { echo Voce ja tem a ultima versao; exit; }
+echo -e "versao local : $v1\nversao remota: $v2"
+read -p "Atualizar [s/n]? " r
+[ "$r" = s -o "$r" = S ] && { mv $TMP/scr_new ./scr
+echo "Versao nova esta no diretorio $(pwd)/scr"; }
+rm -f ${TMP:-sem_valor}/scr_new
+}
+
+#
+# Main function of scr
+#
+# Funcao Principal do scr
+#
+
+[ ! "$1" ] && { echo "Usage: scr [--help] <funcao> [opcoes]"; exit; }
+
+[ "${1/ajuda}" ] || { [ "$2" = "--help" ] || { $@ | less -r; exit; }; }
+[ "$1" = "--help" ] && { echo -e "\
+\033[1mscr\033[m eh um conjunto de funcoes escritas em bash que tem por
+objetivo facilitar o dia-a-dia de pessoas que gostam de modo texto,
+terminais, linha de comando, etc. ;-)
+WWW: http://www.lcp.coppe.ufrj.br/~thobias/scr
+
+As funcoes disponiveis atualmente sao:
+$(sed -n 's/^\([a-zA-Z_]\+\)(){.*/\1,/p' < "$0" | sed ':a;N;s/\n/ /;ta' |\
+sed 's/\(.\{65\}[^ ]\+\) /\1\
+/g;s/,$//')
+
+Mais informacoes: scr <funcao>   --help
+More information: scr <function> --help";exit; }
+"$@" ||  echo -e "\nERRO: Funcao [$1] nao existe\n\nTente scr --help"
+

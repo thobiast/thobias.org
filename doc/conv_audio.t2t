@@ -1,0 +1,139 @@
+Converter Arquivos de Áudio
+Thobias Salazar Trevisan
+%%date(%d/%m/%Y)
+
+%!target: html
+%!options: --style audio.css --toc
+
+=Introdução=
+
+O objetivo deste texto é juntar em um único documento scripts //one-line//
+prontos para copiar e colar que fazem a conversão entre os principais
+formatos de áudio existente.
+
+Se você está sentindo falta de algum formato, sabe de uma outra
+maneira ou outro programa que faça estas conversões me mande um
+mail. Contribua!! Ajude a tornar este texto útil. =8)
+
+**OBS**: Note que utilizei o "for" para listar os arquivos, portanto, caso
+os seus arquivos tenham espaços em branco no nome, você tem que trocar o IFS
+para "\n" ou utilizar o "while".
+
+Exemplo:
+
+```
+prompt> IFS="
+"
+prompt> for i in *.mp3; do .... ; done
+```
+ou
+
+``` prompt> while read i; do .... ; done < <(ls *.mp3) 
+
+Ah, ou antes de executar os comandos use a função zzarrumanome das
+[funcoeszz http://aurelio.net/zz], muito bom para organizar
+o nome dos arquivos de áudio.
+
+```
+prompt> zzarrumanome --help
+
+Renomeia arquivos do diretório atual, arrumando nomes estranhos.
+Obs.: ele deixa tudo em minúsculas, retira acentuação e troca espaços em
+      branco, símbolos e pontuação pelo sublinhado _
+Use o -r para ser recursivo e o -d para renomear diretórios também
+Uso: zzarrumanome [-d] [-r] arquivo(s)
+Ex.: zzarrumanome *
+     zzarrumanome -d -r .
+     zzarrumanome "DOCUMENTO MALÃO!.DOC"       # fica documento_malao.doc
+     zzarrumanome "RAMONES - I Don't Care"     # fica ramones-i_don_t_care
+```
+
+=============================================
+
+=MP3 to WAV=
+
+Uma das maneiras de realizar esta conversão é utilizando o programa
+[mpg123 http://www.mpg123.org].
+
+Para conveter todos os mp3 do diretório atual para wav:
+
+``` prompt> for i in *.mp3; do mpg123 -w "${i%.mp3}.wav" "$i"; done 
+
+Usando o [sox http://sox.sourceforge.net]:
+
+``` prompt> for i in *.mp3; do sox "$i" "${i%.mp3}.wav"; done
+
+=WAV to MP3=
+
+Usando o [lame http://lame.sourceforge.net]:
+
+``` prompt> for i in *.wav; do lame -h "$i" "${i%.wav}.mp3"; done 
+
+=WAV to OGG=
+
+Usando o [oggenc http://www.gnu.org/directory/audio/ogg/OggEnc.html].
+A opção "-q" indica a qualidade do
+arquivo gerado. O default é 3 e o máximo é 10, que significa a melhor
+qualidade.
+
+``` prompt> for i in *.wav; do oggenc -q 5 "$i"; done
+
+Usando o [sox http://sox.sourceforge.net]:
+
+``` prompt> for i in *.wav; do sox "$i" "${i%.wav}.ogg"; done
+
+=OGG to WAV=
+
+Utilizando o programa inverso do WAV to OGG, ie,
+[oggdec http://www.gnu.org/directory/audio/Ogg_vorbis/vorbistools.html]:
+
+``` prompt> for i in *.ogg; do oggdec "$i"; done 
+
+Usando o [sox http://sox.sourceforge.net]:
+
+``` prompt> for i in *.ogg; do sox "$i" "${i%.ogg}.wav"; done
+
+=MP3 to OGG=
+
+Usando o [sox http://sox.sourceforge.net]:
+
+``` prompt> for i in *.mp3; do sox "$i" "${i%.mp3}.ogg"; done
+
+=WMA to WAV=
+
+Usando o [mplayer www.mplayerhq.hu/homepage]:
+
+``` prompt> for i in *.wma; do mplayer -ao pcm -aofile "${i%.wma}.wav" "$i"; done
+
+=FLAC to WAV=
+
+Usando o [flac http://flac.sourceforge.net]:
+
+``` prompt> for i in *.flac; do flac -d $i; done
+
+=WAV to FLAC=
+
+Usando o [flac http://flac.sourceforge.net]:
+
+``` prompt> for i in *.wav; do flac $i; done
+
+=============================================
+
+=Dicas Extras=
+
+Ripar todo CD usando o [cdparanoia http://www.xiph.org/paranoia]:
+
+``` prompt> cdparanoia -B
+
+Colocar todo os WAV na mesma frequência:
+
+``` prompt> for i in *.wav; do sox "$i" -r 44100 "arquivo_novo_$i" ; done
+
+Ajustar o volume dos arquivos WAV usando o
+[normalize http://freshmeat.net/projects/normalize].
+Antes de gravar um CD de áudio execute
+este comando para deixar todas as músicas com o mesmo volume:
+
+``` prompt> normalize -m *.wav
+
+

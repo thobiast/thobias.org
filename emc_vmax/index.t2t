@@ -1,0 +1,351 @@
+Python Scripts for EMC VMAX Storage System
+%%date(%m/%d/%Y)
+
+
+%!encoding: iso-8859-1
+%!Style   : python.css
+%!target  : html
+%!Options : --toc --mask-email --enum-title --toc-level=1
+
+
+%!postproc(html): "<H1>Python Scripts for EMC VMAX Storage System</H1>" '<b><font size="7">Python Scripts for EMC VMAX Storage System</font></b><br>'
+
+Hi! Here you will find some python scripts. The main idea is to post some sample scripts
+to help people trying to learn about EMC VMAX automation using python.
+
+If you have any question, comment or an idea about how to improve the code, please
+contact me at: thobias@thobias.org. Thanks.
+
+=EMC VMAX - Storage Group Information=
+
+This python script uses the VMAX Solutions Enabler (SYMCLI) to gather Storage Group information from EMC
+VMAX Storage System and to print a cool table with some Storage Groups details.
+
+Most of SYMCLI commands have an option '//-output xml_e//' to show XML output.
+This script run the '//symsg//' SYMCLI command, parser the XML output to show the table with
+Storage Group details.
+
+Python has a data type called dictionary. After parsing the XML output,
+the script creates the following python dictionary:
+
+'''
+<div class="examples" id="examples">
+'''
+```
+# sgs = { sg_name :
+#                  { 'slo_name'   : SLO name
+#                    'symmid'     : Symmetrix ID
+#                    'srp_name'   : SRP name
+#                    'workload'   : Workload
+#                    'hostlimit'  : Host limit
+#                    'iops'       : Host IOPS Limit
+#                    'mbs'        : Host MB/s Limit
+#                    'dynamic'    : Dynamic Distribution
+#                    'mv'         : Masking view 'yes/no'
+#                    'relation'   : Cascaded status
+#                                   P = Parent
+#                                   S = Standalone
+#                                   C = Child
+#                    'parent'     : Storage Group Parent
+#                    'child'      : List of Storage Groups Childs
+#                    'num_luns'   : Number of LUNs
+#                    'total_size' : Sum of all LUNs space in GB
+#                    'luns' : {
+#                             lun_id: size_mb
+#                             }
+#                   }
+#           ...
+#       }
+```
+'''
+</div>
+'''
+
+Altought the script should work on your environment, this intend to show you an example of how to work
+with python dictionary, parser XML files and how to use python to help you on VMAX administration.
+
+The only SYMCLI command used by this script is '//symsg -sid XXXX list -v -output xml_e//'.
+
+Download the script: [vmax_sg_info.py vmax_sg_info.py].
+
+Take a look at [source code with syntax highlight vmax_sg_info.py.html].
+
+==Help==
+'''
+<div class="examples" id="examples">
+'''
+
+
+```
+prompt> ./vmax_sg_info.py -h
+usage: vmax_sg_info.py [-h] [--version] [--verbose] -sid SID
+
+Script to show Storage Group details
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --version      show program's version number and exit
+  --verbose, -v  verbose flag
+  -sid SID       Symmetrix ID
+
+    Example of use:
+       ./vmax_sg_info.py -sid 001
+       ./vmax_sg_info.py -v -sid 002
+
+```
+'''
+</div>
+'''
+
+
+
+==Example==
+
+'''
+<div class="examples" id="examples">
+'''
+``` 
+prompt> ./vmax_sg_info.py -sid 001
++---------------------------+----------+----------+--------+-----------------+----------+----------+------------+-----------------+----------------+---------------+---------+
+| SG_Name                   | Relation |  SymmID  | # LUNs | Total_Size (GB) |   SLO    | Workload | Host_Limit | Host_Limit_IOPS | Host_Limit_MBs | Dynamic_Distr | Masking |
++---------------------------+----------+----------+--------+-----------------+----------+----------+------------+-----------------+----------------+---------------+---------+
+| SG_CLUSTER1               |    P     | xxxxxxxx |   6    |       600       |   none   |   none   |  Defined   |       500       |      200       |     Always    |   Yes   |
+| SG_CLUSTER1_DATABASE      |    C     | xxxxxxxx |   6    |       600       |  Silver  |   none   |  Defined   |       500       |      200       |     Always    |   Yes   |
+| SG_CLUSTER2               |    P     | xxxxxxxx |   64   |       6054      |   none   |   none   |  Defined   |      25400      |      1000      |     Always    |   Yes   |
+| SG_CLUSTER2_DGFRA         |    C     | xxxxxxxx |   6    |       300       |  Silver  |   none   |  Defined   |       2000      |      500       |     Always    |   Yes   |
+| SG_CLUSTER2_DGORACLE      |    C     | xxxxxxxx |   4    |       200       |  Silver  |   none   |  Defined   |       200       |      500       |     Always    |   Yes   |
+| SG_CLUSTER2_DGPORTAL      |    C     | xxxxxxxx |   13   |       650       |  Silver  |   none   |  Defined   |       2000      |      100       |     Always    |   Yes   |
+| SG_CLUSTER2_DGOCR         |    C     | xxxxxxxx |   2    |        2        |   Gold   |   none   |  Defined   |       200       |      100       |     Always    |   Yes   |
+| SG_CLUSTER2_DGVOTE        |    C     | xxxxxxxx |   2    |        2        |   Gold   |   none   |  Defined   |       200       |      100       |     Always    |   Yes   |
+| SG_CLUSTER2_DGLOGDB       |    C     | xxxxxxxx |   5    |       500       |   Gold   |   none   |  Defined   |       800       |      200       |     Always    |   Yes   |
+| SG_ORACLE12               |    P     | xxxxxxxx |   65   |      14011      |   none   |   none   |  Defined   |       7200      |      2000      |     Always    |   Yes   |
+| SG_ORACLE12_DGFRA         |    C     | xxxxxxxx |   2    |       200       |   Gold   |   none   |  Defined   |       2000      |      400       |     Always    |   Yes   |
+| SG_ORACLE12_DGOCR         |    C     | xxxxxxxx |   2    |        10       |   Gold   |   none   |  Defined   |       400       |      200       |     Always    |   Yes   |
+| SG_ORACLE12_DGVOTE        |    C     | xxxxxxxx |   1    |        1        |   Gold   |   none   |  Defined   |       400       |      200       |     Always    |   Yes   |
+| SG_ORACLE12_DGDATABASE1   |    C     | xxxxxxxx |   3    |       150       |   Gold   |   none   |  Defined   |       2000      |      500       |     Always    |   Yes   |
+| SG_ORACLE12_DGDATABASE2   |    C     | xxxxxxxx |   3    |       150       |   Gold   |   none   |  Defined   |       400       |      200       |     Always    |   Yes   |
+...
+
+```
+'''
+</div>
+'''
+
+=EMC VMAX - LUNs space utilization per pool=
+
+This python script query EMC VMAX Storage System using SYMCLI and print the LUNs space
+utilization per pool for a given Storage Group.
+
+After parsing the XML SYMCLI output, the script store the information on a python dictionary
+with the following structure:
+
+
+'''
+<div class="examples" id="examples">
+'''
+```
+# tdevs_dict = { tdev_name : {
+#                           'total_tracks_gb' = LUN SIZE (GB)
+#                           'alloc_tracks_gb' = LUN used space (GB)
+#                           'alloc_percent'   = LUN used space (pct)
+#                           'sg_parent'       = Storage Group Parent Name
+#                           'sg_child'        = Storage Group Child Name
+#                           pool_name : {
+#                                        'alloc_tracks_gb'    = LUN used
+#                                                               space in pool
+#                                        'pool_alloc_percent' = LUN used
+#                                                               space (PCT)
+#                                       }
+#                              }
+#              }
+```
+'''
+</div>
+'''
+
+This is another exemple of how to use python to help you on VMAX administration.
+
+Download the script: [vmax_tdev_pool_info.py vmax_tdev_pool_info.py].
+
+Take a look at [source code with syntax highlight vmax_tdev_pool_info.py.html].
+
+==Help==
+
+
+'''
+<div class="examples" id="examples">
+'''
+```
+prompt> ./vmax_tdev_pool_info.py -h
+usage: vmax_tdev_pool_info.py [-h] [--version] [--verbose] [--nocolor] -sid SID SG_NAME
+
+Script to show LUNs space utilization per pool
+
+positional arguments:
+  SG_NAME        Storage Group Name to show LUNs space utilization
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --version      show program's version number and exit
+  --verbose, -v  verbose flag
+  --nocolor      no color flag
+  -sid SID       Symmetrix ID
+
+    Example of use:
+        ./vmax_tdev_pool_info.py -sid 001 STORAGE_GROUP_1
+        ./vmax_tdev_pool_info.py -sid 002 STORAGE_GROUP_2
+```
+'''
+</div>
+'''
+
+
+==Example==
+
+'''
+<div class="examples" id="examples">
+'''
+``` 
+prompt> ./vmax_tdev_pool_info.py -sid 0004 SG_VMWAREHOM_GOLD
++-------+----------+----------+-----------+-----------------------+----------------------+-------------+----------------+
+|  TDEV | Total GB | Alloc GB | Alloc Pct | Alloc GB (DG1_FBA10K) | Alloc GB (DG2_FBA_F) |  SG Parent  |   SG Child     |
++-------+----------+----------+-----------+-----------------------+----------------------+-------------+----------------+
+| 0008A |  8192.0  |  7918.6  |     96    |      7744.2 (95%)     |      174.4 (2%)      | SG_VMWARE   | SG_VMWARE_GOLD |
+| 0008B |  8192.0  |  8175.3  |     99    |      8061.8 (98%)     |      113.5 (1%)      | SG_VMWARE   | SG_VMWARE_GOLD |
+| 000A0 |  8192.0  |  7179.6  |     87    |      6659.0 (81%)     |      520.6 (6%)      | SG_VMWARE   | SG_VMWARE_GOLD |
+| 000A1 |  8192.0  |  6769.7  |     82    |      6238.2 (76%)     |      531.5 (6%)      | SG_VMWARE   | SG_VMWARE_GOLD |
+| 0011D |  8192.0  |  8143.8  |     99    |      7957.6 (97%)     |      186.3 (2%)      | SG_VMWARE   | SG_VMWARE_GOLD |
+| 0011E |  8192.0  |  7974.5  |     97    |      7802.6 (95%)     |      171.9 (2%)      | SG_VMWARE   | SG_VMWARE_GOLD |
+| 0011F |  8192.0  |  7758.2  |     94    |      7610.5 (93%)     |      147.7 (2%)      | SG_VMWARE   | SG_VMWARE_GOLD |
+| 00120 |  8192.0  |  7920.8  |     96    |      7693.8 (94%)     |      227.0 (3%)      | SG_VMWARE   | SG_VMWARE_GOLD |
+| 00121 |  8192.0  |  7734.5  |     94    |      7678.1 (94%)     |      56.4 (1%)       | SG_VMWARE   | SG_VMWARE_GOLD |
+| 001D4 |  8192.0  |  6654.2  |     81    |      6391.4 (78%)     |      262.7 (3%)      | SG_VMWARE   | SG_VMWARE_GOLD |
+| 001D5 |  8192.0  |  7441.4  |     90    |      7038.1 (86%)     |      403.4 (5%)      | SG_VMWARE   | SG_VMWARE_GOLD |
+| 00264 |  8192.0  |  7807.2  |     95    |      7746.6 (95%)     |      60.6 (1%)       | SG_VMWARE   | SG_VMWARE_GOLD |
+| 00265 |  8192.0  |  8189.5  |     99    |     8156.1 (100%)     |      33.4 (0%)       | SG_VMWARE   | SG_VMWARE_GOLD |
++-------+----------+----------+-----------+-----------------------+----------------------+-------------+----------------+
+
+``` 
+'''
+</div>
+'''
+
+=EMC VMAX - Rest API example=
+
+This is a sample python script to gather information using
+Unisphere for VMAX REST API. You can download a zip file with the VMAX Rest API
+documentation directly from your Unisphere at:
+
+https://{UNIVMAX_IP}:{UNIVMAX_PORT}/univmax/restapi/docs/
+
+UNIVMAX_PORT - usually is port 8443
+
+You need to edit the script and customize the following lines to your environment:
+
+```
+###########################
+# Unisphere configuration #
+###########################
+UNISPHERE_SERVER   = 'unisphere_ip_address'
+UNISPHERE_USER = 'unisphere_username'
+UNISPHERE_PASS = 'unisphere_password'
+```
+
+Download the script: [vmax_restapi.py vmax_restapi.py].
+
+Take a look at [source code with syntax highlight vmax_restapi.py.html].
+
+==Help==
+
+'''
+<div class="examples" id="examples">
+'''
+```
+prompt> ./vmax_restapi.py -h
+usage: vmax_restapi.py [-h] [--version] [--verbose]
+                       {list,listsg,srp,performance} ...
+
+Sample Script to collect information from Unisphere for VMAX REST API
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+  --verbose, -v         verbose flag
+
+Commands:
+  {list,listsg,srp,performance}
+    list                List VMAXs arrays managed by Unisphere
+    listsg              List VMAX storage groups
+    srp                 List SRP information
+    performance         List VMAX Array performance
+
+    Example of use:
+        ./vmax_restapi.py list
+        ./vmax_restapi.py srp --sid xxxx
+        ./vmax_restapi.py performance --sid xxxx --hours 2
+        ./vmax_restapi.py -v performance
+        ./vmax_restapi.py performance -h
+
+
+
+prompt> ./vmax_restapi.py performance -h
+usage: vmax_restapi.py performance [-h] --sid SID [--min MIN] [--hours HOURS]
+                                   [--days DAYS]
+
+optional arguments:
+  -h, --help     show this help message and exit
+  --sid SID      Symmetrix ID
+  --min MIN      Minutes ago to gather performance information
+  --hours HOURS  Hours ago to gather performance information
+  --days DAYS    Days ago to gather performance information
+
+```
+'''
+</div>
+'''
+
+
+==Example==
+
+'''
+<div class="examples" id="examples">
+'''
+``` 
+prompt> ./vmax_restapi.py list
+Local: True Model: VMAX400K symmetrixId: 0010 ucode: 5977.952.892
+Local: True Model: VMAX400K symmetrixId: 0011 ucode: 5977.952.892
+Local: True Model: VMAX400K symmetrixId: 0012 ucode: 5977.952.892
+
+prompt> ./vmax_restapi.py srp --sid 0011
+
+SRP: SRP_1
+Usable TB: 457.6
+Allocated TB: 292.9
+Snapshot TB: 11.9
+Free TB: 164.7
+Subscribed TB: 410.8
+
+prompt> ./vmax_restapi.py performance --sid 0012 --min 30
+Tue Jul  4 13:40:00 2017 PercentHit=73.10968,ReadResponseTime=1.3605661,HostMBs=1772.037,PercentReads=67.81241,HostIOs=62872.273,PercentWrites=32.187588,timestamp=1499186400000,WriteResponseTime=2.5869687
+Tue Jul  4 13:45:00 2017 PercentHit=73.02964,ReadResponseTime=1.37964,HostMBs=2248.8953,PercentReads=70.630775,HostIOs=66346.16,PercentWrites=29.369226,timestamp=1499186700000,WriteResponseTime=2.6954632
+Tue Jul  4 13:50:00 2017 PercentHit=71.33462,ReadResponseTime=1.5649041,HostMBs=2247.1055,PercentReads=69.69615,HostIOs=70194.97,PercentWrites=30.303856,timestamp=1499187000000,WriteResponseTime=2.5649583
+Tue Jul  4 13:55:00 2017 PercentHit=67.39219,ReadResponseTime=1.7579035,HostMBs=1692.6448,PercentReads=69.58,HostIOs=65503.277,PercentWrites=30.420006,timestamp=1499187300000,WriteResponseTime=3.153001
+Tue Jul  4 14:00:00 2017 PercentHit=67.562195,ReadResponseTime=1.6077279,HostMBs=2092.303,PercentReads=69.96327,HostIOs=68792.64,PercentWrites=30.036736,timestamp=1499187600000,WriteResponseTime=2.6098287
+Tue Jul  4 14:05:00 2017 PercentHit=66.765755,ReadResponseTime=1.7295684,HostMBs=2652.8398,PercentReads=73.51046,HostIOs=76819.92,PercentWrites=26.489534,timestamp=1499187900000,WriteResponseTime=2.1569684
+
+prompt> ./vmax_restapi.py listsg --sid 0011
+SG_SERVER1
+SG_CLUSTER1
+SG_CLUSTER1_FRA
+SG_CLUSTER1_DB1
+SG_CLUSTER1_DB2
+...
+
+``` 
+'''
+</div>
+'''
+
+
+%!include: ''g_analytics.html''
+

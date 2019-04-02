@@ -1,0 +1,25 @@
+pre {
+font-size: 9pt;
+margin-left: 5em;
+margin-right: 5em;
+padding: 6px;
+background-color: white;
+border-style: solid;
+border-color: black;
+color		: black;
+border-width: 1px 1px;
+}
+
+body {
+font-family: Verdana, Arial, Helvetica, Sans-Serif;
+font-size: 9pt;
+margin-left: 5em;
+margin-right: 5em;
+text-decoration	: none;
+}
+
+h3 {
+font-size: 90%;
+_font-size: 80%;
+}
+

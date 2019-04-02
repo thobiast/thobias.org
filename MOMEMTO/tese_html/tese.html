@@ -1,0 +1,3347 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2K.1beta (1.48)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>tese</TITLE>
+<META NAME="description" CONTENT="tese">
+<META NAME="keywords" CONTENT="tese">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2K.1beta">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="tese.css">
+
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive"
+ SRC="/usr/share/latex2html/icons/nx_grp_g.png"> 
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up_g.png"> 
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev_g.png">   
+<BR>
+<BR><BR>
+<!--End of Navigation Panel-->
+
+<P>
+
+<P>
+
+<DIV ALIGN="CENTER">
+</DIV>
+<P>
+<DIV ALIGN="CENTER">UM MECANISMO MODULAR E EFICIENTE PARA
+COMPARTILHAMENTO DE MEMÓRIA EM CLUSTERS
+</DIV>
+<P>
+<DIV ALIGN="CENTER"><BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR> Thobias Salazar Trevisan
+
+</DIV>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR> 
+<P>
+=2
+TESE &nbsp;&nbsp;SUBMETIDA &nbsp;&nbsp;AO &nbsp;&nbsp;CORPO &nbsp;&nbsp;DOCENTE &nbsp;&nbsp;DA &nbsp;&nbsp;COORDENAÇÃO &nbsp;&nbsp;DOS
+PROGRAMAS DE PÓS-GRADUAÇÃO DE ENGENHARIA &nbsp;DA
+&nbsp;UNIVERSIDADE FEDERAL DO RIO DE JANEIRO COMO PARTE DOS REQUISITOS
+NECESSÁRIOS PARA A OBTENÇÃO DO GRAU DE MESTRE EM
+CIÊNCIAS EM ENGENHARIA DE SISTEMAS E COMPUTAÇÃO.
+
+<P>
+<BR>
+<BR>
+<BR>
+<BR> 
+<P>
+Aprovada por:
+
+<P>
+<DIV ALIGN="RIGHT">
+<IMG
+ WIDTH="458" HEIGHT="500" ALIGN="MIDDLE" BORDER="0"
+ SRC="img1.png"
+ ALT="$\textstyle \parbox{10cm}{
+\begin{center}
+\rule{10cm}{.02cm} \\
+Prof. Claudio L...
+...\(^{\mathrm{a}}\). Inês de Castro Dutra, Ph.D. \\
+\vspace{.60in}
+\end{center}}$">
+</DIV>
+<BR>
+
+<P>
+
+<DIV ALIGN="CENTER">
+RIO DE JANEIRO, RJ - BRASIL
+<BR>JUNHO DE 2003
+
+</DIV>
+
+<P>
+
+<P>
+ 
+<TABLE  WIDTH="372">
+<TR><TD><BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+
+<P>
+<P>
+TREVISAN, THOBIAS SALAZAR
+
+<P>
+Um Mecanismo Modular e Eficiente para
+Compartilhamento de Memória em Clusters [Rio de Janeiro] 2003
+
+<P>
+X, 42 p. 29,7 cm (COPPE/UFRJ, M.Sc., <BR>
+Engenharia de Sistemas e Computação, 2003)
+
+<P>
+Tese - Universidade Federal do Rio de <BR>
+Janeiro, COPPE
+
+<P>
+1 - Computação de Alto Desempenho
+
+<P>
+2 - Sistemas Operacionais    
+
+<P>
+3 - Memória Compartilhada Distribuída
+
+<P>
+I. COPPE/UFRJ   II. Título (série)
+
+<P>
+</TD></TR>
+</TABLE>
+
+<P>
+=1
+
+<P>
+
+<P>
+
+<P>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<FONT SIZE="+1">``If you have an apple and I have an apple and we exchange apples then you
+and I will still each have one apple. But if you have an idea and I have
+one idea and we exchange these ideas, then each of us will have two 
+ideas.''</FONT>
+
+<P>
+<DIV ALIGN="RIGHT">
+<FONT SIZE="+1"><EM>George Bernard Shaw</EM></FONT>
+
+</DIV>
+
+<P>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+<BR>
+
+<P>
+<FONT SIZE="+3"><B>Agradecimentos</B></FONT>
+
+<P>
+<BR>
+<BR>
+<BR>
+<BR>
+
+<P>
+Gostaria inicialmente de agradecer à minha família pelo apoio e 
+incentivo dado durante todo o curso. Obrigado aos meus pais, 
+Hamilton e Aparecida, e aos meus irmãos Germano, Lucas e Jerusa, 
+os quais formam a verdadeira base da minha vida.
+
+<P>
+Agradeço ao meu orientador prof. Claudio Amorim pelo incentivo 
+e pela infraestrutura proporcionada para a realização desta 
+tese. Ao meu outro orientador prof. Vítor Santos Costa pelo apoio e 
+ajuda no estudo do kernel do Linux.
+
+<P>
+Aos meus colegas da UCPel Leonardo e Rodrigo (drigator) por terem 
+encarado esta ``viagem'' de vir estudar na UFRJ.
+
+<P>
+Ao Lauro, amigo que fiz durante o período que estive no LCP. Laurinho, 
+não vou esquecer das nossas ``intermináveis'' conversas e discussões 
+sobre os mais variados temas.
+
+<P>
+E por último, a um grande amigo e sócio :-) que fiz durante o 
+mestrado. Valeu Silvano, nunca esquecerei os momentos de diversão 
+no LCP jogando em rede DOOM, Wolfenstein e Enemy Territory. 
+Treina que um dia você me ganha &amp;:)
+
+<P>
+Resumo da Tese apresentada à COPPE/UFRJ como parte dos requisitos
+necessários para a obtenção do grau de Mestre em Ciências (M.Sc.)
+
+<P>
+<BR>
+<BR>
+<DIV ALIGN="CENTER">
+</DIV>
+<P>
+<DIV ALIGN="CENTER">UM MECANISMO MODULAR E EFICIENTE PARA           
+COMPARTILHAMENTO DE MEMÓRIA EM CLUSTERS
+</DIV>
+<P>
+<DIV ALIGN="CENTER"><BR>
+<BR>
+</DIV>
+<P>
+<DIV ALIGN="CENTER">Thobias Salazar Trevisan
+</DIV>
+<P>
+<DIV ALIGN="CENTER"><BR>
+<BR>
+</DIV>
+<P>
+<DIV ALIGN="CENTER">Junho/2003
+</DIV>
+<P>
+<DIV ALIGN="CENTER">
+</DIV>
+
+<P>
+<BR>
+<BR>
+
+<P>
+Orientadores: Claudio Luis de Amorim
+
+<P>
+ Vítor Santos Costa
+
+<P>
+<BR>
+<BR>
+
+<P>
+ Programa: Engenharia de Sistemas e Computação
+
+<P>
+<BR>
+<BR>
+
+<P>
+Nesta tese propomos o sistema MOMEMTO (<EM>MOre MEMory Than Others</EM>), 
+um novo conjunto de mecanismos em kernel para suportar o 
+compartilhamento global das memórias distribuídas dos nós do cluster,
+permitindo à aplicação utilizar mais memória do que a disponível em 
+qualquer nó. MOMEMTO oferece primitivas básicas de sincronização, o que 
+permite ao programador um maior controle sobre o uso da memória e abre 
+espaço para otimizações feitas especificamente para cada aplicação. 
+Além disso, com estas primitivas pode-se decidir <EM>quando</EM> e 
+<EM>quais</EM> páginas de memória compartilhada precisam ser sincronizadas. 
+O sistema MOMEMTO foi implementado no kernel 2.4 do Linux e comparamos seu
+desempenho com implementações em TreadMarks e MPI de alguns benchmarks.
+Nos experimentos o sistema apresentou um baixo <EM>overhead</EM> e melhorou 
+substancialmente o tempo de execução das aplicações.
+Ainda mais importante que os resultados obtidos nos experimentos é o fato
+de que 
+MOMEMTO se mostra como uma alternativa promissora para o compartilhamento 
+de memória global em clusters e abre espaço para novas pesquisas nesta área, 
+visando soluções específicas para classes de aplicações.
+
+<P>
+
+<P>
+Abstract of Thesis presented to COPPE/UFRJ as a partial fulfillment 
+of the requirements for the degree of Master of Science (M.Sc.)
+
+<P>
+<BR>
+<BR>
+
+<P>
+<DIV ALIGN="CENTER">
+A MODULAR AND EFFICIENT MECHANISM FOR MEMORY SHARING IN CLUSTERS 
+</DIV>
+<P>
+<DIV ALIGN="CENTER"><BR>
+<BR>
+</DIV>
+<P>
+<DIV ALIGN="CENTER">Thobias Salazar Trevisan
+</DIV>
+<P>
+<DIV ALIGN="CENTER"><BR>
+<BR>
+</DIV>
+<P>
+<DIV ALIGN="CENTER">June/2003
+</DIV>
+<P>
+<DIV ALIGN="CENTER">
+</DIV>
+
+<P>
+<BR>
+<BR>
+
+<P>
+Advisors: Claudio Luis de Amorim 
+
+<P>
+ Vítor Santos Costa
+
+<P>
+<BR>
+<BR>
+
+<P>
+Department: Computing and Systems Engineering
+
+<P>
+<BR>
+<BR>
+
+<P>
+In this thesis, we propose the MOMEMTO (MOre MEMory Than Others) system,
+a new set of kernel mechanisms to support global memory sharing across 
+the physically distributed memories of cluster's nodes. A main advantage
+of  MOMEMTO is that it allows cluster's applications to use more memory 
+space than that is available in any single node. MOMEMTO also offers basic
+synchronization primitives, which allow programmer to have more control 
+over the use of the global memory  and to create opportunities for 
+application-specific optimizations. In addition, programmers can use 
+the synchronization primitives we propose to decide when and which shared
+memory's pages need to be synchronized. We implemented the MOMEMTO system
+in the Linux's Kernel 2.4 and compared MOMEMTO's performance against that
+of TreadMarks and MPI  implementations of some benchmarks. Overall, our 
+results show that MOMEMTO has low overhead and that it improves significantly the 
+execution time of the benchmarks. Most importantly,  our experimental  
+results reveal that MOMEMTO is an promising alternative to support global 
+memory sharing in clusters and that it opens new research avenues on exploiting 
+MOMEMTO for application-specific solutions.
+
+<P>
+
+<P>
+<BR>
+
+<H2><A NAME="SECTION00100000000000000000">
+Sum&aacute;rio</A>
+</H2>
+<!--Table of Contents-->
+
+<UL>
+<LI><A NAME="tex2html71"
+  HREF="tese.html">Lista de Figuras</A>
+<LI><A NAME="tex2html72"
+  HREF="#SECTION00300000000000000000">Lista de Tabelas</A>
+<LI><A NAME="tex2html73"
+  HREF="#SECTION00400000000000000000">1. Introdução</A>
+<UL>
+<LI><A NAME="tex2html74"
+  HREF="#SECTION00410000000000000000">1.1 Visão Geral</A>
+<LI><A NAME="tex2html75"
+  HREF="#SECTION00420000000000000000">1.2 Contribuições da Tese</A>
+<LI><A NAME="tex2html76"
+  HREF="#SECTION00430000000000000000">1.3 Organização da Tese</A>
+</UL><BR>
+<LI><A NAME="tex2html77"
+  HREF="#SECTION00500000000000000000">2. Conhecimentos Básicos</A>
+<UL>
+<LI><A NAME="tex2html78"
+  HREF="#SECTION00510000000000000000">2.1 Sistemas DSM</A>
+<LI><A NAME="tex2html79"
+  HREF="#SECTION00520000000000000000">2.2 Desempenho de Sistemas Software DSM</A>
+</UL><BR>
+<LI><A NAME="tex2html80"
+  HREF="#SECTION00600000000000000000">3. MOMEMTO</A>
+<UL>
+<LI><A NAME="tex2html81"
+  HREF="#SECTION00610000000000000000">3.1 O Sistema</A>
+<LI><A NAME="tex2html82"
+  HREF="#SECTION00620000000000000000">3.2 Design</A>
+<LI><A NAME="tex2html83"
+  HREF="#SECTION00630000000000000000">3.3 Interface</A>
+<LI><A NAME="tex2html84"
+  HREF="#SECTION00640000000000000000">3.4 Protótipo</A>
+<UL>
+<LI><A NAME="tex2html85"
+  HREF="#SECTION00641000000000000000">3.4.1 Chamadas de Sistema</A>
+<LI><A NAME="tex2html86"
+  HREF="#SECTION00642000000000000000">3.4.2 Falha de Página</A>
+<LI><A NAME="tex2html87"
+  HREF="#SECTION00643000000000000000">3.4.3 Consumo de Memória</A>
+<LI><A NAME="tex2html88"
+  HREF="#SECTION00644000000000000000">3.4.4 Barreira</A>
+</UL>
+</UL><BR>
+<LI><A NAME="tex2html89"
+  HREF="#SECTION00700000000000000000">4. Experimentos</A>
+<UL>
+<LI><A NAME="tex2html90"
+  HREF="#SECTION00710000000000000000">4.1 Ambiente de testes</A>
+<LI><A NAME="tex2html91"
+  HREF="#SECTION00720000000000000000">4.2 Aplicações</A>
+<LI><A NAME="tex2html92"
+  HREF="#SECTION00730000000000000000">4.3 Multiplicação de Vetores</A>
+<UL>
+<LI><A NAME="tex2html93"
+  HREF="#SECTION00731000000000000000">4.3.1 Resultados</A>
+</UL>
+<LI><A NAME="tex2html94"
+  HREF="#SECTION00740000000000000000">4.4 IS - Integer Sort</A>
+<UL>
+<LI><A NAME="tex2html95"
+  HREF="#SECTION00741000000000000000">4.4.1 CLASS A</A>
+<LI><A NAME="tex2html96"
+  HREF="#SECTION00742000000000000000">4.4.2 CLASS B</A>
+</UL>
+</UL><BR>
+<LI><A NAME="tex2html97"
+  HREF="#SECTION00800000000000000000">5. Trabalhos Relacionados</A>
+<UL>
+<LI><A NAME="tex2html98"
+  HREF="#SECTION00810000000000000000">5.1 <I>Swap</I> Sobre a Rede</A>
+<LI><A NAME="tex2html99"
+  HREF="#SECTION00820000000000000000">5.2 Memória Compartilhada Distribuída</A>
+</UL><BR>
+<LI><A NAME="tex2html100"
+  HREF="#SECTION00900000000000000000">6. Conclusões</A>
+<LI><A NAME="tex2html101"
+  HREF="#SECTION001000000000000000000">Refer&ecirc;ncias Bibliogr&aacute;ficas</A>
+<LI><A NAME="tex2html102"
+  HREF="#SECTION001100000000000000000">A. Fonte do programa multiplicação de vetores</A>
+<LI><A NAME="tex2html103"
+  HREF="#SECTION001200000000000000000">About this document ...</A>
+</UL>
+<!--End of Table of Contents--><BR>
+
+<H2><A NAME="SECTION00200000000000000000">
+Lista de Figuras</A>
+</H2><UL>
+<LI>2.1. <A NAME="tex2html1"
+  HREF="#404">Estrutura geral de um sistema DSM</A>
+<LI>. <A NAME="tex2html2"
+  HREF="#525">Memória Virtual no Linux</A>
+<LI>. <A NAME="tex2html3"
+  HREF="#545">Estrutura básica do MOMEMTO - 1</A>
+<LI>. <A NAME="tex2html4"
+  HREF="#556">Estrutura básica do MOMEMTO - 2</A>
+<LI>. <A NAME="tex2html6"
+  HREF="#820">Disposição das residências</A>
+<LI>. <A NAME="tex2html7"
+  HREF="#829">Computação do vetor resultante</A>
+<LI>4.3. <A NAME="tex2html8"
+  HREF="#839">MOMEMTO x TMK</A>
+<LI>4.4. <A NAME="tex2html12"
+  HREF="#882">MOMEMTO x MPI para MV Pequeno</A>
+<LI>4.5. <A NAME="tex2html13"
+  HREF="#889">MOMEMTO x MPI para MV Grande</A>
+<LI>4.6. <A NAME="tex2html16"
+  HREF="#930">MOMEMTO x TMK x MPI - Class A</A>
+<LI>4.7. <A NAME="tex2html21"
+  HREF="#992">MOMEMTO x TMK x MPI - Class B</A></UL><BR>
+
+<H2><A NAME="SECTION00300000000000000000">
+Lista de Tabelas</A>
+</H2><UL>
+<LI>. <A NAME="tex2html9"
+  HREF="#848">Tempo de processamento para MV Pequeno para cada nó</A>
+<LI>. <A NAME="tex2html10"
+  HREF="#862">Tempo de execução para MV Grande</A>
+<LI>4.3. <A NAME="tex2html11"
+  HREF="#871">Tempo de processamento para MV Grande</A>
+<LI>. <A NAME="tex2html14"
+  HREF="#900">Tempo de comunicação</A>
+<LI>4.5. <A NAME="tex2html15"
+  HREF="#920">Entrada utilizada para o IS</A>
+<LI>. <A NAME="tex2html17"
+  HREF="#940">Estatísticas do MOMEMTO - CLASS A</A>
+<LI>. <A NAME="tex2html18"
+  HREF="#953">Comunicação no MOMEMTO - CLASS A</A>
+<LI>. <A NAME="tex2html19"
+  HREF="#964">Estatísticas para TreadMarks - CLASS A</A>
+<LI>. <A NAME="tex2html20"
+  HREF="#976">Estatísticas para o  MPI - CLASS A</A>
+<LI>. <A NAME="tex2html22"
+  HREF="#1003">Estatísticas do MOMEMTO - CLASS B</A>
+<LI>. <A NAME="tex2html23"
+  HREF="#1012">Comunicação no MOMEMTO - CLASS B</A>
+<LI>. <A NAME="tex2html24"
+  HREF="#1023">Estatísticas para TreadMarks - CLASS B</A>
+<LI>. <A NAME="tex2html25"
+  HREF="#1035">Estatísticas para o  MPI - CLASS B</A></UL>
+<P>
+
+<P>
+
+<H1><A NAME="SECTION00400000000000000000">
+1. Introdução</A>
+</H1>
+
+<P>
+
+<H1><A NAME="SECTION00410000000000000000">
+1.1 Visão Geral</A>
+</H1> 
+Nos últimos anos tem ocorrido um significativo aumento no interesse do uso
+de clusters de PCs (Computadores Pessoais) como alternativa efetiva para se
+alcançar alto desempenho com baixo custo. Hoje em dia, clusters abrangem
+desde pequenos sistemas [<A
+ HREF="tese.html#cluster3">2</A>], utilizados em laboratórios de
+pesquisa e universidade por exemplo, até 
+grandes máquinas, tais como [<A
+ HREF="tese.html#cluster1">3</A>,<A
+ HREF="tese.html#cluster2">4</A>], utilizadas em 
+aplicações paralelas que demandam alto poder de processamento.
+Clusters são utilizados tanto no ambiente acadêmico quanto no empresarial, 
+em áreas como aplicações científicas, bancos de dados, servidores 
+web e simulações.
+
+<P>
+Embora clusters ofereçam escalabilidade em relação ao número de CPUs, bem
+como espaço de memória, eles podem ser limitados pela capacidade de
+comunicação nó-para-nó. Deste modo, escrever aplicações paralelas
+eficientes que escalem pode ser uma tarefa difícil. Nós argumentamos
+que uma das principais dificuldades para se escrever tais aplicações é a
+dependência em Sistemas Operacionais (SO) tradicionais <I>off-the-shelf</I>, 
+ou seja, disponível em qualquer loja de informática. Tradicionalmente, 
+cada nó no cluster roda sua própria cópia do sistema operacional e alguns
+utilitários de comunicação de dados e compartilhamento de recursos sobre um
+SO de propósito geral. Em outras palavras, os SOs continuam a tratar clusters 
+como uma coleção de computadores conectados, onde cada um trabalha de forma
+independente. Infelizmente, 
+sistemas operacionais tradicionais foram projetados para um
+ambiente computacional diferente e não suportam todas as funcionalidades
+necessárias para extrair &nbsp;todas &nbsp;as &nbsp;vantagens que clusters
+oferecem. Pesquisadores muitas vezes trabalham em volta deste
+problema no nível da aplicação. TreadMarks [<A
+ HREF="tese.html#amza96treadmarks">7</A>],
+por exemplo, implementa um ambiente de memória compartilhada em clusters.
+Escrevendo drivers de comunicação que rodam
+nas interfaces de rede, como M-VIA [<A
+ HREF="tese.html#mvia">1</A>], eliminam alguns <EM>overheads</EM> 
+de comunicação mas não integram a aplicação ao SO.
+
+<P>
+Estas soluções
+não são suficientes para obter o máximo desempenho de um cluster, visto que elas 
+não preenchem o espaço entre o objetivo original dos SOs,
+que foram projetados para computadores pessoais e servidores, 
+e questões específicas de desempenho que surgiram com os clusters.
+
+<P>
+Nosso trabalho &nbsp;concentra-se no &nbsp;problema de &nbsp;fornecer uma &nbsp;abstração de
+memória compartilhada, procurando alcançar um melhor desempenho para
+a aplicação. Primeiro, nós observamos que várias aplicações paralelas, de
+NAS-benchmarks [<A
+ HREF="tese.html#bailey91nas">9</A>] a sistemas de bancos de dados [<A
+ HREF="tese.html#google">14</A>], 
+freqüentemente precisam não só de escalabilidade de processadores, mas também 
+de <EM>escalabilidade de memória</EM>. Por exemplo, assuma um cluster com 16 
+máquinas, onde cada uma tem 512 MB de memória RAM, rodando um NAS-benchmark 
+CLASS-A (aplicações que utilizam muita memória) 
+ou um banco de dados com uma grande quantidade de dados que requeira
+8GB de memória. Infelizmente, vários sistemas software DSM (Distributed Shared Memory) 
+atuais [<A
+ HREF="tese.html#kli">29</A>,<A
+ HREF="tese.html#amza96treadmarks">7</A>,<A
+ HREF="tese.html#zhou96performance">40</A>,<A
+ HREF="tese.html#whately">39</A>,<A
+ HREF="tese.html#JIAJIA">23</A>,<A
+ HREF="tese.html#Cashmere-VLM">19</A>]
+ficam limitados ao tamanho da memória local de cada nó e, assim, não
+podem explorar todas as vantagens das memórias agregadas dos nós para 
+compartilhamento. Nós argumentamos que uma solução eficiente para este
+problema requer adaptar o gerenciamento de memória virtual do SO para o
+cluster.
+
+<P>
+Nossa segunda observação é que sistemas DSM  
+provêem mecanismos de coerência sofisticados e poderosos para assegurar 
+consistência de memória, e a implementação destes sistemas pode ser complexa 
+e introduzir <EM>overheads</EM> substanciais.
+Entretanto, muitas aplicações
+requerem formas mais simples para garantir consistência de memória e podem
+obter melhor desempenho se usarem um mecanismo mais apropriado. Cada aplicação tem
+suas próprias características, comportamento, padrões de acesso, 
+sendo que, estas informações podem levar o sistema operacional a um melhor 
+gerenciamento de sua memória e ao compartilhamento mais eficiente dos dados 
+entre os nós para cada aplicação. 
+
+<P>
+Em casos particulares pode valer a pena o esforço de implementar mecanismos 
+específicos para suportar aplicações populares, tais como bancos de dados, 
+simulações e aplicações científicas.
+
+<P>
+Nesta tese nós propomos a inclusão do seguinte conjunto de abstrações
+no kernel para o gerenciamento de memória global em clusters:
+
+<P>
+
+<UL>
+<LI>No nível mais baixo, nós estendemos o mecanismo de memória virtual do 
+SO, com mínimas modificações nas estrututas do kernel, para enxergar o
+cluster; 
+</LI>
+<LI>Oferecemos um mecanismo modular que provê primitivas básicas
+de sincronização com mínimo <I>overhead</I>.
+</LI>
+</UL>
+
+<P>
+Nosso trabalho também é inspirado por pesquisas anteriores em sistemas
+operacionais. Como em nano-kernels [<A
+ HREF="tese.html#engler95exokernel">20</A>], nós  
+argumentamos que os usuários devem ter a opção de como conseguir máximo
+desempenho, e isto pode ser alcançado oferecendo diferentes interfaces para 
+o SO, ou seja, tornando-o mais adaptável à aplicação.
+O sucesso de sistemas operacionais <EM>open-source</EM>, como Linux e os 
+BSDs, proporcionaram acesso a imensa documentação e a clarificação das 
+interfaces do SO, contribuindo para que <I>internals</I> do kernel se 
+tornassem  disponíveis e compartilhadas livremente. Assim, muitos usuários 
+se acostumaram a aplicar <EM>patches</EM> e a reconfigurar o kernel para as 
+necessidades do seu sistema.
+
+<P>
+Nesta tese apresentamos o sistema MOMEMTO (<EM>MOre MEMory Than
+Others</EM>), o qual estende o kernel do Linux 2.4 incluindo um
+conjunto de mecanismos que suportam memória compartilhada global. No nível
+mais baixo, o sistema altera o mecanismo de memória virtual 
+(<I>Virtual Memory</I> - VM) do Linux e o
+mecanismo de rede, estendendo-os para proverem um mecanismo básico de memória
+compartilhada com granulosidade de uma página. Acima desta camada, provemos um 
+conjunto de módulos que utilizam estes mecanismos para oferecerem 
+um conjunto de abstrações 
+ao usuário.  Resultados preliminares demonstram que o sistema MOMEMTO alcança
+um bom desempenho quando comparado tanto a TreadMarks[<A
+ HREF="tese.html#amza96treadmarks">7</A>]  
+como a MPI [<A
+ HREF="tese.html#mpi">5</A>]. Em particular, MOMEMTO pode executar aplicações que requerem 
+mais memória que TreadMarks pode oferecer.
+
+<P>
+
+<H1><A NAME="SECTION00420000000000000000">
+1.2 Contribuições da Tese</A>
+</H1> 
+
+<P>
+As principais contribuições da tese são:
+
+<UL>
+<LI>A proposta de um modelo em kernel para agregar a memória dos nós do
+cluster.
+</LI>
+<LI>A implementação e avaliação de um mecanismo em kernel para o
+compartilhamento de memória em clusters.
+</LI>
+</UL>
+
+<P>
+
+<H1><A NAME="SECTION00430000000000000000">
+1.3 Organização da Tese</A>
+</H1>
+A tese está organizada da seguinte forma.
+No capítulo 2 abordamos os conceitos básicos de sistemas 
+<I>software DSM</I>, seus problemas e soluções.
+No capítulo 3 descrevemos o sistema MOMEMTO e sua implementação. 
+Os experimentos são descritos e analisados no capítulo 4.
+Os trabalhos relacionados são abordados no capítulo 5. Por fim, no capítulo
+6 apresentamos as conclusões e sugestões para trabalhos futuros.
+
+<P>
+
+<P>
+
+<H1><A NAME="SECTION00500000000000000000">
+2. Conhecimentos Básicos</A>
+</H1>
+
+<P>
+
+<H1><A NAME="SECTION00510000000000000000">
+2.1 Sistemas DSM</A>
+</H1>
+Em clusters, a memória de cada nó não é compartilhada fisicamente com a dos
+outros, deste modo toda a comunicação entre processos é realizada sobre a
+rede. 
+
+<P>
+Atualmente, os principais paradigmas para a programação em cluster são
+baseados em passagem de mensagens, utilizando protocolos como PVM[<A
+ HREF="tese.html#pvm">22</A>]
+ou MPI[<A
+ HREF="tese.html#mpi">5</A>], e em sistemas DSM (Distributed Shared Memory), 
+implementados tanto em hardware como em software.
+
+<P>
+No paradigma baseado em passagem de mensagens, o sistema de memória distribuída é
+totalmente exposto ao programador e, assim, toda a comunicação entre
+processos é realizada explicitamente pelo mesmo. 
+O programador precisa saber <I>onde</I> 
+estão os dados, decidir <I>quais</I> e para <I>quem</I> eles precisam ser 
+enviados, tornando a programação uma tarefa complexa, 
+especialmente para aplicações com estrutura de dados complexa.
+
+<P>
+Por sua vez, 
+no paradigma baseado em memória compartilhada distribuída (Distributed Shared
+Memory - DSM) é criada uma abstração de memória compartilhada, fornecendo
+um espaço de endereçamento compartilhado. Uma das principais vantagens
+deste modelo está em esconder do programador a arquitetura de memória
+distribuída e prover uma extensão natural do modelo de programação
+seqüencial. A Figura <A HREF="tese.html#fig:geral_DSM">2.1</A> apresenta a estrutura geral de 
+um sistema DSM, onde o software ou hardware DSM fornece a ilusão de um espaço 
+de endereçamento único, alterando o comportamento das memórias que estão
+fisicamente distribuídas.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:geral_DSM"></A><A NAME="404"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figura 2.1:</STRONG>
+Estrutura geral de um sistema DSM</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<IMG
+ WIDTH="485" HEIGHT="169" ALIGN="BOTTOM" BORDER="0"
+ SRC="img2.png"
+ ALT="\includegraphics[scale=0.6]{geral_DSM.eps}">
+        
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+Utilizando DSM, uma aplicação pode ser escrita como se estivesse executando
+em um multiprocessador de memória compartilhada, acessando os dados
+compartilhados com operações normais de leitura e escrita. A
+tarefa de passagem de mensagens é escondida do programador.
+
+<P>
+Comparando sistemas de hardware e software DSM, a altíssima relação
+custo/benefício impede que os sistemas hardware DSM sejam acessíveis à
+maioria dos usuários. Em contra partida, os sistemas de software DSM como
+Treadmarks [<A
+ HREF="tese.html#amza96treadmarks">7</A>], HLRC[<A
+ HREF="tese.html#zhou96performance">40</A>], 
+Orca[<A
+ HREF="tese.html#bal92orca">10</A>], CASHMERE[<A
+ HREF="tese.html#Cashmere-VLM">19</A>], 
+ADSM [<A
+ HREF="tese.html#monnerat98efficiently">31</A>], JIAJIA [<A
+ HREF="tese.html#JIAJIA">23</A>], entre outros,  
+têm sido amplamente estudados e utilizados devido à sua facilidade
+de implementação e ao seu baixo custo.
+
+<P>
+
+<H1><A NAME="SECTION00520000000000000000">
+2.2 Desempenho de Sistemas Software DSM</A>
+</H1>
+Sistemas de memória compartilhada distribuída implementados em software 
+(<I>software DSM</I>)[<A
+ HREF="tese.html#Li86">28</A>] têm como objetivo oferecer uma abstração de
+memória compartilhada para aplicações paralelas que são executadas
+em arquiteturas de memória fisicamente distribuída, tais como as dos clusters.
+
+<P>
+Para a manuten&#231;&#227;o da coer&#234;ncia dos dados &#233; necess&#225;rio que as
+escritas a posi&#231;&#245;es da mem&#243;ria compartilhada feitas por um
+processador sejam propagadas para os demais processadores do
+sistema. Esta propaga&#231;&#227;o de escritas pode ser feita por protocolos
+de invalida&#231;&#227;o ou de atualiza&#231;&#227;o.  No protocolo de invalida&#231;&#227;o,
+uma modifica&#231;&#227;o em um dado compartilhado feita localmente &#233; vista
+em um processador remoto atrav&#233;s de uma mensagem de invalida&#231;&#227;o. Ao
+receber a mensagem, o processador remoto invalida o dado modificado,
+de maneira que um acesso subseq&#252;ente a este dado gera uma falha de
+acesso, para somente ent&#227;o a vers&#227;o atual do dado ser buscada. No
+protocolo de atualiza&#231;&#227;o os dados n&#227;o s&#227;o invalidados, uma vez que
+a mensagem que informa que um dado foi modificado j&#225; carrega a sua
+nova vers&#227;o, de maneira que, em um pr&#243;ximo acesso a este dado, n&#227;o
+ocorrer&#225; uma falha de acesso.
+
+<P>
+O protocolo de atualiza&#231;&#227;o diminui o n&#250;mero de falhas de acesso na
+mem&#243;ria local mas, por outro lado, ele induz um n&#250;mero maior de
+mensagens que o encontrado no protocolo de invalida&#231;&#227;o, j&#225; que
+muitas vezes a atualiza&#231;&#227;o n&#227;o &#233; vista antes que outras
+atualiza&#231;&#245;es sejam feitas [<A
+ HREF="tese.html#bianchini96categorizing">13</A>].
+
+<P>
+Os sistemas <I>software DSM</I> sofrem de um alto tráfego de comunicação e de 
+<I>overheads</I> induzidos pelo protocolo de coerência que limitam seu desempenho 
+[<A
+ HREF="tese.html#iftode99shared">24</A>]. Várias alternativas foram criadas para diminuir esse
+tráfego como, por exemplo, empregar modelos de consistência relaxados
+[<A
+ HREF="tese.html#keleher:1992:lrc">27</A>,<A
+ HREF="tese.html#brian91midway">11</A>,<A
+ HREF="tese.html#cox99performance">15</A>,<A
+ HREF="tese.html#iftode96scope">25</A>]. 
+Um modelo de consistência de memória especifica
+quando operações de coerência de dados devem tornar-se visíveis para os outros
+processadores, ou seja, quando as modificações feitas em dados
+compartilhados devem ser observadas pelos processadores.
+<I>Software DSM</I> baseados nestes modelos podem reduzir os
+<I>overheads</I> atrasando e/ou restringindo a comunicação e as transações de
+coerência o máximo possível. <I>Softwares DSM</I> baseados em consistência
+relaxada e que permitem "múltiplos-escritores"&nbsp; tentam reduzir a comunicação
+e os custos de coerência ainda mais, permitindo que dois ou mais
+processadores modifiquem concorrentemente suas cópias locais de dados
+compartilhados e combinem o resultado destas modificações nas operações de
+sincronização[<A
+ HREF="tese.html#keleher:1992:lrc">27</A>,<A
+ HREF="tese.html#amza96treadmarks">7</A>]. 
+Esta técnica diminui o efeito negativo do falso compartilhamento
+em sistemas cuja unidade de coerência é grande, como os <I>softwares DSM</I>
+que utilizam a página de memória virtual como unidade de coerência.
+O falso compartilhamento ocorre quando múltiplos escritores acessam dados
+não relacionados que estão localizados na mesma página e pelo menos um
+acesso é uma escrita ao dado.
+TreadMarks [<A
+ HREF="tese.html#amza96treadmarks">7</A>] e HLRC [<A
+ HREF="tese.html#zhou96performance">40</A>]
+são exemplos de sistemas que garantem a consistência de forma
+relaxada, utilizando o modelo <I>Lazy Release Consistency</I> (LRC)
+[<A
+ HREF="tese.html#keleher:1992:lrc">27</A>], e que permitem a existência de múltiplos
+escritores. O protocolo LRC atrasa a propagação de mensagens de coerência
+até pontos de sincronização como <EM>lock</EM> ou barreiras.
+
+<P>
+Um exemplo de software DSM que utiliza a técnica de múltiplos escritores é
+o TreadMarks. Neste sistema, uma página é inicialmente protegida contra escrita, 
+de forma que na primeira escrita a ela é gerada uma violação de acesso. 
+Durante o tratamento desta violação é feita uma cópia exata da página (um
+<I>twin</I>) e a escrita à cópia original da página é liberada. Quando a
+coleta das modificações é necessária, o <I>twin</I> e a versão corrente da
+página são comparadas para criar uma codificação das modificações (um
+<I>diff</I>). A utilização de <I>twins</I> e <I>diffs</I> em TreadMarks
+permite aos processadores modificarem simultaneamente suas cópias locais de
+páginas compartilhadas.
+
+<P>
+Desta forma, quando ocorre uma falha de acesso, o processador consulta 
+sua lista de notificações de escrita para descobrir quais os <I>diffs</I>
+necessários para atualizar a página. O processador então solicita os
+<I>diffs</I> correspondentes e espera que eles sejam criados, enviados e
+recebidos. Depois de recebidos todos os <I>diffs</I> requisitados, o
+processador que sofreu a falha os aplica à sua cópia desatualizada. Uma
+descrição mais detalhada de TreadMarks pode ser encontrada em 
+[<A
+ HREF="tese.html#amza96treadmarks">7</A>]. 
+
+<P>
+A maioria dos protocolos que permitem múltiplos escritores utilizam o
+mecanismo de <I>twinning</I> e <I>diffing</I>. Esses protocolos conseguem
+diminuir o efeito do falso compartilhamento, permitindo que vários
+processadores alterem concorrentemente uma página compartilhada. Porém,
+o suporte a múltiplos escritores cria custos adicionais no caso de páginas
+que não estão sujeitas ao falso compartilhamento, pois é necessário
+detectar, armazenar e aplicar modificações a essas páginas.
+Estes custos adicionais podem ser eliminados no caso de páginas que não
+sofrem falso compartilhamento, limitando as alterações a apenas um processador 
+por vez. Assim, foi proposta a utilização de técnicas de adaptação entre
+protocolos único escritor e múltiplos escritores. Uma descrição detalhada desta
+técnica pode ser encontrada em <I>Adaptive TreadMarks</I> 
+(ATmk) [<A
+ HREF="tese.html#amza97software">8</A>], ADSM [<A
+ HREF="tese.html#monnerat98efficiently">31</A>,<A
+ HREF="tese.html#adsm">32</A>] e
+HAP[<A
+ HREF="tese.html#whately">39</A>].
+
+<P>
+Várias outras técnicas foram pesquisadas para aumentar o desempenho de
+<I>softwares DSM</I>. Dentre estas pode-se destacar: pré-busca
+[<A
+ HREF="tese.html#bianchini96hiding">12</A>,<A
+ HREF="tese.html#karlsson97effectiveness">26</A>,<A
+ HREF="tese.html#mowry98comparative">33</A>] 
+e adaptação entre protocolos 
+único escritor e múltiplos escritores
+[<A
+ HREF="tese.html#amza97software">8</A>,<A
+ HREF="tese.html#monnerat98efficiently">31</A>,<A
+ HREF="tese.html#adsm">32</A>].
+
+<P>
+Na técnica de <I>prefetching</I> (pré-busca) o dado remoto é buscado com
+antecedência, isto é, antes de ser efetivamente necessário, tentando diminuir 
+a latência de acesso a dados remotos de softwares DSM em tempo de execução.
+A utilização desta técnica de forma efetiva em softwares DSM é difícil
+devido a duas razões principais:
+
+<P>
+
+<UL>
+<LI>Pode não ser fácil prever os acessos futuros a dados;
+
+<P>
+</LI>
+<LI>Pré-buscas geram muitos <I>overheads</I> quando solicitadas 
+desnecessariamente devido ao alto tempo gasto para gerar, enviar e receber estes
+dados que não foram necessários.
+</LI>
+</UL>
+
+<P>
+As principais fontes de atraso em <I>softwares DSM</I> estão relacionadas 
+à latência de comunicação e às ações de coerência [<A
+ HREF="tese.html#raquel">34</A>]. Latência de 
+comunicação causa atrasos no processamento, degradando o desempenho do sistema. 
+As ações de coerência também podem afetar negativamente o desempenho do sistema.
+Como o modelo de consistência de memória é a interface
+entre o programador e o sistema, ele especifica como a memória irá aparecer
+para o programador. Isto influencia na complexidade de programação e no
+desempenho. Um modelo de consistência de memória rígido torna a programação
+mais fácil, em contra-partida deixa menos oportunidades para otimizações.
+Além disso, diferentes tipos de aplicações requerem diferentes tipos de
+modelos de consistência, visto que a escolha do modelo influenciará no
+desempenho da aplicação.
+
+<P>
+Como vimos, existem várias técnicas para melhorar o desempenho de
+sistemas software DSM, por exemplo, protocolo de invalidação ou atualização,
+técnicas de múltiplos escritores, técnica de pré-busca, entre outros.
+Entretanto, estas opções não alcançam bom desempenho para todas as
+aplicações. Por exemplo, quando utilizado em aplicações com único escritor
+(<EM>single-writer</EM>), o suporte a múltiplos escritores pode degradar o 
+desempenho do sistema, pois os mecanismos de <EM>twin</EM> e <EM>diff</EM> 
+geram <EM>overhead</EM> e complexidade que não serão úteis para a aplicação.
+O problema é que os custos de desempenho desses sistemas otimizados ainda
+são muito altos e não conseguem melhorar o desempenho para todas as
+aplicações. 
+
+<P>
+
+<P>
+
+<H1><A NAME="SECTION00600000000000000000">
+3. MOMEMTO</A>
+</H1>
+
+<P>
+
+<H1><A NAME="SECTION00610000000000000000">
+3.1 O Sistema</A>
+</H1>
+MOMEMTO foi projetado para permitir a aplicação compartilhar as
+memórias dos nós do cluster como uma extensão transparente da
+memória local. Mais especificamente, é um sistema em modo kernel que visa 
+melhorar a utilização das memórias agregadas dos nós do cluster oferecendo 
+à aplicação uma área de memória compartilhada maior do que a proporcionada 
+por softwares DSM atuais [<A
+ HREF="tese.html#trevisan">36</A>].
+No seu nível mais baixo, o sistema estende o mecanismo de
+memória virtual do kernel para prover um mecanismo básico
+de compartilhamento de páginas de memória. Como MOMEMTO utiliza a
+funcionalidade do kernel do Linux, começaremos apresentando o gerenciamento
+de memória virtual neste sistema, mas outros sistemas UNIX [<A
+ HREF="tese.html#unix">37</A>,<A
+ HREF="tese.html#bsd">30</A>]
+são semelhantes.
+
+<P>
+No Linux, todas as informações relacionadas com o espaço de endereçamento do 
+processo estão incluídas na estrutura referenciada pelo campo <IMG
+ WIDTH="38" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.png"
+ ALT="$mm$"> no descritor 
+do processo (<EM>struct task_struct</EM>). 
+O campo <IMG
+ WIDTH="38" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img3.png"
+ ALT="$mm$"> é um ponteiro para uma estrutura do tipo <IMG
+ WIDTH="97" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img4.png"
+ ALT="$mm\_struct$">.
+Cada processo tem uma <IMG
+ WIDTH="97" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img4.png"
+ ALT="$mm\_struct$">. 
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:vma"></A><A NAME="525"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figura:</STRONG>
+Memória Virtual no Linux</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<IMG
+ WIDTH="600" HEIGHT="225" ALIGN="BOTTOM" BORDER="0"
+ SRC="img5.png"
+ ALT="\includegraphics[scale=0.6]{vma.eps}">
+        
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+O Linux implementa a área virtual de memória (VMA) através da estrutura 
+<!-- MATH
+ $vm\_area\_struct$
+ -->
+<IMG
+ WIDTH="137" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img6.png"
+ ALT="$vm\_area\_struct$">.
+Uma VMA é um intervalo contíguo de endereço linear, ou seja, uma região 
+homogênea de memória virtual de um processo. Cada processo 
+tem uma lista de VMAs, como ilustra a Figura <A HREF="tese.html#fig:vma">3.1</A>. Exemplos de VMAs são:
+
+<P>
+
+<UL>
+<LI>VMA que armazena o executável;
+</LI>
+<LI>VMA para variáveis globais;
+</LI>
+<LI>VMA para a pilha (<I>stack</I>).
+</LI>
+</UL>
+
+<P>
+Todas as VMAs de um processo são ligadas através de uma árvore. O kernel encontra 
+uma área de memória através do campo <IMG
+ WIDTH="57" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img7.png"
+ ALT="$mmap$"> da <IMG
+ WIDTH="97" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img4.png"
+ ALT="$mm\_struct$">. 
+Quando o kernel tem um endereço 
+e quer encontrar a qual VMA este endereço pertence, ele usa a função 
+<IMG
+ WIDTH="89" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img8.png"
+ ALT="$find\_vma$">, que pode ser encontrada em <EM>mm/mmap.c</EM>. As regiões de memória 
+de cada processo podem ser acessadas no arquivo <EM>/proc/pid/maps</EM> onde 
+<IMG
+ WIDTH="30" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img9.png"
+ ALT="$pid$"> é o <IMG
+ WIDTH="21" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img10.png"
+ ALT="$id$"> do processo. Alguns campos da <!-- MATH
+ $vm\_area\_struct$
+ -->
+<IMG
+ WIDTH="137" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img6.png"
+ ALT="$vm\_area\_struct$"> são: 
+
+<P>
+
+<UL>
+<LI><IMG
+ WIDTH="81" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img11.png"
+ ALT="$vm\_start$"> e <IMG
+ WIDTH="70" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img12.png"
+ ALT="$vm\_end$">: endereços de memória virtual de início e de fim 
+da VMA;
+</LI>
+<LI><IMG
+ WIDTH="73" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img13.png"
+ ALT="$vm\_mm$">: um ponteiro para a <IMG
+ WIDTH="97" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img4.png"
+ ALT="$mm\_struct$">;
+</LI>
+<LI><IMG
+ WIDTH="78" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img14.png"
+ ALT="$vm\_next$">: ponteiro para a próxima VMA;
+</LI>
+<LI><IMG
+ WIDTH="68" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img15.png"
+ ALT="$vm\_ops$">: um conjunto de funções que o kernel deve chamar para 
+operar sobre esta área. Este campo é um ponteiro para uma estrutura 
+do tipo <!-- MATH
+ $vm\_operations\_struct$
+ -->
+<IMG
+ WIDTH="188" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img16.png"
+ ALT="$vm\_operations\_struct$">. 
+</LI>
+</UL>
+
+<P>
+A estrutura <!-- MATH
+ $vm\_operations\_struct$
+ -->
+<IMG
+ WIDTH="188" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img16.png"
+ ALT="$vm\_operations\_struct$"> manipula eventos específicos sobre uma
+VMA. Um dos campos desta estrutura é o <IMG
+ WIDTH="62" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img17.png"
+ ALT="$nopage$">. Quando um 
+processo tenta acessar uma página que não está na memória e pertence
+à uma VMA válida, ou seja, tem um endereço válido, esta função é 
+chamada, se estiver definida, para esta VMA. Se a função <IMG
+ WIDTH="62" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img17.png"
+ ALT="$nopage$"> 
+não estiver definida para esta área o kernel aloca uma nova página. 
+É importante salientar que um endereço pode ser coberto por uma VMA mesmo
+se o kernel ainda não tenha alocado uma página para armazená-lo. O kernel
+do Linux realiza paginação sob demanda, ou seja, uma página só será alocada
+quando o processo acessá-la.
+Informações detalhadas sobre o kernel e o sistema de memória virtual do Linux 
+podem ser encontradas em [<A
+ HREF="tese.html#livro_kernel">16</A>,<A
+ HREF="tese.html#ldd">6</A>].
+
+<P>
+MOMEMTO cria e gerencia uma VMA do processo, 
+deixando as demais serem gerenciadas pelo sistema operacional.
+Um processo usa o sistema da
+mesma maneira como se estivesse utilizando um <TT>mmap()</TT> para memória
+anônima. Mais precisamente,
+o usuário requisita um novo intervalo de endereços, MOMEMTO cria um novo 
+intervalo de memória e o insere na lista de VMAs do processo. Na prática, o
+processo utilizará esta memória do mesmo modo como se ele tivesse feito uma
+chamada às funções <TT>mmap()</TT> ou <TT>malloc()</TT>.
+
+<P>
+A memória de MOMEMTO é alocada sob demanda. Em uma falha de página, o kernel
+chama a função <TT>nopage</TT>
+para realizar o tratamento adequado. 
+Quando a falha de página ocorre em um endereço que pertence à VMA gerenciada por 
+MOMEMTO, é realizado um tratamento específico para esta página.
+Este processo será descrito na seção 3.4.2.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:basic"></A><A NAME="545"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figura:</STRONG>
+Estrutura básica do MOMEMTO - 1</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<IMG
+ WIDTH="656" HEIGHT="320" ALIGN="BOTTOM" BORDER="0"
+ SRC="img18.png"
+ ALT="\includegraphics[scale=0.6]{estrutura_mmto1.eps}">
+        
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+A Figura &nbsp;<A HREF="tese.html#fig:basic">3.2</A> demonstra como MOMEMTO interage com uma
+aplicação. Cada processo tem vários segmentos de memória virtual em seu
+espaço de endereçamento. Os segmentos normais do Linux são locais a cada
+nó. Em contraste, os segmentos de MOMEMTO são compartilhados entre
+os nós do cluster. Do ponto de vista da aplicação, o espaço compartilhado
+é visto com um único bloco contíguo de memória. 
+Do ponto de vista do sistema, os
+segmentos compartilhados de cada nó são agregados para formar um grande segmento
+compartilhado, onde cada nó pode ter mapeado em memória algumas
+páginas do segmento compartilhado, mas não necessariamente todas. 
+
+<P>
+
+<H1><A NAME="SECTION00620000000000000000">
+3.2 Design</A>
+</H1>
+MOMEMTO permite uma alta flexibilidade para a aplicação. Isto é 
+alcançado através de chamadas de sistema que controlam políticas ou através
+de diferentes módulos que implementam diferentes mecanismos de coerência.
+
+<P>
+No nível mais baixo, MOMEMTO somente compartilha páginas entre os nós.
+Para agregar a memória dos nós, utilizamos protocolo baseado em 
+residência (<I>home</I>), 
+onde cada nó é responsável por uma fração do número total de páginas, como
+ilustra a Figura <A HREF="tese.html#fig:basic2">3.3</A>. 
+Inicialmente, cada nó tem em memória somente as páginas das quais ele é a
+residência. Para as demais, uma página física só será alocada
+quando o nó acessá-la. Quando este acesso ocorrer, o sistema
+buscará uma cópia desta página na sua residência.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:basic2"></A><A NAME="556"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figura:</STRONG>
+Estrutura básica do MOMEMTO - 2</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<IMG
+ WIDTH="662" HEIGHT="373" ALIGN="BOTTOM" BORDER="0"
+ SRC="img19.png"
+ ALT="\includegraphics[scale=0.6]{estrutura_mmto.eps}">
+        
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+A estratégia utilizada atualmente para decidir qual nó será a
+residência de uma página é a seguinte:
+as páginas são divididas estaticamente entre os nós e cada
+nó aloca as páginas que lhe pertencem na inicialização, 
+gerando uma falha de página para cada uma.
+
+<P>
+MOMEMTO oferece primitivas básicas para o compartilhamento de dados entre
+os nós do cluster, ou seja, não garante consistência.
+O sistema não é responsável por sincronização e tampouco por atualização. Ao
+contrário, esta é uma tarefa para camadas mais altas e possivelmente para a
+aplicação. A maioria dos protocolos DSM realizam atualização de páginas em
+pontos de sincronização, mas a melhor política de atualização varia entre
+aplicações. Freqüentemente a aplicação conhece quais
+processadores têm cópia de uma página e pode facilmente descobrir quais
+páginas precisam ser atualizadas. Entretanto, mecanismos genéricos de mais
+alto nível
+podem ser implementados através de módulos de kernel ou bibliotecas para 
+aplicações. O MOMEMTO procura, portanto, manter-se como uma ferramenta básica que 
+pode ser utilizada por várias aplicações e permite ao programador um maior
+controle sobre o gerenciamento da memória compartilhada e é um mecanismo
+sobre o qual serviços deverão ser implementados, tais como DSM, MPI,
+cache para banco de dados, etc.
+
+<P>
+
+<H1><A NAME="SECTION00630000000000000000">
+3.3 Interface</A>
+</H1>
+A interface entre MOMEMTO e a aplicação se dá através de três novas 
+chamadas de sistema adicionadas ao sistema operacional.
+
+<P>
+<I>mmto_mmap</I>, <I>mmto_load</I> e <I>mmto_sync</I>.
+
+<P>
+A <I>mmto_mmap</I> faz o mapeamento de uma área de memória
+virtual que irá ser compartilhada entre os nós.
+Esta chamada de sistema, similar a função <TT>mmap</TT>,
+recebe como parâmetros um
+número indicando em bytes a quantidade de memória a ser alocada e uma 
+<I>flag</I> que especifica como as residências serão distribuídas. 
+Com esta <I>flag</I> pode-se implementar diferentes algoritmos para a
+distribuição das residências.
+Atualmente, o valor suportado pelo sistema para esta <I>flag</I> é 
+<TT>SEQUENTIAL</TT>, descrito na próxima seção.
+
+<P>
+Por sua vez, a chamada de sistema <I>mmto_load</I> recebe como parâmetro um 
+arquivo texto com os nós que irão compartilhar memória. Todos os nós devem 
+executar esta chamada de sistema para iniciar o sistema. Usando um arquivo para
+especificar os nós, podemos reaproveitar arquivos gerados e utilizados por
+outros sistemas. Por exemplo, MOMEMTO pode ler arquivos gerados por
+escalonadores de tarefas como PBS[<A
+ HREF="tese.html#pbs">38</A>] e SGE[<A
+ HREF="tese.html#sge">35</A>], e assim saber 
+quais nós foram alocados para executar a aplicação.
+
+<P>
+A <I>mmto_sync</I> provê um mecanismo para a sincronização. Ela recebe
+como argumento o endereço de uma página virtual compartilhada e uma
+<I>flag</I> que determina qual ação deve ser tomada sobre esta página.
+Atualmente existem duas opções para esta <I>flag</I>: 
+
+<P>
+
+<UL>
+<LI><TT>MMTO_UPDATE</TT>, que permite ao usuário atualizar uma página de
+memória compartilhada. A atualização é feita enviando o conteúdo da página 
+para a residência, a qual então envia para os nós que tiverem cópia;
+
+<P>
+</LI>
+<LI><TT>MMTO_FREE</TT>, que possibilita a liberação de uma página compartilhada 
+residente fisicamente em memória. 
+</LI>
+</UL>
+
+<P>
+
+<H1><A NAME="SECTION00640000000000000000">
+3.4 Protótipo</A>
+</H1>
+O protótipo atual de MOMEMTO foi implementado sobre o Linux kernel 2.4 e
+provê funcionalidade essencial para o compartilhamento de memória. 
+Escolhemos Linux por diversas razões, principalmente porque ele
+é amplamente utilizado e é <I>open source</I>. Uma
+outra vantagem é o seu sofisticado mecanismo de módulos. O Linux utiliza
+<EM>linkagem</EM> dinâmica em kernel, o que permite carregar e descarregar módulos
+no kernel enquanto o mesmo está rodando. Deste modo, pode-se adicionar  
+código especializado para uma determinada aplicação sem precisar
+reinicializar a máquina e sem alterar o funcionamento básico do sistema
+operacional para as demais aplicações.
+A maior parte do sistema foi implementado utilizando esta funcionalidade
+com mínimas mudanças no kernel. 
+As mudanças no kernel foram necessárias apenas para tornar 
+alguns símbolos do kernel visíveis a módulos, e
+foram implementados como um <I>patch</I>. 
+Estes símbolos são:
+<TT>vm_area_cachep</TT>, <TT>insert_vm_struct</TT>,
+<TT>make_pages_present</TT>, <TT>lru_cache_add</TT>,
+<TT>mark_page_accessed</TT> e <TT>zap_page_range</TT>. 
+Com a utilização de módulos para implementar o sistema, deixamos o
+código mais portável. Por exemplo, a maioria das distribuições Linux
+modificam os kernels distribuídos em suas versões, o que pode levar a
+erros ao aplicar um <EM>patch</EM> como o de MOMEMTO. Além disto, seria
+necessário distribuír um <EM>patch</EM> específico para cada versão do kernel, os
+quais estão sempre mudando, enquanto que, com a utilização de módulos basta
+compilá-los para o kernel do usuário.
+
+<P>
+
+<H2><A NAME="SECTION00641000000000000000">
+3.4.1 Chamadas de Sistema</A>
+</H2>
+
+<P>
+Nesta seção serão descritos os detalhes técnicos de todas as chamadas de
+sistemas adicionadas ao sistema operacional por MOMEMTO.
+
+<P>
+
+<H3><A NAME="SECTION00641100000000000000">
+3.4.1.1 mmto_mmap</A>
+</H3>
+
+<P>
+Esta chamada de sistema é utilizada para alocar um intervalo de endereços de
+memória virtual. As principais tarefas são:
+
+<P>
+
+<UL>
+<LI>Todos os nós criam uma VMA com memória anônima<A NAME="tex2html5"
+  HREF="#foot632"><SUP>3.1</SUP></A> [<A
+ HREF="tese.html#unix">37</A>]
+para a área compartilhada. O tamanho desta área é obtido como argumento na 
+chamada de sistema e inserida na lista de VMAs do processo. 
+
+<P>
+</LI>
+<LI>A esta VMA é atribuída a <I>flag</I> <TT>VM_LOCKED</TT>, em outras
+palavras, todo este intervalo de endereços é marcado como não 
+substituível (<I>s</I>wapable), ou seja, o kernel não pode retirar estas
+páginas da memória.
+
+<P>
+</LI>
+<LI>Finalmente, é configurado o tratamento para qualquer
+falha de página que ocorra nesta VMA, que será descrito a seguir.
+</LI>
+</UL>
+
+<P>
+
+<H3><A NAME="SECTION00641200000000000000">
+3.4.1.2 mmto_load</A>
+</H3>
+A função desta chamada de sistema é inicializar as estruturas internas do
+sistema. Tem como argumento um arquivo contendo os nós que irão
+compartilhar memória. Dentre suas principais atribuições pode-se citar:
+
+<P>
+
+<UL>
+<LI>A divisão das residências, que nesta primeira implementação 
+é feita de forma estática e por blocos. Assim, cada nó recebe <IMG
+ WIDTH="39" HEIGHT="37" ALIGN="MIDDLE" BORDER="0"
+ SRC="img20.png"
+ ALT="$1/N$"> do 
+número total de páginas. 
+O arquivo recebido como argumento nesta chamada de sistema contém
+os <I>hosts</I> que irão compartilhar memória. O primeiro nó do arquivo
+recebe o primeiro bloco com (<IMG
+ WIDTH="39" HEIGHT="37" ALIGN="MIDDLE" BORDER="0"
+ SRC="img20.png"
+ ALT="$1/N$">) de memória compartilhada e assim por diante.
+Esta técnica foi utilizada para simplificar a implementação e para 
+facilitar o compreendimento da distribuição das residências.
+
+<P>
+</LI>
+<LI>Após esta divisão, é gerada uma falha de página para cada uma das
+que o nó é a residência, ou seja, as páginas que o nó é a residência
+estão sempre em memória. Para as demais, uma página física só
+será alocada quando o nó acessar a página.
+
+<P>
+</LI>
+<LI>Por fim, são criadas <IMG
+ WIDTH="54" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img21.png"
+ ALT="$N-1$"> threads de kernel, onde <IMG
+ WIDTH="22" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img22.png"
+ ALT="$N$"> é o número
+total de nós. Cada thread de kernel é responsável por receber pedidos de
+falha de página vindo de outros nós para páginas que ele é a residência e
+também por receber atualizações de páginas.
+</LI>
+</UL>
+
+<P>
+Há algumas vantagens na utilização de threads de kernel por MOMEMTO, por 
+exemplo, a troca de contexto (<I>context switch</I>) entre threads de kernel 
+são mais leves do que entre processos comuns, porque elas rodam somente em modo
+kernel. Outra vantagem é que as utilizando o nosso sistema realiza
+menos trocas de contextos. Por exemplo, quando um processo recebe
+uma atualização de página, a thread de kernel que está conectada com o nó
+que enviou a atualização é acordada, faz a cópia direta para a página do
+usuário e voltar a dormir. Todo o processo ocorre sem a necessidade de troca 
+de contexto.
+
+<P>
+
+<H3><A NAME="SECTION00641300000000000000">
+3.4.1.3 mmto_sync</A>
+</H3>
+A <I>mmto_sync</I> provê um mecanismo para a sincronização. Ela recebe
+como argumento o endereço de uma página virtual compartilhada e uma
+<I>flag</I> que determina qual ação deve ser tomada sobre esta página.
+Atualmente as duas <I>flags</I> suportadas são: 
+
+<P>
+
+<UL>
+<LI><TT>MMTO_UPDATE</TT>, que&nbsp; permite &nbsp;ao &nbsp;usuário &nbsp;decidir&nbsp; <I>quando</I> &nbsp;e <I>qual</I>
+&nbsp;página compartilhada os outros nós devem receber uma cópia atualizada. Quando 
+o usuário atualiza uma página, se o nó for a residência da página uma cópia
+atualizada é enviada para quem tiver cópia, caso contrário, é enviada primeiro
+uma cópia para a residência da página, o qual então reenvia para quem
+tiver cópia. 
+</LI>
+<LI><TT>MMTO_FREE</TT>, que possibilita a liberação física de uma página
+compartilhada de memória, ou seja, libera uma página residente em memória.
+Esta opção só tem efeito em páginas que o nó não for a residência.
+</LI>
+</UL>
+
+<P>
+
+<H2><A NAME="SECTION00642000000000000000">
+3.4.2 Falha de Página</A>
+</H2>
+Na inicialização é forçada uma falha de página para cada uma das páginas
+que o nó é a residência. Estas falhas de páginas são utilizadas para o nó 
+ter em memória as quais ele é a residência.
+O primeiro acesso às outras páginas compartilhadas resultam em 
+um pedido de página que é enviado à sua residência, a qual 
+então envia uma cópia para o nó
+que realizou o pedido e marca um bit em uma estrutura interna de MOMEMTO,
+indicando que aquele nó tem uma cópia.
+
+<P>
+Os nós se comunicam utilizando sockets TCP. Para diminuir o <I>overhead</I>
+do TCP/IP, uma conexão é estabelecida entre os nós na inicialização, ou
+seja, cada nó abre uma conexão com uma thread de kernel dos nós remotos e
+assim todos permanecem conectados entre si. O
+protocolo implementado por MOMEMTO é basicamente composto de mensagens de
+<I>pedido</I> e <I>resposta</I> que são enviadas sobre a rede TCP/IP. 
+Estas mensagens são utilizadas para pedir ou atualizar uma página remota.
+Para cada atualização realizada pela aplicação apenas 4 bytes são adicionados 
+pelo sistema, que são utilizados para informar qual página receberá os dados
+atualizados. O resto dos bytes trafegados são dados úteis da aplicação e é
+gerada apenas uma mensagem para esta operação. Por sua vez, na falha de
+página são utilizadas duas mensagens: uma com 4 bytes para especificar a
+página requisitada e outra para receber os dados referentes à ela.
+
+<P>
+Como todas as VMAs têm o mesmo tamanho, mas podem ter sido alocadas
+com endereços virtuais diferentes, os nós se comunicam
+utilizando o deslocamento (<I>offset</I>) dentro da VMA em vez do endereço 
+virtual da página.
+
+<P>
+
+<H2><A NAME="SECTION00643000000000000000">
+3.4.3 Consumo de Memória</A>
+</H2>
+MOMEMTO tem um baixo consumo de memória quando comparado com as estruturas
+de dados de memória virtual do kernel. Todas as estruturas requeridas pelo
+sistema são inicializadas quando a aplicação é executada e liberadas quando
+ela termina.
+
+<P>
+O sistema utiliza três principais estruturas de dados que são alocadas como
+vetores contíguos:
+
+<P>
+<DL COMPACT>
+<DT>-</DT>
+<DD><TT>home</TT> é um vetor de bytes onde o índice <IMG
+ WIDTH="11" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img23.png"
+ ALT="$i$"> tem 
+a residência para a página <IMG
+ WIDTH="11" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img23.png"
+ ALT="$i$">, o que permite implementar mecanismos
+genéricos para distribuição das residências;
+</DD>
+<DT>-</DT>
+<DD><TT>copy</TT> é um vetor de campos de bits, um para cada página que
+o nó é a residência. Cada bit do campo de bits indica se o nó
+correspondente tem ou não uma cópia da página;
+</DD>
+<DT>-</DT>
+<DD><TT>last</TT> indica qual nó acessou por último a página.
+</DD>
+</DL>
+
+<P>
+Deste modo, os gastos de memória em MOMEMTO são:
+
+<P>
+<DL COMPACT>
+<DT>-</DT>
+<DD>6 bytes por página da qual o nó é a residência;
+</DD>
+<DT>-</DT>
+<DD>1 byte para as outras páginas.
+</DD>
+</DL>
+
+<P>
+MOMEMTO não modifica a estrutura VMA do kernel.
+As estruturas de dados requeridas por MOMEMTO são alocadas quando a
+aplicação começa a executar e liberadas quando a aplicação termina e
+além disto, são locais ao módulo. Assim, MOMEMTO não adiciona nenhum 
+<I>overhead</I> na execução de aplicações que não o utilizam e nem
+para a execução do kernel.
+
+<P>
+
+<H2><A NAME="SECTION00644000000000000000">
+3.4.4 Barreira</A>
+</H2>
+Com o objetivo de oferecer sincronização, foi implementada uma barreira
+centralizada como uma biblioteca para a aplicação no nível de usuário.
+Esta barreira somente sincroniza a computação, ou seja, não implementa 
+consistência de memória. 
+Quando um nó alcança uma barreira ele envia uma mensagem de 4 bytes
+, com o número da barreira, para o gerente de barreira [<A
+ HREF="tese.html#culler">17</A>]. 
+O gerente espera por mensagens de todos os nós
+envolvidos e,  após receber as mensagens de todos os nós, envia uma
+mensagem também de 4 bytes liberando-os da barreira. Toda a comunicação
+realizada na barreira é através de sockets TCP.
+
+<P>
+
+<P>
+
+<H1><A NAME="SECTION00700000000000000000">
+4. Experimentos</A>
+</H1>
+
+<P>
+Com os experimentos realizados, espera-se avaliar o impacto do 
+protótipo do MOMEMTO. Entretanto, salientamos que uma comparação direta de outros 
+sistemas com MOMEMTO é difícil, visto que o sistema utiliza o paradigma de memória
+compartilhada mas, ao mesmo tempo, não garante consistência de memória.
+Para tentar realizar uma comparação substancial desta tese, comparamos 
+MOMEMTO com um software tradicional do paradigma de memória compartilhada
+(TreadMarks) e um software do paradigma de troca de mensagens (MPI).
+
+<P>
+
+<H1><A NAME="SECTION00710000000000000000">
+4.1 Ambiente de testes</A>
+</H1>
+Todos os testes foram realizados em um cluster de 8 nós, onde cada nó contém um 
+processador Pentium III de 650MHz. Cada nó possui 512 MBytes de memória RAM, 
+cache L2 de 256 KBytes e duas caches L1 (uma de instrução e outra de dados)
+com 16 KBytes cada. Os nós estão conectados por uma rede <EM>Fast Ethernet</EM> e
+cada nó tem uma interface de rede <EM>onboard Ethernet Pro 100</EM>.
+Utilizamos em nossos experimentos o sistema operacional Linux com o 
+kernel 2.4.17, TreadMarks versão 1.0.3.2 e MPI LAM 6.5.3.
+
+<P>
+
+<H1><A NAME="SECTION00720000000000000000">
+4.2 Aplicações</A>
+</H1>
+Para avaliar MOMEMTO escolhemos duas aplicações: 
+multiplicação de vetores e <EM>Integer Sort</EM> (IS), as quais são descritas e
+analisadas a seguir.
+
+<P>
+
+<H1><A NAME="SECTION00730000000000000000">
+4.3 Multiplicação de Vetores</A>
+</H1>
+Inicialmente escolhemos uma multiplicação de vetores (MV), onde 
+o elemento <IMG
+ WIDTH="11" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img23.png"
+ ALT="$i$"> de um vetor é multiplicado com o elemento <IMG
+ WIDTH="11" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img23.png"
+ ALT="$i$"> do outro,
+resultando em um vetor de mesmo tamanho. Esta aplicação foi escolhida
+devido ao fato de ter um padrão de acesso bem definido e de requerer uma grande
+quantidade de memória. A aplicação consiste de três vetores <IMG
+ WIDTH="92" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
+ SRC="img24.png"
+ ALT="$C = A * B$">,
+onde cada nó inicializa um vetor. As residências são atribuídas de forma
+estática e contígua, assim garantimos que cada nó será a residência de 
+um dos vetores, como demonstra a Figura <A HREF="tese.html#fig:mv_homes">4.1</A>.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:mv_homes"></A><A NAME="820"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figura:</STRONG>
+Disposição das residências</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<IMG
+ WIDTH="256" HEIGHT="202" ALIGN="BOTTOM" BORDER="0"
+ SRC="img25.png"
+ ALT="\includegraphics[scale=0.6]{application1.eps}">
+        
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+A computação do vetor <IMG
+ WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$C$">, ilustrada na Figura <A HREF="tese.html#fig:mv_dados">4.2</A>,
+é dividida igualmente entre três nós, onde  
+cada um calcula uma terça parte do vetor resultante.
+
+<P>
+
+<H2><A NAME="SECTION00731000000000000000">
+4.3.1 Resultados</A>
+</H2>
+Foram realizados dois experimentos. No primeiro experimento, chamado MV
+Pequeno, nós utilizamos 36.000 páginas compartilhadas (12.000 por vetor),
+o que representa um total de 141 MB de memória compartilhada. No segundo
+teste, chamado MV Grande, foram utilizadas 211.194 páginas compartilhadas 
+(70.398 por vetor), representando um total de 825 MB. Ressaltamos que esta 
+quantidade de memória é maior que a memória física disponível em 
+qualquer nó do cluster.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:mv_dados"></A><A NAME="829"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figura:</STRONG>
+Computação do vetor resultante</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<IMG
+ WIDTH="300" HEIGHT="217" ALIGN="BOTTOM" BORDER="0"
+ SRC="img27.png"
+ ALT="\includegraphics[scale=0.6]{application2.eps}">
+        
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+A Figura <A HREF="tese.html#fig:mmtovstmk">4.3</A> mostra o tempo total no teste MV Pequeno para 
+MOMEMTO e TreadMarks (TMK) [<A
+ HREF="tese.html#amza96treadmarks">7</A>]. Ambos sistemas utilizam 
+o mesmo algoritmo para realizar a multiplicação de vetores.
+Como pode-se observar, há uma melhora no tempo de execução da aplicação 
+de 48% para MOMEMTO quando comparado à versão em TMK. Esta melhora está
+diretamente relacionada com o número de falhas de página, chamadas de
+sistema e latência de interrupção em ambos sistemas. Como o mecanismo de
+memória compartilhada oferecido por MOMEMTO é implementado dentro do
+kernel, o número de trocas de contexto e a latência no recebimento de 
+interrupções é menor quando comparado a TreadMarks. Nós acreditamos que
+este ganho deve permanecer significativo mesmo quando MOMEMTO implementar
+um protocolo de consistência relaxada como o usado em TreadMarks.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:mmtovstmk"></A><A NAME="839"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figura 4.3:</STRONG>
+MOMEMTO x TMK</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<IMG
+ WIDTH="509" HEIGHT="390" ALIGN="BOTTOM" BORDER="0"
+ SRC="img28.png"
+ ALT="\includegraphics[]{mmto_tmk.eps}">
+
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+Falhas de páginas em MOMEMTO ocorrem sob demanda, ou seja, somente quando
+um nó acessar uma página do vetor que ele não seja a residência é que vai
+ocorrer a busca da página. Após o nó calcular todos os elementos desta
+página irá ocorrer a atualização da mesma. Deste modo, dentro do tempo de
+processamento, que foi de 9,96s, está o tempo gasto em falhas de páginas,
+atualizações e duas barreiras, as quais foram utilizadas para sincronizar
+a execução após os nós inicalizarem os seus vetores e após o cálculo do
+vetor resultante. Estes tempos são mostrados na Tabela <A HREF="tese.html#tab:small-times">4.1</A>. 
+O tempo gasto no cálculo do vetor foi de 0,55s.
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="848"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela:</STRONG>
+Tempo de processamento para MV Pequeno para cada nó</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">Número</TD>
+<TD ALIGN="CENTER">Total</TD>
+<TD ALIGN="CENTER">Rede</TD>
+<TD ALIGN="CENTER">Média</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Atualizações</TD>
+<TD ALIGN="CENTER">4000</TD>
+<TD ALIGN="CENTER">2,78s</TD>
+<TD ALIGN="CENTER">2,75s</TD>
+<TD ALIGN="CENTER">694 <IMG
+ WIDTH="16" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img29.png"
+ ALT="$\mu$">s</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Falhas de Páginas</TD>
+<TD ALIGN="CENTER">8000</TD>
+<TD ALIGN="CENTER">6,63s</TD>
+<TD ALIGN="CENTER">6,58s</TD>
+<TD ALIGN="CENTER">828 <IMG
+ WIDTH="16" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img29.png"
+ ALT="$\mu$">s</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Barreiras</TD>
+<TD ALIGN="CENTER">2</TD>
+<TD ALIGN="CENTER">0,0010s</TD>
+<TD ALIGN="CENTER">0,0010s</TD>
+<TD ALIGN="CENTER">500 <IMG
+ WIDTH="16" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img29.png"
+ ALT="$\mu$">s</TD>
+</TR>
+</TABLE>
+
+<A NAME="tab:small-times"></A>
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+O campo <I>Média</I> representa o tempo médio para cada operação.
+No total foram realizadas 4.000 atualizações de páginas (uma terça parte do
+vetor <IMG
+ WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$C$">) pelo nó que realizou o cálculo. O nó 3, que é a residência do 
+vetor <IMG
+ WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$C$">, não realizou atualização de página. O número total de falhas de
+páginas por nó foi de 8.000, ou seja, como cada nó realiza o cálculo de uma
+terça parte do vetor resultante, todos os nós tomaram falhas de páginas de
+uma terça parte dos dois vetores que eles não são a residência. A diferença
+entre o tempo <IMG
+ WIDTH="50" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img30.png"
+ ALT="$Total$"> e o de <IMG
+ WIDTH="46" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img31.png"
+ ALT="$Rede$"> foi o tempo gasto executando o código 
+de MOMEMTO. Assim, o tempo para
+atualização foi de 1% e para falha de página de 1,47% do tempo <IMG
+ WIDTH="50" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img30.png"
+ ALT="$Total$">.
+Estes tempos mostram que o <I>overhead</I> que MOMEMTO impõe é mínimo quando 
+comparado à latência da rede, a qual pode ser melhorada utilizando
+outras tecnologias de comunicação como Myrinet ou Giganet.
+
+<P>
+O tempo gasto na barreira foi um pouco elevado devido ao fato de cada nó
+quando chega em cada barreira abrir uma conexão TCP com o gerente. 
+Pode-se melhorar este tempo utilizando
+técnicas mais sofisticadas como discutido em outros trabalhos 
+[<A
+ HREF="tese.html#culler">17</A>].
+
+<P>
+Este primeiro experimento reforça nosso argumento de que o desempenho da
+aplicação pode ser melhorado significantemente através de protocolos mais
+específicos para manter a coerência de memória.
+
+<P>
+Em nosso segundo teste com multiplicação de vetores, nós estudamos se
+MOMEMTO poderia realmente trabalhar com uma grande quantidade de memória. O
+experimento requer 825 MB de memória compartilhada. TreadMarks não conseguiu
+executar com esta
+carga em nosso ambiente de teste e, por esta razão, apresentamos os
+resultados somente para MOMEMTO na Tabela <A HREF="tese.html#tab:large">4.2</A>. 
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="862"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela:</STRONG>
+Tempo de execução para MV Grande</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">Total</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Inicialização</TD>
+<TD ALIGN="CENTER">2,73s</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Processamento</TD>
+<TD ALIGN="CENTER">60,47s</TD>
+</TR>
+</TABLE>
+</DIV>
+
+<A NAME="tab:large"></A></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+O tempo total de execução para MOMEMTO foi de 63,2s para esta carga. Como
+no teste anterior, o tempo total de processamento inclui o tempo para
+atualizações, falhas de páginas e duas barreiras. Estes tempos são mostrados
+na Tabela <A HREF="tese.html#tab:ltimes">4.3</A>. 
+O tempo gasto realmente no cálculo do vetor foi de 5,35s e o restante 
+(55,12s) foram custos da paralelização.
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="871"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela 4.3:</STRONG>
+Tempo de processamento para MV Grande</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">Número</TD>
+<TD ALIGN="CENTER">Total</TD>
+<TD ALIGN="CENTER">Rede</TD>
+<TD ALIGN="CENTER">Média</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Atualizações</TD>
+<TD ALIGN="CENTER">23466</TD>
+<TD ALIGN="CENTER">16,34s</TD>
+<TD ALIGN="CENTER">16,22s</TD>
+<TD ALIGN="CENTER">696 <IMG
+ WIDTH="16" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img29.png"
+ ALT="$\mu$">s</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Falhas de Páginas</TD>
+<TD ALIGN="CENTER">46932</TD>
+<TD ALIGN="CENTER">38,78s</TD>
+<TD ALIGN="CENTER">38,15s</TD>
+<TD ALIGN="CENTER">826 <IMG
+ WIDTH="16" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img29.png"
+ ALT="$\mu$">s</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Barreiras</TD>
+<TD ALIGN="CENTER">2</TD>
+<TD ALIGN="CENTER">0,0012s</TD>
+<TD ALIGN="CENTER">0,0011s</TD>
+<TD ALIGN="CENTER">600 <IMG
+ WIDTH="16" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img29.png"
+ ALT="$\mu$">s</TD>
+</TR>
+</TABLE>
+
+<A NAME="tab:ltimes"></A>
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+Cada nó realizou 23.466 falhas de página (um terço do vetor <IMG
+ WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$C$">). Cada nó
+gerou 46.932 falhas de páginas, correspondente aos dois vetores para o qual o nó
+não era a residência. O tempo médio gasto em MOMEMTO foi <IMG
+ WIDTH="32" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img32.png"
+ ALT="$5,3$"> <IMG
+ WIDTH="16" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img29.png"
+ ALT="$\mu$">s
+para atualização e <IMG
+ WIDTH="41" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img33.png"
+ ALT="$13,3$"> <IMG
+ WIDTH="16" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img29.png"
+ ALT="$\mu$">s para falha de página.
+
+<P>
+Nestes experimentos preliminares, o protocolo simples de consistência
+utilizado por MOMEMTO permite à aplicação decidir sobre a política e o
+protoloco utilizado na atualização. Esta característica pode ter
+contribuído para o melhor desempenho do sistema quando comparado com
+TreadMarks. 
+
+<P>
+Com o intuito de avaliar o mecanismo em kernel oferecido por
+MOMEMTO, comparamos a mesma aplicação com uma implementação
+utilizando o paradigma de troca de mensagens. As Figuras <A HREF="tese.html#fig:mpi_small">4.4</A> 
+e <A HREF="tese.html#fig:mpi_large">4.5</A> mostram o tempo de execução para a multiplicação de 
+vetores com MOMEMTO e a mesma aplicação implementada em MPI[<A
+ HREF="tese.html#mpi">5</A>].
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:mpi_small"></A><A NAME="882"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figura 4.4:</STRONG>
+MOMEMTO x MPI para MV Pequeno</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<IMG
+ WIDTH="507" HEIGHT="390" ALIGN="BOTTOM" BORDER="0"
+ SRC="img34.png"
+ ALT="\includegraphics[]{mmto_mpi_small.eps}">
+
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:mpi_large"></A><A NAME="889"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figura 4.5:</STRONG>
+MOMEMTO x MPI para MV Grande</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<IMG
+ WIDTH="507" HEIGHT="390" ALIGN="BOTTOM" BORDER="0"
+ SRC="img35.png"
+ ALT="\includegraphics[]{mmto_mpi_large.eps}">
+
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+Como no teste anterior, em ambos sistemas cada nó calcula uma terça parte 
+do vetor <IMG
+ WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$C$">, cada nó é a residência de um vetor e o inicializa na execução. 
+Na versão em MPI, mensagens são utilizadas para distribuir as partes
+utilizadas por outros nós do vetor <IMG
+ WIDTH="19" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img36.png"
+ ALT="$A$"> e <IMG
+ WIDTH="20" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img37.png"
+ ALT="$B$">, ou seja, o nó 0 envia uma
+terça parte do seu vetor para o nó 1 e uma outra terça parte para o nó 2.
+O mesmo processo ocorre no nó 1 sobre o seu vetor, <IMG
+ WIDTH="20" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img37.png"
+ ALT="$B$">. No final, o
+nó que é a residência do vetor <IMG
+ WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$C$"> recebe mensagens com os resultados dos outros
+nós.
+
+<P>
+Na Figura <A HREF="tese.html#fig:mpi_small">4.4</A>, cada vetor tem 12.000 páginas (MV Pequeno). Embora
+MOMEMTO mostre um aumento de 3,5% no tempo de execução quando comparado
+com MPI, o tempo de processamento diminuiu em 7,5% com 
+MOMEMTO. A razão para o tempo gasto na inicialização ser maior com MOMEMTO
+é devido ao fato dele forçar uma falha de página na inicialização para cada
+uma que o nó é a residência.
+
+<P>
+No teste MV Grande, apresentado na Figura <A HREF="tese.html#fig:mpi_large">4.5</A>, onde cada vetor
+tem 70.398 páginas, o tempo de execução diminuiu 27% na versão com MOMEMTO.
+
+<P>
+Em geral, analisando o número de mensagens,
+MPI &nbsp;realizou &nbsp;menos &nbsp;trocas que MOMEMTO. No pior caso, MOMEMTO
+precisa de 3 vezes mais mensagens que MPI. Isto ocorre para uma página
+que o nó não é a residência e ele precisa acessar uma página do vetor <IMG
+ WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$C$">,
+sofrendo uma falha de página e atualizando a mesma
+após o cálculo. Falhas de página no MOMEMTO gastam 2 mensagens em modo kernel
+e a atualização é feita através de uma chamada de sistema e uma mensagem
+enviada também em modo kernel. A Tabela <A HREF="tese.html#tab:comm">4.4</A> mostra os tempos de
+comunicação com MOMEMTO e MPI. Este tempo no MOMEMTO é gasto
+realizando atualizações e falhas de páginas, enquanto que em MPI é 
+recebendo e enviando mensagens dos vetores <IMG
+ WIDTH="19" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img36.png"
+ ALT="$A$"> e <IMG
+ WIDTH="20" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img37.png"
+ ALT="$B$"> e, enviando e recebendo
+mensagens com o resultado do vetor <IMG
+ WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
+ SRC="img26.png"
+ ALT="$C$">.
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="900"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela:</STRONG>
+Tempo de comunicação</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">MV Pequeno</TD>
+<TD ALIGN="CENTER">MV Grande</TD>
+</TR>
+<TR><TD ALIGN="CENTER">MPI</TD>
+<TD ALIGN="CENTER">9,99s</TD>
+<TD ALIGN="CENTER">82,53s</TD>
+</TR>
+<TR><TD ALIGN="CENTER">MOMEMTO</TD>
+<TD ALIGN="CENTER">9,39s</TD>
+<TD ALIGN="CENTER">55,12s</TD>
+</TR>
+</TABLE>
+
+<A NAME="tab:comm"></A>
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+No teste MV Pequeno, MOMEMTO foi 6% mais rápido que MPI e no teste MV
+Grande reduziu o tempo de comunicação em 33% comparando com MPI.
+
+<P>
+Novamente, nós argumentamos que o melhor desempenho de MOMEMTO é
+relacionado com o baixo <I>overhead</I> de suas operações em kernel.
+MOMEMTO sofre menos trocas de contexto e tem a latência nas interrupções
+menor que a versão em MPI.
+
+<P>
+
+<H1><A NAME="SECTION00740000000000000000">
+4.4 IS - Integer Sort</A>
+</H1>
+A aplicação Integer Sort (IS) [<A
+ HREF="tese.html#bailey92nas">18</A>] ordena um vetor de N inteiros
+usando chaves no intervalo [0,Bmax] através da técnica <I>Bucket Sort</I>.
+As chaves são divididas igualmente entre os processadores do sistema. As
+principais estruturas de dados são um vetor de chaves e um vetor que indica
+a densidade das chaves a serem ordenadas. A computação é dividida em <IMG
+ WIDTH="22" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img22.png"
+ ALT="$N$">
+fases, onde <IMG
+ WIDTH="22" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
+ SRC="img22.png"
+ ALT="$N$"> é o número de processadores executando  a aplicação.
+
+<P>
+Na versão MPI foi utilizada a implementação do IS que vem com o 
+<I>NAS Parallel Benchmarks 2.3</I> [<A
+ HREF="tese.html#bailey92nas">18</A>]. Com TreadMarks
+foi utilizada a implementação distribuída do IS baseada em barreiras da 
+versão 1.0.3.2. A implementação em MOMEMTO foi baseada no algoritmo 
+utilizado na versão TreadMarks, pois os dois utilizam memória compartilhada.
+Foi necessário, entretanto, utilizar a chamada de sistema <IMG
+ WIDTH="101" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
+ SRC="img38.png"
+ ALT="$mmto\_sync$">
+para, quando necessário, realizar a coerência dos dados compartilhados.
+
+<P>
+Foram realizados testes com duas entradas para IS, CLASS A e CLASS B, como
+mostrado na Tabela <A HREF="tese.html#tab:class">4.5</A>.
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="920"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela 4.5:</STRONG>
+Entrada utilizada para o IS</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">CLASS A</TD>
+<TD ALIGN="CENTER">CLASS B</TD>
+</TR>
+<TR><TD ALIGN="CENTER"><IMG
+ WIDTH="71" HEIGHT="19" ALIGN="BOTTOM" BORDER="0"
+ SRC="img39.png"
+ ALT="$N=2^{23}$"></TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="71" HEIGHT="19" ALIGN="BOTTOM" BORDER="0"
+ SRC="img40.png"
+ ALT="$N=2^{25}$"></TD>
+</TR>
+<TR><TD ALIGN="CENTER"><IMG
+ WIDTH="106" HEIGHT="20" ALIGN="BOTTOM" BORDER="0"
+ SRC="img41.png"
+ ALT="$Bmax=2^{19}$"></TD>
+<TD ALIGN="CENTER"><IMG
+ WIDTH="106" HEIGHT="20" ALIGN="BOTTOM" BORDER="0"
+ SRC="img42.png"
+ ALT="$Bmax=2^{21}$"></TD>
+</TR>
+<TR><TD ALIGN="CENTER">10 iterações</TD>
+<TD ALIGN="CENTER">10 iterações</TD>
+</TR>
+</TABLE>
+
+<A NAME="tab:class"></A>
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+
+<H2><A NAME="SECTION00741000000000000000">
+4.4.1 CLASS A</A>
+</H2>
+A Figura <A HREF="tese.html#fig:mmto_mpi_tmk_A">4.6</A> mostra o tempo total de execução para as três
+implementações. A execução do IS CLASS A, utilizando o algoritmo sequencial que 
+acompanha o NAS foi de 14,11s.
+Utilizando MOMEMTO houve uma redução de 31% e 18% no tempo de execução
+em relação ao Tmk e MPI, respectivamente, em 2 nós.
+Por sua vez, com 4 nós a redução foi de 54% quando comparado a Tmk e
+19% a MPI. Finalmente, para 8 nós MOMEMTO reduziu em 79%
+o tempo de execução em relação a Tmk e 1,27% em comparação a MPI.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:mmto_mpi_tmk_A"></A><A NAME="930"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figura 4.6:</STRONG>
+MOMEMTO x TMK x MPI - Class A</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<IMG
+ WIDTH="517" HEIGHT="295" ALIGN="BOTTOM" BORDER="0"
+ SRC="img43.png"
+ ALT="\includegraphics[]{mmto_mpi_tmk_A.eps}">
+
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+
+<H3><A NAME="SECTION00741100000000000000">
+4.4.1.1 MOMEMTO</A>
+</H3> 
+Discutiremos primeiro o resultado para MOMEMTO.
+A Tabela <A HREF="tese.html#tab:mmto_bytes_A">4.6</A> mostra a quantidade de bytes e o número de
+mensagens gasto durante a execução da aplicação.
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="940"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela:</STRONG>
+Estatísticas do MOMEMTO - CLASS A</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">2 nós</TD>
+<TD ALIGN="CENTER">4 nós</TD>
+<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Número de mensagens</TD>
+<TD ALIGN="CENTER">3.584</TD>
+<TD ALIGN="CENTER">6.912</TD>
+<TD ALIGN="CENTER">11.648</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Bytes trafegados</TD>
+<TD ALIGN="CENTER">12MB</TD>
+<TD ALIGN="CENTER">21 MB</TD>
+<TD ALIGN="CENTER">31.5MB</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Tempo de comunicação</TD>
+<TD ALIGN="CENTER">1,42s</TD>
+<TD ALIGN="CENTER">2,81s</TD>
+<TD ALIGN="CENTER">4,80s</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+</TABLE>
+
+<A NAME="tab:mmto_bytes_A"></A>
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+O <I>Número de mensagens</I> e <I>Bytes trafegados</I> englobam as mensagens utilizadas 
+pelo sistema (<EM>overhead</EM>) e os dados úteis da aplicação. O tempo de comunicação foi o
+tempo gasto realizando barreiras, atualizações e falhas de páginas.
+A Tabela <A HREF="tese.html#tab:mmto_comm_A">4.7</A> detalha o tempo de comunicação.
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="953"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela:</STRONG>
+Comunicação no MOMEMTO - CLASS A</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">2 nós</TD>
+<TD ALIGN="CENTER">4 nós</TD>
+<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Número de atualizações</TD>
+<TD ALIGN="CENTER">2560</TD>
+<TD ALIGN="CENTER">2560</TD>
+<TD ALIGN="CENTER">2560</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Tempo em atualizações</TD>
+<TD ALIGN="CENTER">0,71s</TD>
+<TD ALIGN="CENTER">1,04s</TD>
+<TD ALIGN="CENTER">1,23s</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Número de falhas de páginas</TD>
+<TD ALIGN="CENTER">512</TD>
+<TD ALIGN="CENTER">1536</TD>
+<TD ALIGN="CENTER">3584</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Tempo gasto em falhas de páginas</TD>
+<TD ALIGN="CENTER">0,51s</TD>
+<TD ALIGN="CENTER">1,48s</TD>
+<TD ALIGN="CENTER">2,97s</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Tempo gasto em barreiras</TD>
+<TD ALIGN="CENTER">0,20s</TD>
+<TD ALIGN="CENTER">0,29s</TD>
+<TD ALIGN="CENTER">0,60s</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+</TABLE>
+
+<A NAME="tab:mmto_comm_A"></A>
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+O número de atualizações se mantém quando se aumenta o número de nós. Isto
+mostra um desbalanceamento do algoritmo da aplicação, visto que sempre o nó
+zero realiza mais processamento que os demais. Entretanto, o seu tempo
+aumenta, pois o nó zero tem que enviar as atualizações para mais nós.
+
+<P>
+O número de falhas de página aumenta de acordo com o número de nós, pois
+o número de páginas que cada nó será a residência diminui, gerando assim
+mais falhas de páginas para acessar a área compartilhada. O tempo gasto em
+barreira também sofre um aumento, o que era esperado, visto que o
+algoritmo utilizado não é escalável, pois cada
+nó abre uma conexão com o gerente quando chega à uma barreira.
+
+<P>
+Como MOMEMTO não impõe um modelo de consistência de memória, para cada
+atualização realizada pela aplicação apenas 4 bytes são adicionados pelo
+sistema, que são utilizados para informar qual página receberá os dados
+atualizados. O resto dos bytes trafegados são dados úteis da aplicação e é
+gerada apenas uma mensagem para esta operação. Por sua vez, na falha de
+página são utilizadas duas mensagens: uma com 4 bytes para especificar a
+página requisitada e outra para receber os dados referentes à ela.
+
+<P>
+
+<H3><A NAME="SECTION00741200000000000000">
+4.4.1.2 TreadMarks</A>
+</H3> 
+A Tabela <A HREF="tese.html#tab:tmk-A">4.8</A> demonstra as estatísticas para TreadMarks.
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="964"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela:</STRONG>
+Estatísticas para TreadMarks - CLASS A</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">2 nós</TD>
+<TD ALIGN="CENTER">4 nós</TD>
+<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Número de mensagens</TD>
+<TD ALIGN="CENTER">21.093</TD>
+<TD ALIGN="CENTER">84.451</TD>
+<TD ALIGN="CENTER">223.155</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Bytes trafegados</TD>
+<TD ALIGN="CENTER">41.1MB</TD>
+<TD ALIGN="CENTER">192.9MB</TD>
+<TD ALIGN="CENTER">733MB</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Falhas de Páginas</TD>
+<TD ALIGN="CENTER">5.632</TD>
+<TD ALIGN="CENTER">16.512</TD>
+<TD ALIGN="CENTER">45.760</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Diffs</TD>
+<TD ALIGN="CENTER">4.864</TD>
+<TD ALIGN="CENTER">15.232</TD>
+<TD ALIGN="CENTER">34.240</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Twins</TD>
+<TD ALIGN="CENTER">514</TD>
+<TD ALIGN="CENTER">617</TD>
+<TD ALIGN="CENTER">585</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+</TABLE>
+
+<A NAME="tab:tmk-A"></A>
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+Como podemos observar, o número de mensagens e a quantidade de bytes
+trafegados cresce vertiginosamente quando aumentamos o número de nós.
+Este comportamento é devido aos efeitos do protocolo de coerência de
+Tmk que, quando aumenta o número de nós, aumenta a quantidade de
+falhas de página e <I>diffs</I> gastos pelo sistema.
+
+<P>
+
+<H3><A NAME="SECTION00741300000000000000">
+4.4.1.3 MPI</A>
+</H3> 
+Como demonstra a Tabela <A HREF="tese.html#tab:mpi-A">4.9</A>, quando aumentamos o número de nós
+a aplicação transfere a mesma soma de bytes, mas utiliza mais mensagens.
+O tempo de processamento e comunicação também é diminuído, mostrando um
+balanceamento da aplicação.
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="976"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela:</STRONG>
+Estatísticas para o  MPI - CLASS A</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">2 nós</TD>
+<TD ALIGN="CENTER">4 nós</TD>
+<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Tempo de processamento</TD>
+<TD ALIGN="CENTER">7,22s</TD>
+<TD ALIGN="CENTER">3,63s</TD>
+<TD ALIGN="CENTER">1,99s</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Tempo de comunicação</TD>
+<TD ALIGN="CENTER">10,10s</TD>
+<TD ALIGN="CENTER">7,11s</TD>
+<TD ALIGN="CENTER">4,27s</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Bytes trafegados</TD>
+<TD ALIGN="CENTER">171MB</TD>
+<TD ALIGN="CENTER">171MB</TD>
+<TD ALIGN="CENTER">171MB</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Número de mensagens</TD>
+<TD ALIGN="CENTER">110</TD>
+<TD ALIGN="CENTER">484</TD>
+<TD ALIGN="CENTER">2.024</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+</TABLE>
+
+<A NAME="tab:mpi-A"></A>
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+
+<H3><A NAME="SECTION00741400000000000000">
+4.4.1.4 Discussão</A>
+</H3> 
+Como podemos observar, MOMEMTO reduziu em média 89,86% o número de
+mensagens em relação a Tmk. Está redução ocorreu basicamente devido a
+MOMEMTO não impor um modelo de consistência e deixar o mesmo a cargo do
+programador. Em Tmk, para 2 nós, foram gastas 4.864 mensagens em
+<I>diffs</I> e 5.632 em
+falhas de página, enquanto MOMEMTO não realizou nenhum <I>diff</I> e foram
+geradas apenas 512 falhas de páginas, visto que, após o primeiro acesso o nó
+manteve a página em memória e não ocorreram mais falhas a ela. Outro ponto 
+a salientar é que o padrão da aplicação é único escritor (<EM>single-writer</EM>) 
+enquanto Tmk é múltiplos escritores (<EM>multiple-writer</EM>). Tmk tem um alto
+<EM>overhead</EM> para permitir múltiplos escritores para esta aplicação.
+
+<P>
+Quando comparamos nosso sistema com MPI, notamos que MPI transfere mais
+dados e utiliza menos mensagens. Como o algoritmo das duas implementações
+são bem distintos fica difícil uma comparação mais profunda sobre ambos.
+Entretanto, podemos observar que o mesmo algoritmo de Tmk quando
+utilizado com MOMEMTO deixa os tempos competitivos com MPI e
+sinaliza que MOMEMTO pode obter resultados competitivos a MPI.
+
+<P>
+
+<H2><A NAME="SECTION00742000000000000000">
+4.4.2 CLASS B</A>
+</H2>
+A Figura <A HREF="tese.html#fig:mmto_mpi_tmk_B">4.7</A> mostra os tempos de execucão para MOMEMTO, Tmk e MPI
+rodando a aplicação IS para 2, 4 e 8 nós.
+A execução do IS CLASS B utilizando o algoritmo sequencial distribuído
+junto com o NAS foi de 66,84s.
+
+<P>
+
+<P></P>
+<DIV ALIGN="CENTER"><A NAME="fig:mmto_mpi_tmk_B"></A><A NAME="992"></A>
+<TABLE>
+<CAPTION ALIGN="BOTTOM"><STRONG>Figura 4.7:</STRONG>
+MOMEMTO x TMK x MPI - Class B</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<IMG
+ WIDTH="516" HEIGHT="295" ALIGN="BOTTOM" BORDER="0"
+ SRC="img44.png"
+ ALT="\includegraphics[]{mmto_mpi_tmk_B.eps}">
+
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P>
+
+<P>
+
+<H3><A NAME="SECTION00742100000000000000">
+4.4.2.1 MOMEMTO</A>
+</H3>
+A Tabela <A HREF="tese.html#tab:mmto_bytes_B">4.10</A> apresenta o número de mensagens geradas por
+MOMEMTO e a quantidade de bytes trafegados.
+Aumentando o número de nós, cresce o número de mensagens geradas pelo
+sistema e a quantidade de bytes trafegados. Este comportamento está
+relacionado ao aumento do número de falhas de páginas no sistema. Cada
+nó foi a residência de menos páginas quando aumentamos o número de nós,
+gerando assim mais mensagens e bytes trafegados pelo sistema.
+Na Tabela <A HREF="tese.html#tab:mmto_comm_B">4.11</A>, são detalhados estes valores.
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="1003"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela:</STRONG>
+Estatísticas do MOMEMTO - CLASS B</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">2 nós</TD>
+<TD ALIGN="CENTER">4 nós</TD>
+<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Número de mensagens</TD>
+<TD ALIGN="CENTER">14.336</TD>
+<TD ALIGN="CENTER">17.408</TD>
+<TD ALIGN="CENTER">31.232</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Bytes trafegados</TD>
+<TD ALIGN="CENTER">48MB</TD>
+<TD ALIGN="CENTER">88MB</TD>
+<TD ALIGN="CENTER">132MB</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+</TABLE>
+
+<A NAME="tab:mmto_bytes_B"></A>
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="1012"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela:</STRONG>
+Comunicação no MOMEMTO - CLASS B</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">2 nós</TD>
+<TD ALIGN="CENTER">4 nós</TD>
+<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Tempo em atualizações</TD>
+<TD ALIGN="CENTER">3,08s</TD>
+<TD ALIGN="CENTER">4,68s</TD>
+<TD ALIGN="CENTER">5,48s</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Número de falhas de páginas</TD>
+<TD ALIGN="CENTER">2.048</TD>
+<TD ALIGN="CENTER">6.144</TD>
+<TD ALIGN="CENTER">14.336</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Tempo gasto em falhas de páginas</TD>
+<TD ALIGN="CENTER">2,08s</TD>
+<TD ALIGN="CENTER">5,74s</TD>
+<TD ALIGN="CENTER">11,93s</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Tempo gasto em barreiras</TD>
+<TD ALIGN="CENTER">0,04s</TD>
+<TD ALIGN="CENTER">0,09s</TD>
+<TD ALIGN="CENTER">0,74s</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+</TABLE>
+
+<A NAME="tab:mmto_comm_B"></A>
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+O aumento no tempo de barreira é devido ao fato do sistema a cada barreira
+abrir uma conexão com o gerente, e quando aumentamos o número de nós
+geramos mais mensagens. Sabemos que este algoritmo não é escalável e pode
+ser melhorado utilizando outros métodos descritos na literatura.
+
+<P>
+
+<H3><A NAME="SECTION00742200000000000000">
+4.4.2.2 TreadMarks</A>
+</H3> 
+A Tabela <A HREF="tese.html#tab:tmk-B">4.12</A> mostra as estatísticas para TreadMarks.
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="1023"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela:</STRONG>
+Estatísticas para TreadMarks - CLASS B</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">2 nós</TD>
+<TD ALIGN="CENTER">4 nós</TD>
+<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Número de mensagens</TD>
+<TD ALIGN="CENTER">84.069</TD>
+<TD ALIGN="CENTER">292.383</TD>
+<TD ALIGN="CENTER">705.373</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Bytes trafegados</TD>
+<TD ALIGN="CENTER">164MB</TD>
+<TD ALIGN="CENTER">571MB</TD>
+<TD ALIGN="CENTER">1375MB</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Falhas de Páginas</TD>
+<TD ALIGN="CENTER">22.528</TD>
+<TD ALIGN="CENTER">105.472</TD>
+<TD ALIGN="CENTER">269.824</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Diffs</TD>
+<TD ALIGN="CENTER">19.456</TD>
+<TD ALIGN="CENTER">40.448</TD>
+<TD ALIGN="CENTER">81.664</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Twins</TD>
+<TD ALIGN="CENTER">2.053</TD>
+<TD ALIGN="CENTER">2.359</TD>
+<TD ALIGN="CENTER">2.168</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+</TABLE>
+
+<A NAME="tab:tmk-B"></A>
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+Como podemos observar, Tmk não tem um bom desempenho quando aumentamos o
+número de nós. O principal problema está no número de <EM>diffs</EM>, falhas de
+páginas e a quantidade de bytes trafegados. Do total
+de bytes transmitidos em 8 nós (1375 MB), 4 MB são dados de Tmk, ou seja, 
+informações para manter a coerência dos dados da aplicação e dados internos.
+
+<P>
+
+<H3><A NAME="SECTION00742300000000000000">
+4.4.2.3 MPI</A>
+</H3>
+Na Tabela <A HREF="tese.html#tab:mpi-B">4.13</A> são demonstrados os tempos relativos à execução
+de MPI.
+
+<P>
+<BR><P></P>
+<DIV ALIGN="CENTER"><A NAME="1035"></A>
+<TABLE>
+<CAPTION><STRONG>Tabela:</STRONG>
+Estatísticas para o  MPI - CLASS B</CAPTION>
+<TR><TD><DIV ALIGN="CENTER">
+<TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
+<TR><TD ALIGN="CENTER">&nbsp;</TD>
+<TD ALIGN="CENTER">2 nós</TD>
+<TD ALIGN="CENTER">4 nós</TD>
+<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Tempo de processamento</TD>
+<TD ALIGN="CENTER">28,87s</TD>
+<TD ALIGN="CENTER">14,54s</TD>
+<TD ALIGN="CENTER">7,89s</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Tempo de comunicação</TD>
+<TD ALIGN="CENTER">42,5s</TD>
+<TD ALIGN="CENTER">28,36s</TD>
+<TD ALIGN="CENTER">17,11s</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Bytes trafegados</TD>
+<TD ALIGN="CENTER">469MB</TD>
+<TD ALIGN="CENTER">469MB</TD>
+<TD ALIGN="CENTER">469MB</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+<TR><TD ALIGN="CENTER">Número de mensagens</TD>
+<TD ALIGN="CENTER">110</TD>
+<TD ALIGN="CENTER">484</TD>
+<TD ALIGN="CENTER">2.024</TD>
+<TD ALIGN="CENTER">&nbsp;</TD>
+</TR>
+</TABLE>
+
+<A NAME="tab:mpi-B"></A>
+</DIV></TD></TR>
+</TABLE>
+</DIV><P></P><BR>
+
+<P>
+O número de mensagens aumentou, como esperado, quando aumentou
+o número de nós. Entretanto, a quantidade de bytes trafegados permaneceu
+a mesma.
+
+<P>
+
+<H3><A NAME="SECTION00742400000000000000">
+4.4.2.4 Discussão</A>
+</H3>
+MOMEMTO reduziu o tempo de execução quando comparando a Tmk em 
+23%, 43% e 63% para 2, 4 e 8 nós respectivamente. Novamente podemos
+observar que a quantidade de bytes e o número de mensagens em MOMEMTO é
+bastante inferior a Tmk. MOMEMTO não utiliza <I>diff</I> ou <I>twin</I>, e
+deixa a consistência a cargo do programador. Deste modo, oferece mais
+flexibilidade ao programador e abre espaço para otimizações.
+Com esta avaliação preliminar, podemos concluir que MOMEMTO consegue 
+agregar a memória dos nós no cluster de forma eficiente, permitindo à aplicação 
+rodar com uma grande quantidade de memória compartilhada e melhorar sua execução
+através de primitivas básicas de sincronização com baixo <I>overhead</I>.
+
+<P>
+
+<H1><A NAME="SECTION00800000000000000000">
+5. Trabalhos Relacionados</A>
+</H1>
+Diversos estudos têm examinado métodos para usar a memória remota em um
+cluster. Aplicações comuns são o uso da rede como memória para <I>swap</I>
+e sistemas de memória compartilhada distribuída que provêem
+uma abstração de memória compartilhada sobre a rede. 
+Trabalhos relacionados a estas duas técnicas serão descritos a seguir.
+
+<P>
+
+<H1><A NAME="SECTION00810000000000000000">
+5.1 <I>Swap</I> Sobre a Rede</A>
+</H1>
+O GMS [<A
+ HREF="tese.html#GMS">21</A>] (<I>Global Memory Service</I>) realiza um gerenciamento de memória 
+distribuído no cluster. Este sistema adiciona em cada nó uma área de memória global, 
+onde esta cresce ou diminui de acordo com a carga do nó. A idéia básica é prover 
+<I>swap</I> sobre a rede para as aplicações e assim eliminar a maioria dos acessos ao 
+disco. Ele utiliza nós ociosos para receber páginas de nós muito ativos.
+Entretanto, ele não utiliza informações sobre a aplicação para fazer a política de 
+substituição e não tenta otimizar a localização de páginas compartilhadas.
+Ele difere da nossa proposta pois não existe o compartilhamento de dados
+entre os nós que executam a aplicação.
+
+<P>
+
+<H1><A NAME="SECTION00820000000000000000">
+5.2 Memória Compartilhada Distribuída</A>
+</H1>
+Cashmere-VLM [<A
+ HREF="tese.html#Cashmere-VLM">19</A>] é um software DSM que realiza <I>swap</I> sobre a 
+rede. Ele procura aumentar a área compartilhada da aplicação liberando memória do 
+nó quando ele está sobrecarregado, ou seja, libera páginas de um nó levando em 
+consideração as cópias que existem nos outros nós do cluster. Cashmere-VLM
+é implementado no nível do usuário e utiliza um modelo de consistência
+fixo. Uma característica interessante de Cashmere-VLM é que ele permite a
+uma página trocar de <I>home</I> dinamicamente.
+
+<P>
+O trabalho relacionado mais próximo ao nosso é JIAJIA [<A
+ HREF="tese.html#JIAJIA">23</A>], que é um 
+software DSM onde a memória física dos computadores são combinadas em um grande 
+espaço compartilhado. Este sistema utiliza um protocolo de coerência baseado em
+<I>locks</I>. Novamente, MOMEMTO difere deste trabalho no fato que nosso
+sistema compartilha páginas dentro do kernel e não força um protocolo de
+coerência, permitindo mais flexibilidade para a aplicação.
+
+<P>
+
+<H1><A NAME="SECTION00900000000000000000">
+6. Conclusões</A>
+</H1>
+Nesta tese foi apresentado o sistema MOMEMTO (<EM>MOre MEMory Than
+Others</EM>), um novo conjunto de mecanismos 
+de kernel &nbsp;que &nbsp;suportam &nbsp;memória &nbsp;compartilhada &nbsp;global nos clusters.
+MOMEMTO &nbsp;foi &nbsp;concebido &nbsp;para &nbsp;oferecer
+mais &nbsp;flexibilidade em &nbsp;um &nbsp;sistema de memória compartilhada e para 
+explorar todas as memórias distribuídas dos nós do cluster.
+
+<P>
+Oferecendo primitivas básicas de sincronização, MOMEMTO permite a aplicação
+ter um maior controle sobre o uso de sua memória e abre espaço para
+otimizações feitas especificamente para cada aplicação.
+
+<P>
+MOMEMTO mostrou um baixo <I>overhead</I> de execução em nossos experimentos
+e pode realmente executar de maneira satisfatória para
+aplicações que requeiram uma grande quantidade de memória compartilhada,
+introduzindo baixo <I>overhead</I> no sistema de gerenciamento de memória
+virtual no kernel. É necessário, entretanto, estender significativamente o
+escopo dos experimentos para avaliar melhor o impacto de MOMEMTO sobre 
+diferentes tipos de aplicações.
+
+<P>
+Em trabalhos futuros espera-se analisar o impacto da utilização de vários
+modelos de consistência de memória para determinadas classes de aplicações,
+além de realizar testes do sistema com diferentes classes de aplicações.
+
+<P>
+
+<H2><A NAME="SECTION001000000000000000000">
+Refer&ecirc;ncias Bibliogr&aacute;ficas</A>
+</H2><DL COMPACT><DD><P></P><DT><A NAME="mvia">1</A>
+<DD>
+``NERSC. M-VIA''.
+<BR>http://www.nersc.gov/research/FTG/via.
+
+<P></P><DT><A NAME="cluster3">2</A>
+<DD>
+``Rocketcalc''.
+<BR>http://www.rocketcalc.com.
+
+<P></P><DT><A NAME="cluster1">3</A>
+<DD>
+``NCSA Urbana-Champaign''.
+<BR>http://www.ncsa.uiuc.edu, 2001.
+
+<P></P><DT><A NAME="cluster2">4</A>
+<DD>
+``CBRC - Tsukuba Advanced Computing Center - TACC/AIST Tsukuba''.
+<BR>http://www.cbrc.jp/magi/, 2001.
+
+<P></P><DT><A NAME="mpi">5</A>
+<DD>
+``Message Passing Interface Forum''.
+<BR>http://www.mpi-forum.org.
+
+<P></P><DT><A NAME="ldd">6</A>
+<DD>
+Alessandro Rubini and Jonathan Corbet.
+<BR><EM>Linux Device Drivers</EM>.
+<BR>O'Reilly &amp; Associates, 2nd ed., June 2001.
+
+<P></P><DT><A NAME="amza96treadmarks">7</A>
+<DD>
+Amza,&nbsp;C., Cox,&nbsp;A.&nbsp;L., Dwarkadas,&nbsp;S., Keleher,&nbsp;P., Lu,&nbsp;H., Rajamony,&nbsp;R., Yu,&nbsp;W.,
+  Zwaenepoel,&nbsp;W.
+<BR>``TreadMarks: Shared Memory Computing on Networks of
+  Workstations''.
+<BR><EM>IEEE Computer</EM>, v.&nbsp;29, n.&nbsp;2, pp. 18-28, 1996.
+
+<P></P><DT><A NAME="amza97software">8</A>
+<DD>
+Amza,&nbsp;C., Cox,&nbsp;A.&nbsp;L., Dwarkadas,&nbsp;S., Zwaenepoel,&nbsp;W.
+<BR>``Software DSM Protocols that Adapt between Single Writer and
+  Multiple Writer''.
+<BR>In: <EM>Proc. of the 3rd IEEE Symp. on High-Performance Computer
+  Architecture (HPCA-3)</EM>, pp. 261-271, 1997.
+
+<P></P><DT><A NAME="bailey91nas">9</A>
+<DD>
+Bailey,&nbsp;D.&nbsp;H., Barszcz,&nbsp;E., Barton,&nbsp;J.&nbsp;T., Browning,&nbsp;D.&nbsp;S., Carter,&nbsp;R.&nbsp;L.,
+  Dagum,&nbsp;D., Fatoohi,&nbsp;R.&nbsp;A., Frederickson,&nbsp;P.&nbsp;O., Lasinski,&nbsp;T.&nbsp;A.,
+  Schreiber,&nbsp;R.&nbsp;S., Simon,&nbsp;H.&nbsp;D., Venkatakrishnan,&nbsp;V., Weeratunga,&nbsp;S.&nbsp;K.
+<BR>``The NAS Parallel Benchmarks''.
+<BR><EM>The International Journal of Supercomputer Applications</EM>, v.&nbsp;5,
+  n.&nbsp;3, pp. 63-73, Fall 1991.
+
+<P></P><DT><A NAME="bal92orca">10</A>
+<DD>
+Bal,&nbsp;Heri&nbsp;E., Kaashoek,&nbsp;M.&nbsp;Frans, Tanenbaum,&nbsp;Andrew&nbsp;S.
+<BR>``Orca: a language for parallel programming of distributed
+  systems''.
+<BR><EM>IEEE Transactions on Software Engineering</EM>, v.&nbsp;18, n.&nbsp;3, pp.
+  190-205, 1992.
+
+<P></P><DT><A NAME="brian91midway">11</A>
+<DD>
+Bershad,&nbsp;Brian&nbsp;N., Zekauskas,&nbsp;Matthew&nbsp;J.
+<BR><EM>Midway: Shared Memory Parallel Programming with Entry
+  Consistency for Distributed Memory Multiprocessors</EM>.
+<BR>Technical Report CMU-CS-91-170, Pittsburgh, PA (USA), 1991.
+
+<P></P><DT><A NAME="bianchini96hiding">12</A>
+<DD>
+Bianchini,&nbsp;R., Kontothanassis,&nbsp;L.&nbsp;I., Pinto,&nbsp;R., De Maria,&nbsp;M., Abud,&nbsp;M.,
+  Amorim,&nbsp;C.&nbsp;L.
+<BR>``Hiding Communication Latency and Coherence Overhead in Software
+  DSMs''.
+<BR>In: <EM>Proc. of the 7th Symp. on Architectural Support for
+  Programming Languages and Operating Systems (ASPLOSVII)</EM>, pp. 198-209,
+  1996.
+
+<P></P><DT><A NAME="bianchini96categorizing">13</A>
+<DD>
+Bianchini,&nbsp;R., LeBlanc,&nbsp;T., Veenstra,&nbsp;J.
+<BR>``Categorizing Network Traffic in Update-Based Protocols on Scalable
+  Multiprocessors''.
+<BR>In: <EM>In Proceedings of the International Parallel Processing
+  Symposium</EM>, April 1996.
+
+<P></P><DT><A NAME="google">14</A>
+<DD>
+Brin,&nbsp;Sergey, Page,&nbsp;Lawrence.
+<BR>``The anatomy of a large-scale hypertextual Web search engine''.
+<BR><EM>Computer Networks and ISDN Systems</EM>, v.&nbsp;30, n. 1-7, pp.
+  107-117, 1998.
+
+<P></P><DT><A NAME="cox99performance">15</A>
+<DD>
+Cox,&nbsp;A., de Lara,&nbsp;E., Hu,&nbsp;W. Zwaenepoel Y.&nbsp;C.
+<BR>``A Performance Comparison of Homeless and Home-Based Lazy Release
+  Consistency Protocols for Software Shared Memory''.
+<BR>In: <EM>Proc. of the 5th IEEE Symp. on High-Performance Computer
+  Architecture (HPCA-5)</EM>, 1999.
+
+<P></P><DT><A NAME="livro_kernel">16</A>
+<DD>
+Daniel P. Bovet, Marco Cesati.
+<BR><EM>Understanding the Linux Kernel</EM>.
+<BR>O'Reilly &amp; Associates, 2nd ed., December 2002.
+
+<P></P><DT><A NAME="culler">17</A>
+<DD>
+David E.&nbsp;Culler,&nbsp;Anoop&nbsp;Gupta, Jaswinder Pal&nbsp;Singh.
+<BR><EM>Parallel Computer Architecture: A Hardware/Software Approach</EM>.
+<BR>Morgan Kaufmann Publishers, August 1998.
+
+<P></P><DT><A NAME="bailey92nas">18</A>
+<DD>
+David H. Bailey and Leonardo Dagum and E. Barszcz and Horst D. Simon.
+<BR>``NAS Parallel Benchmark Results''.
+<BR>In: <EM>Supercomputing</EM>, pp. 386-393, 1992.
+
+<P></P><DT><A NAME="Cashmere-VLM">19</A>
+<DD>
+Dwarkadas,&nbsp;S., Hardavellas,&nbsp;N., Kontothanassis,&nbsp;L., Nikhil,&nbsp;R., Stets,&nbsp;R.
+<BR>``Cashmere-VLM: Remote Memory Paging for Software Distributed Shared
+  Memory''.
+<BR>In: <EM>Proc., IPPS</EM>, April 1999.
+
+<P></P><DT><A NAME="engler95exokernel">20</A>
+<DD>
+Engler,&nbsp;Dawson&nbsp;R., Kaashoek,&nbsp;M.&nbsp;Frans, O'Toole,&nbsp;James.
+<BR>``Exokernel: An Operating System Architecture for Application-Level
+  Resource Management''.
+<BR>In: <EM>Symposium on Operating Systems Principles</EM>, pp. 251-266,
+  1995.
+
+<P></P><DT><A NAME="GMS">21</A>
+<DD>
+Feely,&nbsp;Michael&nbsp;J., Morgan,&nbsp;William&nbsp;E., Pighin,&nbsp;Frederic&nbsp;H., Karlin,&nbsp;Anna&nbsp;R.,
+  Levy,&nbsp;Henry&nbsp;M., Tekkath,&nbsp;Chandramohan&nbsp;A.
+<BR>``Implementing Global Memory Management in a Workstation Cluster''.
+<BR>In: <EM>Proceedings of the 15th Symposium on Operating Systems
+  Principles</EM>, pp. 201-212, December 1995.
+
+<P></P><DT><A NAME="pvm">22</A>
+<DD>
+Geist,&nbsp;G.&nbsp;A., Sunderam,&nbsp;V.&nbsp;S.
+<BR>``Network-based Concurrent Computing on the PVM System''.
+<BR><EM>Concurrency: practice and experience</EM>, v.&nbsp;4, n.&nbsp;4, pp. 293-312
+  (or 293-311??), 1992.
+
+<P></P><DT><A NAME="JIAJIA">23</A>
+<DD>
+Hu,&nbsp;Weiwu, Shi,&nbsp;Weisong, Tang,&nbsp;Zhimin.
+<BR>``JIAJIA: An SVM System Based on A New Cache Coherence Protocol''.
+<BR>In: <EM>In Proceedings of the High Performance Computing and
+  Networking (HPCN'99)</EM>, pp. 463-472, April 1999.
+
+<P></P><DT><A NAME="iftode99shared">24</A>
+<DD>
+Iftode,&nbsp;L., Singh,&nbsp;J.&nbsp;P.
+<BR>``Shared Virtual Memory: Progress and Challenges''.
+<BR><EM>Proc. of the IEEE, Special Issue on Distributed Shared Memory</EM>,
+  v.&nbsp;87, n.&nbsp;3, pp. 498-507, 1999.
+
+<P></P><DT><A NAME="iftode96scope">25</A>
+<DD>
+Iftode,&nbsp;L., Singh,&nbsp;J.&nbsp;P., Li,&nbsp;K.
+<BR>``Scope Consistency: A Bridge between Release Consistency and
+  Entry Consistency''.
+<BR>In: <EM>Proc. of the 8th ACM Annual Symp. on Parallel Algorithms
+  and Architectures (SPAA'96)</EM>, pp. 277-287, 1996.
+
+<P></P><DT><A NAME="karlsson97effectiveness">26</A>
+<DD>
+Karlsson,&nbsp;Magnus, Stenstr&#246;m,&nbsp;Per.
+<BR>``Effectiveness of Dynamic Prefetching in Multiple-Writer
+  Distributed Virtual Shared-Memory Systems''.
+<BR><EM>Journal of Parallel and Distributed Computing</EM>, v.&nbsp;43, n.&nbsp;2, pp.
+  79-93, 1997.
+
+<P></P><DT><A NAME="keleher:1992:lrc">27</A>
+<DD>
+Keleher,&nbsp;Pete, Cox,&nbsp;Alan&nbsp;L., Zwaenepoel,&nbsp;Willy.
+<BR>``Lazy Release Consistency for Software Distributed Shared
+  Memory''.
+<BR>In: <EM>Proc. of the 19th Annual Int'l Symp. on Computer
+  Architecture (ISCA'92)</EM>, pp. 13-21, 1992.
+
+<P></P><DT><A NAME="Li86">28</A>
+<DD>
+Li,&nbsp;K., Hudak,&nbsp;P.
+<BR>``Memory Coherence in Shared Virtual Memory Systems''.
+<BR>In: <EM>PODC86</EM>, pp. 229 - 239, August 1986.
+
+<P></P><DT><A NAME="kli">29</A>
+<DD>
+Li,&nbsp;K., Hudak,&nbsp;P.
+<BR>``Memory Coherence in Shared Virtual Memory Systems''.
+<BR>In: <EM>ACM Transactions on Computer Systems</EM>, pp. 321-359,
+  November 1989.
+
+<P></P><DT><A NAME="bsd">30</A>
+<DD>
+Marshall Kirk McKusick, Keith Bostic, Michael J. Karels, John S. Quarterman.
+<BR><EM>The Design and Implementation of the 4.4BSD Operating System</EM>.
+<BR>Addison Wesley Professional, 1996.
+
+<P></P><DT><A NAME="monnerat98efficiently">31</A>
+<DD>
+Monnerat,&nbsp;L.&nbsp;R., Bianchini,&nbsp;R.
+<BR>``Efficiently Adapting to Sharing Patterns in Software DSMs''.
+<BR>In: <EM>Proc. of the 4th IEEE Symp. on High-Performance Computer
+  Architecture (HPCA-4)</EM>, 1998.
+
+<P></P><DT><A NAME="adsm">32</A>
+<DD>
+Monnerat.,&nbsp;L.R.R.
+<BR>``Adaptação Eficiente a Padrões de Compartilhamento em Software
+  DSMs.''.
+<BR><EM>Tese de Mestrado, COPPE/UFRJ</EM>, Dezembro 1997.
+
+<P></P><DT><A NAME="mowry98comparative">33</A>
+<DD>
+Mowry,&nbsp;T.&nbsp;C., Chan,&nbsp;C., Lo,&nbsp;A.
+<BR>``Comparative Evaluation of Latency Tolerance Techniques for
+  Software Distributed Shared Memory''.
+<BR>In: <EM>Proc. of the 4th IEEE Symp. on High-Performance Computer
+  Architecture (HPCA-4)</EM>, pp. 300-311, 1998.
+
+<P></P><DT><A NAME="raquel">34</A>
+<DD>
+Pinto,&nbsp;R.
+<BR><EM>Estratégias de Software e Hardware para Otimização de Sistemas
+  de Memória Compartilhada Distribuída</EM>.
+<BR>PhD thesis, Federal University of Rio de Janeiro, Brazil, December
+  2001.
+
+<P></P><DT><A NAME="sge">35</A>
+<DD>
+Sun Microsystems Inc.
+<BR>``SGE''.
+<BR>http://wwws.sun.com/software/gridware.
+
+<P></P><DT><A NAME="trevisan">36</A>
+<DD>
+Trevisan,&nbsp;Thobias&nbsp;S., Costa,&nbsp;Vitor&nbsp;S., Whately,&nbsp;L., , Amorim,&nbsp;C.&nbsp;L.
+<BR>``Distributed Shared Memory in Kernel Mode''.
+<BR>In: <EM>Proceedings of the 14th Symposium on Computer Architecture
+  and High-Performance Computing (SBAC-PAD)</EM>, pp. 159 - 166, October 2002.
+
+<P></P><DT><A NAME="unix">37</A>
+<DD>
+Uresh Vahalia .
+<BR><EM>UNIX Internals: The New Frontiers</EM>.
+<BR>Prentice Hall, October 1995.
+
+<P></P><DT><A NAME="pbs">38</A>
+<DD>
+Veridian Systems.
+<BR>``OpenPBS''.
+<BR>http://www.openpbs.org.
+
+<P></P><DT><A NAME="whately">39</A>
+<DD>
+Whately,&nbsp;L., Pinto,&nbsp;R., Rangarajan,&nbsp;M., Iftode,&nbsp;L., Bianchini,&nbsp;R.,
+  Amorim,&nbsp;C.&nbsp;L.
+<BR>``Adaptive Techniques for Home-Based Software DSMs''.
+<BR>In: <EM>Proceedings of the 13th Symposium on Computer Architecture
+  and High-Performance Computing (SBAC-PAD)</EM>, pp. 164 - 171, September 2001.
+
+<P></P><DT><A NAME="zhou96performance">40</A>
+<DD>
+Zhou,&nbsp;Y., Iftode,&nbsp;L., Li,&nbsp;K.
+<BR>``Performance Evaluation of Two Home-Based Lazy Release Consistency
+  Protocols for Shared Virtual Memory Systems''.
+<BR>In: <EM>Proc. of the 2nd Symp. on Operating Systems Design and
+  Implementation (OSDI'96)</EM>, pp. 75-88, 1996.
+</DL>
+
+<P>
+
+
+<H1><A NAME="SECTION001100000000000000000"></A>
+<A NAME="ap:1"></A><BR>
+A. Fonte do programa multiplicação de vetores
+</H1>
+
+<P>
+<PRE>
+/* Multiplicação de vetores
+ *
+ * Última atualização Nov 18 11:53:26 BRT 2002
+ * 
+ * Thobias Salazar Trevisan &lt;thobias@cos.ufrj.br&gt;
+ */
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/time.h&gt;
+#include &lt;math.h&gt;
+
+#include "MMTO.h"
+
+//#define PAGES 27   // Pages Total
+#define PAGES   36000   // Pages total
+//#define PAGES 211194   // Pages Total
+//#define PAGES 315000   // Pages Total
+#define ELEM PAGES*1024 // Num elementos total
+#define DIF(x,y) (((double)y.tv_sec - x.tv_sec) * 1000000 + ((double)y.tv_usec -
+x.tv_usec)) / 1000000
+
+main(int argc, char *argv[])
+{
+	int *A, *B, *C, i, j;
+	int n=0;
+	double lat0, lat1;
+	struct timeval start, inicializa, stop;
+	
+	gettimeofday(&amp;start, 0);
+	A = (int *)mmto_mmap(0,PAGES*4096,0);
+	B = &amp;A[ELEM/3];
+	C = &amp;A[(ELEM/3)*2];
+
+	mmto_load("hosts.txt");
+	printf("Terminou o mmto_load\n");
+	n=MMTO_start_barrier(4);
+        if (n&lt;0) printf("ERRO MMTO_start_barrier\n");
+	
+	n=MMTO_cheguei_barrier(1);
+        if (n&lt;0) printf("ERRO MMTO_cheguei_barrier\n");
+	gettimeofday(&amp;inicializa, 0);
+	///////////////////////////////////////////////////////////
+	// inicializacao dos vetores A B C
+	//////////////////////////////////////////////////////////
+
+	if (host-&gt;whoami == 0)
+	       for (i=0;i&lt;ELEM/3;i++) A[i]=i;	
+	
+	if (host-&gt;whoami == 1) 
+		for (i=0;i&lt;ELEM/3;i++) B[i]=2;
+	
+	
+	if (host-&gt;whoami == 2) 
+		for (i=0;i&lt;ELEM/3;i++) C[i]=0;
+	printf("Termino da inicializacao do vetor\n");
+	////////////////////////////////////////////////////////////////
+	// Calculo do vetor C
+	//////////////////////////////////////////////////////////////
+
+	n=MMTO_cheguei_barrier(2);
+	if (n&lt;0) printf("ERRO MMTO_cheguei_barrier\n");
+	
+	if (host-&gt;whoami == 0){
+		for (i=0;i&lt;ELEM/9;i++){
+			C[i]=B[i]*A[i];
+			//if ((i%1024) == 0) printf("%d ",C[i]);
+			if ((i%1024==0) &amp;&amp; (i!=0)){
+				n=mmto_sync((unsigned long)C+(((i/1024-1))*4096),4096,MMTO_UPDATE);
+				if (n&lt;0)
+        	        		printf("ERRO update\n");
+				n=mmto_sync((unsigned long)C+(((i/1024-1))*4096),4096,MMTO_FREE);
+				if (n&lt;0)
+        	        		printf("ERRO free C\n");
+				n=mmto_sync((unsigned long)B+(((i/1024-1))*4096),4096,MMTO_FREE);
+				if (n&lt;0)
+        	        		printf("ERRO free B\n");
+			}
+		}
+		printf("Comecei a enviar os updates\n");
+		n=mmto_sync((unsigned long)C+((PAGES/9-1)*4096),4096,0);
+		if (n&lt;0)
+               		printf("ERRO update segundo\n");
+	}
+
+	if (host-&gt;whoami == 1){
+		for (i=ELEM/9;i&lt;((ELEM/9)*2);i++){
+			C[i]=B[i]*A[i];
+			//if ((i%1024) == 0) printf("%d ",C[i]);
+			if (i%1024==0){
+				n=mmto_sync((unsigned long)C+(((i/1024-1))*4096),4096,MMTO_UPDATE);
+				if (n&lt;0)
+        	        		printf("ERRO update\n");
+				n=mmto_sync((unsigned long)C+(((i/1024-1))*4096),4096,MMTO_FREE);
+				if (n&lt;0)
+        	        		printf("ERRO free C\n");
+				n=mmto_sync((unsigned long)A+(((i/1024-1))*4096),4096,MMTO_FREE);
+				if (n&lt;0)
+        	        		printf("ERRO free A\n");
+			}
+		}
+		printf("Comecei a enviar os updates\n");
+		n=mmto_sync((unsigned long)C+((((PAGES/9)*2)-1)*4096),4096,0);
+		if (n&lt;0)
+               		printf("ERRO update segundo\n");
+	}
+	
+	if (host-&gt;whoami == 2){
+		for (i=((ELEM/9)*2);i&lt;ELEM/3;i++){
+			C[i]=B[i]*A[i];
+			//if ((i%1024) == 0) printf("%d ",C[i]);
+			if (i%1024==0){
+				n=mmto_sync((unsigned long)A+(((i/1024-1))*4096),4096,MMTO_FREE);
+				if (n&lt;0)
+        	        		printf("ERRO free A\n");
+				n=mmto_sync((unsigned long)B+(((i/1024-1))*4096),4096,MMTO_FREE);
+				if (n&lt;0)
+        	        		printf("ERRO free B\n");
+			}
+		}
+	}
+	
+	////////////////////////////////////////////////////////////
+	// Final do Calculo do vetor C
+	////////////////////////////////////////////////////////////
+	printf("Termino do calculo do vetor\n");
+	n=MMTO_cheguei_barrier(3);
+        if (n&lt;0) printf("ERRO MMTO_cheguei_barrier\n");
+	////////////////////////////////////////////////////////////
+	// Imprime o vetor C
+	////////////////////////////////////////////////////////////
+	
+	if (host-&gt;whoami == 2)
+		for (i=0;i&lt;ELEM/3;i++){
+			n=C[i];
+			//if ((i%1024) == 0) 
+			//printf("%d ",C[i]);
+		}
+
+	n=MMTO_cheguei_barrier(4);
+	if (n&lt;0) printf("ERRO MMTO_cheguei_barrier\n");
+
+	gettimeofday(&amp;stop, 0);
+	lat0= DIF(start, inicializa);
+	lat1= DIF(start, stop);
+	printf("\nLatencia inicializacao : %f   total %f\n",lat0, lat1);
+}
+</PRE><FONT SIZE="-1">
+</FONT>
+<H1><A NAME="SECTION001200000000000000000">
+About this document ...</A>
+</H1><FONT SIZE="-1">
+ </FONT><P>
+This document was generated using the
+<A HREF="http://www-texdev.mpce.mq.edu.au/l2h/docs/manual/"><STRONG>LaTeX</STRONG>2<tt>HTML</tt></A> translator Version 2K.1beta (1.48)
+<P>
+Copyright &#169; 1993, 1994, 1995, 1996,
+<A HREF="http://cbl.leeds.ac.uk/nikos/personal.html">Nikos Drakos</A>, 
+Computer Based Learning Unit, University of Leeds.
+<BR>Copyright &#169; 1997, 1998, 1999,
+<A HREF="http://www.maths.mq.edu.au/~ross/">Ross Moore</A>, 
+Mathematics Department, Macquarie University, Sydney.
+<P>
+The command line arguments were: <BR>
+ <STRONG>latex2html</STRONG> <TT>-show_section_numbers -split 0 tese.tex</TT>
+<P>
+The translation was initiated by Thobias on 2003-07-02<BR><HR><H4>Footnotes</H4>
+<DL>
+<DT><A NAME="foot632">... anônima</A><A NAME="foot632"
+ HREF="tese.html#tex2html5"><SUP>3.1</SUP></A>
+<DD>Memória
+anônima é a que não está vinculada a nenhum arquivo, i.e., a
+mesma memória utilizada em um <TT>malloc</TT>.
+
+</DL><HR>
+<!--Navigation Panel-->
+<IMG WIDTH="81" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next_inactive"
+ SRC="/usr/share/latex2html/icons/nx_grp_g.png"> 
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="/usr/share/latex2html/icons/up_g.png"> 
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="/usr/share/latex2html/icons/prev_g.png">   
+<BR>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Thobias
+2003-07-02
+</ADDRESS>
+</BODY>
+</HTML>

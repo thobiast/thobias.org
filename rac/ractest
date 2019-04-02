@@ -1,0 +1,672 @@
+#!/bin/bash
+# RAC test-suite - needs bash version 2 or higher
+# Aurelio Marinho Jargas & Thobias Salazar Trevisan
+
+DEBUG=0 ; [ "$1" = '-v' ] && DEBUG=1 && shift
+
+############################################################
+#
+#    USER CONFIG HERE
+#
+# paths
+RAC="${1:-./rac}"                     # current dir or $1
+RACTMP="${TMP:-/tmp}/rac-tests"
+#
+# enable or disable tests here
+do_cols_test=1
+do_rows_test=1
+do_str_rows_test=1
+do_rgx_rows_test=1
+do_opts_test=1
+do_error_test=1
+do_emu_test=1
+#
+############################################################
+
+# sanity
+[ -x "$RAC" ] || {
+	echo "Erro: Executável '$RAC' não encontrado."
+	echo 'Passe o caminho completo do RAC como parâmetro ($1).'
+	echo 'Exemplo: ractest /usr/bin/rac'
+	exit
+}
+touch $RACTMP >&- 2>&- || {
+	echo "Erro: Não consigo gravar o arquivo temporário '$RACTMP'"
+	exit
+}
+
+# string comparisons - en_EN
+RAC_EMPTY="Try \`rac --help' for more information."
+RAC_VERSION='rac version 1.3'
+RAC_HELP='Usage: rac [OPTIONS] ADDRESS [FILE]...'
+
+# string comparisons - pt_BR
+RAC_EMPTY="Tente \`rac --help' para mais informações."
+RAC_VERSION='rac versão 1.3'
+RAC_HELP='Uso: rac [OPÇÕES] ENDEREÇO [ARQUIVO]'
+
+# known errors
+ZERO_STEP='Erro: STEP_LINE can not be zero'         # 1~0
+ZERO_STEPSTART='Erro: line start can not be zero'   # 0~1
+INVALID_RANGE='Erro: Invalid Range.'                # 1:foo
+INVALID_OPT='Erro: Opção -z inválida'
+INVALID_LONG_OPT='Erro: Opção --foo inválida'
+INVALID_ADDR='Erro: Invalid addressing.'
+STEP_NO_COUNT='Erro: A ocorrência inicial deve ser especificada.'
+REGEX_OPEN_BRACKET='Erro: brackets ([ ]) not balanced'
+REGEX_OPEN_PARENT='Erro: parentheses not balanced'
+
+##### skipping some tests
+#
+### COL NUMBER
+# the +number mapping is still a plan for the future
+col_num_skip="|+1|+1;+1|+1:+5|+1~+2|+0|+0:+0|-0:+0|+0:-0|"   # +N mapping
+#
+### ROW NUMBER
+row_num_skip="|+1|+1;+1|+1:+5|+1~+2|+0|+0:+0|-0:+0|+0:-0|"   # +N mapping
+#
+### ROW STRING
+row_str_skip="|+1|+1;+1|+1:+5|+1~+2|+0|+0:+0|-0:+0|+0:-0|"   # +N mapping
+# in numbers range overflow is ok, in strings it is invalid
+row_str_skip="${row_str_skip}999:|:999|1:999|-1:999|999:1|999:-1|-999:-1|-999:1|"
+
+# handy functions
+sample_text(){ sed '/^###TXT$/,/^###$/!d;/^###/d;s/^# //' $0; }
+emu_result() { sed '/^###EMU$/,/^###$/!d;/^###/d;s/^# //' $0; }
+must_skip()  {
+	local address="$1" skipme="$2"
+	echo "$skipme" | grep -qs -- "|${address// /}|"
+	local exitcode=$?
+	[ "$exitcode" -eq 0 -a "$DEBUG" = 1 ] && echo "+ ignoring  $address"
+	return $exitcode
+}
+tester() {
+	local address="$1" resultok="$2" kind="${3:-row}"
+	[ "$DEBUG" = 1 ] && echo "+ executing $address"
+	if [ "$kind" = row ]; then
+		result=$(sample_text | sed 10d |
+			$RAC "$address" | sed 's/_.*//' | tr -d '\n')
+	else
+		result=$(echo 123456789 | $RAC "$address")
+	fi
+	[ "$result" != "$resultok" ] &&
+	echo "ERROR: < $address > expected '$resultok', got '$result'"
+}
+
+all_tests=(
+'  1   % 1'
+' -1   % 9'
+'  :   % 123456789'
+'  : 1 % 1'
+'  :-3 % 1234567'
+' 1:   % 123456789'
+'-3:   % 789'
+
+' 1: 1 % 1'
+' 1: 5 % 12345'
+' 1:-3 % 1234567'
+' 1:-1 % 123456789'
+' 5: 1 % 54321'
+' 5: 5 % 5'
+' 5:-3 % 567'
+' 5:-1 % 56789'
+'-3: 1 % 7654321'
+'-3: 5 % 765'
+'-3:-3 % 7'
+'-3:-1 % 789'
+'-1: 1 % 987654321'
+'-1: 5 % 98765'
+'-1:-3 % 987'
+'-1:-1 % 9'
+
+'1;3;5 % 135'
+'1;1;1 % 111'
+'-1;-1 % 99'
+'3; -1 % 39'
+'1; 7: % 1789'
+'-1;:3 % 9123'
+'7;-3: % 7789'
+
+' 5~ 1 % 56789'
+' 1~ 5 % 16'
+' 5~ 2 % 579'
+'-5~ 2 % 579'
+' 5~-2 % 531'
+'-5~-2 % 531'
+
+'   999  % '
+'  -999  % '
+' 999:   % 9'
+'-999:   % 123456789'
+'  : 999 % 123456789'
+'  :-999 % 1'
+
+' 1: 999 % 123456789'
+' 1:-999 % 1'
+'-1: 999 % 9'
+'-1:-999 % 987654321'
+' 999: 1 % 987654321'
+' 999:-1 % 9'
+'-999: 1 % 1'
+'-999:-1 % 123456789'
+
+' 999~ 1 % '
+' 999~-1 % '
+'-999~ 1 % '
+'-999~-1 % '
+' 1~ 999 % 1'
+' 1~-999 % 1'
+'-1~ 999 % 9'
+'-1~-999 % 9'
+
+'  0    % '
+' -0    % '
+' +0    % '
+'  0:0  % '
+' -0:+0 % '
+' +0:-0 % '
+' -0:-0 % '
+' +0:+0 % '
+'  0;0  % '
+'  0:3  % 123'
+'  0:-3 % 1234567'
+'  3:0  % 321'
+' -3:0  % 7654321'
+
+'+1     % 1'
+'+1;+1  % 11'
+'+1:+5  % 12345'
+'+1~+2  % 13579'
+
+' 1;5~2  % 1579'
+'-1;-3:;5~-2 % 9789531'
+)
+
+str_tests=(
+'       % 123456789'
+' *1    % 1'
+' *3    % 3'
+'*-3    % 7'
+' *1~3  % 147'
+' *3~1  % 3456789'
+' *3~-1 % 321'
+'*-3~1  % 789'
+'*-3~-1 % 7654321'
+'*-3~-3 % 741'
+' *3+2  % 5'
+' *3-2  % 1'
+'*-3+2  % 9'
+'*-3-2  % 5'
+' +3    % 456789'
+
+' *0    % '
+' +0    % 123456789'
+' -0    % 123456789'
+' *3+0  % 3'
+' *3-0  % 3'
+
+' *999  % '
+'*-999  % '
+' +999  % '
+' -999  % '
+'*1~999  % 1'
+'*1~-999 % 1'
+
+#'=foo=:0     % '
+#'=foo=:5     % '
+#'    0:=foo= % '
+#'    5:=foo= % '
+#'=foo=:=bar= % '
+'=foo=+0     % '
+'=foo=-0     % '
+'=foo=*0     % '
+'=foo=*0+0   % '
+'=foo=*0+1   % '
+'=foo=+1     % '
+'=foo=-1     % '
+'=foo=*1     % '
+'=foo=*-1    % '
+'=foo=*1+0   % '
+'=foo=*1+1   % '
+'=foo=*1-1   % '
+
+'[1:10] % 123456789'
+)
+
+all_opts=(
+''          "$RAC_EMPTY"
+'-V'        "$RAC_VERSION"
+'--version' "$RAC_VERSION"
+'-h'        "$RAC_HELP"
+'--help'    "$RAC_HELP"
+)
+
+# test string: FOO
+opt_tests=(
+'-i            "=foo="'
+'--ignore-case "=foo="'
+'-i            "/(foo)/"'
+'-b            "/\(FOO\)/"'
+'--bre         "/\(FOO\)/"'
+'-i -b         "/\(foo\)/"'
+'-b -i         "/\(foo\)/"'
+'-bi           "/\(foo\)/"'
+)
+
+# test string: FOO
+rgx_tests=(
+'^FOO$'
+'F.O'
+'FOO*'
+'FOO+'
+'FOO?'
+'FOO{1,}'
+'[F]OO'
+'[^O]OO'
+'[A-Z]OO'
+'(FOO)'
+'F(O)\1'
+'FOO\/?'    # / escaping
+)
+
+error_tests=(
+    "-z % $INVALID_OPT"
+ "--foo % $INVALID_LONG_OPT"
+ "1:foo % $INVALID_RANGE"
+   "1~0 % $ZERO_STEP"
+   "0~1 % $ZERO_STEPSTART"
+   "foo % $INVALID_RANGE"
+    "[3 % $INVALID_ADDR"
+    "3] % $INVALID_RANGE"
+    "3[ % $INVALID_ADDR"
+    "]3 % $INVALID_RANGE"
+   "]3[ % $INVALID_ADDR"
+  "[3]] % $INVALID_RANGE"
+  "[[3] % $INVALID_RANGE"
+    "+3 % $INVALID_RANGE"
+  "1~+3 % $INVALID_RANGE"
+"=z=*+3 % $INVALID_ADDR"
+ "=z=~3 % $STEP_NO_COUNT"
+ "/z/~3 % $STEP_NO_COUNT"
+#  "/[/ % $REGEX_OPEN_BRACKET"       # different libs, different msgs
+#  "/(/ % $REGEX_OPEN_PARENT"
+)
+
+total_tests=${#all_tests[*]}
+total_opts=${#all_opts[*]}
+
+total_str_tests=$((${#all_tests[*]}+${#str_tests[*]}))
+
+#---------------------------------------------------------------
+### COLUMNS TEST
+#---------------------------------------------------------------
+
+if [ "$do_cols_test" = 1 ]; then
+	i=0
+	echo 'testing NUM/COL'
+	while [ $i -lt $total_tests ]; do
+		test_data=${all_tests[$i]} ; i=$((i+1))
+		address="${test_data% %*}"
+		must_skip "$address" "$col_num_skip" && continue
+		address="${address//;/,}"    # change ; to ,
+		address="[$address]"         # add braces
+		resultok="${test_data#*% }"
+		tester "$address" "$resultok" col
+	done
+fi
+
+#---------------------------------------------------------------
+### NUMBER ROW TESTS
+#---------------------------------------------------------------
+
+if [ "$do_rows_test" = 1 ]; then
+	i=0
+	echo 'testing NUM/LIN'
+	while [ $i -lt $total_tests ]; do
+		test_data=${all_tests[$i]} ; i=$((i+1))
+		address="${test_data% %*}"
+		resultok="${test_data#*% }"
+		must_skip "$address" "$row_num_skip" && continue
+		tester "$address" "$resultok" row
+	done
+fi
+
+#---------------------------------------------------------------
+### STRING ROW TESTS
+#---------------------------------------------------------------
+
+if [ "$do_str_rows_test" = 1 ]; then
+	i=0
+	echo 'testing STR/LIN'
+	while [ $i -lt $total_str_tests ]; do
+		if [ $i -ge $total_tests ]; then
+			test_data=${str_tests[$((i-total_tests))]}
+		else
+			test_data=${all_tests[$i]}
+		fi
+		i=$((i+1))
+		address="${test_data% %*}"
+		resultok="${test_data#*% }"
+
+		#echo -e "\t\t\t\t\t\t["$address" -> $resultok]"
+		must_skip "$address" "$row_str_skip" && continue
+		
+		if [ $i -gt $total_tests ]; then
+			# string address without pattern
+			[ "${address/=/}" = "$address" ] &&
+				address="=_=$address"
+		else
+			# composed from numbered addresses
+			###    1  ->  =1_=
+			#    1  ->  =_=*1
+			#   -1  ->  =_=*-1
+			#   +1  ->  =_=*+1
+			address=$(echo $address | sed '
+				s/  *//g;
+				s/\(^\|[:;]\)\([-+]\?[0-9]\)/\1=_=*\2/g;
+				#s/\(^\|[:;]\)\([-+][0-9]\)/\1=_=*\2/g;
+				#s/\(^\|[:;]\)\([0-9]\{1,\}\)/\1=\2_=/g;')
+		fi
+		tester "$address" "$resultok" row
+	done
+fi
+
+#---------------------------------------------------------------
+### REGEX ROW TESTS
+#---------------------------------------------------------------
+
+if [ "$do_rgx_rows_test" = 1 ]; then
+	i=0
+	echo 'testing RGX/LIN'
+	while [ $i -lt $total_str_tests ]; do
+		if [ $i -ge $total_tests ]; then
+			test_data=${str_tests[$((i-total_tests))]}
+		else
+			test_data=${all_tests[$i]}
+		fi
+		i=$((i+1))
+		address="${test_data% %*}"
+		resultok="${test_data#*% }"
+
+		#echo -e "\t\t\t\t\t\t["$address" -> $resultok]"
+		must_skip "$address" "$row_str_skip" && continue
+		
+		if [ $i -gt $total_tests ]; then
+			# string address without pattern
+			if [ "${address/=/}" = "$address" ]; then
+				address="/^[0-9][_]/$address"
+			else
+				address=$(echo $address | tr = /)
+			fi
+		else
+			# composed from numbered addresses (see string)
+			address=$(echo $address | sed '
+				s|  *||g;
+				s@\(^\|[:;]\)\([-+]\?[0-9]\)@\1/_[0-9]/*\2@g')
+		fi
+		tester "$address" "$resultok" row
+	done
+	# regex specific tests
+	i=0
+	while [ $i -lt ${#rgx_tests[*]} ]; do
+		patt="/${rgx_tests[$i]}/"
+		i=$((i+1))
+		[ "$DEBUG" = 1 ] && echo "+ executing $patt"
+		result=$(echo FOO | $RAC "$patt")
+		[ "$result" != FOO ] &&
+			echo "ERROR: < $patt > expected 'FOO', got '$result'"
+	done
+fi
+
+#---------------------------------------------------------------
+### CMDLINE OPTIONS TESTS
+#---------------------------------------------------------------
+
+if [ "$do_opts_test" = 1 ]; then
+	echo 'testing OPT'
+	# --help, --version, ...
+	i=0
+	while [ $i -lt $total_opts ]; do
+		option="${all_opts[$i]}"   ; i=$((i+1))
+		resultok="${all_opts[$i]}" ; i=$((i+1))
+		[ "$DEBUG" = 1 ] && echo "+ executing $option"
+		result=$($RAC $option 2>&1 | head -1)
+		[ "$result" != "$resultok" ] &&
+		echo "ERROR: <$option> expected '$resultok', got '$result'"
+	done
+	# -i, -b, ...
+	i=0
+	while [ $i -lt ${#opt_tests[*]} ]; do
+		test_data=${opt_tests[$i]}
+		i=$((i+1))
+		[ "$DEBUG" = 1 ] && echo "+ executing $test_data"
+		result=$(eval "echo FOO | $RAC $test_data 2>&1")
+		[ "$result" != FOO ] &&
+		echo "ERROR: < $test_data > expected 'FOO', got '$result'"
+	done
+	# --bre specific tests
+	i=0
+	while [ $i -lt ${#rgx_tests[*]} ]; do
+		# ere -> bre
+		patt=$(echo "${rgx_tests[$i]}" | sed 's/[(){}+?]/\\&/g')
+		patt="/$patt/"
+		i=$((i+1))
+		[ "$DEBUG" = 1 ] && echo "+ executing --bre $patt"
+		result=$(echo FOO | $RAC -b "$patt")
+		[ "$result" != FOO ] &&
+			echo "ERROR: < -b $patt > expected 'FOO', got '$result'"
+	done
+fi
+
+#---------------------------------------------------------------
+### ERROR HANDLING TESTS
+#---------------------------------------------------------------
+
+if [ "$do_error_test" = 1 ]; then
+	echo 'testing ERR'
+	i=0
+	while [ $i -lt ${#error_tests[*]} ]; do
+		test_data=${error_tests[$i]}
+		patt="${test_data% %*}"
+		resultok="${test_data#*% }"
+		i=$((i+1))
+		[ "$DEBUG" = 1 ] && echo "+ executing $patt"
+		result=$(echo | $RAC "$patt" 2>&1)
+		[ "$result" != "$resultok" ] &&
+		  echo "ERROR: < $patt > expected '$resultok', got '$result'"
+	done
+fi
+
+#---------------------------------------------------------------
+### EMULATION TESTS
+#---------------------------------------------------------------
+
+if [ "$do_emu_test" = 1 ]; then
+	echo 'testing EMU'
+	for cmd in \
+	'head'                 '1:10'        \
+	'head -5'              '1:5'         \
+	'head -1'              '1'           \
+	'tail'                 '-10:-1'      \
+	'tail -5'              '-5:-1'       \
+	'tail -1'              '-1'          \
+	'tac'                  '-1:1'        \
+	'rev'                  '[-1:1]'      \
+	'sed -n 5p'            '5'           \
+	'sed -n 3,5p'          '3:5'         \
+	'sed 25q'              '1:25'        \
+	'cut -c1,3,5'          '[1,3,5]'     \
+	'cut -c5-'             '[5:-1]'      \
+	'cut -c1,3,5-'         '[1,3,5:-1]'  \
+	'rev|cut -c1'          '[-1]'        \
+	'cut -c1-5|rev'        '[5:1]'       \
+	'tail -5|tac'          '-1:-5'       \
+	'tail -1|rev|cut -c1'  '-1[-1]'      \
+	#'sed -n 3,7p|cut -c10-20' '3:7 | [10:20]' \
+	do
+		[ "$emulated" ] || { emulated=$cmd ; continue ; }
+		echo "------(  $emulated  )-------(  $cmd  )-------"
+		sample_text | $RAC $cmd
+		emulated=''
+	done > $RACTMP
+	emu_result | diff -u - $RACTMP
+	rm -f ${RACTMP:-/tmp/aaaaa}
+fi
+
+
+###TXT
+# 1_345678901234567890
+# 2_345678901234567890
+# 3_345678901234567890
+# 4_345678901234567890
+# 5_345678901234567890
+# 6_345678901234567890
+# 7_345678901234567890
+# 8_345678901234567890
+# 9_345678901234567890
+# 0_345678901234567890
+###
+
+
+###EMU
+# ------(  head  )-------(  1:10  )-------
+# 1_345678901234567890
+# 2_345678901234567890
+# 3_345678901234567890
+# 4_345678901234567890
+# 5_345678901234567890
+# 6_345678901234567890
+# 7_345678901234567890
+# 8_345678901234567890
+# 9_345678901234567890
+# 0_345678901234567890
+# ------(  head -5  )-------(  1:5  )-------
+# 1_345678901234567890
+# 2_345678901234567890
+# 3_345678901234567890
+# 4_345678901234567890
+# 5_345678901234567890
+# ------(  head -1  )-------(  1  )-------
+# 1_345678901234567890
+# ------(  tail  )-------(  -10:-1  )-------
+# 1_345678901234567890
+# 2_345678901234567890
+# 3_345678901234567890
+# 4_345678901234567890
+# 5_345678901234567890
+# 6_345678901234567890
+# 7_345678901234567890
+# 8_345678901234567890
+# 9_345678901234567890
+# 0_345678901234567890
+# ------(  tail -5  )-------(  -5:-1  )-------
+# 6_345678901234567890
+# 7_345678901234567890
+# 8_345678901234567890
+# 9_345678901234567890
+# 0_345678901234567890
+# ------(  tail -1  )-------(  -1  )-------
+# 0_345678901234567890
+# ------(  tac  )-------(  -1:1  )-------
+# 0_345678901234567890
+# 9_345678901234567890
+# 8_345678901234567890
+# 7_345678901234567890
+# 6_345678901234567890
+# 5_345678901234567890
+# 4_345678901234567890
+# 3_345678901234567890
+# 2_345678901234567890
+# 1_345678901234567890
+# ------(  rev  )-------(  [-1:1]  )-------
+# 098765432109876543_1
+# 098765432109876543_2
+# 098765432109876543_3
+# 098765432109876543_4
+# 098765432109876543_5
+# 098765432109876543_6
+# 098765432109876543_7
+# 098765432109876543_8
+# 098765432109876543_9
+# 098765432109876543_0
+# ------(  sed -n 5p  )-------(  5  )-------
+# 5_345678901234567890
+# ------(  sed -n 3,5p  )-------(  3:5  )-------
+# 3_345678901234567890
+# 4_345678901234567890
+# 5_345678901234567890
+# ------(  sed 25q  )-------(  1:25  )-------
+# 1_345678901234567890
+# 2_345678901234567890
+# 3_345678901234567890
+# 4_345678901234567890
+# 5_345678901234567890
+# 6_345678901234567890
+# 7_345678901234567890
+# 8_345678901234567890
+# 9_345678901234567890
+# 0_345678901234567890
+# ------(  cut -c1,3,5  )-------(  [1,3,5]  )-------
+# 135
+# 235
+# 335
+# 435
+# 535
+# 635
+# 735
+# 835
+# 935
+# 035
+# ------(  cut -c5-  )-------(  [5:-1]  )-------
+# 5678901234567890
+# 5678901234567890
+# 5678901234567890
+# 5678901234567890
+# 5678901234567890
+# 5678901234567890
+# 5678901234567890
+# 5678901234567890
+# 5678901234567890
+# 5678901234567890
+# ------(  cut -c1,3,5-  )-------(  [1,3,5:-1]  )-------
+# 135678901234567890
+# 235678901234567890
+# 335678901234567890
+# 435678901234567890
+# 535678901234567890
+# 635678901234567890
+# 735678901234567890
+# 835678901234567890
+# 935678901234567890
+# 035678901234567890
+# ------(  rev|cut -c1  )-------(  [-1]  )-------
+# 0
+# 0
+# 0
+# 0
+# 0
+# 0
+# 0
+# 0
+# 0
+# 0
+# ------(  cut -c1-5|rev  )-------(  [5:1]  )-------
+# 543_1
+# 543_2
+# 543_3
+# 543_4
+# 543_5
+# 543_6
+# 543_7
+# 543_8
+# 543_9
+# 543_0
+# ------(  tail -5|tac  )-------(  -1:-5  )-------
+# 0_345678901234567890
+# 9_345678901234567890
+# 8_345678901234567890
+# 7_345678901234567890
+# 6_345678901234567890
+# ------(  tail -1|rev|cut -c1  )-------(  -1[-1]  )-------
+# 0
+###

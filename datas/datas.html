@@ -1,0 +1,177 @@
+<html>
+<head>
+<title>~/devel/datas/1.2/datas.html</title>
+<meta name="Generator" content="Vim/6.3">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#ffffff" text="#000000">
+<pre>
+<font color="#0000ff">#!/bin/bash</font>
+<font color="#0000ff"># datas - programa em modo texto de calendario e compromissos</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Autor....: Thobias Salazar Trevisan</font>
+<font color="#0000ff"># Site.....: <A HREF="http://thobias.org/datas">http://thobias.org/datas</A></font>
+<font color="#0000ff"># Licenca..: GPL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Changelog:</font>
+<font color="#0000ff"># 25/11/2005 - colore dia de hoje com cor diferente (valeu elias)</font>
+<font color="#0000ff">#            - colore os compromissos mesmo que o mes/ano nao seja atual</font>
+<font color="#0000ff">#            - variavel $SED especifica qual sed utilizar (valeu Josevan)</font>
+<font color="#0000ff"># 20/09/2005 - adicionada opcao --list</font>
+<font color="#0000ff">#            - sort dos lembretes do mes</font>
+<font color="#0000ff">#            - aviso de lembrete para o celular (valeu ataliba)</font>
+<font color="#0000ff">#            - adicionado o &quot;mes 00&quot;. nao precisa mais adicionar o</font>
+<font color="#0000ff">#              mesmo lembrete em todos os meses (valeu aurelio)</font>
+<font color="#0000ff"># 15/01/2005 - Primeira versao</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff">#############################################################################</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff">#                Configuracoes</font>
+<font color="#0000ff">#                =============</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># arquivo que contem as datas a serem lembradas</font>
+<font color="#0000ff"># baixe o arquivo modelo no site: <A HREF="http://thobias.org/datas">http://thobias.org/datas</A></font>
+<font color="#008b8b">dados</font>=<font color="#a52a2a"><b>'</b></font><font color="#ff00ff">/home/thobias/devel/datas/1.2/datas.txt</font><font color="#a52a2a"><b>'</b></font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># endereco de mail de quem vai receber o lembrete (utilizado apenas quando</font>
+<font color="#0000ff"># for passado o parametro --cron</font>
+<font color="#008b8b">mailto</font>=<font color="#a52a2a"><b>'</b></font><font color="#ff00ff">thobias</font><font color="#a52a2a"><b>'</b></font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># o seu celular recebe mail?!</font>
+<font color="#0000ff"># ex: celmail='seunumero@suaoperadora.com.br'</font>
+<font color="#008b8b">celmail</font>=<font color="#a52a2a"><b>''</b></font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># numero de dias de antecedencia que sera enviado o lembrete por mail</font>
+<font color="#008b8b">days</font>=<font color="#a52a2a"><b>'</b></font><font color="#ff00ff">1</font><font color="#a52a2a"><b>'</b></font>
+<font color="#0000ff"># comando para enviar o mail</font>
+<font color="#008b8b">cmd_mail</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">mail -s 'datas: lembrete de data(s) importante(s)' </font><font color="#a020f0">$mailto</font><font color="#a52a2a"><b>&quot;</b></font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># especifique a versao/implementacao do sed que voce quer usar. este script so</font>
+<font color="#0000ff"># foi testado com o GNU Sed, se voce usa algum BSD por exemplo, instale o</font>
+<font color="#0000ff"># gsed e coloque o gsed na variavel abaixo: (Exemplo: SED='gsed')</font>
+<font color="#008b8b">SED</font>=<font color="#a52a2a"><b>'</b></font><font color="#ff00ff">sed</font><font color="#a52a2a"><b>'</b></font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># definindo as possiveis cores</font>
+<font color="#008b8b">VERDE</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#6a5acd">\\</font><font color="#ff00ff">033[1;32m</font><font color="#a52a2a"><b>&quot;</b></font>
+<font color="#008b8b">BRANCO</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#6a5acd">\\</font><font color="#ff00ff">033[1;37m</font><font color="#a52a2a"><b>&quot;</b></font>
+<font color="#008b8b">AZUL</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#6a5acd">\\</font><font color="#ff00ff">033[1;36m</font><font color="#a52a2a"><b>&quot;</b></font>
+<font color="#008b8b">AMARELO</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#6a5acd">\\</font><font color="#ff00ff">033[1;33m</font><font color="#a52a2a"><b>&quot;</b></font>
+<font color="#008b8b">VERMELHO</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#6a5acd">\\</font><font color="#ff00ff">033[1;31m</font><font color="#a52a2a"><b>&quot;</b></font>
+<font color="#008b8b">PRETO</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#6a5acd">\\</font><font color="#ff00ff">033[1;30m</font><font color="#a52a2a"><b>&quot;</b></font>
+<font color="#008b8b">NORMAL</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#6a5acd">\\</font><font color="#ff00ff">033[0;39m</font><font color="#a52a2a"><b>&quot;</b></font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># escolha quais cores serao utilizadas para destacar os dias com</font>
+<font color="#0000ff"># compromissos e o dia de &quot;hoje&quot;. Se nao quiser nenhuma cor, defina</font>
+<font color="#0000ff"># como NORMAL. Exemplo:  COR_HJ=&quot;$NORMAL&quot;</font>
+<font color="#008b8b">COR_DATA</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$AZUL</font><font color="#a52a2a"><b>&quot;</b></font>
+<font color="#0000ff"># cor que ficara o dia de hoje</font>
+<font color="#008b8b">COR_HJ</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$VERDE</font><font color="#a52a2a"><b>&quot;</b></font>
+<font color="#0000ff">#</font>
+<font color="#008b8b">versao</font>=<font color="#a52a2a"><b>'</b></font><font color="#ff00ff">1.2</font><font color="#a52a2a"><b>'</b></font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># sedao que arruma o mes especial no arquivo com os lembretes</font>
+<font color="#0000ff"># so mexa se voce souber _realmente_ o que esta fazendo</font>
+<font color="#008b8b">SEDMES00</font>=<font color="#a52a2a"><b>'</b></font><font color="#ff00ff">/^ *# *00 *-/,/^ *# *[0-9][0-9] *-/{/^ *# *00 *-/d;</font>
+<font color="#ff00ff">/^ *# *[0-9][0-9] *-/ba;H;};:a;/^ *# *[0-9][0-9] *-/G</font><font color="#a52a2a"><b>'</b></font>
+<font color="#0000ff">#</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff">#############################################################################</font>
+<font color="#0000ff">############# Funcoes</font>
+<font color="#0000ff">#############################################################################</font>
+
+<font color="#0000ff">##### funcao que envia o lembrete por mail e/ou celular (parametro --cron)</font>
+<font color="#008b8b">cron</font><font color="#6a5acd">()</font><font color="#6a5acd">{</font>
+<font color="#a52a2a"><b>local</b></font> i hj mes ano
+<font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>-a</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#a52a2a"><b>//</b></font>[0-9]<font color="#a020f0">}</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font> <font color="#a52a2a"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#a52a2a"><b>echo</b></font><font color="#ff00ff"> </font><font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">Número de dias inválido</font><font color="#a52a2a"><b>&quot;;</b></font> <font color="#a52a2a"><b>return</b></font><font color="#a52a2a"><b>;</b></font> <font color="#6a5acd">}</font>
+<font color="#008b8b">hj</font>=<font color="#a020f0">$(</font><font color="#6a5acd">date  </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">+%d</font><font color="#a52a2a"><b>'</b></font><font color="#6a5acd"> --date </font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#a52a2a"><b>:-</b></font><font color="#a020f0">$days</font><font color="#a020f0">}</font><font color="#ff00ff"> days</font><font color="#a52a2a"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#a52a2a"><b>|</b></font><font color="#6a5acd"> </font><font color="#a020f0">$SED</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">s/^0//</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font>
+<font color="#008b8b">ms</font>=<font color="#a020f0">$(</font><font color="#6a5acd">date  </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">+%m</font><font color="#a52a2a"><b>'</b></font><font color="#6a5acd"> --date </font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#a52a2a"><b>:-</b></font><font color="#a020f0">$days</font><font color="#a020f0">}</font><font color="#ff00ff"> days</font><font color="#a52a2a"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#a52a2a"><b>|</b></font><font color="#6a5acd"> </font><font color="#a020f0">$SED</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">s/^.$/0&amp;/</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font>
+<font color="#008b8b">ano</font>=<font color="#a020f0">$(</font><font color="#6a5acd">date  </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">+%Y</font><font color="#a52a2a"><b>'</b></font><font color="#6a5acd"> --date </font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#a52a2a"><b>:-</b></font><font color="#a020f0">$days</font><font color="#a020f0">}</font><font color="#ff00ff"> days</font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">)</font>
+<font color="#0000ff"># verifica se existe algum compromisso </font>
+<font color="#008b8b">i</font>=<font color="#a020f0">$(</font><font color="#6a5acd">cat </font><font color="#a020f0">$dados</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>|</b></font><font color="#6a5acd"> </font><font color="#a020f0">$SED</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$SEDMES00</font><font color="#a52a2a"><b>&quot;|</b></font><font color="#6a5acd"> </font><font color="#a020f0">$SED</font><font color="#6a5acd"> -n </font><font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">/^ *# *</font><font color="#a020f0">$ms</font><font color="#ff00ff"> *- /,/#/{//d;/^ *$/d;</font>
+<font color="#ff00ff">s/^ *0//;/</font><font color="#6a5acd">\b</font><font color="#a020f0">$hj</font><font color="#6a5acd">\b</font><font color="#ff00ff">/!d;p;}</font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">)</font>
+<font color="#0000ff"># tem algum compromisso?!</font>
+<font color="#a52a2a"><b>if</b></font> <font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$i</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font><font color="#a52a2a"><b>;</b></font> <font color="#a52a2a"><b>then</b></font>
+   <font color="#0000ff"># envia mail. facil de personalizar o mail enviado</font>
+   <font color="#a52a2a"><b>echo</b></font><font color="#ff00ff"> </font><font color="#a52a2a"><b>&quot;</b></font>
+<font color="#ff00ff">Hoje é: </font><font color="#a020f0">$(</font><font color="#6a5acd">date </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">+%d de %b de %Y</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font>
+
+<font color="#a020f0">$(</font><font color="#6a5acd">cal </font><font color="#a020f0">$ms</font><font color="#6a5acd"> </font><font color="#a020f0">$ano</font><font color="#a020f0">)</font>
+
+<font color="#ff00ff">Lembrete(s):</font>
+
+<font color="#a020f0">$i</font><font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff"> </font><font color="#a52a2a"><b>|</b></font> <font color="#a52a2a"><b>eval</b></font> <font color="#a020f0">$cmd_mail</font>
+
+   <font color="#0000ff"># envia para o celular. facil de personalizar a mensagem enviada</font>
+   <font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$celmail</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font> <font color="#a52a2a"><b>&amp;&amp;</b></font> <font color="#a52a2a"><b>echo</b></font><font color="#ff00ff"> </font><font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">Lembrete do programa datas: dia </font><font color="#a020f0">$i</font><font color="#a52a2a"><b>&quot;|</b></font>mail <font color="#a020f0">$celmail</font>
+<font color="#a52a2a"><b>fi</b></font>
+<font color="#6a5acd">}</font>
+
+<font color="#0000ff">##### mostra o calendario com os lembretes na stdout</font>
+<font color="#008b8b">cmd</font><font color="#6a5acd">()</font><font color="#6a5acd">{</font>
+<font color="#a52a2a"><b>local</b></font> hj ms ano cal a cor diacor <font color="#0000ff"># sed que colore o dia no calendario</font>
+<font color="#008b8b">diacor</font>=<font color="#a52a2a"><b>'</b></font><font color="#ff00ff">&quot;s/\(^\| \)$a\( \|$\)/\1$(echo -en $cor)$a$(echo -en $NORMAL)\2/&quot;</font><font color="#a52a2a"><b>'</b></font>
+<font color="#008b8b">hj</font>=<font color="#a020f0">$(</font><font color="#6a5acd">date </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">+%d</font><font color="#a52a2a"><b>'</b></font><font color="#6a5acd"> </font><font color="#a52a2a"><b>|</b></font><font color="#6a5acd"> </font><font color="#a020f0">$SED</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">s/^0//</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font>
+<font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font> <font color="#a52a2a"><b>&amp;&amp;</b></font> <font color="#008b8b">ms</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>||</b></font> <font color="#008b8b">ms</font>=<font color="#a020f0">$(</font><font color="#6a5acd">date </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">+%m</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font><font color="#a52a2a"><b>;</b></font> <font color="#008b8b">ms</font>=<font color="#a020f0">$(</font><font color="#6a5acd">echo </font><font color="#a020f0">$ms</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>|</b></font><font color="#6a5acd"> </font><font color="#a020f0">$SED</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">s/^.$/0&amp;/</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font>
+<font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font> <font color="#a52a2a"><b>&amp;&amp;</b></font> <font color="#008b8b">ano</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>||</b></font> <font color="#008b8b">ano</font>=<font color="#a020f0">$(</font><font color="#6a5acd">date </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">+%Y</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font>
+<font color="#0000ff"># testa se o mes e valido</font>
+<font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$(</font><font color="#6a5acd">echo </font><font color="#a020f0">$ms</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>|</b></font><font color="#6a5acd"> </font><font color="#a020f0">$SED</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">s/^.$/0&amp;/;s/^\(0[1-9]\|1[0-2]\)$//</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font> <font color="#a52a2a"><b>&amp;&amp;</b></font>
+<font color="#6a5acd">{</font> <font color="#a52a2a"><b>echo</b></font><font color="#ff00ff"> Erro: mês inválido</font><font color="#a52a2a"><b>;</b></font> <font color="#a52a2a"><b>exit</b></font> <font color="#ff00ff">1</font><font color="#a52a2a"><b>;</b></font> <font color="#6a5acd">}</font>
+<font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$(</font><font color="#6a5acd">echo </font><font color="#a020f0">$ano</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>|</b></font><font color="#6a5acd"> </font><font color="#a020f0">$SED</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">s/^200[0-9]$//</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font> <font color="#a52a2a"><b>&amp;&amp;</b></font> <font color="#0000ff"># testa se o ano e valido</font>
+<font color="#6a5acd">{</font> <font color="#a52a2a"><b>echo</b></font><font color="#ff00ff"> </font><font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">Erro: ano inválido</font><font color="#a52a2a"><b>&quot;;</b></font> <font color="#a52a2a"><b>exit</b></font> <font color="#ff00ff">1</font><font color="#a52a2a"><b>;</b></font> <font color="#6a5acd">}</font>
+<font color="#008b8b">cal</font>=<font color="#a020f0">$(</font><font color="#6a5acd">cal </font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$ms</font><font color="#a52a2a"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#a020f0">$ano</font><font color="#a020f0">)</font>
+<font color="#0000ff"># se for este mes e ano, colore o dia de hoje</font>
+<font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$ms</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$(</font><font color="#6a5acd">date </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">+%m</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>-a</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$ano</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$(</font><font color="#6a5acd">date </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">+%Y</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font> <font color="#a52a2a"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font>
+<font color="#008b8b">cor</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$COR_HJ</font><font color="#a52a2a"><b>&quot;;</b></font> <font color="#008b8b">a</font>=<font color="#a020f0">$hj</font><font color="#a52a2a"><b>;</b></font> <font color="#008b8b">cal</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$(</font><font color="#6a5acd">echo </font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$cal</font><font color="#a52a2a"><b>&quot;|</b></font><font color="#6a5acd"> </font><font color="#a52a2a"><b>eval</b></font><font color="#6a5acd"> </font><font color="#a020f0">$SED</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$diacor</font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">)</font><font color="#a52a2a"><b>&quot;;</b></font> <font color="#6a5acd">}</font>
+<font color="#0000ff"># colore o calendario</font>
+<font color="#008b8b">cor</font>=<font color="#a020f0">$COR_DATA</font> <font color="#a52a2a"><b>;</b></font> <font color="#a52a2a"><b>while</b></font><font color="#a52a2a"><b> </b></font><font color="#a52a2a"><b>read</b></font><font color="#a52a2a"><b> a</b></font><font color="#a52a2a"><b>;</b></font><font color="#a52a2a"><b> </b></font><font color="#a52a2a"><b>do</b></font> <font color="#008b8b">cal</font>=<font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$(</font><font color="#6a5acd">echo </font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$cal</font><font color="#a52a2a"><b>&quot;|</b></font><font color="#6a5acd"> </font><font color="#a52a2a"><b>eval</b></font><font color="#6a5acd"> </font><font color="#a020f0">$SED</font><font color="#6a5acd"> </font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$diacor</font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">)</font><font color="#a52a2a"><b>&quot;</b></font>
+<font color="#a52a2a"><b>done</b></font> <font color="#a52a2a"><b>&lt;</b></font> <font color="#a52a2a"><b>&lt;</b></font><font color="#a52a2a"><b>(</b></font>cat <font color="#a020f0">$dados</font> <font color="#a52a2a"><b>|</b></font> <font color="#a020f0">$SED</font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$SEDMES00</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>|</b></font>
+<font color="#a020f0">$SED</font> -n <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">/^ *# *</font><font color="#a020f0">$ms</font><font color="#ff00ff"> *- /,/#/{//d;/^ *$/d;s/^ *0//;s/ \+/ /g;s/ \?-.*//;p;}</font><font color="#a52a2a"><b>&quot;</b></font><font color="#a52a2a"><b>)</b></font>
+<font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$ms</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$(</font><font color="#6a5acd">date </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">+%m</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>-a</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$ano</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$(</font><font color="#6a5acd">date </font><font color="#a52a2a"><b>'</b></font><font color="#ff00ff">+%Y</font><font color="#a52a2a"><b>'</b></font><font color="#a020f0">)</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font> <font color="#a52a2a"><b>||</b></font> <font color="#008b8b">COR_HJ</font>=<font color="#a020f0">$NORMAL</font>
+<font color="#0000ff"># monta o calendario com os lembretes</font>
+paste <font color="#a52a2a"><b>&lt;</b></font><font color="#a52a2a"><b>(</b></font><font color="#a52a2a"><b>echo</b></font><font color="#ff00ff"> </font><font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$cal</font><font color="#a52a2a"><b>&quot;</b></font><font color="#a52a2a"><b>)</b></font> <font color="#a52a2a"><b>&lt;</b></font><font color="#a52a2a"><b>(</b></font>cat <font color="#a020f0">$dados</font> <font color="#a52a2a"><b>|</b></font> <font color="#a020f0">$SED</font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$SEDMES00</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>|</b></font>
+<font color="#a020f0">$SED</font> -n <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">/^ *# *</font><font color="#a020f0">$ms</font><font color="#ff00ff"> *- /,/#/{//d;/^ *$/d;s/^ *0//;s/ \+/ /g;p;}</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>|</b></font> <font color="#a52a2a"><b>sort</b></font> -n <font color="#a52a2a"><b>|</b></font>
+<font color="#a020f0">$SED</font> <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">s/^[0-9] / &amp;/;/</font><font color="#6a5acd">\b</font><font color="#a020f0">$hj</font><font color="#6a5acd">\b</font><font color="#ff00ff">/s/.*/</font><font color="#a020f0">$(</font><font color="#6a5acd">echo -en </font><font color="#a020f0">$COR_HJ</font><font color="#a020f0">)</font><font color="#ff00ff">&amp;</font><font color="#a020f0">$(</font><font color="#6a5acd">echo -en </font><font color="#a020f0">$NORMAL</font><font color="#a020f0">)</font><font color="#ff00ff">/</font><font color="#a52a2a"><b>&quot;</b></font><font color="#a52a2a"><b>)</b></font>
+<font color="#6a5acd">}</font>
+
+<font color="#0000ff">#############################################################################</font>
+<font color="#0000ff">############# Main</font>
+<font color="#0000ff">#############################################################################</font>
+
+<font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">--versao</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>-o</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">-v</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font><font color="#a52a2a"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> <font color="#a52a2a"><b>echo</b></font><font color="#ff00ff"> </font><font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">datas versao </font><font color="#a020f0">$versao</font><font color="#a52a2a"><b>&quot;;</b></font><font color="#a52a2a"><b>exit</b></font><font color="#a52a2a"><b>;</b></font> <font color="#6a5acd">}</font>
+
+<font color="#0000ff"># edita o arquivo de configuracao</font>
+<font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">--edit</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>-o</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">-e</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font> <font color="#a52a2a"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#a020f0">${</font><font color="#a020f0">EDITOR</font><font color="#a52a2a"><b>:-</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#a52a2a"><b>:-</b></font>vi<font color="#a020f0">}}</font> <font color="#a020f0">$dados</font> <font color="#a52a2a"><b>;</b></font> <font color="#a52a2a"><b>exit</b></font><font color="#a52a2a"><b>;</b></font> <font color="#6a5acd">}</font>
+
+<font color="#0000ff"># envia o(s) lembrete(s) por mail e/ou celular (se necessario)</font>
+<font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">--cron</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font> <font color="#a52a2a"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#a52a2a"><b>shift</b></font><font color="#a52a2a"><b>;</b></font> cron <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;;</b></font> <font color="#a52a2a"><b>exit</b></font><font color="#a52a2a"><b>;</b></font> <font color="#6a5acd">}</font>
+
+<font color="#0000ff"># lista todos os compromissos cadastrados</font>
+<font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">--list</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>-o</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">-l</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font> <font color="#a52a2a"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font>
+<font color="#a020f0">$SED</font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$SEDMES00</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a020f0">$dados</font> <font color="#a52a2a"><b>|</b></font> <font color="#a020f0">$SED</font> -n <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">/^ *$/d;s/^[0-9] /0&amp;/;/^ *# *01 *-/,</font><font color="#6a5acd">\$</font><font color="#ff00ff">{</font>
+<font color="#ff00ff">s/^ *# *[0-9].*/</font><font color="#a020f0">$(</font><font color="#6a5acd">echo -en </font><font color="#a020f0">$VERDE</font><font color="#a020f0">)</font><font color="#ff00ff">&amp;</font><font color="#a020f0">$(</font><font color="#6a5acd">echo -en </font><font color="#a020f0">$NORMAL</font><font color="#a020f0">)</font><font color="#ff00ff">/;p;}</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>|</b></font>
+<font color="#a020f0">$SED</font> <font color="#a52a2a"><b>'</b></font><font color="#ff00ff">1i **** tecla Q sai</font><font color="#a52a2a"><b>'</b></font> <font color="#a52a2a"><b>|</b></font> <font color="#a020f0">${</font><font color="#a020f0">PAGER</font><font color="#a52a2a"><b>:-</b></font>less -r<font color="#a020f0">}</font><font color="#a52a2a"><b>;</b></font> <font color="#a52a2a"><b>exit</b></font><font color="#a52a2a"><b>;</b></font> <font color="#6a5acd">}</font>
+
+<font color="#0000ff"># mostra help</font>
+<font color="#a52a2a"><b>[</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>-o</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>=</b></font> <font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#a52a2a"><b>&quot;</b></font> <font color="#a52a2a"><b>]</b></font> <font color="#a52a2a"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font>
+<font color="#a52a2a"><b>echo</b></font><font color="#ff00ff"> </font><font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff">datas.: script que mostra o calendário destacando as datas importantes</font>
+<font color="#ff00ff">Site..: <A HREF="http://thobias.org/datas">http://thobias.org/datas</A></font>
+<font color="#ff00ff">Versão: </font><font color="#a020f0">$versao</font>
+
+<font color="#ff00ff">Uso: datas [opções]</font>
+
+<font color="#ff00ff">    [mês] [ano] especifica o mês a ser consultado (pode ser indicado o ano)</font>
+<font color="#ff00ff">    --cron [N]  envia o mail com de N dias de antecedência da data do lembrete</font>
+<font color="#ff00ff">-e, --edit      abre o arquivo com os lembretes em um editor de texto</font>
+<font color="#ff00ff">-l, --list      mostra todos os lembretes cadastrados</font>
+<font color="#ff00ff">-h, --help      mostra a ajuda</font>
+<font color="#ff00ff">-v, --versao    mostra a versão</font>
+
+<font color="#ff00ff">Consulte a documentação completa no site.</font>
+<font color="#a52a2a"><b>&quot;</b></font><font color="#ff00ff"> </font><font color="#a52a2a"><b>;</b></font> <font color="#a52a2a"><b>exit</b></font><font color="#a52a2a"><b>;</b></font> <font color="#6a5acd">}</font>
+
+<font color="#0000ff"># mostra o calendario com os compromissos </font>
+cmd <font color="#a52a2a"><b>&quot;</b></font><font color="#a020f0">$@</font><font color="#a52a2a"><b>&quot;</b></font>
+
+</pre>
+</body>
+</html>

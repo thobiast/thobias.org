@@ -1,0 +1,134 @@
+RAC - Rows and Columns
+Aurélio Marinho Jargas & Thobias Salazar Trevisan
+%%date(%d/%m/%Y)
+
+%!encoding: iso-8859-1
+%!Target  : html 
+
+= ATENÇÃO =
+
+Esta página contém as versões de desenvolvimento do RAC.
+Para obter documentação e/ou a última versão ESTÁVEL do programa
+acesse o site oficial: http://aurelio.net/rac
+
+Esta versão é destinada a desenvolvedores e testadores!!
+
+= RAC test-suite =
+
+[ractest ractest] é um script feito especialmente para testar e validar o
+funcionamento do RAC. Atualmente o ractest realizar mais de 300 testes
+utilizando todos os tipos de endereçamento suportados. Então se você
+fez alguma alteração no código e gostaria de validar o resultado, esta
+ferramenta é ideal para te deixar no rumo certo. :)
+
+Um dos nossos objetivos é deixar o RAC portável, então
+você pode ajudar no desenvolvimento simplesmente nos avisando de
+como o ractest executou no seu ambiente.
+
+Apenas execute-o. Se ele não "reclamar" de nada, o rac está
+de acordo com as especificações =8)
+
+**Versão nova do test-suite liberada em 30/03/2005.**
+
+- Adicionado testes de string e vários outros incorporados.
+
+
+Baixe o [ractest ractest].
+
+
+
+=====================================================================
+
+=v1.3=
+
+== Versões de Desenvolvimento da v1.3 ==
+
+[rac-1.3-devel1.tgz rac-1.3-devel1.tgz]
+
+- Adicionado suporte a endereçamento por expressões regulares
+(regex), nos formatos BRE e ERE (default) (obrigado Silvano B. Dias pelo patch)
+- Opções novas -b e --bre para usar expressões regulares no formato
+antigo, chamado BRE (\+, \{\}, etc)
+- Opções novas -i e --ignore-case para tratar maiúsculas e minúsculas como iguais
+- Makefile: Adicionado target noopt para compilar sem otimização
+(obrigado Alan Kelon pela dica)
+- Bugfix: Agora remove o arquivo temporário quando finalizado com Ctrl+C
+- Bugfix: Agora endereços com 0 (zero) funcionam corretamente
+- Bugfix: Agora mostra a última letra no "echo -n" (obrigado lnas_90 pelo aviso)
+- Bugfix: Não estava escapando corretamente a \ (obrigado Silvano B. Dias pelo patch)
+
+
+Duas grandes **novidades**: Suporte a endereçamento utilizando expressões
+regulares e a opção -i, e --ignore-case, para tratar maiúsculas e minúsculas
+como iguais.
+
+
+=====================================================================
+
+=v1.2=
+
+== Versões de Desenvolvimento da v1.2 ==
+
+[rac-1.2-devel1.tgz rac-1.2-devel1.tgz]
+
+- adicionado suporte a strings (thanks Silvano B. Dias)
+- Makefile: arrumada instalação da man page (thanks Bruno Tadeu Russo)
+- Makefile: entradas para compilar no FreeBSD e friends (thanks Rudá Moura)
+- Makefile: depende de objetos, não sources (thanks Felipe Kellermann)
+- fixes aleatórios
+
+
+A **grande novidade** desta versão é o suporte a endereços usando texto (strings).
+Criamos uma documentação para ajudar os usuários a testarem esta nova
+funcionalidade. Para mais informações acesse:
+[RAC - Endereços Usando Textos (Strings) string.html]
+
+
+=====================================================================
+
+=v1.1=
+
+==Lançamento==
+
+Esta versão foi liberada em 20 de abril de 2004 com apenas uma
+modificação em relação a 1.1-devel3. Foi modificado a
+forma de realizar os //reallocs// na função //get_input_info//.
+Para baixar esta versão, acesse o site oficial: http://aurelio.net/rac.
+De resto, faça a atualização e divirta-se. :)
+
+== TODOs v1.1 ==
+
+O objetivo da próxima versão é '//arrumar a casa//'. A v1.1 não terá
+nenhuma funcionalidade nova, apenas limpeza e documentação do código
+para facilitar futuras contribs e a inclusão de novas funcionalidades.
+Atualmente os TODOs para a v1.1 são:
+
+- juntar as funções check_col and check_lines. Somente um filtro para linhas e colunas
+- aperfeiçoar as funções exec_range_lines e exec_range_cols
+- documentar o código
+- checar a sintaxe do endereço (retornar erro em sintaxe inválida)
+- retirar o include getopt.h
+
+
+== Versões de Desenvolvimento da v1.1==
+
+[rac-1.1-devel3.tgz rac-1.1-devel3.tgz]
+
+- Várias partes do código reescritas e remodeladas,
+ está mais rápido e consome menos memória, não
+ quebrando em arquivos gigantes (agora está menos tosco)
+
+
+[rac-1.1-devel2.tgz rac-1.1-devel2.tgz]
+
+- Arrumado erro de ortografia no --help (thanks Paulo Saldanha)
+- Para melhorar a portabilidade, o programa não usa mais o getopt
+- Makefile: pequenos ajustes visando a portabilidade
+
+
+[rac-1.1-devel1.tgz rac-1.1-devel1.tgz]
+
+- Makefile: novos targets install, uninstall e debug (thanks crg3k)
+- Adicionada uma estrutura com as variáveis globais (thanks crg3k)
+
+

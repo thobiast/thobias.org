@@ -1,0 +1,51 @@
+TSM
+Stuff about IBM Tivoli Storage Manager
+
+%!encoding: iso-8859-1
+%!Style   : tsm.css
+%!target  : html
+%!Options : --toc --mask-email --css-sugar
+
+
+Hello! My name is Thobias. Welcome to my TSM site!
+
+Here you will find some information about
+[IBM Tivoli Storage Manager (TSM) http://www-306.ibm.com/software/tivoli/products/storage-mgr/].
+All content of this site is free.
+
+Any comment, question, suggestion are very welcome.
+Please do not hesitate to contact me at: thobias@thobias.org
+
+
+==TSMmonitor==
+
+[TSMmonitor tsmmonitor/index.html] - A shell script to monitor the health of TSM Servers.
+Some nice features:
+
+  - Supports multiples tsm servers (servername)
+  - Can be used transparently as a nagios plugin
+  - Alert notification mechanism (by e-mail)
+  - Supports new values for ok/warning/critical status in command line
+  - Bourne shell (sh) compliance
+  - Easy to add news checks
+
+
+==SQL==
+
+[SQL sql/index.html] - A collection of useful SQL statements for TSM.
+
+
+==TSM Scripts==
+
+[TSM Scripts tsm_scr/index.html] - A collection of useful TSM scripts.
+
+
+==IBM Tape Diagnostic Tool==
+
+[tapeutil, itdt and mtlib commands tapeutil/index.html] - Collection of useful tapeutil, itdt and mtlib commands.
+
+
+
+%!include: ''g_analytics.html''
+
+

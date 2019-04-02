@@ -1,0 +1,224 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.sf.net">
+<LINK REL="stylesheet" TYPE="text/css" HREF="audio.css">
+<TITLE>Converter Arquivos de Áudio</TITLE>
+</HEAD><BODY BGCOLOR="white" TEXT="black">
+<P ALIGN="center"><CENTER><H1>Converter Arquivos de Áudio</H1>
+<FONT SIZE="4">
+<I>Thobias Salazar Trevisan</I><BR>
+29/06/2005
+</FONT></CENTER>
+
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
+  <UL>
+  <LI><A HREF="#toc1">Introdução</A>
+  <LI><A HREF="#toc2">MP3 to WAV</A>
+  <LI><A HREF="#toc3">WAV to MP3</A>
+  <LI><A HREF="#toc4">WAV to OGG</A>
+  <LI><A HREF="#toc5">OGG to WAV</A>
+  <LI><A HREF="#toc6">MP3 to OGG</A>
+  <LI><A HREF="#toc7">WMA to WAV</A>
+  <LI><A HREF="#toc8">FLAC to WAV</A>
+  <LI><A HREF="#toc9">WAV to FLAC</A>
+  <LI><A HREF="#toc10">Dicas Extras</A>
+  </UL>
+
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
+<A NAME="toc1"></A>
+<H1>Introdução</H1>
+<P>
+O objetivo deste texto é juntar em um único documento scripts <I>one-line</I>
+prontos para copiar e colar que fazem a conversão entre os principais
+formatos de áudio existente.
+</P>
+<P>
+Se você está sentindo falta de algum formato, sabe de uma outra
+maneira ou outro programa que faça estas conversões me mande um
+mail. Contribua!! Ajude a tornar este texto útil. =8)
+</P>
+<P>
+<B>OBS</B>: Note que utilizei o "for" para listar os arquivos, portanto, caso
+os seus arquivos tenham espaços em branco no nome, você tem que trocar o IFS
+para "\n" ou utilizar o "while".
+</P>
+<P>
+Exemplo:
+</P>
+<PRE>
+  prompt&gt; IFS="
+  "
+  prompt&gt; for i in *.mp3; do .... ; done
+</PRE>
+<P>
+ou
+</P>
+<PRE>
+  prompt&gt; while read i; do .... ; done &lt; &lt;(ls *.mp3) 
+</PRE>
+<P></P>
+<P>
+Ah, ou antes de executar os comandos use a função zzarrumanome das
+<A HREF="http://aurelio.net/zz">funcoeszz</A>, muito bom para organizar
+o nome dos arquivos de áudio.
+</P>
+<PRE>
+  prompt&gt; zzarrumanome --help
+  
+  Renomeia arquivos do diretório atual, arrumando nomes estranhos.
+  Obs.: ele deixa tudo em minúsculas, retira acentuação e troca espaços em
+        branco, símbolos e pontuação pelo sublinhado _
+  Use o -r para ser recursivo e o -d para renomear diretórios também
+  Uso: zzarrumanome [-d] [-r] arquivo(s)
+  Ex.: zzarrumanome *
+       zzarrumanome -d -r .
+       zzarrumanome "DOCUMENTO MALÃO!.DOC"       # fica documento_malao.doc
+       zzarrumanome "RAMONES - I Don't Care"     # fica ramones-i_don_t_care
+</PRE>
+<P></P>
+<HR NOSHADE SIZE=5>
+<P></P>
+<A NAME="toc2"></A>
+<H1>MP3 to WAV</H1>
+<P>
+Uma das maneiras de realizar esta conversão é utilizando o programa
+<A HREF="http://www.mpg123.org">mpg123</A>.
+</P>
+<P>
+Para conveter todos os mp3 do diretório atual para wav:
+</P>
+<PRE>
+  prompt&gt; for i in *.mp3; do mpg123 -w "${i%.mp3}.wav" "$i"; done 
+</PRE>
+<P></P>
+<P>
+Usando o <A HREF="http://sox.sourceforge.net">sox</A>:
+</P>
+<PRE>
+  prompt&gt; for i in *.mp3; do sox "$i" "${i%.mp3}.wav"; done
+</PRE>
+<P></P>
+<A NAME="toc3"></A>
+<H1>WAV to MP3</H1>
+<P>
+Usando o <A HREF="http://lame.sourceforge.net">lame</A>:
+</P>
+<PRE>
+  prompt&gt; for i in *.wav; do lame -h "$i" "${i%.wav}.mp3"; done 
+</PRE>
+<P></P>
+<A NAME="toc4"></A>
+<H1>WAV to OGG</H1>
+<P>
+Usando o <A HREF="http://www.gnu.org/directory/audio/ogg/OggEnc.html">oggenc</A>.
+A opção "-q" indica a qualidade do
+arquivo gerado. O default é 3 e o máximo é 10, que significa a melhor
+qualidade.
+</P>
+<PRE>
+  prompt&gt; for i in *.wav; do oggenc -q 5 "$i"; done
+</PRE>
+<P></P>
+<P>
+Usando o <A HREF="http://sox.sourceforge.net">sox</A>:
+</P>
+<PRE>
+  prompt&gt; for i in *.wav; do sox "$i" "${i%.wav}.ogg"; done
+</PRE>
+<P></P>
+<A NAME="toc5"></A>
+<H1>OGG to WAV</H1>
+<P>
+Utilizando o programa inverso do WAV to OGG, ie,
+<A HREF="http://www.gnu.org/directory/audio/Ogg_vorbis/vorbistools.html">oggdec</A>:
+</P>
+<PRE>
+  prompt&gt; for i in *.ogg; do oggdec "$i"; done 
+</PRE>
+<P></P>
+<P>
+Usando o <A HREF="http://sox.sourceforge.net">sox</A>:
+</P>
+<PRE>
+  prompt&gt; for i in *.ogg; do sox "$i" "${i%.ogg}.wav"; done
+</PRE>
+<P></P>
+<A NAME="toc6"></A>
+<H1>MP3 to OGG</H1>
+<P>
+Usando o <A HREF="http://sox.sourceforge.net">sox</A>:
+</P>
+<PRE>
+  prompt&gt; for i in *.mp3; do sox "$i" "${i%.mp3}.ogg"; done
+</PRE>
+<P></P>
+<A NAME="toc7"></A>
+<H1>WMA to WAV</H1>
+<P>
+Usando o <A HREF="http://www.mplayerhq.hu/homepage">mplayer</A>:
+</P>
+<PRE>
+  prompt&gt; for i in *.wma; do mplayer -ao pcm -aofile "${i%.wma}.wav" "$i"; done
+</PRE>
+<P></P>
+<A NAME="toc8"></A>
+<H1>FLAC to WAV</H1>
+<P>
+Usando o <A HREF="http://flac.sourceforge.net">flac</A>:
+</P>
+<PRE>
+  prompt&gt; for i in *.flac; do flac -d $i; done
+</PRE>
+<P></P>
+<A NAME="toc9"></A>
+<H1>WAV to FLAC</H1>
+<P>
+Usando o <A HREF="http://flac.sourceforge.net">flac</A>:
+</P>
+<PRE>
+  prompt&gt; for i in *.wav; do flac $i; done
+</PRE>
+<P></P>
+<HR NOSHADE SIZE=5>
+<P></P>
+<A NAME="toc10"></A>
+<H1>Dicas Extras</H1>
+<P>
+Ripar todo CD usando o <A HREF="http://www.xiph.org/paranoia">cdparanoia</A>:
+</P>
+<PRE>
+  prompt&gt; cdparanoia -B
+</PRE>
+<P></P>
+<P>
+Colocar todo os WAV na mesma frequência:
+</P>
+<PRE>
+  prompt&gt; for i in *.wav; do sox "$i" -r 44100 "arquivo_novo_$i" ; done
+</PRE>
+<P></P>
+<P>
+Ajustar o volume dos arquivos WAV usando o
+<A HREF="http://freshmeat.net/projects/normalize">normalize</A>.
+Antes de gravar um CD de áudio execute
+este comando para deixar todas as músicas com o mesmo volume:
+</P>
+<PRE>
+  prompt&gt; normalize -m *.wav
+</PRE>
+<P></P>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2229503-1";
+urchinTracker();
+</script>
+
+<!-- html code generated by txt2tags 2.2 (http://txt2tags.sf.net) -->
+<!-- cmdline: txt2tags conv_audio.t2t -->
+</BODY></HTML>

@@ -1,0 +1,1037 @@
+<html>
+<head>
+<title>tsmmonitor.html</title>
+<meta name="Generator" content="Vim/7.0">
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1">
+</head>
+<body bgcolor="#ffffff" text="#000000">
+<pre>
+<font color="#0000ff">#!/bin/sh</font>
+<font color="#0000ff"># tsmmonitor - IBM TSM (Tivoli Storage Manager) monitoring script</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Homepage: <a href="http://thobias.org/tsm">http://thobias.org/tsm</a></font>
+<font color="#0000ff"># Author  : Thobias Salazar Trevisan</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Changelog (DD/MM/YYYY):</font>
+<font color="#0000ff"># 15/06/2007 - first version</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff">##############################################################################</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff">#   +-------------------------------------------------------------+</font>
+<font color="#0000ff">#   |               IMPORTANT MESSAGES, PLEASE READ               |</font>
+<font color="#0000ff">#   |               ===============================               |</font>
+<font color="#0000ff">#   +-------------------------------------------------------------+</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   |      This script has in clear text a user and a             |</font>
+<font color="#0000ff">#   |      password to access your tsm server, so it              |</font>
+<font color="#0000ff">#   |      could be a security risk. To prevent other users to    |</font>
+<font color="#0000ff">#   |      read the source, use a chmod 700 tsmmonitor to         |</font>
+<font color="#0000ff">#   |      set the script permissions. You should also use a      |</font>
+<font color="#0000ff">#   |      tsm user with minimum privileges. Anyway, the          |</font>
+<font color="#0000ff">#   |      password can be be find out with the ps command.       |</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   +-------------------------------------------------------------+</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   |      Alert notification: at every check, when status        |</font>
+<font color="#0000ff">#   |      changes (among ok, warning and critical), a            |</font>
+<font color="#0000ff">#   |      notification mail is sent. This feature can be         |</font>
+<font color="#0000ff">#   |      configured in the SEND_ALERT flag. If you              |</font>
+<font color="#0000ff">#   |      do not want to receive the alert, set this flag        |</font>
+<font color="#0000ff">#   |      to 0 (zero).                                           |</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   +-------------------------------------------------------------+</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   |      Tsmmonitor can be used transparently as a              |</font>
+<font color="#0000ff">#   |      nagios plugin. Nagios plugins are based on script      |</font>
+<font color="#0000ff">#   |      return code, ie, 0 - normal, 1 - warning,              |</font>
+<font color="#0000ff">#   |      2 - critical and 3 - unknown. These are the same       |</font>
+<font color="#0000ff">#   |      return codes used by tsmmonitor.                       |</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   +-------------------------------------------------------------+</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   |      This script intends to be UNIX compliance.             |</font>
+<font color="#0000ff">#   |      It has been tested successfully under many linux       |</font>
+<font color="#0000ff">#   |      distributions and AIX (4.2, 5.1, 5.2 and 5.3).         |</font>
+<font color="#0000ff">#   |      If you have any problem, please let me know.           |</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   +-------------------------------------------------------------+</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   |      To get started, there are some variables               |</font>
+<font color="#0000ff">#   |      that need to be set in the code. The code              |</font>
+<font color="#0000ff">#   |      is nice and easy to read and to configure.             |</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   |      Please, read the next lines carefully (the             |</font>
+<font color="#0000ff">#   |      configuration area).                                   |</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   +-------------------------------------------------------------+</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   |      If you have any doubt, do not hesitate to send         |</font>
+<font color="#0000ff">#   |      me a mail. Enjoy it!                                   |</font>
+<font color="#0000ff">#   |                                                             |</font>
+<font color="#0000ff">#   +-------------------------------------------------------------+</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff">#                       Configuration Area</font>
+<font color="#0000ff">#                       ==================</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff">############### tsm server information</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># dsmadmc command path</font>
+<font color="#008080">DSMADMC</font>=<font color="#804040"><b>'</b></font><font color="#ff00ff">/usr/bin/dsmadmc</font><font color="#804040"><b>'</b></font>
+
+<font color="#0000ff"># tsm user to connect to the tsm server and perform the checks</font>
+<font color="#008080">USER</font>=<font color="#804040"><b>''</b></font>
+
+<font color="#0000ff"># tsm user password</font>
+<font color="#008080">PASS</font>=<font color="#804040"><b>''</b></font>
+
+<font color="#0000ff"># tsm base query command. usually, you do not need to touch here</font>
+<font color="#008080">TSM_CMD</font>=<font color="#804040"><b>'</b></font><font color="#ff00ff">$DSMADMC $servername -tab -id=$USER -password=$PASS</font><font color="#804040"><b>'</b></font>
+
+<font color="#0000ff">############### send notification</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># at every time that a check changes the status,</font>
+<font color="#0000ff"># an alert (notification) will be sent by mail. default is off</font>
+<font color="#008080">SEND_ALERT</font>=<font color="#ff00ff">0</font>
+
+<font color="#0000ff"># e-mails which will receive the notifications. mail addresses are separated</font>
+<font color="#0000ff"># by blank space. ex: MAILTO='xxx@yyy.zzz aaa@bbb.zzz ppp@qqq.lll'</font>
+<font color="#008080">MAILTO</font>=<font color="#804040"><b>''</b></font>
+
+<font color="#0000ff"># temp directory where tsmmonitor will record check status.</font>
+<font color="#0000ff"># it is necessary to send mail when the check status changes</font>
+<font color="#008080">TEMPDIR</font>=<font color="#804040"><b>'</b></font><font color="#ff00ff">/tmp</font><font color="#804040"><b>'</b></font>
+
+<font color="#0000ff">############### default values for checks</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: database utilization</font>
+<font color="#0000ff"># default percentage of use for warning and critical status</font>
+<font color="#008080">DB_WARNING</font>=<font color="#ff00ff">85</font>
+<font color="#008080">DB_CRITICAL</font>=<font color="#ff00ff">90</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: log utilization</font>
+<font color="#0000ff"># default percentage of use for warning and critical status</font>
+<font color="#008080">LOG_WARNING</font>=<font color="#ff00ff">60</font>
+<font color="#008080">LOG_CRITICAL</font>=<font color="#ff00ff">80</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: scratch tape number</font>
+<font color="#0000ff"># minimal number of scratch tapes for warning and critical status</font>
+<font color="#008080">SC_WARNING</font>=<font color="#ff00ff">10</font>
+<font color="#008080">SC_CRITICAL</font>=<font color="#ff00ff">6</font>
+<font color="#0000ff"># </font>
+<font color="#0000ff"># check: number of paths not online</font>
+<font color="#008080">PATH_WARNING</font>=<font color="#ff00ff">1</font>
+<font color="#008080">PATH_CRITICAL</font>=<font color="#ff00ff">2</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: number of drives not online</font>
+<font color="#008080">DRIVE_WARNING</font>=<font color="#ff00ff">1</font>
+<font color="#008080">DRIVE_CRITICAL</font>=<font color="#ff00ff">2</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check tsm database fragmantation</font>
+<font color="#008080">DBFRAG_WARNING</font>=<font color="#ff00ff">60</font>
+<font color="#008080">DBFRAG_CRITICAL</font>=<font color="#ff00ff">80</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: number of unavailable volumes</font>
+<font color="#008080">UNAV_WARNING</font>=<font color="#ff00ff">1</font>
+<font color="#008080">UNAV_CRITICAL</font>=<font color="#ff00ff">2</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: number of pending request (q req)</font>
+<font color="#008080">REQ_WARNING</font>=<font color="#ff00ff">1</font>
+<font color="#008080">REQ_CRITICAL</font>=<font color="#ff00ff">2</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: storage pool utilization</font>
+<font color="#008080">STGPOOL_WARNING</font>=<font color="#ff00ff">80</font>
+<font color="#008080">STGPOOL_CRITICAL</font>=<font color="#ff00ff">95</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: number of volumes with error</font>
+<font color="#008080">VOLERR_WARNING</font>=<font color="#ff00ff">1</font>
+<font color="#008080">VOLERR_CRITICAL</font>=<font color="#ff00ff">2</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: number of tapes in the library</font>
+<font color="#008080">TAPESLIB_WARNING</font>=<font color="#ff00ff">90</font>
+<font color="#008080">TAPESLIB_CRITICAL</font>=<font color="#ff00ff">86</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: number of tapes with a specific owner</font>
+<font color="#008080">TAPESOWN_WARNING</font>=<font color="#ff00ff">2</font>
+<font color="#008080">TAPESOWN_CRITICAL</font>=<font color="#ff00ff">3</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: number of tapes in a specific storage pool</font>
+<font color="#008080">TAPESSTGPOOL_WARNING</font>=<font color="#ff00ff">40</font>
+<font color="#008080">TAPESSTGPOOL_CRITICAL</font>=<font color="#ff00ff">50</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: number of tsm db backup in the last 24 hours</font>
+<font color="#008080">DBBKP_WARNING</font>=<font color="#ff00ff">1</font>
+<font color="#008080">DBBKP_CRITICAL</font>=<font color="#ff00ff">0</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check:  number of nodes session</font>
+<font color="#008080">NUMSESS_WARNING</font>=<font color="#ff00ff">15</font>
+<font color="#008080">NUMSESS_CRITICAL</font>=<font color="#ff00ff">20</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># check: number of nodes</font>
+<font color="#008080">NUMNODES_WARNING</font>=<font color="#ff00ff">80</font>
+<font color="#008080">NUMNODES_CRITICAL</font>=<font color="#ff00ff">90</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Check: number of disk volumes without readwrite access</font>
+<font color="#008080">DISKVOL_WARNING</font>=<font color="#ff00ff">1</font>
+<font color="#008080">DISKVOL_CRITICAL</font>=<font color="#ff00ff">2</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Check: number of database volumes not synchronized</font>
+<font color="#008080">DBVOL_WARNING</font>=<font color="#ff00ff">1</font>
+<font color="#008080">DBVOL_CRITICAL</font>=<font color="#ff00ff">2</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Check: number of log volumes not synchronized</font>
+<font color="#008080">LOGVOL_WARNING</font>=<font color="#ff00ff">1</font>
+<font color="#008080">LOGVOL_CRITICAL</font>=<font color="#ff00ff">2</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff">############### debug flags</font>
+<font color="#0000ff">#</font>
+<font color="#008080">DEBUG</font>=<font color="#ff00ff">0</font>         <font color="#0000ff"># do not edit here, please use --debug</font>
+<font color="#008080">COLOR_DEBUG</font>=<font color="#ff00ff">1</font>   <font color="#0000ff"># show debug messages in colors?</font>
+<font color="#0000ff">#</font>
+<font color="#008080">VERBOSE</font>=<font color="#ff00ff">0</font>
+<font color="#0000ff">############### program information</font>
+<font color="#0000ff">#</font>
+<font color="#008080">url</font>=<font color="#804040"><b>'</b></font><font color="#ff00ff"><a href="http://thobias.org/tsmmonitor">http://thobias.org/tsmmonitor</a></font><font color="#804040"><b>'</b></font>
+<font color="#008080">version</font>=<font color="#804040"><b>'</b></font><font color="#ff00ff">1.0</font><font color="#804040"><b>'</b></font>
+<font color="#0000ff">#</font>
+<font color="#0000ff">##############################################################################</font>
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># #### This section has some functions. These are for internal use only</font>
+<font color="#0000ff"># #### not for users</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+
+<font color="#0000ff"># debug function</font>
+_Debug<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font>
+<font color="#804040"><b>if</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$DEBUG</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>then</b></font>
+   <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$COLOR_DEBUG</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   <font color="#0000ff"># INFO: some OS, like AIX there is no echo -e option</font>
+   <font color="#804040"><b>echo</b></font><font color="#ff00ff"> -e </font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">\033</font><font color="#ff00ff">[32;1m ----- DEBUG: </font><font color="#a020f0">$*</font><font color="#ff00ff"> </font><font color="#6a5acd">\033</font><font color="#ff00ff">[m</font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff"> </font><font color="#804040"><b>||</b></font> <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">----- DEBUG: </font><font color="#a020f0">$*</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>fi</b></font>
+<font color="#6a5acd">}</font>
+
+<font color="#0000ff"># send mail, print the tsmmonitor output and exit with the right return code</font>
+_Myecho<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font>
+local retcode prefix <font color="#008080">check</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;;</b></font> <font color="#804040"><b>shift</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$servername</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#008080">servername</font>=<font color="#804040"><b>&quot;</b></font><font color="#ff00ff"> tsmserver </font><font color="#a020f0">${</font><font color="#a020f0">servername</font><span style="background-color: #ff0000"><font color="#ffffff">#*=</font></span><font color="#a020f0">}</font><font color="#ff00ff">:</font><font color="#804040"><b>&quot;</b></font>
+<font color="#008080">prefix</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$check</font><font color="#ff00ff">:</font><font color="#a020f0">$servername</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff"># you could specify your prefix here</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$SEND_ALERT</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _SendAlert <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$check</font><font color="#ff00ff">:</font><font color="#a020f0">$servername</font><font color="#804040"><b>&quot;</b></font> <font color="#a020f0">$*</font> <font color="#0000ff"># send mail?</font>
+<font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$prefix</font><font color="#ff00ff"> </font><font color="#a020f0">$*</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$*</font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff"> </font><font color="#804040"><b>|</b></font> grep -iqs <font color="#804040"><b>'</b></font><font color="#ff00ff">,  *critical</font><font color="#804040"><b>'</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#008080">retcode</font>=<font color="#ff00ff">2</font>
+<font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$*</font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff"> </font><font color="#804040"><b>|</b></font> grep -iqs <font color="#804040"><b>'</b></font><font color="#ff00ff">,  *warning</font><font color="#804040"><b>'</b></font>  <font color="#804040"><b>&amp;&amp;</b></font> <font color="#008080">retcode</font>=<font color="#ff00ff">1</font>
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">tsmmonitor return code: </font><font color="#a020f0">${</font><font color="#a020f0">retcode</font><font color="#804040"><b>:-</b></font><span style="background-color: #ff0000"><font color="#ffffff">0</font></span><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>exit</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">retcode</font><font color="#804040"><b>:-</b></font><span style="background-color: #ff0000"><font color="#ffffff">0</font></span><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+<font color="#0000ff"># show the functions help</font>
+_ShowHelp<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font>
+local help critical warning
+<font color="#0000ff"># portable sed</font>
+<font color="#008080">help</font>=<font color="#6a5acd">`sed -n </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">/^$/{x</font>
+<font color="#ff00ff">s/.*//</font>
+<font color="#ff00ff">x</font>
+<font color="#ff00ff">b</font>
+<font color="#ff00ff">}</font>
+<font color="#ff00ff">/^</font><font color="#a020f0">$2</font><font color="#ff00ff">(){/{x</font>
+<font color="#ff00ff">p</font>
+<font color="#ff00ff">}</font>
+<font color="#ff00ff">H</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#a020f0">$0</font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^# --/d;s/^# \{0,1\}//p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+<font color="#008080">critical</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$help</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/.*critical\.: *\([^ ]*\).*/\1/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+<font color="#008080">warning</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$help</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/.*warning\.\.: *\([^ ]*\).*/\1/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+<font color="#804040"><b>echo</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$help</font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff"> </font><font color="#804040"><b>|</b></font> sed <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">s/: *</font><font color="#a020f0">${</font><font color="#a020f0">critical</font><font color="#804040"><b>:-</b></font><span style="background-color: #ff0000"><font color="#ffffff">@@@</font></span><font color="#a020f0">}</font><font color="#ff00ff">/: </font><font color="#6a5acd">`</font><font color="#804040"><b>eval</b></font><font color="#6a5acd"> echo </font><font color="#6a5acd">\\</font><font color="#a020f0">$$</font><font color="#6a5acd">critical`</font><font color="#ff00ff">/;</font>
+<font color="#ff00ff">s/: *</font><font color="#a020f0">${</font><font color="#a020f0">warning</font><font color="#804040"><b>:-</b></font><span style="background-color: #ff0000"><font color="#ffffff">@@@</font></span><font color="#a020f0">}</font><font color="#ff00ff">/: </font><font color="#6a5acd">`</font><font color="#804040"><b>eval</b></font><font color="#6a5acd"> echo </font><font color="#6a5acd">\\</font><font color="#a020f0">$$</font><font color="#6a5acd">warning`</font><font color="#ff00ff">/</font><font color="#804040"><b>&quot;;</b></font> <font color="#804040"><b>echo</b></font>
+<font color="#6a5acd">}</font>
+
+<font color="#0000ff"># verify tsm check (functions) options</font>
+_CheckInput<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> egrep </font><font color="#804040"><b>'</b></font><font color="#ff00ff">^[0-9]*$</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font>
+   <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Error: tsmmonitor </font><font color="#a020f0">$1</font><font color="#ff00ff">: invalid option </font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font>
+   <font color="#804040"><b>exit</b></font> <font color="#ff00ff">3</font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+<font color="#6a5acd">}</font>
+
+<font color="#0000ff"># check if the tsm command ran without errors</font>
+_CheckReturnCode<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font>
+local retcode <font color="#008080">check</font>=<font color="#a020f0">$1</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>shift</b></font>
+<font color="#008080">retcode</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/.*ighest return code was *\([0-9]*\)\./\1/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+<font color="#804040"><b>if</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$retcode</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>!=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">0</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>then</b></font>
+  <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$retcode</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">11</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-a</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$check</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">req</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#804040"><b>return</b></font>
+  <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$retcode</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">11</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-a</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$check</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">numnodes</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#804040"><b>return</b></font>
+  <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$retcode</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">11</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-a</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$check</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">unav</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#804040"><b>return</b></font>
+  <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$retcode</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">11</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-a</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$check</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">volerr</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#804040"><b>return</b></font>
+  <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$retcode</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">11</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-a</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$check</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">diskvol</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#804040"><b>return</b></font>
+  <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Check </font><font color="#a020f0">$check</font><font color="#ff00ff"> error: return code </font><font color="#a020f0">$retcode</font><font color="#804040"><b>&quot;</b></font>
+  _Debug <font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> egrep </font><font color="#804040"><b>'</b></font><font color="#ff00ff">^AN</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>&quot;</b></font>
+  <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$SEND_ALERT</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _SendAlert <font color="#a020f0">$check</font> unknown <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">error</font><font color="#804040"><b>&quot;</b></font>
+  _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">tsmmonitor return code: 3</font><font color="#804040"><b>&quot;</b></font>
+  <font color="#804040"><b>exit</b></font> <font color="#ff00ff">3</font> <font color="#0000ff"># nagios return code: unknown error</font>
+<font color="#804040"><b>fi</b></font>
+<font color="#6a5acd">}</font>
+
+<font color="#0000ff"># if necessary, send an alert (only when there is a check status change)</font>
+<font color="#0000ff"># $1 - check name</font>
+<font color="#0000ff"># $* - notification message</font>
+_SendAlert<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font>
+local <font color="#008080">check</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> logfile oldstatus <font color="#008080">newstatus</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$*</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed \</font>
+<font color="#804040"><b>'</b></font><font color="#ff00ff">s/^[^,]*, *\(OK\)\{0,1\}\(Warning\)\{0,1\}\(Critical\)\{0,1\}.*/\1\2\3/</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+<font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#008080">logfile</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$TEMPDIR</font><font color="#ff00ff">/</font><font color="#a020f0">$StatusFile</font><font color="#804040"><b>&quot;;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Log file: </font><font color="#a020f0">$logfile</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>-f</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$logfile</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>||</b></font> <font color="#804040"><b>echo</b></font><font color="#ff00ff"> OK </font><font color="#804040"><b>&gt;</b></font> <font color="#a020f0">$logfile</font> <font color="#0000ff"># is It the first time?</font>
+<font color="#008080">oldstatus</font>=<font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`&lt;</font><font color="#a020f0">$logfile</font><font color="#6a5acd">`</font><font color="#804040"><b>&quot;</b></font>
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">oldstatus = </font><font color="#a020f0">$oldstatus</font><font color="#ff00ff">, newstatus = </font><font color="#a020f0">$newstatus</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>if</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$oldstatus</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>!=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$newstatus</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>then</b></font>
+   <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$newstatus</font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&gt;</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$logfile</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff"># save new status</font>
+   <font color="#0000ff"># do not send OK alert to sched check. this do not make sense?!</font>
+   <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$check</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">sched:</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-a</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$newstatus</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">OK</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#804040"><b>return</b></font>
+   _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Sending notification to </font><font color="#a020f0">$MAILTO</font><font color="#804040"><b>&quot;</b></font>
+   <font color="#804040"><b>for</b></font> i <font color="#804040"><b>in</b></font> <font color="#a020f0">$MAILTO</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>do</b></font> <font color="#0000ff"># send mails</font>
+      <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">check </font><font color="#a020f0">$check</font><font color="#ff00ff"> </font><font color="#a020f0">$*</font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff"> </font><font color="#804040"><b>|</b></font>
+      mail <font color="#804040"><b>-s</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">tsmmonitor: check </font><font color="#a020f0">$check</font><font color="#ff00ff"> </font><font color="#a020f0">$newstatus</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$i</font><font color="#804040"><b>&quot;</b></font>
+   <font color="#804040"><b>done</b></font>
+<font color="#804040"><b>fi</b></font>
+<font color="#6a5acd">}</font>
+
+<font color="#0000ff">##############################################################################</font>
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># #### yeah tsm checks.</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># show all checks help</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor help</font>
+<font color="#0000ff"># Example: tsmmonitor help</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+help<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> help<font color="#804040"><b>;</b></font> <font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+<font color="#804040"><b>for</b></font> i <font color="#804040"><b>in</b></font> <font color="#6a5acd">`sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/^\([a-zA-Z]*\)().*/\1/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd"> </font><font color="#a020f0">$0</font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>do</b></font>
+  <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>'</b></font><font color="#ff00ff">---------------------------------------------------------------------</font><font color="#804040"><b>'</b></font>
+  <font color="#a020f0">$0</font> <font color="#a020f0">$i</font> --help <font color="#804040"><b>|</b></font> sed <font color="#804040"><b>'</b></font><font color="#ff00ff">1d;$d</font><font color="#804040"><b>'</b></font>
+<font color="#804040"><b>done</b></font>
+<font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>'</b></font><font color="#ff00ff">---------------------------------------------------------------------</font><font color="#804040"><b>'</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check tsm database utilization</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default percentages are:</font>
+<font color="#0000ff">#    warning..: DB_WARNING</font>
+<font color="#0000ff">#    critical.: DB_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor db [warning] [critical]</font>
+<font color="#0000ff"># Example: tsmmonitor db</font>
+<font color="#0000ff">#          tsmmonitor db 80 95</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+db<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> db<font color="#804040"><b>;</b></font> <font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput db <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput db <font color="#a020f0">$2</font>
+local output pct
+
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>'</b></font><font color="#ff00ff">SELECT pct_utilized FROM db</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode db <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">pct</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/^\([0-9]*\)[.,].*/\1/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">pct = </font><font color="#a020f0">$pct</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$pct</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$DB_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho db <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">database utilization </font><font color="#a020f0">$pct</font><font color="#ff00ff">%, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$pct</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$DB_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho db <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">database utilization </font><font color="#a020f0">$pct</font><font color="#ff00ff">%, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho db <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">database utilization </font><font color="#a020f0">$pct</font><font color="#ff00ff">%, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check tsm recovery log utilization</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default percentages are:</font>
+<font color="#0000ff">#    warning..: LOG_WARNING</font>
+<font color="#0000ff">#    critical.: LOG_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor log [warning] [critical]</font>
+<font color="#0000ff"># Example: tsmmonitor log</font>
+<font color="#0000ff">#          tsmmonitor log 80 95</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+log<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> log<font color="#804040"><b>;</b></font> <font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput log <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput log <font color="#a020f0">$2</font>
+local output pct
+
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>'</b></font><font color="#ff00ff">SELECT pct_utilized FROM log</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode log <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">pct</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/^\([0-9]*\)[.,].*/\1/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">pct = </font><font color="#a020f0">$pct</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$pct</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$LOG_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho log <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">log utilization </font><font color="#a020f0">$pct</font><font color="#ff00ff">%, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$pct</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$LOG_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho log <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">log utilization </font><font color="#a020f0">$pct</font><font color="#ff00ff">%, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho log <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">log utilization </font><font color="#a020f0">$pct</font><font color="#ff00ff">%, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check number of scratch tapes</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: SC_WARNING</font>
+<font color="#0000ff">#    critical.: SC_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor scratch [warning] [critical] [library_name]</font>
+<font color="#0000ff"># Example: tsmmonitor scratch</font>
+<font color="#0000ff">#          tsmmonitor scratch 8 4</font>
+<font color="#0000ff">#          tsmmonitor scratch 8 4 LTOLIB3</font>
+<font color="#0000ff">#          tsmmonitor scratch LTOLIB3</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+scratch<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> scratch<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+local output num lib
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$#</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-eq</b></font> <font color="#ff00ff">1</font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#008080">lib</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;;</b></font> <font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font> <font color="#804040"><b>||</b></font> <font color="#008080">lib</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$3</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput scratch <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput scratch <font color="#a020f0">$2</font>
+<font color="#804040"><b>if</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$lib</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font><font color="#804040"><b>then</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT count(*) FROM libvolumes WHERE \</font>
+<font color="#ff00ff">status='Scratch' and library_name='</font><font color="#a020f0">$lib</font><font color="#ff00ff">'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>else</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> \</font>
+<font color="#804040"><b>'</b></font><font color="#ff00ff">SELECT count(*) FROM libvolumes WHERE status=</font><font color="#804040"><b>'</b></font><font color="#6a5acd">\'</font><font color="#804040"><b>'</b></font><font color="#ff00ff">Scratch</font><font color="#804040"><b>'</b></font><font color="#6a5acd">\'</font><font color="#804040"><b>''</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>fi</b></font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode scratch <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^ *[0-9]/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff"># DEBUG</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$lib</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#008080">lib</font>=<font color="#804040"><b>&quot;</b></font><font color="#ff00ff"> library </font><font color="#a020f0">$lib</font><font color="#804040"><b>&quot;</b></font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-le</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$SC_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho scratch <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of scratch tapes </font><font color="#a020f0">$num$lib</font><font color="#ff00ff">, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-le</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$SC_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho scratch <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of scratch tapes </font><font color="#a020f0">$num$lib</font><font color="#ff00ff">, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho scratch <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of scratch tapes </font><font color="#a020f0">$num$lib</font><font color="#ff00ff">, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check number of drives not online</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: DRIVE_WARNING</font>
+<font color="#0000ff">#    critical.: DRIVE_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor drive [warning] [critical] [library_name]</font>
+<font color="#0000ff"># Example: tsmmonitor drive</font>
+<font color="#0000ff">#          tsmmonitor drive 2 3</font>
+<font color="#0000ff">#          tsmmonitor drive 1 2 LTOLIB3</font>
+<font color="#0000ff">#          tsmmonitor drive LTOLIB3</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+drive<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> drive<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+local output num lib
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$#</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-eq</b></font> <font color="#ff00ff">1</font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#008080">lib</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;;</b></font> <font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font> <font color="#804040"><b>||</b></font> <font color="#008080">lib</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$3</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput drive <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput drive <font color="#a020f0">$2</font>
+<font color="#804040"><b>if</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$lib</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>then</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT count(*) FROM drives WHERE \</font>
+<font color="#ff00ff">NOT online='YES' and library_name='</font><font color="#a020f0">$lib</font><font color="#ff00ff">'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>else</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> \</font>
+<font color="#804040"><b>'</b></font><font color="#ff00ff">SELECT count(*) FROM drives WHERE NOT online=</font><font color="#804040"><b>'</b></font><font color="#6a5acd">\'</font><font color="#804040"><b>'</b></font><font color="#ff00ff">YES</font><font color="#804040"><b>'</b></font><font color="#6a5acd">\'</font><font color="#804040"><b>''</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>fi</b></font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode drive <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^ *[0-9]/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff"># DEBUG</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$lib</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#008080">lib</font>=<font color="#804040"><b>&quot;</b></font><font color="#ff00ff"> library </font><font color="#a020f0">$lib</font><font color="#804040"><b>&quot;</b></font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$DRIVE_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho drive <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of drives not online </font><font color="#a020f0">$num$lib</font><font color="#ff00ff">, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$DRIVE_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho drive <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of drives not online </font><font color="#a020f0">$num$lib</font><font color="#ff00ff">, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho drive <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of drives not online </font><font color="#a020f0">$num$lib</font><font color="#ff00ff">, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check number of paths not online</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: PATH_WARNING</font>
+<font color="#0000ff">#    critical.: PATH_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor path [warning] [critical]</font>
+<font color="#0000ff"># Example: tsmmonitor path</font>
+<font color="#0000ff">#          tsmmonitor path 2 4</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+path<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> path<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput path <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput path <font color="#a020f0">$2</font>
+local output num
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT count(*) FROM paths WHERE NOT online='YES'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode path <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^ *[0-9]/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font>_Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$PATH_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho path <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of paths not online </font><font color="#a020f0">$num</font><font color="#ff00ff">, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$PATH_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho path <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of paths not online </font><font color="#a020f0">$num</font><font color="#ff00ff">, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho path <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of paths not online </font><font color="#a020f0">$num</font><font color="#ff00ff">, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check tsm database fragmentation</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: DBFRAG_WARNING</font>
+<font color="#0000ff">#    critical.: DBFRAG_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor dbfrag [warning] [critical]</font>
+<font color="#0000ff"># Example: tsmmonitor dbfrag</font>
+<font color="#0000ff">#          tsmmonitor dbfrag 50 75</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+dbfrag<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> dbfrag<font color="#804040"><b>;</b></font> <font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput dbfrag <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput dbfrag <font color="#a020f0">$2</font>
+local output pct
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>'</b></font><font color="#ff00ff">SELECT CAST((100 - (CAST(MAX_REDUCTION_MB AS FLOAT) * 256 ) /\</font>
+<font color="#ff00ff">(CAST(USABLE_PAGES AS FLOAT) - CAST(USED_PAGES AS FLOAT) ) * 100) AS \</font>
+<font color="#ff00ff">DECIMAL(4,2)) AS PERCENT_FRAG FROM DB</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode dbfrag <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">pct</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^[0-9]/s/[.,].*//p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">pct = </font><font color="#a020f0">$pct</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$pct</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$DBFRAG_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho dbfrag <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">database fragmentation </font><font color="#a020f0">$pct</font><font color="#ff00ff">%, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$pct</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$DBFRAG_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho dbfrag <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">database fragmentation </font><font color="#a020f0">$pct</font><font color="#ff00ff">%, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho dbfrag <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">database fragmentation </font><font color="#a020f0">$pct</font><font color="#ff00ff">%, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check number of unavailable volumes</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: UNAV_WARNING</font>
+<font color="#0000ff">#    critical.: UNAV_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor unav [options] [warning] [critical] [device_class]</font>
+<font color="#0000ff">#    -v,   show unavailable volumes</font>
+<font color="#0000ff"># Example: tsmmonitor unav -v</font>
+<font color="#0000ff">#          tsmmonitor unav 2 4</font>
+<font color="#0000ff">#          tsmmonitor unav 2 4 LTOCLASS</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+unav<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> unav<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+local output num txt txt2 vb
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-v</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#008080">vb</font>=<font color="#ff00ff">1</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput unav <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput unav <font color="#a020f0">$2</font>
+<font color="#804040"><b>if</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$3</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font><font color="#804040"><b>then</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT volume_name FROM volumes WHERE \</font>
+<font color="#ff00ff">access='UNAVAILABLE' and devclass_name='</font><font color="#a020f0">$3</font><font color="#ff00ff">'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>else</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> \</font>
+<font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT volume_name FROM volumes WHERE access='UNAVAILABLE'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>fi</b></font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode unav <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^ANS8000I/,/^$/{/^ANS8000I/d</font>
+<font color="#ff00ff">/^ANR2034E/d</font>
+<font color="#ff00ff">/^ANS8001I/d</font>
+<font color="#ff00ff">/^$/d</font>
+<font color="#ff00ff">p</font>
+<font color="#ff00ff">}</font><font color="#804040"><b>'</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> wc -l </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/^ *//</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font> <font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$vb</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#008080">txt2</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^ANS8000I/,/^$/{/^ANS8000I/d</font>
+<font color="#ff00ff">/^ANR2034E/d</font>
+<font color="#ff00ff">/^ANS8001I/d</font>
+<font color="#ff00ff">/^$/d</font>
+<font color="#ff00ff">p</font>
+<font color="#ff00ff">}</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$txt2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#008080">txt2</font>=<font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Volumes: </font><font color="#a020f0">$txt2</font><font color="#804040"><b>&quot;;</b></font> <font color="#6a5acd">}</font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$3</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#008080">TXT</font>=<font color="#804040"><b>&quot;</b></font><font color="#ff00ff"> in </font><font color="#a020f0">$3</font><font color="#ff00ff"> device class</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$UNAV_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho unav number of unavailable volumes <font color="#a020f0">$num$TXT</font>, Critical. <font color="#a020f0">$txt2</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$UNAV_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho unav number of unavailable volumes <font color="#a020f0">$num$TXT</font>, Warning. <font color="#a020f0">$txt2</font>
+_Myecho unav number of unavailable volumes <font color="#a020f0">$num$TXT</font>, OK. <font color="#a020f0">$txt2</font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check number of pending requests (query request)</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: REQ_WARNING</font>
+<font color="#0000ff">#    critical.: REQ_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor req [warning] [critical]</font>
+<font color="#0000ff"># Example: tsmmonitor req</font>
+<font color="#0000ff">#          tsmmonitor req 2 3</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+req<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> req<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput req <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput req <font color="#a020f0">$2</font>
+local output num txt
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">query request</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode req <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/ANS8000I/,/^$/{/^ANS8000I/d</font>
+<font color="#ff00ff">/^ANR8346I/d</font>
+<font color="#ff00ff">/^ANS8001I/d</font>
+<font color="#ff00ff">/^$/d</font>
+<font color="#ff00ff">p</font>
+<font color="#ff00ff">}</font><font color="#804040"><b>'</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> wc -l </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/^ *//</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font> <font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$REQ_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho req <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of pending request </font><font color="#a020f0">$num</font><font color="#ff00ff">, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$REQ_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho req <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of pending request </font><font color="#a020f0">$num</font><font color="#ff00ff">, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho req <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of pending request </font><font color="#a020f0">$num</font><font color="#ff00ff">, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check a storage pool utilization</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: STGPOOL_WARNING</font>
+<font color="#0000ff">#    critical.: STGPOOL_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor stgpool &lt;storage_pool_name&gt; [warning] [critical]</font>
+<font color="#0000ff"># Example: tsmmonitor stgpool DISK_POOL</font>
+<font color="#0000ff">#          tsmmonitor stgpool DISK_POOL 50 75</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+stgpool<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> stgpool<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>||</b></font> <font color="#6a5acd">{</font> <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Error: You must specify a storage pool name.</font><font color="#804040"><b>&quot;;</b></font> <font color="#804040"><b>exit</b></font> <font color="#ff00ff">3</font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+local output pct
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput stgpool <font color="#a020f0">$2</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$3</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput stgpool <font color="#a020f0">$3</font>
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT pct_utilized FROM stgpools WHERE stgpool_name='</font><font color="#a020f0">$1</font><font color="#ff00ff">'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode stgpool <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">pct</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^[0-9]/s/[.,].*//p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">pct = </font><font color="#a020f0">$pct</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$pct</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">3</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$STGPOOL_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho stgpool <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">utilization of storage pool </font><font color="#a020f0">$1</font><font color="#ff00ff"> </font><font color="#a020f0">$pct</font><font color="#ff00ff">%, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$pct</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$STGPOOL_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho stgpool <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">utilization of storage pool </font><font color="#a020f0">$1</font><font color="#ff00ff"> </font><font color="#a020f0">$pct</font><font color="#ff00ff">%, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho stgpool <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">utilization of storage pool </font><font color="#a020f0">$1</font><font color="#ff00ff"> </font><font color="#a020f0">$pct</font><font color="#ff00ff">%, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check for volumes with error (error_state)</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: VOLERR_WARNING</font>
+<font color="#0000ff">#    critical.: VOLERR_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor volerr [options] [warning] [critical] [device_class]</font>
+<font color="#0000ff">#    -v,   show volumes with error</font>
+<font color="#0000ff"># Example: tsmmonitor volerr</font>
+<font color="#0000ff">#          tsmmonitor volerr -v 3 5</font>
+<font color="#0000ff">#          tsmmonitor volerr 3 5 LTOCLASS</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+volerr<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> volerr<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+local output num vol_name txt vb <font color="#804040"><b>;</b></font>  <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-v</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#008080">vb</font>=<font color="#ff00ff">1</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput volerr <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput volerr <font color="#a020f0">$2</font>
+<font color="#804040"><b>if</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$3</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>then</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT volume_name FROM volumes WHERE \</font>
+<font color="#ff00ff">error_state='YES' and devclass_name='</font><font color="#a020f0">$3</font><font color="#ff00ff">'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>else</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>'</b></font><font color="#ff00ff">SELECT</font>
+<font color="#ff00ff">volume_name FROM volumes WHERE error_state=</font><font color="#804040"><b>'</b></font><font color="#6a5acd">\'</font><font color="#804040"><b>'</b></font><font color="#ff00ff">YES</font><font color="#804040"><b>'</b></font><font color="#6a5acd">\'</font><font color="#804040"><b>''</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>fi</b></font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode volerr <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^ANS8000I/,/^$/{/^ANS8000I/d</font>
+<font color="#ff00ff">/^ANR2034E/d</font>
+<font color="#ff00ff">/^ANS8001I/d</font>
+<font color="#ff00ff">/^$/d</font>
+<font color="#ff00ff">p</font>
+<font color="#ff00ff">}</font><font color="#804040"><b>'</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> wc -l </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/^ *//</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font> <font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$vb</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#008080">txt</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^ANS8000I/,/^$/{/^ANS8000I/d</font>
+<font color="#ff00ff">/^ANR2034E/d</font>
+<font color="#ff00ff">/^ANS8001I/d</font>
+<font color="#ff00ff">/^$/d</font>
+<font color="#ff00ff">p</font>
+<font color="#ff00ff">}</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$txt</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#008080">txt</font>=<font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Volumes: </font><font color="#a020f0">$txt</font><font color="#804040"><b>&quot;;</b></font> <font color="#6a5acd">}</font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$VOLERR_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho volerr number of volumes with error <font color="#a020f0">$num</font>, Critical. <font color="#a020f0">$txt</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$VOLERR_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho volerr number of volumes with error <font color="#a020f0">$num</font>, Warning. <font color="#a020f0">$txt</font>
+_Myecho volerr number of volumes with error <font color="#a020f0">$num</font>, OK. <font color="#a020f0">$txt</font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check how many tapes are in the library</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: TAPESLIB_WARNING</font>
+<font color="#0000ff">#    critical.: TAPESLIB_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor tapeslib [warning] [critical] [library_name]</font>
+<font color="#0000ff"># Example: tsmmonitor tapeslib</font>
+<font color="#0000ff">#          tsmmonitor tapeslib 120 115</font>
+<font color="#0000ff">#          tsmmonitor tapeslib 120 115 LTOLIB3</font>
+<font color="#0000ff">#          tsmmonitor tapeslib LTOLIB3</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+tapeslib<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> tapeslib<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+local output num lib
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$#</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-eq</b></font> <font color="#ff00ff">1</font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#008080">lib</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;;</b></font> <font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font> <font color="#804040"><b>||</b></font> <font color="#008080">lib</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$3</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput tapeslib <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput tapeslib <font color="#a020f0">$2</font>
+<font color="#804040"><b>if</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$lib</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>then</b></font>
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT count(*) FROM libvolumes WHERE library_name='</font><font color="#a020f0">$lib</font><font color="#ff00ff">'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font>
+<font color="#804040"><b>else</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>'</b></font><font color="#ff00ff">SELECT count(*) FROM libvolumes</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>fi</b></font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode tapeslib <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^[0-9]/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-le</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$TAPESLIB_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho tapeslib <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of tapes in the library </font><font color="#a020f0">$lib</font><font color="#ff00ff"> </font><font color="#a020f0">$num</font><font color="#ff00ff">, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-le</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$TAPESLIB_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho tapeslib <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of tapes in the library </font><font color="#a020f0">$lib</font><font color="#ff00ff"> </font><font color="#a020f0">$num</font><font color="#ff00ff">, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho tapeslib <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of tapes in the library </font><font color="#a020f0">$lib</font><font color="#ff00ff"> </font><font color="#a020f0">$num</font><font color="#ff00ff">, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check how many tapes have a specific owner</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: TAPESOWN_WARNING</font>
+<font color="#0000ff">#    critical.: TAPESOWN_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor tapesown &lt;owner&gt; [warning] [critical]</font>
+<font color="#0000ff"># Example: tsmmonitor tapesown tsmsrv01</font>
+<font color="#0000ff">#          tsmmonitor tapesown tsmsrv01 4 5</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+tapesown<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font>
+_ShowHelp <font color="#a020f0">$0</font> tapesown<font color="#804040"><b>;</b></font> <font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font> <font color="#804040"><b>;</b></font> local output num
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>||</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Error: You must specify an owner</font><font color="#804040"><b>&quot;;</b></font><font color="#804040"><b>exit</b></font> <font color="#ff00ff">3</font> <font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput tapesown <font color="#a020f0">$2</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$3</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput tapesown <font color="#a020f0">$3</font>
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT count(*) FROM libvolumes WHERE owner='</font><font color="#a020f0">$1</font><font color="#ff00ff">'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font>
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode tapesown <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^[0-9]/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">3</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$TAPESOWN_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho tapesown <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of tapes owner by </font><font color="#a020f0">$1</font><font color="#ff00ff"> </font><font color="#a020f0">$num</font><font color="#ff00ff">, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$TAPESOWN_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho tapesown <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of tapes owner by </font><font color="#a020f0">$1</font><font color="#ff00ff"> </font><font color="#a020f0">$num</font><font color="#ff00ff">, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho tapesown <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of tapes owner by </font><font color="#a020f0">$1</font><font color="#ff00ff"> </font><font color="#a020f0">$num</font><font color="#ff00ff">, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check how many volumes are in a specific storage pool</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: TAPESSTGPOOL_WARNING</font>
+<font color="#0000ff">#    critical.: TAPESSTGPOOL_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor tapesstgpool &lt;storage_pool_name&gt; [warning] [critical]</font>
+<font color="#0000ff"># Example: tsmmonitor tapesstgpool DAILY</font>
+<font color="#0000ff">#          tsmmonitor tapesstgpool DAILY 30 45</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+tapesstgpool<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font>
+_ShowHelp <font color="#a020f0">$0</font> tapesstgpool<font color="#804040"><b>;</b></font> <font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font> <font color="#804040"><b>;</b></font> local output num
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>||</b></font> <font color="#6a5acd">{</font> <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Error: You must specify a storage pool</font><font color="#804040"><b>&quot;;</b></font> <font color="#804040"><b>exit</b></font> <font color="#ff00ff">3</font> <font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput tapesstgpool <font color="#a020f0">$2</font><font color="#804040"><b>;</b></font><font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$3</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput tapesstgpool <font color="#a020f0">$3</font>
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT count(*) FROM volumes WHERE stgpool_name='</font><font color="#a020f0">$1</font><font color="#ff00ff">'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font>
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode tapesstgpool <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#Sanity Checkings: output tsm command</font>
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^[0-9]/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">3</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$TAPESSTGPOOL_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho tapesstgpool <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of tapes in storage pool </font><font color="#a020f0">$1</font><font color="#ff00ff"> </font><font color="#a020f0">$num</font><font color="#ff00ff">, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$TAPESSTGPOOL_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho tapesstgpool <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of tapes in storage pool </font><font color="#a020f0">$1</font><font color="#ff00ff"> </font><font color="#a020f0">$num</font><font color="#ff00ff">, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho tapesstgpool <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of tapes in storage pool </font><font color="#a020f0">$1</font><font color="#ff00ff"> </font><font color="#a020f0">$num</font><font color="#ff00ff">, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check how many tsm db backup there are in the last 24 hours</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: DBBKP_WARNING</font>
+<font color="#0000ff">#    critical.: DBBKP_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor dbbkp [options] [warning] [critical]</font>
+<font color="#0000ff">#    -v,   show some informations about database backup</font>
+<font color="#0000ff"># Example: tsmmonitor dbbkp</font>
+<font color="#0000ff">#          tsmmonitor dbbkp -v</font>
+<font color="#0000ff">#          tsmmonitor dbbkp 2 1</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+dbbkp<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> dbbkp<font color="#804040"><b>;</b></font> <font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+local output num verbose
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-v</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#008080">verbose</font>=<font color="#ff00ff">1</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font> <font color="#0000ff"># verbose</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput dbbkp <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput dbbkp <font color="#a020f0">$2</font>
+<font color="#0000ff"># </font><span style="background-color: #ffff00"><font color="#0000ff">XXX</font></span><font color="#0000ff">: do you know a select for this check?! send me please :)</font>
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">q volh t=dbb begind=today-1 begint=now endd=today endt=now</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font>
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode dbbkp <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^ANS8000I/,/^$/{/^ANS8000I/d</font>
+<font color="#ff00ff">/^$/d</font>
+<font color="#ff00ff">p</font>
+<font color="#ff00ff">}</font><font color="#804040"><b>'</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> wc -l </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/^ *//</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font> <font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$verbose</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff"> </font><font color="#804040"><b>|</b></font> sed -n <font color="#804040"><b>'</b></font><font color="#ff00ff">/^ANS8000I/,/^$/{/^ANS8000I/d</font>
+<font color="#ff00ff">/^$/d</font>
+<font color="#ff00ff">p</font>
+<font color="#ff00ff">}</font><font color="#804040"><b>'</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-le</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$DBBKP_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho dbbkp <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of tsm db backup in the last 24h </font><font color="#a020f0">$num</font><font color="#ff00ff">, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-le</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$DBBKP_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+  _Myecho dbbkp <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of tsm db backup in the last 24h </font><font color="#a020f0">$num</font><font color="#ff00ff">, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho dbbkp <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of tsm db backup in the last 24h </font><font color="#a020f0">$num</font><font color="#ff00ff">, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check number of nodes sessions</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: NUMSESS_WARNING</font>
+<font color="#0000ff">#    critical.: NUMSESS_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor numsess [warning] [critical] [session_state]</font>
+<font color="#0000ff"># Example: tsmmonitor numsess</font>
+<font color="#0000ff">#          tsmmonitor numsess 20 30</font>
+<font color="#0000ff">#          tsmmonitor numsess 20 30 MediaW</font>
+<font color="#0000ff">#          tsmmonitor numsess Run</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+numsess<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> numsess<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+local output num state<font color="#804040"><b>;</b></font><font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$#</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-eq</b></font> <font color="#ff00ff">1</font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> <font color="#008080">state</font>=<font color="#a020f0">$1</font><font color="#804040"><b>;</b></font><font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font> <font color="#804040"><b>||</b></font> <font color="#008080">state</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$3</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput numsess <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput numsess <font color="#a020f0">$2</font>
+<font color="#804040"><b>if</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$state</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>then</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT count(*) FROM sessions \</font>
+<font color="#ff00ff">WHERE session_type='Node' and state='</font><font color="#a020f0">$state</font><font color="#ff00ff">'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>else</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> \</font>
+<font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT count(*) FROM sessions WHERE session_type='Node'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>fi</b></font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode numsess <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^[0-9][0-9]*$/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$state</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#008080">state</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$state</font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$NUMSESS_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho numsess <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of nodes sessions </font><font color="#a020f0">$state$num</font><font color="#ff00ff">, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$NUMSESS_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho numsess <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of nodes sessions </font><font color="#a020f0">$state$num</font><font color="#ff00ff">, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho numsess <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of nodes sessions </font><font color="#a020f0">$state$num</font><font color="#ff00ff">, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check number of nodes</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: NUMNODES_WARNING</font>
+<font color="#0000ff">#    critical.: NUMNODES_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor numnodes [warning] [critical] [domain]</font>
+<font color="#0000ff"># Example: tsmmonitor numnodes</font>
+<font color="#0000ff">#          tsmmonitor numnodes 20 30</font>
+<font color="#0000ff">#          tsmmonitor numnodes 20 30 SAP</font>
+<font color="#0000ff">#          tsmmonitor numnodes SAP</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+numnodes<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> numnodes<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+local output num dom TXT<font color="#804040"><b>;</b></font><font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$#</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-eq</b></font> <font color="#ff00ff">1</font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> <font color="#008080">dom</font>=<font color="#a020f0">$1</font><font color="#804040"><b>;</b></font><font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font> <font color="#804040"><b>||</b></font> <font color="#008080">dom</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$3</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput numnodes <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput numnodes <font color="#a020f0">$2</font>
+<font color="#804040"><b>if</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$dom</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>then</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT num_nodes FROM domains WHERE \</font>
+<font color="#ff00ff">domain_name='</font><font color="#a020f0">$dom</font><font color="#ff00ff">'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#008080">TXT</font>=<font color="#804040"><b>&quot;</b></font><font color="#ff00ff">in domain </font><font color="#a020f0">$dom</font><font color="#804040"><b>&quot;;</b></font> <font color="#804040"><b>else</b></font> <font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>'</b></font><font color="#ff00ff">SELECT</font>
+<font color="#ff00ff">SUM(num_nodes) FROM domains</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>fi</b></font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode numnodes <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^[0-9][0-9]*$/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$dom</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#008080">TXT</font>=<font color="#804040"><b>&quot;</b></font><font color="#ff00ff">in domain </font><font color="#a020f0">$dom</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">num</font><font color="#804040"><b>:-</b></font><span style="background-color: #ff0000"><font color="#ffffff">0</font></span><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$NUMNODES_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho numnodes <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of nodes </font><font color="#a020f0">$TXT</font><font color="#ff00ff"> </font><font color="#a020f0">${</font><font color="#a020f0">num</font><font color="#804040"><b>:-</b></font><span style="background-color: #ff0000"><font color="#ffffff">0</font></span><font color="#a020f0">}</font><font color="#ff00ff">, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">num</font><font color="#804040"><b>:-</b></font><span style="background-color: #ff0000"><font color="#ffffff">0</font></span><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$NUMNODES_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho numnodes <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of nodes </font><font color="#a020f0">$TXT</font><font color="#ff00ff"> </font><font color="#a020f0">${</font><font color="#a020f0">num</font><font color="#804040"><b>:-</b></font><span style="background-color: #ff0000"><font color="#ffffff">0</font></span><font color="#a020f0">}</font><font color="#ff00ff">, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho numnodes <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of nodes </font><font color="#a020f0">$TXT</font><font color="#ff00ff"> </font><font color="#a020f0">${</font><font color="#a020f0">num</font><font color="#804040"><b>:-</b></font><span style="background-color: #ff0000"><font color="#ffffff">0</font></span><font color="#a020f0">}</font><font color="#ff00ff">, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check number of disk volumes without readwrite access</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: DISKVOL_WARNING</font>
+<font color="#0000ff">#    critical.: DISKVOL_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor diskvol [options] [warning] [critical]</font>
+<font color="#0000ff">#    -v,   show volumes without readwrite access</font>
+<font color="#0000ff"># Example: tsmmonitor diskvol</font>
+<font color="#0000ff">#          tsmmonitor diskvol -v</font>
+<font color="#0000ff">#          tsmmonitor diskvol 2 3</font>
+<font color="#0000ff">#          tsmmonitor diskvol -v 2 3</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+diskvol<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> diskvol<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+local output num txt vb<font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-v</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#008080">vb</font>=<font color="#ff00ff">1</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput diskvol <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput diskvol <font color="#a020f0">$2</font>
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT volume_name FROM volumes WHERE devclass_name='DISK' \</font>
+<font color="#ff00ff">AND NOT access='READWRITE'</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode diskvol <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^ANS8000I/,/^$/{/^ANS8000I/d</font>
+<font color="#ff00ff">/^ANR2034E/d</font>
+<font color="#ff00ff">/^ANS8001I/d</font>
+<font color="#ff00ff">/^$/d</font>
+<font color="#ff00ff">p</font>
+<font color="#ff00ff">}</font><font color="#804040"><b>'</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> wc -l </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/^ *//</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font> <font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$vb</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#008080">txt</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^ANS8000I/,/^$/{/^ANS8000I/d</font>
+<font color="#ff00ff">/^ANR2034E/d</font>
+<font color="#ff00ff">/^ANS8001I/d</font>
+<font color="#ff00ff">/^$/d</font>
+<font color="#ff00ff">p</font>
+<font color="#ff00ff">}</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#008080">txt</font>=<font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Volumes: </font><font color="#a020f0">$txt</font><font color="#804040"><b>&quot;;</b></font> <font color="#6a5acd">}</font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$DISKVOL_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+  _Myecho diskvol <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of disk volumes without readwrite access </font><font color="#a020f0">$num</font><font color="#ff00ff">, Critical. </font><font color="#a020f0">$txt</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$DISKVOL_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+  _Myecho diskvol <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of disk volumes without readwrite access </font><font color="#a020f0">$num</font><font color="#ff00ff">, Warning. </font><font color="#a020f0">$txt</font><font color="#804040"><b>&quot;</b></font>
+_Myecho diskvol <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of disk volumes without readwrite access </font><font color="#a020f0">$num</font><font color="#ff00ff">, OK. </font><font color="#a020f0">$txt</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check number of database volumes not synchronized (copy status)</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: DBVOL_WARNING</font>
+<font color="#0000ff">#    critical.: DBVOL_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor dbvol [warning] [critical]</font>
+<font color="#0000ff"># Example: tsmmonitor dbvol</font>
+<font color="#0000ff">#          tsmmonitor dbvol 2 3</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+dbvol<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> dbvol<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+local output num
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput dbvol <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput dbvol <font color="#a020f0">$2</font>
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT count(*) FROM dbvolumes WHERE ( \</font>
+<font color="#ff00ff">NOT copy1_status='Synchronized' OR NOT copy2_status='Synchronized' OR NOT \</font>
+<font color="#ff00ff">copy3_status='Synchronized' )</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode dbvol <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^[0-9][0-9]*$/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$DBVOL_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho dbvol <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of db volumes not synchronized </font><font color="#a020f0">$num</font><font color="#ff00ff">, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$DBVOL_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho dbvol <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of db volumes not synchronized </font><font color="#a020f0">$num</font><font color="#ff00ff">, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho dbvol <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of db volumes not synchronized </font><font color="#a020f0">$num</font><font color="#ff00ff">, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check number of log volumes not synchronized (copy status)</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># The default numbers are:</font>
+<font color="#0000ff">#    warning..: LOGVOL_WARNING</font>
+<font color="#0000ff">#    critical.: LOGVOL_CRITICAL</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor logvol [warning] [critical]</font>
+<font color="#0000ff"># Example: tsmmonitor logvol</font>
+<font color="#0000ff">#          tsmmonitor logvol 2 3</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+logvol<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>&amp;&amp;</b></font><font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> logvol<font color="#804040"><b>;</b></font><font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font><font color="#6a5acd">}</font>
+local output num
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput logvol <font color="#a020f0">$1</font> <font color="#804040"><b>;</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$2</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _CheckInput logvol <font color="#a020f0">$2</font>
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">SELECT count(*) FROM logvolumes WHERE ( \</font>
+<font color="#ff00ff">NOT copy1_status='Synchronized' OR NOT copy2_status='Synchronized' OR NOT \</font>
+<font color="#ff00ff">copy3_status='Synchronized' )</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd">`</font>
+
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode logvol <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+
+<font color="#008080">num</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^[0-9][0-9]*$/p</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">num = </font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#0000ff">#DEBUG</font>
+
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">2</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$LOGVOL_CRITICAL</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho logvol <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of log volumes not synchronized </font><font color="#a020f0">$num</font><font color="#ff00ff">, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$num</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-ge</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><font color="#804040"><b>:-</b></font><font color="#a020f0">$LOGVOL_WARNING</font><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho logvol <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of log volumes not synchronized </font><font color="#a020f0">$num</font><font color="#ff00ff">, Warning</font><font color="#804040"><b>&quot;</b></font>
+_Myecho logvol <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">number of log volumes not synchronized </font><font color="#a020f0">$num</font><font color="#ff00ff">, OK</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+<font color="#0000ff"># check server license compliance</font>
+<font color="#0000ff">#</font>
+<font color="#0000ff"># Usage..: tsmmonitor lic</font>
+<font color="#0000ff"># Example: tsmmonitor lic</font>
+<font color="#0000ff"># ----------------------------------------------------------------------------</font>
+lic<font color="#804040"><b>()</b></font><font color="#6a5acd">{</font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> _ShowHelp <font color="#a020f0">$0</font> lic<font color="#804040"><b>;</b></font> <font color="#804040"><b>return</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+local output status
+<font color="#008080">output</font>=<font color="#6a5acd">`</font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd"> </font><font color="#804040"><b>'</b></font><font color="#ff00ff">SELECT compliance FROM licenses</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+_Debug <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>    <font color="#0000ff">#DEBUG</font>
+_CheckReturnCode lic <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font>  <font color="#0000ff"># Sanity Checkings: output tsm command</font>
+<font color="#008080">status</font>=<font color="#6a5acd">`echo </font><font color="#804040"><b>&quot;</b></font><font color="#a020f0">$output</font><font color="#804040"><b>&quot;</b></font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed -n </font><font color="#804040"><b>'</b></font><font color="#ff00ff">/^ANS8000I/{n</font>
+<font color="#ff00ff">p</font>
+<font color="#ff00ff">}</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font>
+<font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$status</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Valid</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font>
+   _Myecho lic <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Valid Server License Compliance, OK</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>||</b></font>
+   _Myecho lic <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Failed Server License Compliance, Critical</font><font color="#804040"><b>&quot;</b></font>
+<font color="#6a5acd">}</font>
+
+
+<font color="#0000ff">##############################################################################</font>
+<font color="#0000ff">##### Main</font>
+<font color="#0000ff">##############################################################################</font>
+
+<font color="#804040"><b>if</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>'</b></font><font color="#ff00ff">--help</font><font color="#804040"><b>'</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>'</b></font><font color="#ff00ff">-h</font><font color="#804040"><b>'</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>''</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>then</b></font>
+   <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">Usage: tsmmonitor [options] [check] [options_check]</font>
+
+<font color="#ff00ff">  -s, -servername     specify tsm servername</font>
+<font color="#ff00ff">  -m, -mail           mail addresses separated by comma</font>
+<font color="#ff00ff">  -h, --help          print this help information and exit</font>
+<font color="#ff00ff">  -V, --version       print program version and exit</font>
+
+<font color="#ff00ff">These are global options. They can be used in all checks.</font>
+
+<font color="#ff00ff">The following checks are available:</font>
+<font color="#804040"><b>&quot;</b></font>
+<font color="#0000ff"># show available checks</font>
+sed <font color="#804040"><b>-n</b></font> <font color="#804040"><b>'</b></font><font color="#ff00ff">s/^\([a-zA-Z]*\)().*/\1/p</font><font color="#804040"><b>'</b></font> <font color="#a020f0">$0</font> <font color="#804040"><b>|</b></font> sed <font color="#804040"><b>'</b></font><font color="#ff00ff">:a</font>
+<font color="#ff00ff">$!N;s/\n/, /; t a</font><font color="#804040"><b>';</b></font> <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font>
+<font color="#ff00ff">Try 'tsmmonitor &lt;check&gt; --help' for more information.</font>
+
+<font color="#ff00ff">Example:</font>
+<font color="#ff00ff">  tsmmonitor db --help</font>
+<font color="#ff00ff">  tsmmonitor db</font>
+<font color="#ff00ff">  tsmmonitor -m=user1@somewhere.com,user2@somewhere.com db</font>
+<font color="#ff00ff">  tsmmonitor -servername=tsmsrv01 db</font>
+<font color="#ff00ff">  tsmmonitor -servername=tsmsrv02 db 85 95</font>
+<font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>elif</b></font> <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>'</b></font><font color="#ff00ff">--version</font><font color="#804040"><b>'</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>'</b></font><font color="#ff00ff">-v</font><font color="#804040"><b>'</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-V</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>then</b></font>
+   <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">tsmmonitor version </font><font color="#a020f0">$version</font><font color="#ff00ff"> &lt;</font><font color="#a020f0">$url</font><font color="#ff00ff">&gt;</font><font color="#804040"><b>&quot;</b></font>
+<font color="#804040"><b>else</b></font>
+   while <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>!=</b></font> <font color="#804040"><b>&quot;&quot;</b></font> <font color="#804040"><b>]</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>do</b></font> <font color="#0000ff"># global options</font>
+      <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>!=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><span style="background-color: #ff0000"><font color="#ffffff">#-s=</font></span><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>!=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><span style="background-color: #ff0000"><font color="#ffffff">#-servername=</font></span><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#0000ff">#tsm servername?</font>
+          <font color="#008080">servername</font>=<font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-servername=</font><font color="#a020f0">${</font><font color="#a020f0">1</font><span style="background-color: #ff0000"><font color="#ffffff">#*=</font></span><font color="#a020f0">}</font><font color="#804040"><b>&quot;;</b></font> <font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>continue</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+      <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>!=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><span style="background-color: #ff0000"><font color="#ffffff">#-m=</font></span><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>!=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">${</font><font color="#a020f0">1</font><span style="background-color: #ff0000"><font color="#ffffff">#-mail=</font></span><font color="#a020f0">}</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font>
+          <font color="#008080">MAILTO</font>=<font color="#6a5acd">`echo </font><font color="#a020f0">$1</font><font color="#6a5acd"> </font><font color="#804040"><b>|</b></font><font color="#6a5acd"> sed </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/^[^=]*=//;s/,/ /g</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>continue</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+      <font color="#804040"><b>[</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">--debug</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>-o</b></font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>=</b></font> <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">-d</font><font color="#804040"><b>&quot;</b></font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> <font color="#6a5acd">{</font> <font color="#008080">DEBUG</font>=<font color="#ff00ff">1</font><font color="#804040"><b>;</b></font> <font color="#804040"><b>shift</b></font><font color="#804040"><b>;</b></font> <font color="#804040"><b>continue</b></font><font color="#804040"><b>;</b></font> <font color="#6a5acd">}</font>
+      <font color="#804040"><b>break</b></font>
+   <font color="#804040"><b>done</b></font>
+   <font color="#008080">func</font>=<font color="#804040"><b>&quot;</b></font><font color="#a020f0">$1</font><font color="#804040"><b>&quot;</b></font>
+   <font color="#008080">TSM_CMD</font>=<font color="#6a5acd">`</font><font color="#804040"><b>eval</b></font><font color="#6a5acd"> echo </font><font color="#a020f0">$TSM_CMD</font><font color="#6a5acd">`</font> <font color="#0000ff"># now we have the right tsm command</font>
+   _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">TSM_CMD = </font><font color="#a020f0">$TSM_CMD</font><font color="#804040"><b>&quot;</b></font>
+   <font color="#804040"><b>[</b></font> <font color="#a020f0">$SEND_ALERT</font> <font color="#804040"><b>=</b></font> <font color="#ff00ff">1</font> <font color="#804040"><b>]</b></font> <font color="#804040"><b>&amp;&amp;</b></font> _Debug <font color="#804040"><b>&quot;</b></font><font color="#ff00ff">MAILTO = </font><font color="#a020f0">$MAILTO</font><font color="#804040"><b>&quot;</b></font>
+   <font color="#804040"><b>if</b></font> type <font color="#a020f0">$func</font> <font color="#804040"><b>&gt;</b></font> /dev/null <font color="#804040"><b>2&gt;</b></font> /dev/null<font color="#804040"><b>;</b></font> <font color="#804040"><b>then</b></font> <font color="#0000ff"># is there the function?</font>
+      <font color="#804040"><b>shift</b></font>
+      <font color="#008080">StatusFile</font>=<font color="#a020f0">${</font><font color="#a020f0">func</font><font color="#a020f0">}</font>_<font color="#6a5acd">`echo </font><font color="#a020f0">$*</font><font color="#804040"><b>|</b></font><font color="#6a5acd">sed </font><font color="#804040"><b>'</b></font><font color="#ff00ff">s/ /_/g</font><font color="#804040"><b>'</b></font><font color="#6a5acd">`</font> <font color="#0000ff"># file to record check status</font>
+      <font color="#a020f0">$func</font> <font color="#804040"><b>&quot;</b></font><font color="#a020f0">$@</font><font color="#804040"><b>&quot;</b></font>
+   <font color="#804040"><b>else</b></font>
+      <font color="#804040"><b>echo</b></font><font color="#ff00ff"> </font><font color="#804040"><b>&quot;</b></font><font color="#ff00ff">tsmmonitor: check '</font><font color="#a020f0">$func</font><font color="#ff00ff">' not found (try --help)</font><font color="#804040"><b>&quot;</b></font>
+   <font color="#804040"><b>fi</b></font>
+<font color="#804040"><b>fi</b></font>
+
+<font color="#804040"><b>exit</b></font> <font color="#ff00ff">0</font>
+
+</pre>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2229503-1";
+urchinTracker();
+</script>
+</body>
+</html>

@@ -1,0 +1,433 @@
+#!/bin/bash
+# fwchange
+#
+# Site......: http://thobias.org/fwchange
+# Autor.....: Thobias Salazar Trevisan
+# Descrição.: Script que realiza mudanças rápidas/temporárias em um firewall
+# Licença...: GPL
+#
+# Changelog:
+# 02/02/2005 - Primeira versão
+# 
+#
+##############################################################################
+#                    Configurações
+#                    =============
+# arquivo com o históricos dos comandos
+fwhistory='/root/fwchange_history.txt'
+# as chains default
+def_chain='INPUT,OUTPUT,FORWARD'
+# caminho para o comando iptables
+ipt='/sbin/iptables'
+# caminho para o comando ipchains
+ipc='/sbin/ipchains'
+# firewall utilizado
+fw='_ipt'
+# mostra os cmds executados no firewall
+verbose='1'
+versao='1.0'
+##############################################################################
+
+##############################################################################
+##### Funções de uso interno. 
+##### Não devem ser chamadas na linha de comando
+##############################################################################
+
+##############################################################################
+# Mostra a ajuda das funções
+##############################################################################
+_ajuda(){
+sed '1!G;h;$!d' < "$1" | sed -n "/^$2(){/,/^ *$/s/^# \?//p" | sed '1!G;h;$!d'
+}
+
+##############################################################################
+# checa se existe alguma entrada no arquivo de histórico para uma função 
+#
+# $1 funcao
+# $2 IP|proto-porta|--list
+##############################################################################
+_check(){
+local ip="${2//\./\\.}"
+[ "$2" = "--list" ] && { grep "^$1:" $fwhistory; exit 0; }
+[ "$3" = "on" ] && { grep -qs "^$1:$ip:" $fwhistory && return 1||return 0; }
+[ "$3" = "off" ]&& { grep -qs "^$1:$ip:" $fwhistory && return 0||return 1; }
+}
+
+##############################################################################
+# checa se o IP e a máscara são válidos. aceita nos seguintes formatos:
+# IP/CIDR e IP/Decimal, ex:
+# 192.168.5.0/24
+# 192.168.5.0/255.255.255.0
+# se não for especificada a mascara é utilizada a /32
+##############################################################################
+_check_ip(){
+local i ip=${1%/*} mask=${1#*/}; [ "$ip" = "$mask" ] && mask=32
+[ "${mask//[0-9.]}" ] && { echo 'Erro: mascara invalida'; exit 1; }
+[ "$(echo ${1%/*}|sed "s/\(\([0-9]\{1,2\}\|1[0-9][0-9]\|2[0-4][0-9]\|25[0-5]\
+\)\.\)\{3\}\([0-9]\{1,2\}\|1[0-9][0-9]\|2[0-4][0-9]\|25[0-5]\)//")" ] && 
+{ echo 'Erro: IP invalido'; exit 1; };  set -- ${mask//./ } 
+if [ $# != 4 ]; then [ "$1" -lt 0 -o "$1" -gt 32 -o "$2" ] && 
+echo 'Erro: mascara invalida' || echo "$ip/$mask"; exit 
+else mask=""; for i in 1 2 3 4;do n="${!i}"; dec=''
+while [ "$n" -gt 0 ]; do dec="$(($n%2))$dec"; n="$(($n/2))";done
+mask=$mask$(echo "${dec:-0}" | sed ':a;s/^[01]\{1,7\}$/0&/;ta')
+done;fi; [ "$(echo $mask | sed '/^.\{32\}$/s/^1*0*$//')" ] && {
+echo Erro: mascara invalida;exit 1; }; mask=${mask//0}; echo "$ip/${#mask}"
+}
+
+##############################################################################
+# executa o iptables para as funções 
+#
+# $1=ipblock    $2=chain $3=IP $4=[on|off] 
+# $1=ipaccept   $2=chain $3=IP $4=[on|off] 
+# $1=portblock  $2=chain $3=proto:porta $4=[on|off]
+# $1=portaccept $2=chain $3=proto:porta $4=[on|off]
+# $1=iplimit    $2=chain $3=IP $4=intervalo $5=escala $6=[on|off]
+# $1=porlimit   $2=chain $3=proto:port $4=intervalo $5=escala $6=[on|off]
+##############################################################################
+_ipt(){
+local i j chain=$2 acao=$(eval echo \$${#*} | sed 's/on/-I/;s/off/-D/')
+# deletar regra não respeita --chain (lê do arquivo para manter consistência) 
+[ "$acao" = '-D' ] && chain=$(sed -n \
+"\§^$1:${3/:/-}:§s§.*:\(\(INPUT\|FORWARD\|OUTPUT\)[^:]*\).*§\1§p" $fwhistory)
+if [ "$1" != "${1#*limit}" ];then # limita ip/porta
+  [ "$1" = "iplimit" ] && i='-s' || i="-p ${3%:*} --dport" 
+  [ "$acao" = "-I" ] && {
+    $ipt -N fwchange-$3
+    $ipt -A fwchange-$3 $i ${3#*:} -m limit --limit ${4}/${5} --limit-burst ${4} -j RETURN 
+    $ipt -A fwchange-$3 $i ${3#*:} -j REJECT
+    for j in $(echo ${chain//,/ });do
+       $ipt -I $j $i ${3#*:} -m state --state NEW -j fwchange-$3 
+    done; }
+  [ "$acao" = "-D" ] && {
+    for j in $(echo ${chain//,/ });do
+       $ipt -D $j $i ${3#*:} -m state --state NEW -j fwchange-$3 
+    done
+    $ipt -F fwchange-$3; $ipt -X fwchange-$3
+  }
+else # aceita/bloqueia
+  [ "$1" = "ipblock"  ] && j="$ipt $acao \$i -s $3 -j DROP"
+  [ "$1" = "ipaccept" ] && j="$ipt $acao \$i -s $3 -j ACCEPT"
+  [ "$1" = "portblock" ] && j="$ipt $acao \$i -p ${3%:*} --dport ${3#*:} -j DROP"
+  [ "$1" = "portaccept" ] && j="$ipt $acao \$i -p ${3%:*} --dport ${3#*:} -j ACCEPT"
+  for i in $(echo ${chain//,/ });do eval $j; done
+fi
+}
+
+##############################################################################
+# executa o ipchains para as funções
+#
+# $1=ipblock    $2=chain $3=IP $4=[on|off] 
+# $1=ipaccept   $2=chain $3=IP $4=[on|off] 
+# $1=portblock  $2=chain $3=proto:porta $4=[on|off]
+# $1=portaccept $2=chain $3=proto:porta $4=[on|off]
+# $1=iplimit    não disponível
+# $1=porlimit   não disponível 
+##############################################################################
+_ipc(){
+local i j chain=$2 acao=$(eval echo \$${#*} | sed 's/on/-I/;s/off/-D/')
+# deletar regra não respeita --chain (lê do arquivo para manter consistência) 
+[ "$acao" = '-D' ] && chain=$(sed -n \
+"\§^$1:${3/:/-}:§s§.*:\(\(INPUT\|FORWARD\|OUTPUT\)[^:]*\).*§\1§p" $fwhistory)
+chain="$(echo $chain | tr A-Z a-z)"
+if [ "$1" != "${1#*limit}" ];then # limita ip/porta
+  echo "Erro: Esta função não está disponível para firewall ipchains.";exit
+else # aceita/bloqueia
+  [ "$1" = "ipblock"  ] && j="$ipc $acao \$i -s $3 -j DENY"
+  [ "$1" = "ipaccept" ] && j="$ipc $acao \$i -s $3 -j ACCEPT"
+  [ "$1" = "portblock" ] && j="$ipc $acao \$i -p ${3%:*} --dport ${3#*:} -j DENY"
+  [ "$1" = "portaccept" ] && j="$ipc $acao \$i -p ${3%:*} --dport ${3#*:} -j ACCEPT"
+  for i in $(echo ${chain//,/ });do eval $j; done
+fi
+}
+
+
+
+
+##############################################################################
+##### Funções de uso geral. 
+##### Estão disponíves na linha de comando 
+##############################################################################
+
+
+#
+# Bloqueia um determinado endereço IP ou uma sub-rede 
+# OBS1: Se nenhum parâmetro for passado ou for '--list' são listados 
+# todos os IPs bloqueados por esta função
+# OBS2: Os valores possíveis para a opção chain são: INPUT,OUTPUT,FORWARD
+# As chains devem estar separadas por vírgula e não pode ter espaços
+# entre elas
+#
+# Uso: ipblock [--chain ...] IP[/netmask] on|off [-c comentário]
+#              [--list|--help]
+# Ex.: ipblock 10.10.10.3 on -c bloqueia ip do fulano
+# Ex.: ipblock 10.10.10.3 off
+# Ex.: ipblock 10.10.10.0/24 on
+# Ex.: ipblock --chain INPUT,OUTPUT 10.10.10.0/24 on
+# Ex.: ipblock --list 
+#
+ipblock(){
+local i ip msg chain=$def_chain
+[ "$1" = "--chain" ] && { chain=$2; [ "$(echo $chain | sed 's/,/\
+/g;s/\(INPUT\|OUTPUT\|FORWARD\)\(\n\|$\)//g')" ] && {
+echo Erro: chain invalida; exit; };shift 2; }
+[ ! "$1" -o "$1" = "--list" ] && _check $func --list
+ip=$(_check_ip $1); msg=$(echo $2 | sed 's/on/ja/;s/off/nao/')
+echo $ip | grep -qs rro && { echo $ip; exit; }
+[ \( "$2" != "on" -a "$2" != "off" \) -o \( "$3" != "-c" -a "${3/-/c}" \) ]&&
+{ echo "Erro: opcao invalida. tente '--help'"; exit 1; }
+_check $func $ip $2 || { echo IP $ip $msg esta bloqueado; exit; }
+$fw $func $chain $ip $2 # executa cmd firewall
+[ "$verbose" = "1" ] && { echo "fwchange executou os seguintes comandos:"
+eval ${fw#*_}="echo\ \$${fw#*_}";$fw $func $chain $ip $2; }
+if [ "$2" = "on" ];then
+   [ "$3" = "-c" ] && { shift 3; i="$@"; }
+   echo $func:$ip:$chain:$i >> $fwhistory
+else
+   i="$(grep -v "^$func:${ip//\./\\.}:" $fwhistory)"
+   echo "$i" >  $fwhistory
+fi
+}
+
+
+#
+# Libera um determinado endereço IP ou uma sub-rede 
+# OBS1: Se nenhum parâmetro for passado ou for '--list' são listados 
+# todos os IPs bloqueados por esta função
+# OBS2: Os valores possíveis para a opção chain são: INPUT,OUTPUT,FORWARD
+# As chains devem estar separadas por vírgula e não pode ter espaços
+# entre elas
+#
+# Uso: ipaccept [--chain ...] IP[/netmask] on|off [-c comentário]
+#               [--list|--help]
+# Ex.: ipaccept 10.10.10.3 on -c bloqueia ip do fulano
+# Ex.: ipaccept 10.10.10.3 off
+# Ex.: ipaccept 10.10.10.0/24 on
+# Ex.: ipaccept --chain INPUT,OUTPUT 10.10.10.0/24 on
+# Ex.: ipaccept --list 
+#
+ipaccept(){
+local i ip msg chain=$def_chain
+[ "$1" = "--chain" ] && { chain=$2; [ "$(echo $chain | sed 's/,/\
+/g;s/\(INPUT\|OUTPUT\|FORWARD\)\(\n\|$\)//g')" ] && {
+echo Erro: chain invalida; exit; };shift 2; }
+[ ! "$1" -o "$1" = "--list" ] && _check $func --list
+ip=$(_check_ip $1); msg=$(echo $2 | sed 's/on/ja/;s/off/nao/')
+echo $ip | grep -qs rro && { echo $ip; exit; }
+[ \( "$2" != "on" -a "$2" != "off" \) -o \( "$3" != "-c" -a "${3/-/c}" \) ]&&
+{ echo "Erro: opcao invalida. tente '--help'"; exit 1; }
+_check $func $ip $2 || { echo IP $ip $msg esta liberado; exit; }
+$fw $func $chain $ip $2 # executa cmd firewall
+[ "$verbose" = "1" ] && { echo "fwchange executou os seguintes comandos:"
+eval ${fw#*_}="echo\ \$${fw#*_}"; $fw $func $chain $ip $2; }
+if [ "$2" = "on" ];then
+   [ "$3" = "-c" ] && { shift 3; i="$@"; }
+   echo $func:$ip:$chain:$i >> $fwhistory
+else
+   i="$(grep -v "^$func:${ip//\./\\.}:" $fwhistory)"
+   echo "$i" >  $fwhistory
+fi
+}
+
+#
+# Bloqueia uma determinada porta tcp ou udp
+# OBS: se não for especificado, o protocolo utilizado é o tcp
+#
+# Uso: portblock [--chain ...] [--proto tcp|udp] porta on|off [-c comentário]
+#                [--list|--help]
+# Ex.: portblock 80 on
+# Ex.: portblock --proto udp 53 on
+# Ex.: portblock --proto udp 53 off
+# Ex.: portblock --chain input 22 on
+# Ex.: portblock --list
+#
+portblock(){
+local i msg port proto=tcp chain=$def_chain
+[ "$1" = "--chain" ] && { chain=$2; [ "$(echo $chain | sed 's/,/\
+/g;s/\(INPUT\|OUTPUT\|FORWARD\)\(\n\|$\)//g')" ] && {
+echo Erro: chain invalida; exit; };shift 2; }
+[ "$1" = "--proto" ] && { shift;proto=$1;shift; }
+[ "$proto" != "tcp" -a "$proto" != "udp" ] && { 
+echo "Erro: protocolo invalido"; exit; } ; port=$1
+[ ! "$1" -o "$1" = "--list" ] && _check $func --list
+[ "$port" -a ! "${port//[0-9]}" ] || { echo "Erro: porta invalida"; exit 1; }
+[ \( "$2" != "on" -a "$2" != "off" \) -o \( "$3" != "-c" -a "${3/-/c}" \) ]&&
+{ echo "Erro: opcao invalida. tente '--help'"; exit 1; }
+msg=$(echo $2 | sed 's/on/ja/;s/off/nao/'); _check $func $proto-$port $2 ||
+{ echo "Porta $proto $1 $msg esta bloqueada";exit; }
+$fw $func $chain $proto:$port $2 # executa cmd firewall
+[ "$verbose" = "1" ] && { echo "fwchange executou os seguintes comandos:"
+eval ${fw#*_}="echo\ \$${fw#*_}"; $fw $func $chain $proto:$port $2; }
+if [ "$2" = "on" ];then
+   [ "$3" = "-c" ] && i="$(echo $@ | sed -n 's/.*-c *//p')"
+   echo $func:$proto-$port:$chain:$i >> $fwhistory
+else
+   i="$(grep -v "^$func:$proto-$port:" $fwhistory)"
+   echo "$i" >  $fwhistory
+fi
+}
+
+
+#
+# Libera uma determinada porta tcp ou udp
+# OBS: se não for especificado, o protocolo utilizado é o tcp
+#
+# Uso: portaccept [--chain ...] [--proto tcp|udp] porta on|off [-c comentário]
+#                 [--list|--help]
+# Ex.: portaccept 80 on
+# Ex.: portaccept --proto udp 53 on
+# Ex.: portaccept --proto udp 53 off
+# Ex.: portaccept --chain input 22 on
+# Ex.: portaccept --list
+#
+portaccept(){
+local i msg port proto=tcp chain=$def_chain
+[ "$1" = "--chain" ] && { chain=$2; [ "$(echo $chain | sed 's/,/\
+/g;s/\(INPUT\|OUTPUT\|FORWARD\)\(\n\|$\)//g')" ] && {
+echo Erro: chain invalida; exit; };shift 2; }
+[ "$1" = "--proto" ] && { shift;proto=$1;shift; }
+[ "$proto" != "tcp" -a "$proto" != "udp" ] && { 
+echo "Erro: protocolo invalido"; exit; } ; port=$1
+[ ! "$1" -o "$1" = "--list" ] && _check $func --list
+[ "$port" -a ! "${port//[0-9]}" ] || { echo "Erro: porta invalida"; exit 1; }
+[ \( "$2" != "on" -a "$2" != "off" \) -o \( "$3" != "-c" -a "${3/-/c}" \) ]&&
+{ echo "Erro: opcao invalida. tente '--help'"; exit 1; }
+msg=$(echo $2 | sed 's/on/ja/;s/off/nao/'); _check $func $proto-$port $2 ||
+{ echo "Porta $proto $1 $msg esta liberada";exit; }
+$fw $func $chain $proto:$port $2 # executa cmd firewall
+[ "$verbose" = "1" ] && { echo "fwchange executou os seguintes comandos:"
+eval ${fw#*_}="echo\ \$${fw#*_}"; $fw $func $chain $proto:$port $2; }
+if [ "$2" = "on" ];then
+   [ "$3" = "-c" ] && i="$(echo $@ | sed -n 's/.*-c *//p')"
+   echo $func:$proto-$port:$chain:$i >> $fwhistory
+else
+   i="$(grep -v "^$func:$proto-$port:" $fwhistory)"
+   echo "$i" >  $fwhistory
+fi
+}
+
+
+#
+# Limita o número de conexões novas (NEW) para um IP ou sub-rede 
+# OBS: escala pode ser 'second', 'minute', 'hour' ou 'day'
+#
+# Uso: iplimit [--chain ...] IP[/netmask] intervalo escala on|off [-c comentário]
+#              [--list|--help]
+# Ex.: iplimit 10.10.10.3 2 day on 
+# Ex.: iplimit 10.10.10.3 2 day off
+# Ex.: iplimit --chain input 10.10.10.0/255.255.255.0 5 second on
+# Ex.: iplimit --list 
+#
+iplimit(){
+local i ip msg chain=$def_chain
+[ "$1" = "--chain" ] && { chain=$2; [ "$(echo $chain | sed 's/,/\
+/g;s/\(INPUT\|OUTPUT\|FORWARD\)\(\n\|$\)//g')" ] && {
+echo Erro: chain invalida; exit; };shift 2; }
+[ ! "$1" -o "$1" = '--list' ] && _check $func --list
+ip=$(_check_ip $1); msg=$(echo $4 | sed 's/on/ja/;s/off/nao/')
+echo $ip | grep -qs rro && { echo $ip; exit; }
+[ \( "$4" != "on" -a "$4" != "off" \) -o \( "$5" != "-c" -a "${5/-/c}" \) ]&&
+{ echo "Erro: opcao invalida. tente '--help'"; exit 1; }
+[ "${2//[0-9]}" ] && { echo "Erro: intervalo invalido."; exit 1; }
+[ "$3" != "second" -a "$3" != "minute" -a "$3" != "hour" -a "$3" != "day" ] &&
+{ echo "Erro: escala invalida"; exit 1; }
+_check $func $ip $4 || { echo "IP $ip $msg esta limitado"; exit; } 
+$fw $func $chain $ip $2 $3 $4 # executa cmd firewall
+[ "$verbose" = "1" ] && { echo "fwchange executou os seguintes comandos:"
+eval ${fw#*_}="echo\ \$${fw#*_}"; $fw $func $chain $ip $2 $3 $4; }
+if [ "$4" = "on" ];then
+   [ "$5" = "-c" ] && i="$(echo $@ | sed -n 's/.*-c *//p')"
+   echo $func:$ip:$2:$3:$chain:$i >> $fwhistory
+else
+   i="$(grep -v "^$func:${ip//\./\\.}:" $fwhistory)"
+   echo "$i" >  $fwhistory
+fi
+}
+
+#
+# Limita o número de conexões novas (NEW) para porta
+# OBS1: se não for especificado, o protocolo padrão é TCP
+# OBS1: escala pode ser 'second', 'minute', 'hour' ou 'day'
+#
+# Uso: portlimit [--chain ...] [--proto tcp|udp] porta intervalo escala on|off [-c comentário]
+#                [--list|--help]
+# Ex.: portlimit 80 5 second on 
+# Ex.: portlimit 80 5 second off
+# Ex.: portlimit --chain input --proto udp 123 2 day on
+# Ex.: portlimit --proto udp 123 2 day off 
+# Ex.: portlimit --list 
+#
+portlimit(){
+local i msg port proto=tcp chain=$def_chain
+[ "$1" = "--chain" ] && { chain=$2; [ "$(echo $chain | sed 's/,/\
+/g;s/\(INPUT\|OUTPUT\|FORWARD\)\(\n\|$\)//g')" ] && {
+echo Erro: chain invalida; exit; };shift 2; }
+[ "$1" = "--proto" ] && { shift;proto=$1;shift; }
+[ "$proto" != "tcp" -a "$proto" != "udp" ] && { 
+echo "Erro: protocolo invalido"; exit; } ; port=$1
+[ ! "$1" -o "$1" = "--list" ] && _check $func --list
+[ "$port" -a ! "${port//[0-9]}" ] || { echo "Erro: porta invalida"; exit 1; }
+[ "$2" -a ! "${2//[0-9]}" ] || { echo "Erro: intervalo invalido."; exit 1; }
+[ "$3" != "second" -a "$3" != "minute" -a "$3" != "hour" -a "$3" != "day" ] &&
+{ echo "Erro: escala invalida"; exit 1; }
+[ \( "$4" != "on" -a "$4" != "off" \) -o \( "$5" != "-c" -a "${5/-/c}" \) ]&&
+{ echo "Erro: opcao invalida. tente '--help'"; exit 1; }
+msg=$(echo $4 | sed 's/on/ja/;s/off/nao/'); _check $func $proto-$port $4 ||
+{ echo "Porta $proto $1 $msg esta limitada";exit; }
+$fw $func $chain $proto:$port $2 $3 $4 # executa cmd firewall
+[ "$verbose" = "1" ] && { echo "fwchange executou os seguintes comandos:"
+eval ${fw#*_}="echo\ \$${fw#*_}"; $fw $func $chain $proto:$port $2 $3 $4; }
+if [ "$4" = "on" ];then
+   [ "$5" = "-c" ] && i="$(echo $@ | sed -n 's/.*-c *//p')"
+   echo $func:$proto-$port:$2:$3:$chain:$i >> $fwhistory
+else
+   i="$(grep -v "^$func:$proto-$port:" $fwhistory)"
+   echo "$i" >  $fwhistory
+fi
+}
+
+
+#
+# Mostra a ajuda de todas as funções
+#
+# Uso: ajuda [--help]
+# Ex.: ajuda
+# Ex.: ajuda --help
+#
+ajuda(){
+( echo '*** ajuda do fwchange (tecla Q sai)'
+for i in $(sed -n 's/^\([a-zA-Z]\+\)(){/\1/p' < "$0");do
+echo -e "$(echo $i | sed 's/^\(.*$\)/\\n=====\\033[1m \1 =====\\033[m/')" 
+"$0" "$i" --help;done ) | ${PAGER:-less -r}
+}
+
+
+##############################################################################
+##### Main
+##############################################################################
+func="$1"
+
+[ "$1" = '--help' -o "$1" = '-h' ] && {
+echo "Uso: fwchange <função> [<parâmetros>]
+     fwchange [--help|--version]
+
+     Dica: Para listar as funções disponíveis e a sua ajuda use:
+     prompt$ fwchange ajuda
+
+     As funções disponíveis atualmente são:
+
+$(sed -n 's/^\([a-zA-Z][a-zA-Z_]\+\)(){.*/\1,/p' < "$0" | \
+sed ':a;N;s/\n/ /;ta' | sed 's/\(.\{65\}[^ ]\+\) /\1\
+/g;s/,$//')
+"; exit 0; }
+[ "$1" = '--version' -o "$1" = '-v' ] && {
+ echo "fwchange versão $(sed -n '/^versao=/s/[^0-9.]//gp' < "$0")"; exit 0; }
+
+if type $func >&- 2>&- ; then
+    [ "$2" = '--help' -o "$2" = '-h' ] && { _ajuda $0 $func; exit 0; }
+	shift; $func \
+    $(echo "$@"|sed 's/input/INPUT/;s/output/OUTPUT/;s/forward/FORWARD/')
+else
+	echo "Erro: função não existe. (tente --help)"
+fi
+

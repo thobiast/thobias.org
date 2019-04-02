@@ -1,0 +1,1927 @@
+#!/bin/sh
+# tsmmonitor - IBM TSM (Tivoli Storage Manager) monitoring script
+#
+# Homepage: http://thobias.org/tsm
+# Author  : Thobias Salazar Trevisan (thobias at thobias.org)
+#
+# Changelog (DD/MM/YYYY):
+# 28/11/2008 - version 2.0
+#              the source code was rewritten.
+#              there were changes on the command line options, so version 2.0
+#              BREAKS BACKWARDS COMPATIBILITY.
+# 15/06/2007 - first version
+#
+##############################################################################
+#
+# DOCUMENTATION
+# =============
+#
+#   This script is developed to provide an easy, customizable and effective
+#   way to monitor TSM Servers.
+#
+#   It is composed of functions to check specific TSM resources.
+#   Each check returns the resource status. The available status for a
+#   resource are:
+#
+#         Ok / Warning / Critical
+#
+#   The status returned is based on defined thresholds for each check.
+#   For example, the function to check the TSM Database utilization:
+#
+#        prompt> ./tsmmonitor db -h
+#
+#        check tsm database utilization
+#
+#        The default percentages are:
+#           warning..: 85
+#           critical.: 90
+#
+#        Usage..: tsmmonitor db [warning] [critical]
+#        Example: tsmmonitor db
+#                 tsmmonitor db 80 95
+#
+#   The status returned from db check depends on the warning and critical
+#   threshold values. These values can be customized using command line
+#   arguments:
+#
+#        prompt> ./tsmmonitor db
+#        db: database utilization 81%, OK
+#
+#        prompt> ./tsmmonitor db 80 90
+#        db: database utilization 81%, Warning
+#
+#        prompt> ./tsmmonitor db 60 80
+#        db: database utilization 81%, Critical
+#
+#   Some nice features:
+#
+#     * Supports multiples tsm servers (servername)
+#     * Can be used transparently as a nagios plugin
+#     * Alert notification mechanism (by e-mail)
+#     * Customizable threshold values for ok/warning/critical status in command line
+#     * Bourne shell (sh) compliance
+#     * Easy to add news checks 
+#
+#   This script should work fine under most *NIX variants. It has been tested
+#   successfully under many Linux and AIX (4.3, 5.2 and 5.3). If you have any
+#   problem, please let me know. 
+#
+#
+# Nagios
+# ======
+#
+#   TSMmonitor can be used transparently as nagios plugin. Nagios plugins
+#   are based on check return code: 
+#
+#     0 - normal
+#     1 - warning
+#     2 - critical
+#     3 - unknown
+#
+#   These are the same return codes used by tsmmonitor.
+#
+#
+# TSMmonitor Help
+# ===============
+#
+#   $ ./tsmmonitor -h
+#   Usage: tsmmonitor [options] [check] [options_check]
+#
+#   These are global options. They can be used in all checks.
+#
+#   -u, --user          tsm user to connect to the tsm server
+#   -p, --pass          tsm user password to connect to the tsm server
+#   -s, --servername    specify tsm servername
+#   -m, --mail          mail addresses separated by blank space
+#   -q, --quiet         quiet mode, suppress all output (except errors)
+#   -S, --source        print the check source code
+#   -h, --help          print this help information and exit
+#   -V, --version       print program version and exit
+#
+#   The following checks are available:
+#
+#   help, db, log, scratch, drive, path, dbfrag, unav, stgpool, volerr, 
+#   volreclaim, tapeslib, tapesown, tapesstgpool, dbbkp, numsess, numnodes,
+#   nodeslocked, diskvol, dbvol, searchanr, drmvol, lic
+#
+#   Try 'tsmmonitor <check> --help' for more information.
+#
+#   Example:
+#       tsmmonitor db --help
+#       tsmmonitor db
+#       tsmmonitor -m='user1@somewhere.com user2@somewhere.com' db
+#       tsmmonitor --servername=tsmsrv01 db
+#       tsmmonitor --servername=tsmsrv02 db 85 95
+#       tsmmonitor -u=user1 -p=xxx -s=tsmsrv02 db 85 95
+#
+#
+# Check Example
+# =============
+#
+#   Here is an example of using this script to check tsm db utilization:
+#
+#     prompt> ./tsmmonitor db -h
+#
+#     check tsm database utilization
+#
+#     The default percentages are:
+#        warning..: 85
+#        critical.: 90
+#
+#     Usage..: tsmmonitor db [warning] [critical]
+#     Example: tsmmonitor db
+#              tsmmonitor db 80 95
+#
+#     prompt> ./tsmmonitor -u=user1 -p=my_pass -s=tsmsrv02 db
+#     db - tsmserver tsmsrv02: database utilization 81%, OK
+#     prompt> echo $?
+#     0
+#
+#     prompt> ./tsmmonitor -u=user1 -p=my_pass -s=tsmsrv02 db 80 90
+#     db - tsmserver tsmsrv02: database utilization 81%, Warning
+#     prompt> echo $?
+#     1
+#
+#     prompt> ./tsmmonitor -u=user1 -p=my_pass -s=tsmsrv02 db 60 80
+#     db - tsmserver tsmsrv02: database utilization 81%, Critical
+#     prompt> echo $?
+#     2
+#
+#
+##############################################################################
+#
+#                       Configuration Area
+#                       ==================
+
+###################################
+########## tsm server information #
+###################################
+#
+# dsmadmc command path
+DSMADMC='/usr/bin/dsmadmc'
+
+# tsm user
+USER=''
+
+# tsm user password
+PASS=''
+
+# dsm error log
+#DSM_LOG=/home/nagios
+#export DSM_LOG
+
+##############################
+########## send notification #
+##############################
+#
+# at every time that a check changes the status,
+# an alert (notification) will be sent by mail. default is off
+SEND_ALERT=0
+ 
+# e-mails which will receive the notifications. mail addresses are separated
+# by blank space. ex: MAILTO='xxx@yyy.zzz aaa@bbb.zzz ppp@qqq.lll'
+MAILTO=''
+ 
+# temp directory where tsmmonitor will record check status.
+# it is necessary to send mail when the check status changes
+TEMPDIR='/tmp'
+ 
+########################
+########## other flags #
+########################
+#
+DEBUG=0             # do not edit here, please use --debug
+COLOR_DEBUG=1       # show debug messages in colors?
+QUIET=0             # do not edit here, please use --quiet
+SHOW_CHECK_SOURCE=0 # do not edit here, please use --source
+
+################################
+########## program information #
+################################
+#
+URL='http://thobias.org/tsm'
+VERSION='2.0'
+
+#####################################################################
+########## default check threshold                                  #
+########## used to determine the check status (ok/warning/critical) #
+##########                                                          #
+########## These values can be changed through command line options #
+########## prompt> tsmmonitor <check> --help                        #
+#####################################################################
+# check: database utilization
+DB_WARNING=85
+DB_CRITICAL=90
+# check: log utilization
+LOG_WARNING=60
+LOG_CRITICAL=80
+# check: scratch tape number
+SC_WARNING=10
+SC_CRITICAL=6
+# check: number of paths not online
+PATH_WARNING=1
+PATH_CRITICAL=3
+# check: number of drives not online
+DRIVE_WARNING=1
+DRIVE_CRITICAL=3
+# check tsm database fragmantation
+DBFRAG_WARNING=60
+DBFRAG_CRITICAL=80
+# check: number of unavailable volumes
+UNAV_WARNING=1
+UNAV_CRITICAL=5
+# check: storage pool utilization
+STGPOOL_WARNING=80
+STGPOOL_CRITICAL=95
+# check: number of volumes with error
+VOLERR_WARNING=1
+VOLERR_CRITICAL=5
+# check: number of volumes with pct reclaim greather than XX
+VOLRECL_WARNING=5
+VOLRECL_CRITICAL=20
+# check: number of tapes in the library
+TAPESLIB_WARNING=90
+TAPESLIB_CRITICAL=86
+# check: number of tapes with a specific owner
+TAPESOWN_WARNING=2
+TAPESOWN_CRITICAL=3
+# check: number of tapes in a specific storage pool
+TAPESSTGPOOL_WARNING=40
+TAPESSTGPOOL_CRITICAL=50
+# check: number of tsm db backup in the last 24 hours
+DBBKP_WARNING=0
+DBBKP_CRITICAL=0
+# check:  number of nodes session
+NUMSESS_WARNING=15
+NUMSESS_CRITICAL=20
+# check: number of nodes locked
+NUMNODESLOCKED_WARNING=1
+NUMNODESLOCKED_CRITICAL=4
+# check: number of nodes
+NUMNODES_WARNING=80
+NUMNODES_CRITICAL=90
+# check: search for an specific ANR in actlog
+SEARCHANR_WARNING=1
+SEARCHANR_CRITICAL=3
+# Check: number of disk volumes without readwrite access
+DISKVOL_WARNING=1
+DISKVOL_CRITICAL=4
+# Check: number of drm volumes with state different from mountable
+DRMVOL_WARNING=1
+DRMVOL_CRITICAL=4
+# Check: number of database volumes not synchronized
+DBVOL_WARNING=1
+DBVOL_CRITICAL=2
+# Check: number of log volumes not synchronized
+LOGVOL_WARNING=1
+LOGVOL_CRITICAL=2
+# Check number of schedules not completed
+SCHED_WARNING=1
+SCHED_CRITICAL=3
+
+##############################################################################
+
+# ----------------------------------------------------------------------------
+# #### This section has some functions. These are for internal use only
+# #### not for users
+# ----------------------------------------------------------------------------
+
+# Mini tools 
+_tsmmonitor_tool ()
+{
+	case "$1" in
+		program_help )
+			cat - <<-END 
+				Usage: tsmmonitor [options] [check] [options_check]
+
+				Options
+
+				-u, --user          tsm user to connect to the tsm server
+				-p, --pass          tsm user password to connect to the tsm server
+				-s, --servername    specify tsm servername
+				-m, --mail          mail addresses separated by blank space
+				-q, --quiet         quiet mode, suppress all output (except errors)
+				-S, --source        print the check source code
+				-h, --help          print this help information and exit
+				-V, --version       print program version and exit
+
+				The following checks are available:
+
+				$(_tsmmonitor_tool list_checks)
+
+				Try 'tsmmonitor <check> --help' for more information.
+
+				Example:
+				    tsmmonitor db --help
+				    tsmmonitor db
+				    tsmmonitor -m='user1@somewhere.com user2@somewhere.com' db
+				    tsmmonitor --servername=tsmsrv01 db
+				    tsmmonitor --servername=tsmsrv02 db 85 95
+				    tsmmonitor -u=user1 -p=xxx -s=tsmsrv02 db 85 95
+
+			END
+			exit
+			;;
+		program_version )
+			echo "tsmmonitor version $VERSION <$URL>"
+			exit
+			;;
+		# show available checks
+		list_checks )
+				# sed does the magic reading from the source code to
+				# get the available check list
+				cat $0 |
+					sed -n 's/^\([a-zA-Z]\{1,\}\) ()/\1/p' |
+					sed ':a
+						$!N
+						s/\n/, /
+						t a'
+			;;
+		# test if the parameters are numbers
+		is_number )
+				shift # $1 = tool name (is_number)
+				for i in $*
+				do
+					echo "$i" | grep -qs '^[0-9]\{1,\}$' || return 1
+				done
+			;;
+		# send mail, print the tsmmonitor output and exit with the right return code
+		myecho )
+				local retcode="0"
+				local check="$2"
+
+				shift
+				shift
+				[ "$SERVERNAME" ] && SERVERNAME=" tsmserver ${SERVERNAME#*=}:"
+
+				# Send e-mail is enabled?!
+				[ "$SEND_ALERT" = "1" ] && _SendAlert "$check:$SERVERNAME" $*
+			
+				# print the check output
+				[ "$QUIET" = "0" ] && echo "$check -$SERVERNAME $*"
+
+				# Return code depend on check output
+				# ok       = return code 0
+				# warning  = return code 1
+				# critical = return code 2
+				echo "$*" | grep -iqs ',  *critical' && retcode=2
+				echo "$*" | grep -iqs ',  *warning'  && retcode=1
+
+				_Debug "tsmmonitor return code: $retcode"
+
+				# exit with correct return code
+				exit "$retcode"
+			;;
+		# Connect to tsm server and execute the sql statement
+		run_select )
+				local temp_output
+				local check="$2"
+				local sql="$3"
+
+				# Connect to tsm server and run the select statement
+				temp_output=$($TSM_CMD "$sql")
+
+				# test if dsmamdc was executed without error
+				if [ "$?" = "0" -o "$?" = "11" ]
+				then
+					_Debug "$temp_output" > /dev/tty
+					# Check the tsm command return code
+					_tsmmonitor_tool check_retcode $check "$temp_output"
+					echo "$temp_output"
+				else
+					_Debug "$temp_output" > /dev/tty
+					echo "Error executing the command dsmadmc" > /dev/tty
+					echo
+					echo "$temp_output"
+					exit 3
+				fi
+			;;
+		# check if the tsm command ran without errors
+		check_retcode )
+				local retcode
+				local check=$2
+			
+				shift
+				shift
+				# search the tsm command return code
+				retcode=$(echo "$1" |
+					sed -n 's/.*ighest return code was *\([0-9]*\)\./\1/p')
+
+				# Return code zero
+				[ "$retcode" = "0" ] && return
+				# Known return code different from 0 that it's not an error
+				[ "$retcode" = "11" -a "$check" = "req" ] && return
+				[ "$retcode" = "11" -a "$check" = "numnodes" ] && return
+				[ "$retcode" = "11" -a "$check" = "unav" ] && return
+				[ "$retcode" = "11" -a "$check" = "volerr" ] && return
+				[ "$retcode" = "11" -a "$check" = "diskvol" ] && return
+
+				# if we get here, there was a error at tsm command execution
+
+				# print the error
+				echo "Check $check error: return code $retcode"
+
+				_Debug "$(echo "$1" | egrep '^AN')"
+
+				[ "$SEND_ALERT" = "1" ] && _SendAlert $check unknown "error"
+			
+				# Nagios return code: unknown error
+				exit 3
+			;;
+		# print the check (function) source code
+		mysource )
+				sed -n "/^$2 \(\)/,/^} *$/p" $0
+				exit
+		;;
+		# there is no default tool
+	esac
+}
+
+# debug function
+_Debug ()
+{
+	# return if debug is disabled
+	[ "$DEBUG" != "1" ] && return
+
+	local prefix="---- DEBUG"
+
+	if [ "$COLOR_DEBUG" = "1" ] 
+	then
+		# INFO: some OS, like AIX there is no echo -e option
+		# so, maybe you may have to remove it
+		echo -e "\033[32;1m $prefix $* \033[m"
+	else
+		echo "$prefix $*"
+	fi
+}
+
+# show the functions help
+_ShowHelp ()
+{
+	local help critical warning
+	# the help is the comments above the function (check) code
+	# this sed gets those lines
+	# $2 = check
+	help=$(sed -n "/^$/{
+						x
+						s/.*//
+						x
+						b
+					}
+				/^$2 ()/{
+						x
+						p
+					}
+				H" $0 |
+			sed -n '/^# --/d
+					s/^# \{0,1\}//p')
+
+	# get the variable name that have the critical threshold for the check
+	critical=$(echo "$help" |
+				sed -n 's/.*critical\.: *\([^ ]*\).*/\1/p')
+
+	# get the variable name that have the warning threshold for the check
+	warning=$(echo "$help" |
+				sed -n 's/.*warning\.\.: *\([^ ]*\).*/\1/p')
+	echo
+	# this "ugly" code gets the value (threshold) stored in the variable name
+	# so, the help (tsmmonitor check --help) shows the default threshold that
+	# is defined in the source code and not the variable name
+	echo "$help" |
+		sed "s/: *${critical:-@@@}/: $(eval echo \$$critical)/
+			s/: *${warning:-@@@}/: $(eval echo \$$warning)/"
+	echo
+}
+
+# if necessary, send an alert (only when there is a check status change)
+# $1 - check name
+# $* - notification message
+_SendAlert ()
+{
+	local logfile oldstatus i
+	local check="$1"
+	local newstatus=$(echo "$*" |
+		sed 's/^[^,]*, *\(OK\)\{0,1\}\(Warning\)\{0,1\}\(Critical\)\{0,1\}.*/\1\2\3/')
+
+	shift
+	logfile="$TEMPDIR/$StatusFile"
+	_Debug "Log file: $logfile"
+
+	# is It the first time?
+	[ -f "$logfile" ] || echo OK > $logfile # is It the first time?
+	# Get the current status
+	oldstatus="$(<$logfile)"
+	# Debug
+	_Debug "oldstatus = $oldstatus, newstatus = $newstatus"
+
+	if [ "$oldstatus" != "$newstatus" ]
+	then
+		# save new status
+		echo "$newstatus" > "$logfile" # save new status
+		
+		# do not send OK alert to sched check. this do not make sense?!
+		[ "$check" = "sched:" -a "$newstatus" = "OK" ] && return
+
+		_Debug "Sending notification to $MAILTO"
+
+		# Send e-mails
+		for i in $MAILTO
+		do
+			echo "check $check $*" |
+				mail -s "tsmmonitor: check $check $newstatus" "$i"
+		done
+	fi
+}
+
+##############################################################################
+
+# ----------------------------------------------------------------------------
+# #### yeah tsm checks.
+# ----------------------------------------------------------------------------
+ 
+
+# ----------------------------------------------------------------------------
+# show all checks help
+#
+# Usage..: tsmmonitor help
+# Example: tsmmonitor help
+# ----------------------------------------------------------------------------
+help ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 help; return; }
+
+	local check
+
+	# for each check, execute tsmmonitor check --help
+	for check in $(sed -n 's/^\([a-zA-Z]*\) ().*/\1/p' $0)
+	do
+  		echo '---------------------------------------------------------------------'
+  		$0 $check --help | sed '1d;$d'
+	done
+
+	echo '---------------------------------------------------------------------'
+}
+
+# ----------------------------------------------------------------------------
+# check tsm database utilization
+#
+# The default percentages are:
+#    warning..: DB_WARNING
+#    critical.: DB_CRITICAL
+#
+# Usage..: tsmmonitor db [warning] [critical]
+# Example: tsmmonitor db
+#          tsmmonitor db 80 95
+# ----------------------------------------------------------------------------
+db ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 db; return; }
+
+	local tsm_output pct_utl
+	local status="OK"
+	local sql="SELECT pct_utilized FROM db"
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor db: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select db "$sql")" || exit 3
+
+	pct_utl="$(echo "$tsm_output" |
+	            sed -n 's/^\([0-9]\{1,\}\)[,.]*[0-9]*$/\1/p')"
+
+	# find out the current check status (ok/warning/critical)
+	[ "$pct_utl" -ge "${1:-$DB_WARNING}"  ] && status="Warning"
+	[ "$pct_utl" -ge "${2:-$DB_CRITICAL}" ] && status="Critical"
+
+	_tsmmonitor_tool myecho db "database utilization $pct_utl%, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check tsm recovery log utilization
+#
+# The default percentages are:
+#    warning..: LOG_WARNING
+#    critical.: LOG_CRITICAL
+#
+# Usage..: tsmmonitor log [warning] [critical]
+# Example: tsmmonitor log
+#          tsmmonitor log 80 95
+# ----------------------------------------------------------------------------
+log ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 log; return; }
+
+	local tsm_output pct_utl
+	local status="OK"
+	local sql="SELECT pct_utilized FROM log"
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor log: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select log "$sql")" || exit 3
+
+	pct_utl="$(echo "$tsm_output" |
+                sed -n 's/^\([0-9]\{1,\}\)[,.]*[0-9]*$/\1/p')"
+
+	[ "$pct_utl" -ge "${1:-$LOG_WARNING}"  ] && status="Warning"
+	[ "$pct_utl" -ge "${2:-$LOG_CRITICAL}" ] && status="Critical"
+ 
+	_tsmmonitor_tool myecho log "log utilization $pct_utl%, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check number of scratch tapes
+#
+# The default numbers are:
+#    warning..: SC_WARNING
+#    critical.: SC_CRITICAL
+#
+# Usage..: tsmmonitor scratch [options] [warning] [critical]
+#
+#  -l, --library=LIBRARY_NAME   check for scratch in the library only
+# 
+# Example: tsmmonitor scratch
+#          tsmmonitor scratch 8 4
+#          tsmmonitor scratch -l=LTOLIB3 8 4
+#          tsmmonitor scratch -l=LTOLIB3
+# ----------------------------------------------------------------------------
+scratch ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 scratch; return; }
+
+	local tsm_output num_scratch library
+	local status="OK"
+	local sql="SELECT count(*) FROM libvolumes WHERE status='Scratch'"
+
+	# options parser
+	case "$1" in
+		-l=* | --library=* )
+				library="${1#*=}"
+				# library is specified, so change the sql statement
+				sql="$sql AND library_name='$library'"
+				library="in library $library "
+				shift
+		;;
+	esac
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor scratch: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select scratch "$sql")" || exit 3
+	
+	num_scratch=$(echo "$tsm_output" | sed -n '/^ *[0-9]/p')
+
+	[ "$num_scratch" -le "${1:-$SC_WARNING}"  ] && status="Warning"
+	[ "$num_scratch" -le "${2:-$SC_CRITICAL}" ] && status="Critical"
+
+	_tsmmonitor_tool myecho scratch "number of scratch tapes $library$num_scratch, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check number of drives not online
+#
+# The default numbers are:
+#    warning..: DRIVE_WARNING
+#    critical.: DRIVE_CRITICAL
+#
+# Usage..: tsmmonitor drive [options] [warning] [critical]
+#
+#  -l, --library=LIBRARY_NAME   check in the specific library only
+#
+# Example: tsmmonitor drive
+#          tsmmonitor drive 2 3
+#          tsmmonitor drive -l=LTOLIB3 1 2
+#          tsmmonitor drive -l=LTOLIB3
+# ----------------------------------------------------------------------------
+drive ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 drive; return; }
+
+	local tsm_output num_drives library
+	local status="OK"
+	local sql="SELECT count(*) FROM drives WHERE NOT online='YES'"
+
+	# options parser
+	case "$1" in
+		-l=* | --library=* )
+			library="${1#*=}"
+			sql="$sql AND library_name='$library'"
+			library="in library $library "
+			shift
+		;;
+	esac
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor drive: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select drive "$sql")" || exit 3
+
+	num_drives=$(echo "$tsm_output" | sed -n '/^ *[0-9]/p')
+
+	[ "$num_drives" -ge "${1:-$DRIVE_WARNING}"  ] && status="Warning"
+	[ "$num_drives" -ge "${2:-$DRIVE_CRITICAL}" ] && status="Critical"
+
+	_tsmmonitor_tool myecho drive "number of drives not online $library$num_drives, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check number of paths not online
+#
+# The default numbers are:
+#    warning..: PATH_WARNING
+#    critical.: PATH_CRITICAL
+#
+# Usage..: tsmmonitor path [options] [warning] [critical]
+#
+# -s, --source=SOURCE_NAME   check path with a specific source name
+#
+# Example: tsmmonitor path
+#          tsmmonitor path 2 4
+#          tsmmonitor path -s=LANFREE1 1 4
+#          tsmmonitor path -s=LANFREE1
+# ----------------------------------------------------------------------------
+path ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 path; return; }
+
+	local tsm_output num_paths source
+	local status="OK"
+	local sql="SELECT count(*) FROM paths WHERE NOT online='YES'"
+
+	# options parser
+	case "$1" in
+		-s=* | --source=* )
+			source="${1#*=}"
+			sql="$sql AND source_name='$source'"
+			source="with source name $source "
+			shift
+		;;
+	esac
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor path: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+	
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select path "$sql")" || exit 3
+
+	num_paths=$(echo "$tsm_output" | sed -n '/^ *[0-9]/p')
+
+	[ "$num_paths" -ge "${1:-$PATH_WARNING}"  ] && status="Warning"
+	[ "$num_paths" -ge "${2:-$PATH_CRITICAL}" ] && status="Critical"
+
+	_tsmmonitor_tool myecho path "number of paths not online $source$num_paths, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check tsm database fragmentation
+#
+# The default numbers are:
+#    warning..: DBFRAG_WARNING
+#    critical.: DBFRAG_CRITICAL
+#
+# Usage..: tsmmonitor dbfrag [warning] [critical]
+# Example: tsmmonitor dbfrag
+#          tsmmonitor dbfrag 50 75
+# ----------------------------------------------------------------------------
+dbfrag ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 dbfrag; return; }
+
+	local tsm_output pct
+	local status="OK"
+	local sql="SELECT CAST((100 - (CAST(MAX_REDUCTION_MB AS FLOAT) * 256 ) /
+		(CAST(USABLE_PAGES AS FLOAT) - CAST(USED_PAGES AS FLOAT) ) * 100) AS
+		DECIMAL(4,2)) AS PERCENT_FRAG FROM DB"
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor dbfrag: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select dbfrag "$sql")" || exit 3
+
+	pct=$(echo "$tsm_output" | sed -n '/^[0-9-]/s/[.,].*//p')
+
+	[ "$pct" -ge "${1:-$DBFRAG_WARNING}"  ] && status="Warning"
+	[ "$pct" -ge "${2:-$DBFRAG_CRITICAL}" ] && status="Critical"
+
+	_tsmmonitor_tool myecho dbfrag "database fragmentation $pct%, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check number of unavailable volumes
+#
+# The default numbers are:
+#    warning..: UNAV_WARNING
+#    critical.: UNAV_CRITICAL
+#
+# Usage..: tsmmonitor unav [options] [warning] [critical]
+#
+# -d, --deviceclass=DEVICE_CLASS   check only in a specific device class 
+#
+# Example: tsmmonitor unav
+#          tsmmonitor unav 2 4
+#          tsmmonitor unav -d=LTOCLASS 2 4
+# ----------------------------------------------------------------------------
+unav ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 unav; return; }
+
+	local tsm_output num_vol devclass
+	local status="OK"
+	local sql="SELECT count(*) FROM volumes WHERE access='UNAVAILABLE'"
+
+	# options parser
+	case "$1" in
+		-d=* | --deviceclass=* )
+			devclass="${1#*=}"
+			sql="$sql AND devclass_name='$devclass'"
+			devclass="in device class $devclass "
+			shift
+		;;
+	esac
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor unav: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select unav "$sql")" || exit 3
+
+	# Number of unavailable volumes
+	num_vol=$(echo "$tsm_output" | sed -n '/^[0-9][0-9]*$/p') 
+
+	[ "$num_vol" -ge "${1:-$UNAV_WARNING}"  ] && status="Warning"
+	[ "$num_vol" -ge "${2:-$UNAV_CRITICAL}" ] && status="Critical"
+
+	_tsmmonitor_tool myecho unav "number of unavailable volumes $devclass$num_vol, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check a storage pool utilization
+#
+# The default numbers are:
+#    warning..: STGPOOL_WARNING
+#    critical.: STGPOOL_CRITICAL
+#
+# Usage..: tsmmonitor stgpool <storage_pool_name> [warning] [critical]
+# Example: tsmmonitor stgpool DISK_POOL
+#          tsmmonitor stgpool DISK_POOL 50 75
+# ----------------------------------------------------------------------------
+stgpool ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 stgpool; return; }
+
+	local tsm_output pct_utl
+	local status="OK"
+	local sql="SELECT pct_utilized FROM stgpools WHERE stgpool_name='$1'"
+
+	# The user must specify the storage pool
+	if [ ! "$1" ]
+	then
+		echo "Error: tsmmonitor stgpool: You must specify a storage pool name."
+		exit 3
+	fi
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$2" "$3"
+	then
+		echo "Error: tsmmonitor stgpool: invalid option -- '$2' or '$3'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select stgpool "$sql")" || exit 3
+
+	pct_utl=$(echo "$tsm_output" | sed -n '/^[0-9]/s/[.,].*//p')
+
+	[ "$pct_utl" -ge "${2:-$STGPOOL_WARNING}"  ] && status="Warning"
+	[ "$pct_utl" -ge "${3:-$STGPOOL_CRITICAL}" ] && status="Critical"
+
+	_tsmmonitor_tool myecho stgpool "utilization of storage pool $1 $pct_utl%, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check for volumes with write error and/or read error
+# 
+# Default, search for volumes with write or read errors
+#
+# The default numbers are:
+#    warning..: VOLERR_WARNING
+#    critical.: VOLERR_CRITICAL
+#
+# Usage..: tsmmonitor volerr [options] [warning] [critical]
+#    -r, --read                   test only read errors
+#    -w, --write                  test only write errors
+#    -l, --library=LIBRARY_NAME   check only volumes in the library
+#
+# Example: tsmmonitor volerr
+#          tsmmonitor volerr -r
+#          tsmmonitor volerr 3 5
+#          tsmmonitor volerr -l=LTOLIB
+#          tsmmonitor volerr -l=LTOLIB 3 5
+#          tsmmonitor volerr -w -l=LTOLIB 3 5
+# ----------------------------------------------------------------------------
+volerr ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 volerr; return; }
+	
+	local tsm_output num_vol library
+	local status="OK"
+	local sql_vol_err='( WRITE_ERRORS>0 OR READ_ERRORS>0 )'
+	local sql_lib='volume_name IN ( SELECT volume_name FROM libvolumes WHERE library_name='
+	local sql="SELECT count(*) FROM volumes WHERE"
+
+	# parsing options
+	while [ "$1" ]
+	do
+		case "$1" in
+			-r | --read        ) sql_vol_err='READ_ERRORS>0'  ;;
+			-w | --write       ) sql_vol_err='WRITE_ERRORS>0' ;;
+			-l=* | --library=* ) library="${1#*=}"            ;;
+			*                  ) break                        ;;
+		esac
+		shift
+	done
+
+	# define the correct sql statement
+	if [ "$library" ]
+	then
+		sql="$sql $sql_vol_err AND $sql_lib'$library' )"
+		library="in library $library "
+	else
+		sql="$sql $sql_vol_err"
+	fi
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor volerr: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select volerr "$sql")" || exit 3
+
+	# Number of volumes
+	num_vol=$(echo "$tsm_output" | sed -n '/^[0-9][0-9]*$/p')
+
+	# check the status
+	[ "$num_vol" -ge "${1:-$VOLERR_WARNING}"  ] && status="Warning"
+	[ "$num_vol" -ge "${2:-$VOLERR_CRITICAL}" ] && status="Critical"
+
+	_tsmmonitor_tool myecho volerr "number of volumes ${library}with error $num_vol, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check for volumes with percentage reclaimable space greater than 
+# 
+# The default numbers are:
+#    warning..: VOLRECL_WARNING
+#    critical.: VOLRECL_CRITICAL
+#
+# Usage..: tsmmonitor volreclaim [options] [warning] [critical]
+#    -r, --reclaim=PCT_RECLAIM    pct reclaimable space (default: 80 pct)
+#    -l, --library=LIBRARY_NAME   check only volumes in the library
+#    -s, --stgpool=STGPOOL_NAME   check only volumes in the storage pool
+#    -V, --verbose                list the volumes found
+#
+# Example: tsmmonitor volreclaim
+#          tsmmonitor volreclaim -r
+#          tsmmonitor volreclaim 3 5
+#          tsmmonitor volreclaim -l=LTOLIB
+#          tsmmonitor volreclaim -l=LTOLIB 3 5
+#          tsmmonitor volreclaim -w -l=LTOLIB 3 5
+# ----------------------------------------------------------------------------
+volreclaim ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 volreclaim; return; }
+	
+	local tsm_output num_vol library stgpool verbose
+	local pct_reclaim='80'
+	local status="OK"
+	local sql_lib='volume_name IN ( SELECT volume_name FROM libvolumes WHERE library_name='
+	local sql_list="volume_name,stgpool_name,pct_reclaim,status"
+	local sql="SELECT count(*) FROM volumes WHERE"
+
+	# parsing options
+	while [ "$1" ]
+	do
+		case "$1" in
+			-r=* | --reclaim=* ) pct_reclaim="${1#*=}" ;;
+			-l=* | --library=* ) library="${1#*=}"     ;;
+			-s=* | --stgpool=* ) stgpool="${1#*=}"     ;;
+			-V   | --verbose   ) verbose="1"           ;;
+			*                  ) break                 ;;
+		esac
+		shift
+	done
+	
+	sql="$sql pct_reclaim>$pct_reclaim"
+
+	# stgpool was specified
+	if [ "$stgpool" ]
+	then
+		sql="$sql AND stgpool_name='$stgpool'"
+		stgpool="in stgpool $stgpool "
+	fi
+
+	# library was specified
+	if [ "$library" ]
+	then
+		sql="$sql AND $sql_lib'$library' )"
+		library="in library $library "
+	fi
+
+	# test the pct of reclaim
+	if ! _tsmmonitor_tool is_number "$pct_reclaim"
+	then
+		echo "Error: tsmmonitor volreclaim: invalid percentage -- '$pct_reclaim'"
+		exit 3
+	fi
+
+	# test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor volreclaim: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select volreclaim "$sql")" || exit 3
+
+	# number of volumes
+	num_vol=$(echo "$tsm_output" | sed -n '/^[0-9][0-9]*$/p')
+
+	# check the status
+	[ "$num_vol" -ge "${1:-$VOLRECL_WARNING}"  ] && status="Warning"
+	[ "$num_vol" -ge "${2:-$VOLRECL_CRITICAL}" ] && status="Critical"
+
+	if [ "$verbose" = "1" ]
+	then
+		sql=$(echo $sql | sed "s/count(\*)/$sql_list/")
+		_tsmmonitor_tool run_select volreclaim "$sql" |
+			sed -n '/ANS8000I/,/ANS8002I/p'
+		echo
+	fi
+		
+	_tsmmonitor_tool myecho volreclaim \
+	"number of volumes pct.reclaim>$pct_reclaim $stgpool$library$num_vol, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check how many tapes are in the library
+#
+# The default numbers are:
+#    warning..: TAPESLIB_WARNING
+#    critical.: TAPESLIB_CRITICAL
+#
+# Usage..: tsmmonitor tapeslib [options] [warning] [critical]
+#
+#    -l, --library=LIBRARY_NAME   check only volumes in the library
+#
+# Example: tsmmonitor tapeslib
+#          tsmmonitor tapeslib 120 115
+#          tsmmonitor tapeslib -l=LTOLIB3 120 115
+#          tsmmonitor tapeslib -l=LTOLIB3
+# ----------------------------------------------------------------------------
+tapeslib ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 tapeslib; return; }
+
+	local tsm_output num_tapes library
+	local status="OK"
+	local sql="SELECT count(*) FROM libvolumes"
+
+	# options parser
+	case "$1" in
+		-l=* | --library=* )
+			library="${1#*=}"
+			sql="$sql WHERE library_name='$library'"
+			shift
+		;;
+	esac
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor tapeslib: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select tapeslib "$sql")" || exit 3
+
+	# Number of tapes
+	num_tapes=$(echo "$tsm_output" | sed -n '/^[0-9]/p')
+
+	[ "$num_tapes" -le "${1:-$TAPESLIB_WARNING}"  ] && status="Warning"
+	[ "$num_tapes" -le "${2:-$TAPESLIB_CRITICAL}" ] && status="Critical"
+
+	_tsmmonitor_tool myecho tapeslib "number of tapes in the library $library $num_tapes, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check how many tapes have a specific owner
+#
+# The default numbers are:
+#    warning..: TAPESOWN_WARNING
+#    critical.: TAPESOWN_CRITICAL
+#
+# Usage..: tsmmonitor tapesown <owner> [warning] [critical]
+# Example: tsmmonitor tapesown tsmsrv01
+#          tsmmonitor tapesown tsmsrv01 4 5
+# ----------------------------------------------------------------------------
+tapesown ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 tapesown; return; }
+	
+	local tsm_output num_tapes
+	local status="OK"
+	local sql="SELECT count(*) FROM libvolumes WHERE owner='$1'"
+
+	# User must specify an owner
+	if [ ! "$1" ]
+	then
+		echo "Error: tsmmonitor tapesown: You must specify an owner"
+		exit 3
+	fi
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$2" "$3"
+	then
+		echo "Error: tsmmonitor tapesown: invalid option -- '$2' or '$3'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select tapesown "$sql")" || exit 3
+
+	# Number of tapes
+	num_tapes=$(echo "$tsm_output" | sed -n '/^[0-9]/p')
+
+	[ "$num_tapes" -ge "${2:-$TAPESOWN_WARNING}"  ] && status="Warning"
+	[ "$num_tapes" -ge "${3:-$TAPESOWN_CRITICAL}" ] && status="Critical"
+
+	_tsmmonitor_tool myecho tapesown "number of tapes owner by $1 $num_tapes, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check how many volumes are in a specific storage pool
+#
+# The default numbers are:
+#    warning..: TAPESSTGPOOL_WARNING
+#    critical.: TAPESSTGPOOL_CRITICAL
+#
+# Usage..: tsmmonitor tapesstgpool <storage_pool_name> [warning] [critical]
+# Example: tsmmonitor tapesstgpool DAILY
+#          tsmmonitor tapesstgpool DAILY 30 45
+# ----------------------------------------------------------------------------
+tapesstgpool ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 tapesstgpool; return; }
+
+	local tsm_output num_tapes
+	local sql="SELECT count(*) FROM volumes WHERE stgpool_name='$1'"
+	local status="OK"
+
+	# User must specify a storage pool
+	if [ ! "$1" ]
+	then
+		echo "Error: tsmmonitor tapesstgpool: You must specify a storage pool"
+		exit 3
+	fi
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$2" "$3"
+	then
+		echo "Error: tsmmonitor tapesstgpool: invalid option -- '$2' or '$3'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select tapesstgpool "$sql")" || exit 3
+
+	# Number of tapes in the storage pool
+	num_tapes=$(echo "$tsm_output" | sed -n '/^[0-9]/p')
+
+	[ "$num_tapes" -ge "${2:-$TAPESSTGPOOL_WARNING}"  ] && status="Warning"
+	[ "$num_tapes" -ge "${3:-$TAPESSTGPOOL_CRITICAL}" ] && status="Critical"
+	
+	# Print the script output and exit with the right return code
+	_tsmmonitor_tool myecho tapesstgpool "number of tapes in storage pool $1 $num_tapes, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check how many tsm db backup there are in the last N hours (default is 25h)
+#
+# The default numbers are:
+#    warning..: DBBKP_WARNING
+#    critical.: DBBKP_CRITICAL
+#
+# Usage..: tsmmonitor dbbkp [options] [warning] [critical]
+#
+#    -t, --type=I,F,S       Specifies the type of backup to look for   
+#                           Incremental,Full,dbSnapshot (default is full only)
+#    -H, --hours=NUM_HOURS  how many hours ago to search for db backup
+#
+# Example: tsmmonitor dbbkp
+#          tsmmonitor dbbkp 2 1
+#          tsmmonitor dbbkp -H=12
+#          tsmmonitor dbbkp -H=12 2 1
+#          tsmmonitor dbbkp -H=12 -t=S
+#          tsmmonitor dbbkp -H=12 -t=F,S 2 1
+# ----------------------------------------------------------------------------
+dbbkp ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 dbbkp; return; }
+
+	local tsm_output num_bkp
+	local type=F
+	local hours='25'
+	local status="OK"
+	local sql="SELECT count(*) FROM volhistory WHERE "
+	local opt_type='F\|S\|I\|F,S\|F,I\|S,F\|S,I\|I,F\|I,S\|F,S,I\|F,I,S\|S,F,I\|S,I,F\|I,F,S\|I,S,F'
+
+	# parsing options
+	while [ "$1" ]
+	do
+		case "$1" in
+			# how many hours ago
+			-H=* | --hours=* ) hours="${1#*=}" 	;;
+			# type of DB backup to look for
+			-t=* | --type=*  ) type="${1#*=}"   ;;
+			*                ) break            ;;
+		esac
+		shift
+	done
+
+	if ! _tsmmonitor_tool is_number "$hours"
+	then
+		echo "Error: tsmmonitor dbbkp: invalid option $hours"
+		exit 3
+	fi
+	
+	# is the type of db backup valid?
+	if [ "$(echo $type | sed "s/^$opt_type//")" ]
+	then
+		echo "Error: tsmmonitor dbbkp: invalid db type '$type'"
+		exit 3
+	fi
+
+	type=$(echo $type | sed "
+	                     s/F/type='BACKUPFULL'/
+						 s/S/type='DBSNAPSHOT'/
+						 s/I/type='DBINCREMENTAL'/
+						 s/,/ OR /g")
+
+	sql="$sql date_time>=current_timestamp-$hours hours AND ( $type )"
+
+	# Test if the parameters are numbers
+	if	! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor dbbkp: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select dbbkp "$sql")" || exit 3
+
+	# Number of db backups
+	num_bkp=$(echo "$tsm_output" | sed -n '/^[0-9][0-9]*$/p')
+
+	[ "$num_bkp" -le "${1:-$DBBKP_WARNING}"  ] && status="Warning"
+	[ "$num_bkp" -le "${2:-$DBBKP_CRITICAL}" ] && status="Critical"
+
+	# Print the script output and exit with the right return code
+	_tsmmonitor_tool myecho dbbkp "number of tsm db backup in the last ${hours}h $num_bkp, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check number of nodes sessions
+#
+# The default numbers are:
+#    warning..: NUMSESS_WARNING
+#    critical.: NUMSESS_CRITICAL
+#
+# Usage..: tsmmonitor numsess [options] [warning] [critical] [session_state]
+#
+#   -s, --state=SESSION_STATE   Count only nodes sessions with a specifc state
+#
+# Example: tsmmonitor numsess
+#          tsmmonitor numsess 100 150
+#          tsmmonitor numsess -s=MediaW 5 10
+#          tsmmonitor numsess -s=MediaW
+# ----------------------------------------------------------------------------
+numsess ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 numsess; return; }
+
+	local tsm_output num_sess sess_state
+	local status="OK"
+	local sql="SELECT count(*) FROM sessions WHERE session_type='Node'"
+
+	# options parser
+	case "$1" in
+		-s=* | --state=* )
+			sess_state="${1#*=}"
+			sql="$sql AND state='$sess_state'"
+			shift
+		;;
+	esac
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor numsess: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select numsess "$sql")" || exit 3
+
+	# Number of nodes sessions
+	num_sess=$(echo "$tsm_output" | sed -n '/^[0-9][0-9]*$/p')
+
+	[ "$num_sess" -ge "${1:-$NUMSESS_WARNING}"  ] && status="Warning"
+	[ "$num_sess" -ge "${2:-$NUMSESS_CRITICAL}" ] && status="Critical"
+	
+	# Print the script output and exit with the right return code
+	_tsmmonitor_tool myecho numsess "number of nodes sessions $sess_state $num_sess, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check number of nodes
+#
+# The default numbers are:
+#    warning..: NUMNODES_WARNING
+#    critical.: NUMNODES_CRITICAL
+#
+# Usage..: tsmmonitor numnodes [options] [warning] [critical]
+#
+#    -d, --domain=DOMAIN  Count nodes only in the DOMAIN
+#
+# Example: tsmmonitor numnodes
+#          tsmmonitor numnodes 20 30
+#          tsmmonitor numnodes -d=SAP 20 30
+#          tsmmonitor numnodes -d=SAP
+# ----------------------------------------------------------------------------
+numnodes ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 numnodes; return; }
+
+	local tsm_output num_nodes domain
+	local status="OK"
+	local sql="SELECT count(*) FROM nodes"
+
+	# options parser
+	case "$1" in
+		-d=* | --domain=* )
+			domain="${1#*=}"
+			sql="$sql WHERE domain_name='$domain'"
+			domain="in domain $domain"
+			shift
+		;;
+	esac
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor numnodes: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select numnodes "$sql")" || exit 3
+
+	# Number of nodes
+	num_nodes=$(echo "$tsm_output" | sed -n '/^[0-9][0-9]*$/p')
+
+	[ "${num_nodes:-0}" -ge "${1:-$NUMNODES_WARNING}"  ] && status="Warning"
+	[ "${num_nodes:-0}" -ge "${2:-$NUMNODES_CRITICAL}" ] && status="Critical"
+	
+	# Print the script output and exit with the right return code
+	_tsmmonitor_tool myecho numnodes "number of nodes $domain ${num_nodes:-0}, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check number of nodes locked
+#
+# The default numbers are:
+#    warning..: NUMNODESLOCKED_WARNING
+#    critical.: NUMNODESLOCKED_CRITICAL
+#
+# Usage..: tsmmonitor nodeslocked [options] [warning] [critical]
+#
+#    -d, --domain=DOMAIN  Count nodes only in the DOMAIN
+#
+# Example: tsmmonitor nodeslocked
+#          tsmmonitor nodeslocked 2 4
+#          tsmmonitor nodeslocked -d=SAP 2 4
+#          tsmmonitor nodeslocked -d=SAP
+# ----------------------------------------------------------------------------
+nodeslocked ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 nodeslocked; return; }
+
+	local tsm_output num_nodes domain
+	local status="OK"
+	local sql="SELECT count(*) FROM nodes WHERE locked='YES'"
+
+	# options parser
+	case "$1" in
+		-d=* | --domain=* )
+			domain="${1#*=}"
+			sql="$sql AND domain_name='$domain'"
+			domain="in domain $domain"
+			shift
+		;;
+	esac
+	
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor numnodes: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select nodeslocked "$sql")" || exit 3
+
+	# Number of nodes
+	num_nodes=$(echo "$tsm_output" | sed -n '/^[0-9][0-9]*$/p')
+
+	[ "$num_nodes" -ge "${1:-$NUMNODESLOCKED_WARNING}"  ] && status="Warning"
+	[ "$num_nodes" -ge "${2:-$NUMNODESLOCKED_CRITICAL}" ] && status="Critical"
+	
+	# Print the script output and exit with the right return code
+	_tsmmonitor_tool myecho nodeslocked "number of nodes locked $domain $num_nodes, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check number of disk volumes without readwrite access
+#
+# The default numbers are:
+#    warning..: DISKVOL_WARNING
+#    critical.: DISKVOL_CRITICAL
+#
+# Usage..: tsmmonitor diskvol [warning] [critical]
+# Example: tsmmonitor diskvol
+#          tsmmonitor diskvol 2 3
+# ----------------------------------------------------------------------------
+diskvol ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 diskvol; return; }
+
+	local tsm_output num_vol_error
+	local status="OK"
+	local sql="SELECT count(*) FROM volumes WHERE \
+			devclass_name='DISK' AND NOT access='READWRITE'"
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor diskvol: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select diskvol "$sql")" || exit 3
+
+	# Number of disk volumes without readwrite
+	num_vol_error=$(echo "$tsm_output" | sed -n '/^[0-9][0-9]*$/p')
+
+	# Test the diskvol status check
+	[ "$num_vol_error" -ge "${1:-$DISKVOL_WARNING}"  ] && status="Warning"
+	[ "$num_vol_error" -ge "${2:-$DISKVOL_CRITICAL}" ] && status="Critical"
+	
+	# Print the script output and exit with the right return code
+	_tsmmonitor_tool myecho diskvol "number of disk volumes without readwrite access $num_vol_error, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check number of database volumes not synchronized (copy status)
+#
+# The default numbers are:
+#    warning..: DBVOL_WARNING
+#    critical.: DBVOL_CRITICAL
+#
+# Usage..: tsmmonitor dbvol [warning] [critical]
+# Example: tsmmonitor dbvol
+#          tsmmonitor dbvol 2 3
+# ----------------------------------------------------------------------------
+dbvol ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 dbvol; return; }
+
+	local tsm_output num_vol_error
+	local status="OK"
+	local sql="SELECT count(*) FROM dbvolumes WHERE ( \
+		NOT copy1_status='Synchronized' OR
+		NOT copy2_status='Synchronized' OR
+		NOT copy3_status='Synchronized' )"
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor dbvol: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+	
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select dbvol "$sql")" || exit 3
+
+	# Number of volumes not synchronized
+	num_vol_error=$(echo "$tsm_output" | sed -n '/^[0-9][0-9]*$/p')
+
+	# Test the dbvol status check
+	[ "$num_vol_error" -ge "${1:-$DBVOL_WARNING}"  ] && status="Warning"
+	[ "$num_vol_error" -ge "${2:-$DBVOL_CRITICAL}" ] && status="Critical"
+
+	# Print the script output and exit with the right return code
+	_tsmmonitor_tool myecho dbvol "number of db volumes not synchronized $num_vol_error, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check number of log volumes not synchronized (copy status)
+#
+# The default numbers are:
+#    warning..: LOGVOL_WARNING
+#    critical.: LOGVOL_CRITICAL
+#
+# Usage..: tsmmonitor logvol [warning] [critical]
+# Example: tsmmonitor logvol
+#          tsmmonitor logvol 2 3
+# ----------------------------------------------------------------------------
+logvol ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ]&&{ _ShowHelp $0 logvol; return; }
+
+	local tsm_output num_vol_error
+	local status="OK"
+	local sql="SELECT count(*) FROM logvolumes WHERE (
+			NOT copy1_status='Synchronized' OR
+			NOT copy2_status='Synchronized' OR 
+			NOT copy3_status='Synchronized' )"
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor logvol: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select logvol "$sql")" || exit 3
+
+	# Number of volumes not synchronized
+	num_vol_error=$(echo "$tsm_output" | sed -n '/^[0-9][0-9]*$/p')
+
+	# Test de logvol status check
+	[ "$num_vol_error" -ge "${1:-$LOGVOL_WARNING}"  ] && status="Warning"
+	[ "$num_vol_error" -ge "${2:-$LOGVOL_CRITICAL}" ] && status="Critical"
+
+	# Print the script output and exit with the right return code
+	_tsmmonitor_tool myecho logvol "number of log volumes not synchronized $num_vol_error, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# Search for a specific ANR in the last N hours (default is 1h)
+#
+# The default numbers are:
+#    warning..: SEARCHANR_WARNING
+#    critical.: SEARCHANR_CRITICAL
+#
+# Usage..: tsmmonitor searchanr [options] <ANR> [warning] [critical]
+#
+#    -H, --hours=NUM_HOURS_AGO   how many hours ago to search for
+#
+# Example: tsmmonitor searchanr ANR8446W
+#          tsmmonitor searchanr ANR8446W 2 4
+#          tsmmonitor searchanr -H=12 ANR8446W
+# ----------------------------------------------------------------------------
+searchanr ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 searchanr; return; }
+
+	local tsm_output num_msg
+	local status="OK"
+	local hours="1"
+	# XXX: change to q aclot (faster)
+	local sql="SELECT count(*) FROM actlog WHERE"
+
+	# parsing options
+	case "$1" in
+		# How many hours ago to search for
+		-H=* | --hours=* )
+			hours="${1#*=}"
+			shift
+		;;
+	esac
+			
+	if ! _tsmmonitor_tool is_number "$hours"
+	then
+		echo "Error: tsmmonitor searchanr: invalid option '$hours'"
+		exit 3
+	fi
+
+	# The user must specify the ANR
+	if [ ! "$1" ]
+	then
+		echo "Error: tsmmonitor searchanr: You must specify a ANR."
+		exit 3
+	fi
+	
+	sql="$sql message LIKE'$1%' AND date_time>=current_timestamp-$hours hours"
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$2" "$3"
+	then
+		echo "Error: tsmmonitor searchanr: invalid option -- '$2' or '$3'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select searchanr "$sql")" || exit 3
+
+	# Number of messages
+	num_msg=$(echo "$tsm_output" | sed -n '/^[0-9][0-9]*$/p')
+
+	[ "$num_msg" -ge "${2:-$SEARCHANR_WARNING}"  ] && status="Warning"
+	[ "$num_msg" -ge "${3:-$SEARCHANR_CRITICAL}" ] && status="Critical"
+
+	# Print the script output and exit with the right return code
+	_tsmmonitor_tool myecho searchanr "number of messages with $1 in the last ${hours}h $num_msg, $status"
+}
+
+
+# ----------------------------------------------------------------------------
+# check number of DRM volumes
+#
+# The default values are:
+#    warning..: DRMVOL_WARNING
+#    critical.: DRMVOL_CRITICAL
+#
+# Usage..: tsmmonitor drmvol [options] [warning] [critical]
+#
+#  -l, --library=LIBRARY_NAME  search volumes only in the library
+#  -s, --state=DRM_STATE       DRM state of volumes (default: MOUNTABLE)
+#                              VAULT,VAULTRETRIEVE,COURIERRETRIEVE
+#  -i, --invert                Invert the sense of matching, to select
+#                              non-matching volumes
+#
+# Example: tsmmonitor drmvol
+#          tsmmonitor drmvol -i -l=3584LIB # DRM volumes with state different from MOUNTABLE in library
+#          tsmmonitor drmvol -s=COURIERRETRIEVE
+#          tsmmonitor drmvol -s=VAULT -l=3584LIB 1 8
+#          tsmmonitor drmvol 2 6
+# ----------------------------------------------------------------------------
+drmvol ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 drmvol; return; }
+
+	local tsm_output num_vol library
+	local status="OK"
+	local state="MOUNTABLE"
+	local type_match='='
+	local sql="SELECT count(*) FROM drmedia WHERE"
+	local sql_in_lib="AND volume_name IN ( SELECT volume_name FROM libvolumes WHERE"
+
+	# parsing options
+	while [ "$1" ]
+	do
+		case "$1" in
+			-s=* | --state=*   ) state="${1#*=}"   ;;
+			-l=* | --library=* ) library="${1#*=}" ;;
+			-i   | --invert    ) type_match='<>'   ;;
+		esac
+		shift
+	done
+
+	if [ "$library" ]
+	then
+		sql="$sql state$type_match'$state' $sql_in_lib library_name='$library' )"
+		library="in library $library"
+	else
+		sql="$sql state$type_match'$state'"
+	fi
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor drmvol: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select drmvol "$sql")" || exit 3
+
+	num_vol=$(echo "$tsm_output" | sed -n '/^[0-9]\{1,\}$/p')
+
+	[ "$num_vol" -ge "${1:-$DRMVOL_WARNING}"  ] && status="Warning"
+	[ "$num_vol" -ge "${2:-$DRMVOL_CRITICAL}" ] && status="Critical"
+
+	if [ "$type_match" = '=' ]
+	then
+		_tsmmonitor_tool myecho drmvol \
+		"number of DRM volumes with state $state $library $num_vol, $status"
+	else
+		_tsmmonitor_tool myecho drmvol \
+		"number of DRM volumes different from $state $library $num_vol, $status"
+	fi
+}
+
+
+# ----------------------------------------------------------------------------
+# check the number of schedules not completed (only today's schedules)
+#
+# The default numbers are:
+#    warning..: SCHED_WARNING
+#    critical.: SCHED_CRITICAL
+#
+# Usage..: tsmmonitor sched [options] [warning] [critical]
+#     -a, --admin                   only administrative schedules.
+#     -s, --schedule=SCHEDULE_NAME  only a specific schedule
+#
+# Example: tsmmonitor sched
+#          tsmmonitor sched -a
+#          tsmmonitor sched -s=DAILY_BKP 4 15
+# ----------------------------------------------------------------------------
+sched ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 sched; return; }
+
+	local tsm_output num_sched
+	local status="OK"
+	local sql="SELECT count(*) FROM events WHERE status<>'Completed' AND status<>'Future' AND status<>'Started'"
+
+	# parsing options
+	while [ "$1" ]
+	do
+		case "$1" in
+			-a   | --admin      ) sql="$sql AND domain_name IS null"     ;;
+			-s=* | --schedule=* ) sql="$sql AND schedule_name='${1#*=}'" ;;
+			*                   ) break                                  ;;
+		esac
+		shift
+	done
+
+	# Test if the parameters are numbers
+	if ! _tsmmonitor_tool is_number "$1" "$2"
+	then
+		echo "Error: tsmmonitor sched: invalid option -- '$1' or '$2'"
+		exit 3
+	fi
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select sched "$sql")" || exit 3
+
+	# Number of failed schedules
+	num_sched=$(echo "$tsm_output" | sed -n '/^[0-9][0-9]*$/p')
+
+	[ "$num_sched" -ge "${1:-$SCHED_WARNING}"  ] && status="Warning"
+	[ "$num_sched" -ge "${2:-$SCHED_CRITICAL}" ] && status="Critical"
+
+	_tsmmonitor_tool myecho sched "number of schedules not completed $num_sched, $status"
+}
+
+# ----------------------------------------------------------------------------
+# check server license compliance
+#
+# Usage..: tsmmonitor lic
+# Example: tsmmonitor lic
+# ----------------------------------------------------------------------------
+lic ()
+{
+	[ "$1" = "--help" -o "$1" = "-h" ] && { _ShowHelp $0 lic; return; }
+
+	local tsm_output lic_status
+	local sql='SELECT compliance FROM licenses'
+
+	# Run the select statement
+	tsm_output="$(_tsmmonitor_tool run_select lic "$sql")" || exit 3
+
+	# Get the license status
+	lic_status=$(
+		echo "$tsm_output" |
+			sed -n '
+				/^ANS8000I/{
+					n
+					p
+				}'
+	)
+	# Check if status is valid
+	if [ "$lic_status" = "Valid" ]
+	then
+		_tsmmonitor_tool myecho lic "Valid Server License Compliance, OK"
+	else
+		_tsmmonitor_tool myecho lic "Failed Server License Compliance, Critical"
+	fi
+}
+
+
+##############################################################################
+################################### Main #####################################
+##############################################################################
+
+# parsing global options
+while [ "$1" != "" ]
+do
+	case "$1" in
+		-h   | --help         ) _tsmmonitor_tool program_help     ;;
+		-V   | --version      ) _tsmmonitor_tool program_version  ;;
+		-s=* | --servername=* ) SERVERNAME="-servername=${1#*=}"  ;;
+		-u=* | --user=*       ) USER="${1#*=}"                    ;;
+		-p=* | --pass=*       ) PASS="${1#*=}"                    ;;
+		-m=* | --mail=*       ) MAILTO="${1#*=}"                  ;;
+		-S   | --source       ) SHOW_CHECK_SOURCE=1               ;;
+		-d   | --debug        ) DEBUG=1                           ;;
+		-q   | --quiet        ) QUIET=1                           ;;
+		# probably, $1 has the function (check)
+		* )
+			func="$1"
+			# tsm base query command. usually, you do not need to touch here
+			TSM_CMD="$DSMADMC $SERVERNAME -tab -id=$USER -password=$PASS"
+
+			_Debug "TSM_CMD = $TSM_CMD"
+			_Debug "MAILTO = $MAILTO"
+
+			# is there the function?
+			if type $func > /dev/null 2> /dev/null
+			then
+				# print the function (check) source code only
+				[ "$SHOW_CHECK_SOURCE" = "1" ] && _tsmmonitor_tool mysource $func
+
+				shift
+				# file to record check status
+				StatusFile=${func}_$(echo $* | sed 's/ /_/g')
+
+				# execute the check ($func) function
+				$func "$@"
+			else
+				echo "tsmmonitor: check '$func' not found (try --help)"
+				exit 1
+			fi
+		;;
+	esac
+
+	# In some sh implementation, if there is no more option we get the error
+	# error: shift: bad number
+	[ "$2" != "" ] || break
+
+	shift
+done
+
+exit 0
+
+# vim: ts=4

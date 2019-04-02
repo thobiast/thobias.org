@@ -1,0 +1,21 @@
+body {
+        background-color: white;
+        color: black;
+        margin: 2.0em;
+}
+
+
+pre {
+	font-size: 13;
+	margin-left: 2em;
+	margin-right: 2em;
+	padding: 8px;
+	background-color: Lightgoldenrodyellow;
+	border-style: solid;
+	border-color: black;
+	border-width: 1px 1px;
+}
+
+dl {
+        margin: 2em;
+}

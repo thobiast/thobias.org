@@ -1,0 +1,706 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.sf.net">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<LINK REL="stylesheet" TYPE="text/css" HREF="fwchange.css">
+<TITLE>fwchange</TITLE>
+</HEAD><BODY BGCOLOR="white" TEXT="black">
+<P ALIGN="center"><CENTER><H1>fwchange</H1>
+<FONT SIZE="4">
+<I>Thobias Salazar Trevisan</I><BR>
+Atualizado em 02 Feb 2005
+</FONT></CENTER>
+
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
+  <UL>
+  <LI><A HREF="#toc1">Oi</A>
+  <LI><A HREF="#toc2">Introdução</A>
+  <LI><A HREF="#toc3">fwchange</A>
+  <LI><A HREF="#toc4">Download &amp; Instalação</A>
+  <LI><A HREF="#toc5">As Funções</A>
+    <UL>
+    <LI><A HREF="#toc6">Opções Gerais</A>
+    <LI><A HREF="#toc7">ipblock</A>
+    <LI><A HREF="#toc8">ipaccept</A>
+    <LI><A HREF="#toc9">portblock</A>
+    <LI><A HREF="#toc10">portaccept</A>
+    <LI><A HREF="#toc11">iplimit</A>
+    <LI><A HREF="#toc12">portlimit</A>
+    <LI><A HREF="#toc13">Controle de Mudanças</A>
+    </UL>
+  <LI><A HREF="#toc14">Inspiração</A>
+  <LI><A HREF="#toc15">Fim</A>
+  </UL>
+
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
+<A NAME="toc1"></A>
+<H1>Oi</H1>
+<P>
+Esta é a página do programa fwchange. Um shell-script feito para facilitar
+mudanças rápidas em um firewall.
+</P>
+<A NAME="toc2"></A>
+<H1>Introdução</H1>
+<P>
+Hoje em dia, firewalls são utilizados desde pequenas/grandes empresas a
+usuários domésticos. Os administradores têm seus scripts de
+firewall que podem ter centenas/milhares de linhas. Para realizar mudanças
+no comportamento do firewall é necessário abrir o script em um editor de texto,
+procurar onde se deve incorporar a mudança e recarregar as regras. Neste
+processo perde-se tempo, ainda mais se forem mudanças temporárias.
+Com o intuito de facilitar e economizar a execução deste processo surgiu o
+fwchange.
+</P>
+<P>
+Alguns exemplos de como este script pode ajudar na manutenção:
+</P>
+<OL>
+<LI>imagine que você tem um servidor cheio de músicas e vídeos e um amigo
+pede para você liberar o acesso para ele neste servidor. Realizar todo
+o processo descrito acima para uma tarefa tão simples é chato.
+<P></P>
+<LI>você tem um servidor de mail que começa a ser bombardeado por spams que
+estão sendo enviados por um determinado IP e você quer bloqueá-lo no
+seu firewall.
+</OL>
+
+<P>
+Para estas e outras situações o fwchange é ideal, pois permite você
+realizar estas mudanças de maneira extremanente rápida. Ele mantém ainda
+um histórico das regras que foram executadas através do script e estão
+ativas no firewall.
+</P>
+<HR NOSHADE SIZE=5>
+<P></P>
+<A NAME="toc3"></A>
+<H1>fwchange</H1>
+<P>
+O fwcange é implementado de maneira genérica, deste modo pode-se
+adicionar facilmente suporte a diversos tipos de firewalls, como
+por exemplo: iptables, ipchains, ipfw etc.
+A interface do programa é a mesma, independente do tipo de firewall
+utilizado.
+</P>
+<P>
+Os firewalls suportados atualmente são: <A HREF="http://www.netfilter.org">iptables</A>
+e <A HREF="http://www.netfilter.org/ipchains">ipchains</A>.
+</P>
+<P>
+Se o fwchange não tem suporte para o tipo de firewall que você utiliza me envie um mail para adicionarmos.
+</P>
+<P>
+Atualmente as funções disponíveis são:
+</P>
+<TABLE ALIGN="center" CELLPADDING="4" BORDER="1">
+<TR>
+<TD>ajuda</TD>
+<TD>mostra a ajuda de todas as funções</TD>
+</TR>
+<TR>
+<TD>ipblock</TD>
+<TD>bloqueia um IP ou uma sub-rede</TD>
+</TR>
+<TR>
+<TD>ipaccept</TD>
+<TD>libera um IP ou uma sub-rede</TD>
+</TR>
+<TR>
+<TD>porblock</TD>
+<TD>bloqueia uma porta TCP ou UDP</TD>
+</TR>
+<TR>
+<TD>portaccept</TD>
+<TD>libera uma porta TCP ou UDP</TD>
+</TR>
+<TR>
+<TD>iplimit</TD>
+<TD>limita o número de conexões abertas para um IP ou sub-rede</TD>
+</TR>
+<TR>
+<TD>portlimit</TD>
+<TD>limita o número de conexões abertas para uma porta TCP ou UDP</TD>
+</TR>
+</TABLE>
+
+<P></P>
+<HR NOSHADE SIZE=5>
+<P></P>
+<A NAME="toc4"></A>
+<H1>Download &amp; Instalação</H1>
+<P>
+O fwchange é implentado no shell <B>bash</B>. As ferramentas necessárias para
+a sua execução são: bash, sed e grep.
+</P>
+<P>
+O script está todo em um único arquivo, basta baixá-lo: <A HREF="fwchange">fwchange</A>.
+Depois dê permissão de execução:
+</P>
+<PRE>
+  prompt&gt; chmod +x fwchange
+</PRE>
+<P></P>
+<P>
+Dependendo do seu Sistema Operacional algumas variáveis, talvez, precisem
+ser ajustadas:
+</P>
+<UL>
+<LI>onde vai ficar o arquivo com o histórico:
+<PRE>
+  fwhistory='/root/fwchange_history.txt'
+</PRE>
+<P></P>
+<LI>caminho para o binário do iptables:
+<PRE>
+  ipt='/sbin/iptables'
+</PRE>
+<P></P>
+<LI>caminho para o binário do ipchains:
+<PRE>
+  ipc='/sbin/ipchains'
+</PRE>
+<P></P>
+<LI>tipo de firewall utilizado (default é iptables).
+ <I>fw='_ipt'</I> para iptables e <I>fw='_ipc'</I> para ipchains.
+<PRE>
+  fw='_ipt'
+</PRE>
+</UL>
+
+<UL>
+<LI>mostra os comandos que o fwchange executa no firewall (default é mostrar):
+<PRE>
+  verbose='1'
+</PRE>
+</UL>
+
+<P>
+Após os ajustes basta executar o fwchange na linha de comando.
+</P>
+<P>
+OBS: fwchange precisa de permissão de root para ser executado.
+</P>
+<PRE>
+  prompt&gt; ./fwchange -h
+  Uso: fwchange &lt;função&gt; [&lt;parâmetros&gt;]
+       fwchange [--help|--version]
+  
+       Dica: Para listar as funções disponíveis e a sua ajuda use:
+       prompt$ fwchange ajuda
+  
+       As funções disponíveis atualmente são:
+  
+  ipblock, ipaccept, portblock, portaccept, iplimit, portlimit, ajuda
+</PRE>
+<P></P>
+<P>
+<B>Dica</B>: Podem ser utilizados <I>aliases</I> para digitar direto o nome da
+função na linha de comando:
+</P>
+<PRE>
+  prompt&gt; alias ipblock='/root/fwchange ipblock'
+  prompt&gt; ipblock --help
+</PRE>
+<P></P>
+<P>
+Adicione os aliases no seu arquivo <I>.bashrc</I> para serem carregados no
+login.
+</P>
+<P>
+Hora da diversão.
+</P>
+<HR NOSHADE SIZE=5>
+<P></P>
+<A NAME="toc5"></A>
+<H1>As Funções</H1>
+<P>
+Para executar é só chamar a função desejada com as suas opções.
+</P>
+<A NAME="toc6"></A>
+<H2>Opções Gerais</H2>
+<P>
+Algumas considerações sobre as opções que existem em todas as funções:
+</P>
+<UL>
+<LI><I>--chain</I> os valores possíveis são: <I>input</I>, <I>output</I> e <I>forward</I>
+  que são pacotes destinados ao firewall, pacotes que saem (origem) do
+  firewall e pacotes que passam pelo firewall, respectivamente. Se não for
+  especificada, a regra é adicionada em todas as <I>chains</I>.
+<P></P>
+<LI><I>on</I> e <I>off</I> indica se a regra deve ser ativada ou desativada.
+<P></P>
+<LI><I>-c</I> comentário que será adicionado no arquivo com o histórico das
+  regras ativas.
+<P></P>
+<LI><I>--help</I> mostra a ajuda da função.
+</UL>
+
+<P>
+OBS: Nas opções que têm como parâmetro <I>IP/máscara</I>, a máscara pode ser
+informada tanto no formato CIDR quanto no <I>dotted decimal</I>.
+Exemplo: 10.10.10.0/24 ou 10.10.10.0/255.255.255.0
+</P>
+<HR NOSHADE SIZE=1>
+<P></P>
+<A NAME="toc7"></A>
+<H2>ipblock</H2>
+<P>
+Esta função bloqueia um IP ou uma sub-rede. Se nenhum parâmetro
+for passado ou for '--list' são listados todos os IPs bloqueados.
+Se a máscara não for especificada é utilizada a <I>/32</I>.
+</P>
+<PRE>
+  Uso: ipblock [--chain ...] IP[/netmask] on|off [-c comentário]
+               [--list|--help]
+</PRE>
+<P></P>
+<P>
+Alguns exemplos:
+</P>
+<P>
+Bloquear um IP:
+</P>
+<PRE>
+  prompt&gt;  ./fwchange ipblock 10.10.10.3 on
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -I INPUT -s 10.10.10.3/32 -j DROP
+  /sbin/iptables -I OUTPUT -s 10.10.10.3/32 -j DROP
+  /sbin/iptables -I FORWARD -s 10.10.10.3/32 -j DROP
+</PRE>
+<P></P>
+<P>
+Bloquear uma sub-rede:
+</P>
+<PRE>
+  prompt&gt; ./fwchange ipblock 10.10.10.0/24 on
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -I INPUT -s 10.10.10.0/24 -j DROP
+  /sbin/iptables -I OUTPUT -s 10.10.10.0/24 -j DROP
+  /sbin/iptables -I FORWARD -s 10.10.10.0/24 -j DROP
+</PRE>
+<P></P>
+<P>
+Cancelar as regras anteriores:
+</P>
+<PRE>
+  prompt&gt; ./fwchange ipblock 10.10.10.3 off
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -D INPUT -s 10.10.10.3/32 -j DROP
+  /sbin/iptables -D OUTPUT -s 10.10.10.3/32 -j DROP
+  /sbin/iptables -D FORWARD -s 10.10.10.3/32 -j DROP
+  
+  prompt&gt; ./fwchange ipblock 10.10.10.0/24 off
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -D INPUT -s 10.10.10.0/24 -j DROP
+  /sbin/iptables -D OUTPUT -s 10.10.10.0/24 -j DROP
+  /sbin/iptables -D FORWARD -s 10.10.10.0/24 -j DROP
+</PRE>
+<P></P>
+<P>
+Especificar quais <I>chains</I> devem ser afetadas pela regra:
+</P>
+<PRE>
+  prompt&gt; ./fwchange ipblock --chain forward 10.10.10.3 on
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -I FORWARD -s 10.10.10.3/32 -j DROP
+</PRE>
+<P></P>
+<P>
+Adicionar regra com comentário:
+</P>
+<PRE>
+  prompt&gt; ./fwchange ipblock 192.168.10.0/24 on -c bloqueia rede do lab
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -I INPUT -s 192.168.10.0/24 -j DROP
+  /sbin/iptables -I OUTPUT -s 192.168.10.0/24 -j DROP
+  /sbin/iptables -I FORWARD -s 192.168.10.0/24 -j DROP
+</PRE>
+<P></P>
+<P>
+Mostrar as regras ativas:
+</P>
+<PRE>
+  prompt&gt; ./fwchange ipblock
+  ipblock:10.10.10.3/32:FORWARD:
+  ipblock:192.168.10.0/24:INPUT,OUTPUT,FORWARD:bloqueia rede do lab
+</PRE>
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
+<A NAME="toc8"></A>
+<H2>ipaccept</H2>
+<P>
+Possui as mesmas opções da função ipblock, mas libera um IP ou uma
+sub-rede.
+</P>
+<PRE>
+  prompt&gt; ./fwchange ipaccept --help
+  
+  Libera um determinado endereço IP ou uma sub-rede
+  OBS1: Se nenhum parâmetro for passado ou for '--list' são listados
+  todos os IPs bloqueados por esta função
+  OBS2: Os valores possíveis para a opção chain são: INPUT,OUTPUT,FORWARD
+  As chains devem estar separadas por vírgula e não pode ter espaços
+  entre elas
+  
+  Uso: ipaccept [--chain ...] IP[/netmask] on|off [-c comentário]
+                [--list|--help]
+  Ex.: ipaccept 10.10.10.3 on -c bloqueia ip do fulano
+  Ex.: ipaccept 10.10.10.3 off
+  Ex.: ipaccept 10.10.10.0/24 on
+  Ex.: ipaccept --chain INPUT,OUTPUT 10.10.10.0/24 on
+  Ex.: ipaccept --list
+  
+</PRE>
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
+<A NAME="toc9"></A>
+<H2>portblock</H2>
+<P>
+Bloqueia uma determinada porta TCP ou UDP. Se não for especificado, o
+protocolo utilizado é o TCP.
+</P>
+<PRE>
+  Uso: portblock [--chain ...] [--proto tcp|udp] porta on|off [-c comentário]
+                 [--list|--help]
+</PRE>
+<P></P>
+<P>
+Exemplos:
+</P>
+<P>
+Bloquear a porta TCP 80:
+</P>
+<PRE>
+  prompt&gt; ./fwchange portblock 80 on
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -I INPUT -p tcp --dport 80 -j DROP
+  /sbin/iptables -I OUTPUT -p tcp --dport 80 -j DROP
+  /sbin/iptables -I FORWARD -p tcp --dport 80 -j DROP
+</PRE>
+<P></P>
+<P>
+Bloquear a porta UDP 53:
+</P>
+<PRE>
+  prompt&gt; ./fwchange portblock --proto udp 53 on
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -I INPUT -p udp --dport 53 -j DROP
+  /sbin/iptables -I OUTPUT -p udp --dport 53 -j DROP
+  /sbin/iptables -I FORWARD -p udp --dport 53 -j DROP
+</PRE>
+<P></P>
+<P>
+Especificar as <I>chains</I> da regra:
+</P>
+<PRE>
+  prompt&gt; ./fwchange portblock --chain input 22 on
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -I INPUT -p tcp --dport 22 -j DROP
+</PRE>
+<P></P>
+<P>
+Mostrar as regras ativas desta função:
+</P>
+<PRE>
+  prompt&gt; ./fwchange portblock --list
+  portblock:tcp-80:INPUT,OUTPUT,FORWARD:
+  portblock:udp-53:INPUT,OUTPUT,FORWARD:
+  portblock:tcp-22:INPUT:
+</PRE>
+<P></P>
+<P>
+Apagar as regras anteriores:
+</P>
+<PRE>
+  prompt&gt; ./fwchange portblock 80 off
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -D INPUT -p tcp --dport 80 -j DROP
+  /sbin/iptables -D OUTPUT -p tcp --dport 80 -j DROP
+  /sbin/iptables -D FORWARD -p tcp --dport 80 -j DROP
+  
+  prompt&gt; ./fwchange portblock --proto udp 53 off
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -D INPUT -p udp --dport 53 -j DROP
+  /sbin/iptables -D OUTPUT -p udp --dport 53 -j DROP
+  /sbin/iptables -D FORWARD -p udp --dport 53 -j DROP
+  
+  prompt&gt; ./fwchange portblock 22 off
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -D INPUT -p tcp --dport 22 -j DROP
+</PRE>
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
+<A NAME="toc10"></A>
+<H2>portaccept</H2>
+<P>
+Possui as mesmas opções da função portblock, mas libera uma porta TCP ou
+UDP.
+</P>
+<PRE>
+  prompt&gt; ./fwchange portaccept -h
+  
+  Libera uma determinada porta tcp ou udp
+  OBS: se não for especificado, o protocolo utilizado é o tcp
+  
+  Uso: portaccept [--chain ...] [--proto tcp|udp] porta on|off [-c comentário]
+                  [--list|--help]
+  Ex.: portaccept 80 on
+  Ex.: portaccept --proto udp 53 on
+  Ex.: portaccept --proto udp 53 off
+  Ex.: portaccept --chain input 22 on
+  Ex.: portaccept --list
+  
+</PRE>
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
+<A NAME="toc11"></A>
+<H2>iplimit</H2>
+<P>
+Limita o número de conexões abertas (NEW) de um IP ou sub-rede.
+</P>
+<TABLE ALIGN="center" CELLPADDING="4">
+<TR>
+<TD>OBS: Esta opção só está disponível para firewall iptables.</TD>
+</TR>
+</TABLE>
+
+<P></P>
+<PRE>
+  Uso: iplimit [--chain ...] IP[/netmask] intervalo escala on|off [-c comentário]
+               [--list|--help]
+</PRE>
+<P></P>
+<P>
+A escala pode ser: 'second', 'minute', 'hour' ou 'day'
+</P>
+<P>
+Exemplos:
+</P>
+<P>
+Limitar um IP para 2 conexões por dia:
+</P>
+<PRE>
+  prompt&gt; ./fwchange iplimit 10.10.10.3 2 day on
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -N fwchange-10.10.10.3/32
+  /sbin/iptables -A fwchange-10.10.10.3/32 -s 10.10.10.3/32 -m limit --limit 2/day --limit-burst 2 -j RETURN
+  /sbin/iptables -A fwchange-10.10.10.3/32 -s 10.10.10.3/32 -j REJECT
+  /sbin/iptables -I INPUT -s 10.10.10.3/32 -m state --state NEW -j fwchange-10.10.10.3/32
+  /sbin/iptables -I OUTPUT -s 10.10.10.3/32 -m state --state NEW -j fwchange-10.10.10.3/32
+  /sbin/iptables -I FORWARD -s 10.10.10.3/32 -m state --state NEW -j fwchange-10.10.10.3/32
+</PRE>
+<P></P>
+<P>
+Limitar uma sub-rede na <I>chain</I> input para 5 conexões por segundo:
+</P>
+<PRE>
+  prompt&gt; ./fwchange iplimit --chain input 10.10.10.0/255.255.255.0 5 second on
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -N fwchange-10.10.10.0/24
+  /sbin/iptables -A fwchange-10.10.10.0/24 -s 10.10.10.0/24 -m limit --limit 5/second --limit-burst 5 -j RETURN
+  /sbin/iptables -A fwchange-10.10.10.0/24 -s 10.10.10.0/24 -j REJECT
+  /sbin/iptables -I INPUT -s 10.10.10.0/24 -m state --state NEW -j fwchange-10.10.10.0/24
+</PRE>
+<P></P>
+<P>
+Mostrar as regras:
+</P>
+<PRE>
+  prompt&gt; ./fwchange iplimit
+  iplimit:10.10.10.3/32:2:day:INPUT,OUTPUT,FORWARD:
+  iplimit:10.10.10.0/24:5:second:INPUT:
+</PRE>
+<P></P>
+<P>
+Apagar as regras anteriores:
+</P>
+<PRE>
+  prompt&gt; ./fwchange iplimit 10.10.10.3 2 day off
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -D INPUT -s 10.10.10.3/32 -m state --state NEW -j fwchange-10.10.10.3/32
+  /sbin/iptables -D OUTPUT -s 10.10.10.3/32 -m state --state NEW -j fwchange-10.10.10.3/32
+  /sbin/iptables -D FORWARD -s 10.10.10.3/32 -m state --state NEW -j fwchange-10.10.10.3/32
+  /sbin/iptables -F fwchange-10.10.10.3/32
+  /sbin/iptables -X fwchange-10.10.10.3/32
+  
+  prompt&gt; ./fwchange iplimit 10.10.10.0/255.255.255.0 5 second off
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -D INPUT -s 10.10.10.0/24 -m state --state NEW -j fwchange-10.10.10.0/24
+  /sbin/iptables -F fwchange-10.10.10.0/24
+  /sbin/iptables -X fwchange-10.10.10.0/24
+</PRE>
+<P></P>
+<HR NOSHADE SIZE=1>
+<P></P>
+<A NAME="toc12"></A>
+<H2>portlimit</H2>
+<P>
+Limita o número de conexões abertas de uma porta TCP ou UDP.
+</P>
+<TABLE ALIGN="center" CELLPADDING="4">
+<TR>
+<TD>OBS: Esta opção só está disponível para firewall iptables.</TD>
+</TR>
+</TABLE>
+
+<P></P>
+<PRE>
+  Uso: portlimit [--chain ...] [--proto tcp|udp] porta intervalo escala on|off [-c comentário]
+                 [--list|--help]
+</PRE>
+<P>
+A escala pode ser: 'second', 'minute', 'hour' ou 'day'
+</P>
+<P>
+Exemplos de uso:
+</P>
+<P>
+Limitar o número de conexões na porta 80 para 5 por segundo:
+</P>
+<PRE>
+  prompt&gt; ./fwchange portlimit 80 5 second on
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -N fwchange-tcp:80
+  /sbin/iptables -A fwchange-tcp:80 -p tcp --dport 80 -m limit --limit 5/second --limit-burst 5 -j RETURN
+  /sbin/iptables -A fwchange-tcp:80 -p tcp --dport 80 -j REJECT
+  /sbin/iptables -I INPUT -p tcp --dport 80 -m state --state NEW -j fwchange-tcp:80
+  /sbin/iptables -I OUTPUT -p tcp --dport 80 -m state --state NEW -j fwchange-tcp:80
+  /sbin/iptables -I FORWARD -p tcp --dport 80 -m state --state NEW -j fwchange-tcp:80
+</PRE>
+<P></P>
+<P>
+Limitar o número de conexõs na <I>chain input</I> da porta udp 123 para 2 por dia:
+</P>
+<PRE>
+  prompt&gt; ./fwchange portlimit --chain input --proto udp 123 2 day on
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -N fwchange-udp:123
+  /sbin/iptables -A fwchange-udp:123 -p udp --dport 123 -m limit --limit 2/day --limit-burst 2 -j RETURN
+  /sbin/iptables -A fwchange-udp:123 -p udp --dport 123 -j REJECT
+  /sbin/iptables -I INPUT -p udp --dport 123 -m state --state NEW -j fwchange-udp:123
+</PRE>
+<P></P>
+<P>
+Listar as regras:
+</P>
+<PRE>
+  prompt&gt; ./fwchange portlimit
+  portlimit:tcp-80:5:second:INPUT,OUTPUT,FORWARD:
+  portlimit:udp-123:2:day:INPUT:
+</PRE>
+<P></P>
+<P>
+Apagar as regras:
+</P>
+<PRE>
+  prompt&gt; ./fwchange portlimit 80 5 second off
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -D INPUT -p tcp --dport 80 -m state --state NEW -j fwchange-tcp:80
+  /sbin/iptables -D OUTPUT -p tcp --dport 80 -m state --state NEW -j fwchange-tcp:80
+  /sbin/iptables -D FORWARD -p tcp --dport 80 -m state --state NEW -j fwchange-tcp:80
+  /sbin/iptables -F fwchange-tcp:80
+  /sbin/iptables -X fwchange-tcp:80
+  
+  prompt&gt; ./fwchange portlimit --proto udp 123 2 day off
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -D INPUT -p udp --dport 123 -m state --state NEW -j fwchange-udp:123
+  /sbin/iptables -F fwchange-udp:123
+  /sbin/iptables -X fwchange-udp:123
+</PRE>
+<P></P>
+<HR NOSHADE SIZE=5>
+<P></P>
+<A NAME="toc13"></A>
+<H2>Controle de Mudanças</H2>
+<P>
+O fwchange tem total controle através do arquivo de histórico de quais
+regras estão ativas. Deste modo não deixa você bloquear/aceitar/limitar
+duas vezes o mesmo IP/porta bem como retirar regras que não estão ativas.
+</P>
+<PRE>
+  prompt&gt; ./fwchange ipblock 10.10.10.3 on
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -I INPUT -s 10.10.10.3/32 -j DROP
+  /sbin/iptables -I OUTPUT -s 10.10.10.3/32 -j DROP
+  /sbin/iptables -I FORWARD -s 10.10.10.3/32 -j DROP
+  
+  prompt&gt; ./fwchange ipblock 10.10.10.3 on
+  IP 10.10.10.3/32 ja esta bloqueado
+  
+  prompt&gt; ./fwchange ipblock 192.168.1.1 off
+  IP 192.168.1.1/32 nao esta bloqueado
+  
+  prompt&gt; ./fwchange ipaccept 192.168.1.1 off
+  IP 192.168.1.1/32 nao esta liberado
+  
+  prompt&gt; ./fwchange portlimit --proto udp 53 10 second off
+  Porta udp 53 nao esta limitada
+</PRE>
+<P></P>
+<P>
+Para manter consistência das chains do arquivo de histórico e das regras do
+firewall, quando uma função é chamada com a opção <I>off</I>, as chains são
+lidas do arquivo de históricos do fwchange, ou seja, ele não respeita as
+chains passadas na linha de comando:
+</P>
+<PRE>
+  prompt&gt; ./fwchange ipblock --chain input,output 10.10.10.3 on
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -I INPUT -s 10.10.10.3/32 -j DROP
+  /sbin/iptables -I OUTPUT -s 10.10.10.3/32 -j DROP
+  
+  prompt&gt; ./fwchange ipblock --chain forward 10.10.10.3 off
+  fwchange executou os seguintes comandos:
+  /sbin/iptables -D INPUT -s 10.10.10.3/32 -j DROP
+  /sbin/iptables -D OUTPUT -s 10.10.10.3/32 -j DROP
+</PRE>
+<P></P>
+<HR NOSHADE SIZE=5>
+<P></P>
+<A NAME="toc14"></A>
+<H1>Inspiração</H1>
+<P>
+A idéia deste script foi inspirada no artigo de Daniel Robbins
+<A HREF="http://www-106.ibm.com/developerworks/linux/library/l-fw/?n-l-4191">Dynamic iptables firewalls</A>
+.
+</P>
+<HR NOSHADE SIZE=5>
+<P></P>
+<A NAME="toc15"></A>
+<H1>Fim</H1>
+<P>
+Se tiver alguma sugestão/comentário/aviso de bug... me envie um mail:
+</P>
+<TABLE ALIGN="center" CELLPADDING="4">
+<TR>
+<TD>&lt;thobias at thobias dot org&gt;</TD>
+</TR>
+</TABLE>
+
+<P></P>
+<HR NOSHADE SIZE=5>
+<P></P>
+<TABLE ALIGN="center" CELLPADDING="4">
+<TR>
+<TD><A HREF="http://txt2tags.sourceforge.net"><IMG ALIGN="middle" SRC="t2tpowered.png" BORDER="0" ALT=""></A></TD>
+</TR>
+</TABLE>
+
+
+<!-- html code generated by txt2tags 2.2 (http://txt2tags.sf.net) -->
+<!-- cmdline: txt2tags index.t2t -->
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2229503-1";
+urchinTracker();
+</script>
+</BODY></HTML>

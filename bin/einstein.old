@@ -1,0 +1,45 @@
+#!/bin/bash
+#
+# A versão do programa Einstein em shell script.
+# esse programa rolou na internet há alguns anos atrás.
+#
+# Dá para brincar com muita gente que não é da área :)
+#
+# como perdi e, a versão que tinha era para windows, fiz
+# uma para unix.
+#
+# Thobias Salazar Trevisan 
+
+
+f1="Meu amável guru, por favor me responda"
+f2="Seu monte de lixo, responda"
+f3="Seu monte de bugigangas, responda"
+f4="Sua sucata e ameba, me responda"
+r1="Não respondo para sub-alternos"
+r2="Vai procurar sua turma"
+r3="Hoje não é o seu dia"
+# se aumentar o número de perguntas possíveis
+# modifiquei o valor 4 da linha abaixo 
+i=0;char_especial="/"; n="f$(($RANDOM%4+1))"
+
+read -s -n1 -p "
+	Bem-Vindo ao Einstein
+	Faça sua pergunta
+
+"
+if	[ "$REPLY" = "$char_especial" ];then REPLY=X
+	while [ "$REPLY" != "$char_especial" ];do
+		read -s -n1
+		echo -n "${!n:i:1}" # letra a letra
+		i=$((i+1))
+		R="$R$REPLY"
+	done
+	read lixo; echo "Resposta: ${R%$char_especial*}"
+else
+# se aumentar o número de respostas possíveis aumente o
+# valor 3 da linha abaixo    _
+	read lixo
+	n="r$(($RANDOM%3+1))"
+	echo "Resposta: ${!n}"
+fi
+

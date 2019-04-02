@@ -1,0 +1,164 @@
+#!/bin/bash
+#
+# rsshell.sh - script que monta uma página com os rss de diversos sites
+# AUTOR: Thobias Salazar Trevisan 
+# SITE:  http://thobias.org/rsshell
+#
+# Este script consulta diversos sites de notícias e monta um resumo 
+# das seis últimas notícias.
+#
+# Objetivo: ecomonizar tempo e banda, ou seja, não preciso acessar estes 
+# sites, esperar carregar todas imagens, banners... para ver se existe 
+# alguma notícia que lhe interessa.
+#
+# Este script é genérico, ou seja, você pode adicionar qualquer endereço de
+# RSS no final do script que o programa busca e monta a página.
+#
+# A listagem dos sites está no final do programa
+#
+# Changelog:
+# 05/11/2004 - Lançada versão 0.1
+#
+#############################################################################
+############# Configuração das variáveis
+# número de notícias mostradas por site
+n=6
+# sed para pegar as 'n' notícias. não mexa aqui!! :)
+limite="sed $((n+1))q"
+# comando que gera a data e hora que o programa foi executado
+DATA=$(date '+%d %b %Y')
+HORA=$(date '+%H:%M')
+# se diretório temporário (variável TMP) não estiver definido
+# define como /tmp. necessário para criar alguns arquivos
+TMP="${TMP=/tmp}"
+# título da página
+titulo='Bem-Vindo ao RSShell'
+#############################################################################
+
+#############################################################################
+# Funções 
+#############################################################################
+
+#
+# busca os rss dos sites em paralelo
+# cada site gera um aquivo no $TMP 
+#
+get_rss(){
+local ARQ
+for i in "${SITES[@]}";do
+   [ "${i/#-*/}" ] || continue
+   ARQ="$TMP/rsshell_$(echo $i | sed 's,.*//\([^/]*\)/.*,\1,')"
+   lynx -source $i | sed -n '/<image/,/<\/image>/d;/\(<title\|link\)>/{
+   s/^[ \t]*//;s/<[^>]*>//gp;}'|sed 'N;s/\(.*\)\n\(.*\)/\2 \1/'|$limite>$ARQ&
+done
+# espera todos lynx terminarem
+wait
+}
+
+
+#
+# monta a página em HTML a partir dos arquivos gerados pela função get_rss
+#
+show_rss(){
+echo '<table width="100%" border="5" cellspacing="2" cellpadding="0">'
+# chave para criar ou não uma nova linha na tabela
+linha_tabela=sim
+# monta as tabelas com as notícias 
+for i in "${SITES[@]}";do
+  # se for uma seção cria uma nova tabela e volta para o for
+  [ "${i/#-*/}" ] || { [ "$linha_tabela" = "nao" ] && echo "</tr>"
+  echo "</table> <center><H2>Notícias ${i#-}</H2></center>"; linha_tabela=sim
+  echo '<table width="100%" border="5" cellspacing="2" cellpadding="0">'
+  continue; }
+
+  # pega o arquivo temporário referente ao site 'i'
+  ARQ="$TMP/rsshell_$(echo $i | sed 's,.*//\([^/]*\)/.*,\1,')"
+  [ "$linha_tabela" = "sim" ] && echo "<tr>" 
+
+  echo "<td>" # abre coluna
+     # nome do site
+     echo "<b><h3><center> <a style=\"color: blue\" 
+	 href=$(sed -n '1s/ .*//p' $ARQ)> $(sed -n '1s/^[^ ]* //p' $ARQ)</a>
+     </center></h3></b><br><br>"
+     # notícias do site
+     while read link news;do 
+         echo "<a href=$link> $news</a><br>"
+     done < <(sed '1d' $ARQ)
+  echo "</td>" # fecha coluna
+
+  [ "$linha_tabela" = "nao" ] && echo "</tr>"
+  # aletara a chave
+  [ "$linha_tabela" = "sim" ] && linha_tabela=nao || linha_tabela=sim
+done
+echo "</table>"
+}
+
+
+
+#############################################################################
+#  Principal
+#############################################################################
+
+# vetor com os sites e seções
+SITES=($(sed '1,/^@@@/d;s/^[ \t]*//;/^\(#\|$\)/d' $0))
+
+# se estiver executando via CGI envia o header necessário
+[ "$SERVER_ADDR" ] && echo -e "content-type: text/html\n"
+
+if [ "$1" = "--css" ];then [ -f "$2" ] || { 
+echo "ERRO: arquivo $2 não encontrado" > /dev/stderr; exit 1; }
+CSS="<LINK REL=\"stylesheet\" TYPE=\"text/css\" HREF=\"$2\">";else unset CSS
+fi
+
+# Início do HTML
+echo "<html> <head> 
+<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\">
+$CSS <title> RSShell </title> 
+</head>
+<body>
+<center>
+<H1>$titulo</H1>
+Consulta realizada às $HORA de $DATA
+<HR NOSHADE SIZE=10></center>"
+
+# funções
+#get_rss
+show_rss
+
+echo "</body>"
+echo "</html>"
+
+exit 0
+
+
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#                 Seção de dados do script
+#
+# Listagem dos sites a serem consultados separados por seções
+#
+# Adicione os sites NESTA seção
+#
+# Observações:
+#      - adicione 1 (um) site por linha
+#      - seções começam pelo sinal de menos seguido do nome (sem espaço)
+#      - linhas que começão pelo caractere '#' são consideradas comentário
+
+# Sites sobre Informática
+-Informática
+http://br-linux.org/noticias/index.rdf
+http://www.noticiaslinux.com.br/rss.php
+http://pontobr.org/backend/pontobr_rdf.php
+http://kerneltrap.org/node/feed
+http://lwn.net/headlines/newrss 
+http://slashdot.org/index.rss
+http://linuxtoday.com/biglt.rss
+http://www.newsforge.com/index.rss
+http://news.zdnet.com/2509-1_22-0-20.xml
+
+# Sites de notícias em geral
+-Gerais
+http://www1.folha.uol.com.br/folha/emcimadahora/rss091.xml
+http://www.estadao.com.br/rss/agestado.xml
+http://news.bbc.co.uk/rss/newsonline_uk_edition/front_page/rss091.xml
+

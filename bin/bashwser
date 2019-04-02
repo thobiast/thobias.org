@@ -1,0 +1,45 @@
+#!/bin/bash
+#
+# browser feito somente em bash
+# se quiser mesmo somente em bash, descomente a linha do while
+# e comente o comando cat
+#
+# vou deixar o cat pra ele identar melhor paginas somente texto
+#
+# Parametros do bashwser:
+#
+# $1 URL
+# $2 se existe chamamos o lynx para ler a pagina 
+#
+# ex:	./bashwser www.google.com.br/search?q=funcoeszz 
+#	./bashwser http://www.lcp.coppe.ufrj.br/~thobias/scr/bashwser
+#	./bashwser www.linuxtoday.com  x
+#
+# PS: eu sei que nao serve pra nada. 
+#     ops! serve sim, de exemplo pra voce fazer um cliente servidor 
+#     usando shell
+#
+#	exemplo, em uma maquina vc roda o comando
+#	$ nc -l -p 1025
+#	em uma outra maquina rode estes comandos
+#	$ exec 3<>/dev/tcp/maquina/1025
+#	$ echo bash rlz >&3
+#	$ echo mais bash rlz >&3
+#	$ exec 3<&-
+#
+# Last update: Qua Abr  9 14:53:00 BRT 2003
+#
+# Thobias Salazar Trevisan <thobias at cos.ufrj.br> 
+#
+
+[ "$1" ] || { echo "Usage: $0 <URL> [qq coisa]"; exit; }
+
+URL="${1//http:\/\/}";SERVER="${URL%%/*}";FILE="${URL/$SERVER}"
+
+exec 3<>/dev/tcp/"$SERVER"/80
+echo -e "GET ${FILE:-/} HTTP/1.0\r\n\r\n" >&3
+#while read i;do echo "$i";done 0<&3
+[ "$2" ] && cat 0<&3 | lynx -stdin || cat 0<&3 
+exec 3<&-
+
+

@@ -1,0 +1,326 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.sf.net">
+<TITLE>RAC - Endereços Usando Textos (Strings)</TITLE>
+<STYLE TYPE="text/css">
+/* CSS style for RAC Homepage - http://aurelio.net/rac */
+
+body  {
+	margin: 20px;
+	line-height: 110%;
+	font-size: 110%;
+	/*
+	font-family: Verdana,Arial,Helvetica,sans-serif;
+	*/
+}
+a {
+	text-decoration: none;
+	font-weight: bold;
+}
+pre {
+	margin-left: 2em;
+	margin-right: 2em;
+	padding: 10px;
+	background-color: silver;
+}
+td {
+	font-size: 110%;
+	padding: 10px;
+	border: 1px solid gray;
+}
+th {
+	background-color: silver;
+	padding: 5px;
+	border: 2px solid black;
+}
+blockquote {
+	font-style: italic;
+}
+</STYLE>
+</HEAD>
+<BODY>
+
+<DIV CLASS="header" ID="header">
+<H1>RAC - Endereços Usando Textos (Strings)</H1>
+</DIV>
+
+<DIV CLASS="body" ID="body">
+	<BLOCKQUOTE>
+	A versão nova 1.2 do RAC traz uma novidade poderosa: o
+	endereçamento usando textos. Este documento lhe ensinará como
+	utilizá-lo.
+	</BLOCKQUOTE>
+<P></P>
+<P>
+Nas suas primeiras versões, o RAC usava apenas endereçamento numérico,
+indicando diretamente a posição de linhas e colunas, como por exemplo
+<B>[5]</B> para especificar a quinta coluna. Agora também é possível
+endereçar linhas pelo seu conteúdo, independente de sua posição no
+texto.
+</P>
+<P>
+Antes de conhecer as novidades, um resumo rápido dos tipos de endereço
+conhecidos até então:
+</P>
+<P>
+<CENTER>ENDEREÇOS NUMÉRICOS</CENTER>
+</P>
+<TABLE ALIGN="center">
+<TR>
+<TH>Endereço</TH>
+<TH>Tipo</TH>
+<TH>Representa</TH>
+</TR>
+<TR>
+<TD ALIGN="center"><B>3</B></TD>
+<TD ALIGN="center">Linha</TD>
+<TD>A terceira linha</TD>
+</TR>
+<TR>
+<TD ALIGN="center"><B>-3</B></TD>
+<TD ALIGN="center">Contagem Regressiva</TD>
+<TD>A antepenúltima linha</TD>
+</TR>
+<TR>
+<TD ALIGN="center"><B>[3]</B></TD>
+<TD ALIGN="center">Coluna</TD>
+<TD>A terceira coluna</TD>
+</TR>
+<TR>
+<TD ALIGN="center"><B>1:3</B></TD>
+<TD ALIGN="center">Trecho</TD>
+<TD>Da primeira a terceira linha</TD>
+</TR>
+<TR>
+<TD ALIGN="center"><B>1~3</B></TD>
+<TD ALIGN="center">Salto</TD>
+<TD>À partir da primeira linha, ande de 3 em 3</TD>
+</TR>
+</TABLE>
+
+<P></P>
+<P>
+Apesar do poder de se especificar endereços complexos, inclusive com
+trechos e saltos, o endereçamento numérico exige que o usuário saiba
+de antemão a posição exata do pedaço desejado de texto. Embora
+suficiente para uma grande variedade de tarefas, esse tipo de
+endereçamento se torna ineficiente quando se precisa buscar por
+<B>conteúdo</B>, e não posições.
+</P>
+<H3>Buscando por Conteúdo</H3>
+<P>
+Ao invés de buscar pela "<I>quinta linha</I>", certas tarefas exigem buscar
+por linhas que contenham determinada palavra ou frase, não importando
+a sua posição no texto original. Ou ainda, baseado nesta palavra
+obter as linhas adjacentes ou um trecho entre duas palavras distintas.
+</P>
+<P>
+O RAC torna estas tarefas triviais, bastando ao usuário apenas
+fornecer o endereço desejado. Entre outras possibilidades, o programa
+pode buscar:
+</P>
+<UL>
+<LI>Todas as linhas que contêm a palavra Vencido (<I>grep</I>)
+<LI>A última ocorrência de PENDENTE no texto
+<LI>O trecho entre as linhas &lt;SCRIPT&gt; e &lt;/SCRIPT&gt;
+<LI>O trecho que vai da linha que contém BEGIN até o final do texto
+<LI>A linha que contém o número IP 10.0.0.10, com um contexto de duas
+  linhas antes e três após
+<LI>O trecho que inicia na linha que contenha a data 2004-12-31 e vai
+  até última ocorrência da palavra Error
+</UL>
+
+<P>
+Entre várias outras possibilidades que combinam um texto com a sua
+contagem de aparições (normal ou reversa) e linhas adjacentes.
+</P>
+<P>
+O uso é muito simples, basta colocar a palavra ou frase a se buscar
+entre sinais de igual, <B>=assim=</B>. A contagem de aparições da palavra
+é especificada usando o asterisco e o contexto usa os sinais de mais e
+menos.
+</P>
+<P>
+<CENTER>ENDEREÇOS DE TEXTO</CENTER>
+</P>
+<TABLE ALIGN="center">
+<TR>
+<TH>Endereço</TH>
+<TH>Tipo</TH>
+<TH>Representa</TH>
+</TR>
+<TR>
+<TD><B>=abc=</B></TD>
+<TD ALIGN="center">Texto</TD>
+<TD>Todas as linhas que contêm o texto abc</TD>
+</TR>
+<TR>
+<TD><B>=abc=*3</B></TD>
+<TD ALIGN="center">Contagem</TD>
+<TD>Terceira linha que contém o texto abc</TD>
+</TR>
+<TR>
+<TD><B>=abc=+3</B></TD>
+<TD ALIGN="center">Contexto</TD>
+<TD>Terceira linha após a que contém o texto abc</TD>
+</TR>
+<TR>
+<TD><B>=abc=-3</B></TD>
+<TD ALIGN="center">Contexto</TD>
+<TD>Terceira linha anterior a que contém o texto abc</TD>
+</TR>
+</TABLE>
+
+<P></P>
+	<BLOCKQUOTE>
+	Curioso(a) porque o sinal de igual foi utilizado como
+	delimitador? A explicação está no final deste documento.
+	</BLOCKQUOTE>
+<P></P>
+<P>
+Fácil de usar, não? Simplesmente colocar uma palavras entre iguais faz
+com que o RAC retorne todas as linhas do texto que contêm esta
+palavra. Ela pode estar no início, meio ou final da linha, tanto faz.
+Este comportamento é idêntico ao comando <I>grep</I>.
+</P>
+<P>
+Se o desejado não forem todas as ocorrências da palavra mas apenas a
+primeira, terceira ou a última, basta adicionar um asterisco e
+informar o número. E mais, números negativos servem para contar à
+partir do final do texto, então <B>=abc=*-2</B> retornará a linha com a
+penúltima aparição de "abc".
+</P>
+<P>
+Para completar, o contexto serve para obter linhas próximas à linha
+com a palavra pesquisada, anteriores ou posteriores. Útil quando se
+tem uma palavra-chave para encontrar, mas o conteúdo desejado está na
+próxima linha. Exemplo: <B>=Total de gastos=+1</B> retornará a linha
+seguinte ao texto informado, toda vez que o ele for encontrado.
+</P>
+<P>
+Se no exemplo anterior for necessário obter a próxima linha somente
+da primeira aparição do texto, basta combinar os dois operadores,
+ficando <B>=Total de gastos=*1+1</B>.
+</P>
+<H3>Flexibilidade e Poder</H3>
+<P>
+Todos os conceitos dos endereços numéricos e de texto são
+intercambiáveis, combináveis, misturáveis. Lembre-se do brinquedo LEGO
+onde combinando formas básicas se obtém estruturas mais complexas.
+</P>
+<P>
+No RAC é possível misturar endereços numéricos com texto num mesmo
+comando, produzindo endereços tão complicados e precisos quanto
+necessário.
+</P>
+<P>
+<CENTER>ENDEREÇOS MAIS ELABORADOS</CENTER>
+</P>
+<TABLE ALIGN="center">
+<TR>
+<TH>Endereço</TH>
+<TH>Representa</TH>
+</TR>
+<TR>
+<TD><B>5:=abc=*1</B></TD>
+<TD>Trecho da quinta linha até a primeira que conter abc</TD>
+</TR>
+<TR>
+<TD><B>=abc=[1:10]</B></TD>
+<TD>As dez primeiras colunas das linhas com abc</TD>
+</TR>
+<TR>
+<TD><B>=abc=*-1:-1</B></TD>
+<TD>Trecho da última linha com abc até o final do texto</TD>
+</TR>
+<TR>
+<TD><B>=abc=*5[-9:]</B></TD>
+<TD>As últimas nove colunas da quinta linha com abc</TD>
+</TR>
+<TR>
+<TD><B>=abc=*-1:=xyz=*-1</B></TD>
+<TD>Trecho da última linha com abc até a última linha com xyz</TD>
+</TR>
+<TR>
+<TD><B>=abc=*1~3</B></TD>
+<TD>À partir da primeira linha com abc, ande de 3 em 3</TD>
+</TR>
+<TR>
+<TD><B>=abc=*5-2:=abc=*5+2</B></TD>
+<TD>Quinta ocorrência da linha com abc, com contexto de 2 linhas antes e após</TD>
+</TR>
+</TABLE>
+
+<P></P>
+<H3>Os Detalhes</H3>
+<P>
+Ao usar endereços com texto, algumas dúvidas podem surgir. Aqui vão as
+respostas para algumas delas:
+</P>
+<UL>
+<LI>Letras maiúsculas e minúsculas são diferentes. Se você pesquisar por
+  LINUX, as linhas que contiverem Linux não serão retornadas.
+<P></P>
+<LI>O conteúdo do endereço de texto é texto puro, não é expressão
+  regular. Qualquer texto pode ser colocado sem a preocupação de ser
+  confundido com uma expressão. O suporte a expressões regulares será
+  adicionado em versões futuras.
+<P></P>
+<LI>Para inserir um sinal de igual literal no texto, é preciso
+  "escapá-lo", precedendo-o com uma barra \. Exemplo: <B>=2+2\=4=</B>.
+  Há outros "escapes" reconhecidos pelo RAC, segue a lista completa:
+</UL>
+
+<TABLE ALIGN="center">
+<TR>
+<TD><B><CODE>\t</CODE></B></TD>
+<TD>Tabulação (TAB)</TD>
+</TR>
+<TR>
+<TD><B><CODE>\=</CODE></B></TD>
+<TD>Um sinal de igual literal</TD>
+</TR>
+<TR>
+<TD><B><CODE>\\</CODE></B></TD>
+<TD>Uma barra \ literal</TD>
+</TR>
+</TABLE>
+
+<P></P>
+<H3>A Pergunta Que Não Quer Calar</H3>
+	<BLOCKQUOTE>
+	Mas por quê usar o = como delimitador? Isso é anti-Unix!
+	</BLOCKQUOTE>
+<P></P>
+<P>
+Resposta curta: A barra / está reservada para expressões regulares e o
+igual foi o melhor caractere livre que encontramos.
+</P>
+<P>
+Resposta longa: A barra / é o caractere padrão de várias ferramentas
+Unix para delimitar expressões regulares. O RAC vai ter suporte às
+expressões e a barra já está reservada para isso. Fizemos um
+delimitador especial para texto pois nem sempre o que se pesquisa é
+uma expressão, e ficar escapando metacaracteres é chato. Um número IP
+por exemplo, fica <B>=10.0.0.1=</B>, sem precisar escapar os pontos. Fora
+a barra, procuramos outro delimitador. Os primeiros candidatos foram
+as aspas (simples e duplas), que ficam visualmente bonitas e seu uso é
+intuitivo. Mas é um inferno para inseri-las na linha de comando,
+pois as aspas já são especiais para o shell e seria preciso escapá-las
+sempre. Exclamação e cifrão sofrem do mesmo problema, vários outros
+caracteres já são especiais no RAC, outros já estão reservados para o
+futuro (como os parênteses e as chaves), &lt; e &gt; são perigosos. O que
+sobrou foi o =. Sim, é estranho num primeiro momento, mas acostuma
+rapidinho. E ainda tem o mnemônico de que o conteúdo é "igual" para
+você e para o RAC, pois nenhuma expansão é feita ;)
+</P>
+<HR NOSHADE SIZE=1>
+<P>
+<A HREF=".">Voltar à página do RAC</A>
+</P>
+</DIV>
+
+<!-- html code generated by txt2tags 2.2-alpha-dev1217 (http://txt2tags.sf.net) -->
+<!-- cmdline: txt2tags -t html -\-css-inside string.t2t -->
+</BODY></HTML>

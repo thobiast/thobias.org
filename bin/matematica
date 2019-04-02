@@ -1,0 +1,94 @@
+#!/bin/bash
+#
+#
+# Script pra treinar a matematica basica
+#
+# ctrl+c sai do programa e mostra a estatistica
+#
+# PS: erros conhecidos; qq numero dividido por 0 da erro
+# ex: 4/0
+#
+# PS2: para utilizar o operador de multiplicacao *, precisa coloca-lo
+# entre aspas duplas "*", para o shell nao interpreta-lo
+#
+# ex:
+#	./matematica -o "*" -l
+#	./matematica -o + -e 0-10 -d 0-100
+#	./matematica -o - -r
+#
+# Ultima atualizacao: Seg Abr  7 13:04:35 EST 2003
+#
+# Thobias Salazar Trevisan <thobias at cos.ufrj.br>
+#
+
+O="-+/*";V=0;X=0
+
+usage(){
+echo " Usage: $0 <-o operador> [-e valor1-valor2] [-d valor1-valor2] [-l imprime] [-r]
+
+ -o = operador. operadores permitodos sao: $O
+ -e = intervalo permitido no primeiro campo (default eh de 0 a 10)
+ -d = intervalo permitodo no segundo campo (default eh de 0 a 10)
+ -l = imprime a tabuada 
+ -r = mostra resposta
+
+ exemplos de uso:
+	./matematica -o "*" -l
+	./matematica -o + -e 0-10 -d 0-100
+	./matematica -o - -r
+	./matematica -o + -d 0-100
+"
+exit
+}
+
+lista(){
+i=0;n=5
+while [ $i -le 10 ]; do
+	for l in `seq 0 10`;do
+	 	 [ $l -eq 10 ] && e=" " || e="  "; f=$((i+n-1))
+		 [ $f -gt 10 ] && f=10
+		 for c in `seq $i $f`;do
+		 	echo -n -e "$c$op$l$e= $(($c$op$l))\t"
+		 done; echo 
+ 	done
+ echo;  i=$((i+n))
+done
+}
+
+stat(){
+echo -e "\n		Estatistica\n
+Total de perguntas $((V+X)) 
+acertos=\033[40;34;1m$V\033[m erros=\033[40;31;1m$X\033[m"
+}
+
+while getopts 'o:e:d:rl' OPT_LETRA 2> /dev/null;do
+[ "$OPT_LETRA" = "?" ] && usage 
+[ "$OPT_LETRA" = "o" ] &&  { [ "${OPTARG#[$O]}" -o ! "$OPTARG" ] && 
+{ echo "Operador invalido"; usage; } || op="$OPTARG"; }
+[ "$OPT_LETRA" = "e" ] && { [ "${OPTARG//[0-9-]}" ] && usage || {
+E1="${OPTARG%%-[0-9]*}"; E2="${OPTARG##[0-9]*-}" ; } ; }
+[ "$OPT_LETRA" = "d" ] && { [ "${OPTARG//[0-9-]}" ] && usage || {
+D1="${OPTARG%%-[0-9]*}"; D2="${OPTARG##[0-9]*-}" ; } ; }
+[ "$OPT_LETRA" = "r" ] && R="x"; [ "$OPT_LETRA" = "l" ] && L="x"
+done
+
+[ "$op" ] || usage; echo -e "operador $op 
+Valor a esquerda: de ${E1:-0} a ${E2:-10}
+Valor a direita:  de ${D1:-0} a ${D2:-10}\n"
+[ "$L" ] && { lista $op | more; exit; } 
+
+trap 'stat;exit'  2
+
+while :;do
+[ ${E1:-0} = ${E2:-10} ] && E=$E1 || { E="$(($RANDOM%${E2:-10}))"
+while ! [ $E -le ${E2:-10} -a $E -ge ${E1:-0} ];do E="$(($RANDOM%${E2:-10}))";done ;}
+[ ${D1:-0} = ${D2:-10} ] && D=$D1 || { D="$(($RANDOM%${D2:-10}))"
+while ! [ $D -le ${D2:-10} -a $D -ge ${D1:-0} ];do D="$(($RANDOM%${D2:-10}))";done ;}
+EXPR="$E$op$D"
+read -p "$((V+X+1)).  $EXPR = " resultado
+[ "$resultado" = "$(echo "scale=2;$EXPR" | bc -l)" ] && 
+{ V="$((V+1))"; echo -e "\033[40;34;1mcerto \033[m"; } ||
+{ X="$((X+1))"; echo -en "\033[40;31;1merrado\033[m  "
+[ "$R" ] && echo "scale=2;$EXPR" | bc -l || echo; } 
+done
+

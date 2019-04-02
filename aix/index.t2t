@@ -1,0 +1,69 @@
+IBM AIX
+This page has a collection of useful links about the AIX operating system.
+
+
+%!encoding: iso-8859-1
+%!Style   : aix.css
+%!target: html
+%!Options : --mask-email --css-sugar
+
+
+[IBM AIX, UNIX software for Power Systems http://www-03.ibm.com/systems/power/software/aix/index.html]
+
+[AIX Information Center http://publib16.boulder.ibm.com/pseries/index.htm]
+
+[AIX 7.1 Information Center http://publib.boulder.ibm.com/infocenter/aix/v7r1/index.jsp]
+
+[AIX 6.1 Information Center http://publib.boulder.ibm.com/infocenter/aix/v6r1/index.jsp]
+
+[developerWorks: Wikis - Systems - AIX http://www.ibm.com/developerworks/wikis/display/WikiPtype/AIX]
+
+[IBM Redbooks - AIX http://www.redbooks.ibm.com/cgi-bin/searchsite.cgi?query=aix]
+
+[IBM developerWorks : AIX and UNIX http://www.ibm.com/developerworks/aix/]
+
+[IBM developerWorks : AIX and UNIX : Technical library http://www.ibm.com/developerworks/aix/library/]
+
+[AIX commands you should not leave home without http://www.ibm.com/developerworks/aix/library/au-dutta_cmds.html]
+
+[developerWorks: When good disks go bad http://www.ibm.com/developerworks/aix/library/au-gooddisksgobad/index.html]
+
+[developerWorks: Using the AIX Logical Volume Manager to perform SAN storage migrations http://www.ibm.com/developerworks/aix/library/au-aixstorage/index.html]
+
+[developerWorks: Wikis - Systems - Performance Monitoring Tips and Techniques http://www.ibm.com/developerworks/wikis/display/WikiPtype/Performance+Monitoring+Tips+and+Techniques]
+
+[developerWorks: Optimizing AIX 5L performance: Tuning network performance http://www.ibm.com/developerworks/views/aix/libraryview.jsp?search_by=Tuning+network+performance]
+
+[developerWorks: Optimizing AIX 5L performance: Tuning disk performance http://www.ibm.com/developerworks/views/aix/libraryview.jsp?search_by=Tuning+disk+performance]
+
+[developerWorks: Optimizing AIX 5L performance: Tuning your memory settings http://www.ibm.com/developerworks/views/aix/libraryview.jsp?search_by=Tuning+your+memory+settings]
+
+[developerWorks: Optimizing AIX 5L performance: Monitoring your CPU http://www.ibm.com/developerworks/views/aix/libraryview.jsp?search_by=Optimizing+AIX+5L+performance]
+
+[developerWorks: Optimizing AIX 6.1 performance tuning http://www.ibm.com/developerworks/aix/library/au-aix6tuning/]
+
+[developerWorks: Optimizing AIX 7 - network, memory and performance http://www.ibm.com/developerworks/views/aix/libraryview.jsp?search_by=Optimizing+AIX+7]
+
+[developerWorks: Optimizing internal AIX storage http://www.ibm.com/developerworks/aix/library/au-internalstorage/index.html]
+
+[developerWorks: Network problem determination: AIX tools for a system administrator http://www.ibm.com/developerworks/library?sort_by=&show_abstract=true&show_all=&search_flag=&contentarea_by=AIX+and+UNIX&search_by=Network+problem+determination+Martin+Wicks&topic_by=-1&type_by=All+AIX+and+UNIX+Types&ibm-search=Search]
+
+[developerWorks: Renaming devices in AIX 7.1 https://www.ibm.com/developerworks/mydeveloperworks/blogs/cgaix/entry/renaming_devices_in_aix_7_1?lang=en]
+
+[IBM How to change the logical name of tape drive http://www-01.ibm.com/support/docview.wss?crawler=1&uid=isg3T1000748]
+
+[IBM Reading tape labels using device driver tools http://www-01.ibm.com/support/docview.wss?uid=swg21193760]
+
+[IBM Open Source packages available for installation on AIX http://www-03.ibm.com/systems/power/software/aix/linux/toolbox/download.html]
+
+[IBM Who's using my port? (AIX, Linux, Windows example) http://www-01.ibm.com/support/docview.wss?uid=swg21264632]
+
+[IBM Determining CPU Speed in AIX http://www-01.ibm.com/support/docview.wss?rs=111&context=SWG10&uid=isg3T1000107&origin=pSeriesTechnicalBulletin]
+
+[IBM Technote About Sparse Files http://www-01.ibm.com/support/docview.wss?uid=isg3T1000145]
+
+[IBM Removing a Tape Drive Using the ODM http://www-01.ibm.com/support/docview.wss?uid=isg3T1000337]
+
+[IBM Understanding Print Queue Status http://www-01.ibm.com/support/docview.wss?rs=111&context=SWG10&uid=isg3T1000408&origin=pSeriesTechnicalBulletin]
+
+

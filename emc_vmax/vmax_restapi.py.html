@@ -1,0 +1,576 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>~/pessoal/public_html/htdocs/python/vmax_restapi.py.html</title>
+<meta name="Generator" content="Vim/7.4">
+<meta name="plugin-version" content="vim7.4_v1">
+<meta name="syntax" content="python">
+<meta name="settings" content="use_css,pre_wrap,no_foldcolumn,expand_tabs,prevent_copy=">
+<meta name="colorscheme" content="none">
+<style type="text/css">
+<!--
+pre { white-space: pre-wrap; font-family: monospace; color: #000000; background-color: #ffffff; }
+body { font-family: monospace; color: #000000; background-color: #ffffff; }
+* { font-size: 1em; }
+.Type { color: #2e8b57; font-weight: bold; }
+.Statement { color: #a52a2a; font-weight: bold; }
+.Comment { color: #0000ff; }
+.Constant { color: #ff00ff; }
+.Special { color: #6a5acd; }
+.PreProc { color: #800080; }
+.Identifier { color: #008b8b; }
+-->
+</style>
+
+<script type='text/javascript'>
+<!--
+
+-->
+</script>
+</head>
+<body>
+<pre id='vimCodeElement'>
+<span class="Comment">#! /usr/bin/env python3</span>
+<span class="Comment">#</span>
+<span class="Comment"># vmax_restapi.py - Sample script to query EMC VMAX Storage System using</span>
+<span class="Comment">#                   Unisphere for VMAX REST API</span>
+<span class="Comment">#</span>
+<span class="Comment"># Homepage: <a href="http://thobias.org/python">http://thobias.org/python</a></span>
+<span class="Comment"># Author  : Thobias Salazar Trevisan (thobias at thobias.org)</span>
+<span class="Comment">#</span>
+<span class="Comment"># Changelog (DD/MM/YYYY):</span>
+<span class="Comment"># 13/03/2017 - first version</span>
+<span class="Comment">#</span>
+<span class="Comment">##############################################################################</span>
+<span class="Comment">#</span>
+<span class="Comment"># The purpose of this script is to help people to get start VMAX automation</span>
+<span class="Comment">#</span>
+<span class="Comment"># This is a sample python script to gather information using</span>
+<span class="Comment"># VMAX REST API. You can download a zip file with the VMAX Rest API </span>
+<span class="Comment"># documentation from your Unisphere at:</span>
+<span class="Comment">#</span>
+<span class="Comment"># <a href="https://{UNIVMAX_IP}:{UNIVMAX_PORT}/univmax/restapi/docs">https://{UNIVMAX_IP}:{UNIVMAX_PORT}/univmax/restapi/docs</a></span>
+<span class="Comment">#</span>
+<span class="Comment"># UNIVMAX_PORT - usually is port 8443</span>
+<span class="Comment">#</span>
+<span class="Comment"># #####################################################</span>
+<span class="Comment"># #                   Usage:                          #</span>
+<span class="Comment"># #####################################################</span>
+<span class="Comment">#</span>
+<span class="Comment"># prompt&gt; ./vmax_restapi.py -h</span>
+<span class="Comment"># usage: vmax_restapi.py [-h] [--version] [--verbose]</span>
+<span class="Comment">#                        {list,listsg,srp,performance} ...</span>
+<span class="Comment">#</span>
+<span class="Comment"># Sample Script to collect information from Unisphere for VMAX REST API</span>
+<span class="Comment">#</span>
+<span class="Comment"># optional arguments:</span>
+<span class="Comment">#   -h, --help            show this help message and exit</span>
+<span class="Comment">#   --version             show program's version number and exit</span>
+<span class="Comment">#   --verbose, -v         verbose flag</span>
+<span class="Comment">#</span>
+<span class="Comment"># Commands:</span>
+<span class="Comment">#   {list,listsg,srp,performance}</span>
+<span class="Comment">#     list                List VMAXs arrays managed by Unisphere</span>
+<span class="Comment">#     listsg              List VMAX storage groups</span>
+<span class="Comment">#     srp                 List SRP information</span>
+<span class="Comment">#     performance         List VMAX Array performance</span>
+<span class="Comment">#</span>
+<span class="Comment">#     Example of use:</span>
+<span class="Comment">#         ./vmax_restapi.py list</span>
+<span class="Comment">#         ./vmax_restapi.py srp --sid xxxx</span>
+<span class="Comment">#         ./vmax_restapi.py performance --sid xxxx --hours 2</span>
+<span class="Comment">#         ./vmax_restapi.py -v performance</span>
+<span class="Comment">#         ./vmax_restapi.py performance -h</span>
+<span class="Comment">#</span>
+<span class="Comment"># #####################################################</span>
+<span class="Comment"># #                   Comands help                    #</span>
+<span class="Comment"># #####################################################</span>
+<span class="Comment">#</span>
+<span class="Comment">##### list</span>
+<span class="Comment"># prompt&gt; ./vmax_restapi.py list -h</span>
+<span class="Comment"># usage: vmax_restapi.py list [-h]</span>
+<span class="Comment"># </span>
+<span class="Comment"># optional arguments:</span>
+<span class="Comment">#   -h, --help  show this help message and exit</span>
+<span class="Comment">#</span>
+<span class="Comment">#</span>
+<span class="Comment">##### listsg</span>
+<span class="Comment"># prompt&gt; ./vmax_restapi.py listsg -h </span>
+<span class="Comment"># usage: vmax_restapi.py listsg [-h] --sid SID</span>
+<span class="Comment">#</span>
+<span class="Comment"># optional arguments:</span>
+<span class="Comment">#   -h, --help  show this help message and exit</span>
+<span class="Comment">#   --sid SID   Symmetrix ID</span>
+<span class="Comment">#</span>
+<span class="Comment">#</span>
+<span class="Comment">##### srp</span>
+<span class="Comment"># prompt&gt; ./vmax_restapi.py srp -h</span>
+<span class="Comment"># usage: vmax_restapi.py srp [-h] --sid SID</span>
+<span class="Comment">#</span>
+<span class="Comment"># optional arguments:</span>
+<span class="Comment">#   -h, --help  show this help message and exit</span>
+<span class="Comment">#   --sid SID   Symmetrix ID</span>
+<span class="Comment">#</span>
+<span class="Comment">#</span>
+<span class="Comment">##### performance</span>
+<span class="Comment"># prompt&gt; ./vmax_restapi.py performance -h</span>
+<span class="Comment"># usage: vmax_restapi.py performance [-h] --sid SID [--min MIN] [--hours HOURS]</span>
+<span class="Comment">#                                    [--days DAYS]</span>
+<span class="Comment"># </span>
+<span class="Comment"># optional arguments:</span>
+<span class="Comment">#   -h, --help     show this help message and exit</span>
+<span class="Comment">#   --sid SID      Symmetrix ID</span>
+<span class="Comment">#   --min MIN      Minutes ago to gather performance information</span>
+<span class="Comment">#   --hours HOURS  Hours ago to gather performance information</span>
+<span class="Comment">#   --days DAYS    Days ago to gather performance information</span>
+<span class="Comment">#</span>
+<span class="Comment"># ########</span>
+<span class="Comment"># # Hint #</span>
+<span class="Comment"># ########</span>
+<span class="Comment">#</span>
+<span class="Comment"># Use '-v' option for verbose output, so you can see the details about</span>
+<span class="Comment"># data sent and received from VMAX Rest API.</span>
+<span class="Comment">#</span>
+<span class="Comment">##############################################################################</span>
+
+<span class="Comment"># Import python modules</span>
+<span class="PreProc">import</span> requests
+<span class="PreProc">import</span> pprint
+<span class="PreProc">import</span> datetime
+<span class="PreProc">import</span> time
+<span class="PreProc">import</span> json
+<span class="PreProc">import</span> sys
+<span class="PreProc">import</span> logging
+<span class="PreProc">import</span> argparse
+
+<span class="Comment">###########################</span>
+<span class="Comment"># Unisphere configuration #</span>
+<span class="Comment">###########################</span>
+UNISPHERE_SERVER   = <span class="Constant">''</span>
+UNISPHERE_USER = <span class="Constant">''</span>
+UNISPHERE_PASS = <span class="Constant">''</span>
+UNISPHERE_REST_URL = <span class="Constant">'<a href="https://">https://</a>'</span> + UNISPHERE_SERVER + <span class="Constant">':8443/univmax/restapi'</span>
+
+<span class="Comment"># Script version</span>
+VERSION = <span class="Constant">'1.0'</span>
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Parses the command line arguments</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">parse_parameters</span>():
+    <span class="Comment"># parent --sid option. used by subparser srp and performance</span>
+    sid_parser = argparse.ArgumentParser(add_help=<span class="Identifier">False</span>)
+    sid_parser.add_argument(<span class="Constant">'--sid'</span>, <span class="Identifier">help</span>=<span class="Constant">'Symmetrix ID'</span>, required=<span class="Identifier">True</span>)
+
+    <span class="Comment"># epilog message: Custom text after the help</span>
+    epilog = <span class="Constant">'''</span>
+<span class="Constant">    Example of use:</span>
+<span class="Constant">        %s list</span>
+<span class="Constant">        %s srp --sid xxxx</span>
+<span class="Constant">        %s performance --sid xxxx --hours 2</span>
+<span class="Constant">        %s -v performance</span>
+<span class="Constant">        %s performance -h</span>
+<span class="Constant">    '''</span> % (sys.argv[<span class="Constant">0</span>], sys.argv[<span class="Constant">0</span>], sys.argv[<span class="Constant">0</span>], sys.argv[<span class="Constant">0</span>], sys.argv[<span class="Constant">0</span>])
+    <span class="Comment"># Create the argparse object and define global options</span>
+    parser = argparse.ArgumentParser(description=<span class="Constant">'Sample Script to collect </span><span class="Special">\</span>
+<span class="Constant">information from Unisphere for VMAX REST API'</span>,
+                                    formatter_class=argparse.RawDescriptionHelpFormatter,
+                                    epilog=epilog)
+    <span class="Comment"># Global options</span>
+    parser.add_argument(<span class="Constant">'--version'</span>,
+                        action=<span class="Constant">'version'</span>,
+                        version=VERSION)
+    parser.add_argument(<span class="Constant">'--verbose'</span>, <span class="Constant">'-v'</span>,
+                        action=<span class="Constant">'store_true'</span>,
+                        <span class="Identifier">help</span>=<span class="Constant">'verbose flag'</span>,
+                        dest=<span class="Constant">'verbose'</span>)
+    subparsers = parser.add_subparsers(title=<span class="Constant">'Commands'</span>)
+
+    <span class="Comment"># list options</span>
+    list_parser = subparsers.add_parser(<span class="Constant">'list'</span>,
+                                        <span class="Identifier">help</span>=<span class="Constant">'List VMAXs arrays managed by Unisphere'</span>)
+    list_parser.set_defaults(func=list_vmax)
+
+    <span class="Comment"># listsg options</span>
+    list_parser = subparsers.add_parser(<span class="Constant">'listsg'</span>,
+                                        <span class="Identifier">help</span>=<span class="Constant">'List VMAX storage groups'</span>,
+                                       parents=[sid_parser])
+    list_parser.set_defaults(func=list_sg)
+
+    <span class="Comment"># srp options</span>
+    srp_parser = subparsers.add_parser(<span class="Constant">'srp'</span>,
+                                       <span class="Identifier">help</span>=<span class="Constant">'List SRP information'</span>,
+                                       parents=[sid_parser])
+    srp_parser.set_defaults(func=list_srp)
+
+    <span class="Comment"># performance options</span>
+    performance_parser = subparsers.add_parser(<span class="Constant">'performance'</span>,
+                                               <span class="Identifier">help</span>=<span class="Constant">'List VMAX Array performance'</span>,
+                                               parents=[sid_parser])
+    performance_parser.add_argument(<span class="Constant">'--min'</span>,
+                                    <span class="Identifier">type</span>=<span class="Identifier">int</span>,
+                                    <span class="Identifier">help</span>=<span class="Constant">'Minutes ago to gather performance information'</span>,
+                                    dest=<span class="Constant">'min'</span>)
+    performance_parser.add_argument(<span class="Constant">'--hours'</span>,
+                                    <span class="Identifier">type</span>=<span class="Identifier">int</span>,
+                                    <span class="Identifier">help</span>=<span class="Constant">'Hours ago to gather performance information'</span>,
+                                    dest=<span class="Constant">'hours'</span>)
+    performance_parser.add_argument(<span class="Constant">'--days'</span>,
+                                    <span class="Identifier">type</span>=<span class="Identifier">int</span>,
+                                    <span class="Identifier">help</span>=<span class="Constant">'Days ago to gather performance information'</span>,
+                                    dest=<span class="Constant">'days'</span>)
+    performance_parser.set_defaults(func=array_performance)
+
+    <span class="Comment"># If there is no parameter, print help</span>
+    <span class="Statement">if</span> <span class="Identifier">len</span>(sys.argv) &lt; <span class="Constant">2</span>:
+        parser.print_help()
+        sys.exit(<span class="Constant">0</span>)
+
+    <span class="Statement">return</span> parser.parse_args()
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Configure logging</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">setup_logging</span>():
+    logging.basicConfig(level=logging.DEBUG,
+                        <span class="Identifier">format</span>=<span class="Constant">'%(asctime)s - %(funcName)s - %(levelname)s - %(message)s'</span>,
+                        datefmt=<span class="Constant">'%m/%d/%Y %I:%M:%S %p'</span>)
+    <span class="Comment"># By default requests writes log messages to console.</span>
+    <span class="Comment"># The following line configure it to only write messages if is</span>
+    <span class="Comment"># at least warnings</span>
+    logging.getLogger(<span class="Constant">&quot;requests&quot;</span>).setLevel(logging.WARNING)
+    <span class="Comment"># Disable InsecureRequestWarning</span>
+    <span class="PreProc">from</span> requests.packages.urllib3.exceptions <span class="PreProc">import</span> InsecureRequestWarning
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    <span class="Statement">return</span> logging.getLogger(__name__)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Print colored messages</span>
+<span class="Comment"># If exitcode is not zero, finish the script</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">msg</span>(color, msg, exitcode=<span class="Constant">0</span>):
+    <span class="Statement">if</span>   color == <span class="Constant">'blue'</span>    : color = <span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[1;34m'</span>
+    <span class="Statement">elif</span> color == <span class="Constant">'red'</span>     : color = <span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[1;31m'</span>
+    <span class="Statement">elif</span> color == <span class="Constant">'green'</span>   : color = <span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[0;32m'</span>
+    <span class="Statement">elif</span> color == <span class="Constant">'yellow'</span>  : color = <span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[0;33m'</span>
+    <span class="Statement">elif</span> color == <span class="Constant">'p_color'</span> : color = <span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[01;37;44m'</span>
+    <span class="Statement">elif</span> color == <span class="Constant">'nocolor'</span> : color = <span class="Constant">'0'</span>
+    <span class="Statement">else</span>:
+        <span class="Identifier">print</span>(<span class="Constant">&quot;Error: msg function: invalid color:&quot;</span> , color)
+        sys.exit(<span class="Constant">1</span>)
+
+    resetcolor =<span class="Constant">'</span><span class="Special">\033</span><span class="Constant">[0m'</span>
+
+    <span class="Identifier">print</span>(color + msg + resetcolor)
+
+    <span class="Statement">if</span> exitcode:
+        sys.exit(exitcode)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Return current timestamp in milliseconds in Unix epoch time format</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">epoch_time_ms_now</span>():
+    <span class="Statement">return</span> <span class="Identifier">int</span>(time.time() * <span class="Constant">1000</span>)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Return timestamp in milliseconds in Unix epoch time format</span>
+<span class="Comment"># Parameter: Minutes ago. Default is 5 minutes</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">epoch_time_min_ago</span>(minutes=<span class="Constant">5</span>):
+    <span class="Statement">return</span> <span class="Identifier">int</span>(epoch_time_ms_now() - (<span class="Constant">60</span> * minutes * <span class="Constant">1000</span>))
+
+
+<span class="Comment">###########################################################################</span>
+<span class="Comment"># Return timestamp in milliseconds in Unix epoch time format</span>
+<span class="Comment"># Parameter: Hours ago. Default is 1 hour</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">epoch_time_hours_ago</span>(hours=<span class="Constant">1</span>):
+    <span class="Statement">return</span> <span class="Identifier">int</span>(epoch_time_ms_now() - (hours * <span class="Constant">3600</span> * <span class="Constant">1000</span>))
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Return timestamp in milliseconds in Unix epoch time format</span>
+<span class="Comment"># Parameter: Days ago. Default is 1 day</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">epoch_time_days_ago</span>(days=<span class="Constant">1</span>):
+    <span class="Statement">return</span> <span class="Identifier">int</span>(epoch_time_ms_now() - (days * <span class="Constant">24</span> * <span class="Constant">3600</span> * <span class="Constant">1000</span>))
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Receive a timestamp in Unix epoch time format and return it</span>
+<span class="Comment"># in a readable format</span>
+<span class="Comment"># timestamp = Unix epoch time in milliseconds</span>
+<span class="Comment"># strftime (%c) - Locale's appropriate date and time representation.</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">epoch_time_to_human</span>(timestamp):
+    <span class="Statement">return</span> datetime.datetime.fromtimestamp(timestamp/<span class="Constant">1000</span>).strftime(<span class="Constant">'%c'</span>)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Perform a POST request to Unisphere REST API and return the response as</span>
+<span class="Comment"># json object</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">vmax_rest_post</span>(rest_path, request_obj):
+    log.debug(<span class="Constant">&quot;rest_path: &quot;</span> + rest_path)
+    <span class="Statement">if</span> <span class="Statement">not</span> log.disabled:
+        log.debug(<span class="Constant">&quot;request_obj:&quot;</span>)
+        pprint.pprint(request_obj)
+
+    <span class="Comment"># config the rest URL</span>
+    rest_url  = UNISPHERE_REST_URL + rest_path
+    log.debug(rest_url)
+    <span class="Comment"># set header</span>
+    header = { <span class="Constant">'content-type'</span> : <span class="Constant">'application/json'</span>,
+               <span class="Constant">'accept'</span>       : <span class="Constant">'application/json'</span> }
+
+    <span class="Comment"># Post data</span>
+    <span class="Statement">try</span>:
+        response = requests.post(rest_url,
+                                 data=json.dumps(request_obj),
+                                 auth=(UNISPHERE_USER, UNISPHERE_PASS),
+                                 headers=header,
+                                 verify=<span class="Identifier">False</span>)
+    <span class="Statement">except</span> <span class="Type">Exception</span> <span class="Statement">as</span> e:
+        msg(<span class="Constant">&quot;red&quot;</span>, <span class="Identifier">str</span>(e))
+        msg(<span class="Constant">&quot;red&quot;</span>, <span class="Constant">&quot;Error to connect to Unisphere Rest API&quot;</span>, <span class="Constant">1</span>)
+    log.debug(<span class="Constant">&quot;Response code %s&quot;</span>, response.status_code)
+
+    <span class="Comment"># check response</span>
+    <span class="Statement">if</span> response.status_code != <span class="Constant">200</span>:
+        pprint.pprint(response.text)
+        msg(<span class="Constant">&quot;red&quot;</span>, <span class="Constant">&quot;Error to perform POST operation on unisphere. &quot;</span>       +
+                   <span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">rest_path: &quot;</span> + rest_path                            +
+                   <span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">Rest API status_code: &quot;</span> + <span class="Identifier">str</span>(response.status_code) +
+                   <span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">Error text: &quot;</span> + <span class="Identifier">str</span>(response.text), <span class="Constant">1</span>)
+    <span class="Statement">if</span> <span class="Statement">not</span> log.disabled:
+        log.debug(<span class="Constant">&quot;Rest API response:&quot;</span>)
+        pprint.pprint(json.loads(response.text))
+
+    <span class="Comment"># Return json data</span>
+    <span class="Statement">return</span> json.loads(response.text)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Perform a GET request to Unisphere REST API and return the response as</span>
+<span class="Comment"># json object</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">vmax_restapi_get</span>(rest_path):
+    log.debug(<span class="Constant">&quot;rest_path: &quot;</span> + rest_path)
+    <span class="Comment"># config the rest URL</span>
+    rest_url  = UNISPHERE_REST_URL + rest_path
+    <span class="Comment"># set header</span>
+    headers = { <span class="Constant">'content-type'</span> : <span class="Constant">'application/json'</span>,
+                <span class="Constant">'accept'</span>       : <span class="Constant">'application/json'</span> }
+
+    <span class="Comment"># Get data</span>
+    <span class="Statement">try</span>:
+        response = requests.get(rest_url,
+                                auth=(UNISPHERE_USER, UNISPHERE_PASS),
+                                headers=headers,
+                                verify=<span class="Identifier">False</span>)
+    <span class="Statement">except</span> <span class="Type">Exception</span> <span class="Statement">as</span> e:
+        msg(<span class="Constant">&quot;red&quot;</span>, <span class="Identifier">str</span>(e))
+        msg(<span class="Constant">&quot;red&quot;</span>, <span class="Constant">&quot;Error to connect to Unisphere Rest API&quot;</span>, <span class="Constant">1</span>)
+
+    <span class="Statement">if</span> response.status_code != <span class="Constant">200</span>:
+        msg(<span class="Constant">&quot;red&quot;</span>, <span class="Constant">&quot;Error to perform GET operation on unisphere.&quot;</span>         +
+                   <span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">rest_path: &quot;</span> + rest_path                            +
+                   <span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">Rest API status_code: &quot;</span> + <span class="Identifier">str</span>(response.status_code) +
+                   <span class="Constant">&quot;</span><span class="Special">\n</span><span class="Constant">Error text: &quot;</span> + <span class="Identifier">str</span>(response.text), <span class="Constant">1</span>)
+    <span class="Statement">if</span> <span class="Statement">not</span> log.disabled:
+        log.debug(<span class="Constant">&quot;Rest API response:&quot;</span>)
+        pprint.pprint(json.loads(response.text))
+
+    <span class="Comment"># Return json data</span>
+    <span class="Statement">return</span> json.loads(response.text)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Get VMAX array details</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">list_vmax_details</span>(sid):
+    log.debug(<span class="Constant">&quot;Getting VMAX details for SID: &quot;</span> + sid)
+    rest_path = <span class="Constant">&quot;/system/symmetrix/&quot;</span> + sid
+    response = vmax_restapi_get(rest_path)
+
+    output  = <span class="Constant">&quot;Local: &quot;</span> + <span class="Identifier">str</span>(response[<span class="Constant">'symmetrix'</span>][<span class="Constant">0</span>][<span class="Constant">'local'</span>])
+    output += <span class="Constant">&quot; Model: &quot;</span> + <span class="Identifier">str</span>(response[<span class="Constant">'symmetrix'</span>][<span class="Constant">0</span>][<span class="Constant">'model'</span>])
+    output += <span class="Constant">&quot; symmetrixId: &quot;</span> + <span class="Identifier">str</span>(response[<span class="Constant">'symmetrix'</span>][<span class="Constant">0</span>][<span class="Constant">'symmetrixId'</span>])
+    output += <span class="Constant">&quot; ucode: &quot;</span> + <span class="Identifier">str</span>(response[<span class="Constant">'symmetrix'</span>][<span class="Constant">0</span>][<span class="Constant">'ucode'</span>])
+    msg(<span class="Constant">&quot;blue&quot;</span>, output)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># List all VMAX arrays managed by Unisphere</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">list_vmax</span>(args):
+    log.debug(<span class="Constant">&quot;Getting list of VMAXs&quot;</span>)
+    rest_path = <span class="Constant">&quot;/system/symmetrix&quot;</span>
+    response = vmax_restapi_get(rest_path)
+
+    log.debug(<span class="Constant">&quot;Start getting VMAXs details&quot;</span>)
+    <span class="Statement">for</span> sid <span class="Statement">in</span> response[<span class="Constant">'symmetrixId'</span>]:
+        <span class="Comment"># Get vmax array details</span>
+        list_vmax_details(sid)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># List storage groups on a specific VMAX</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">list_sg</span>(args):
+    log.debug(<span class="Constant">&quot;Getting the list storage groups on VMAX: %s&quot;</span>, args.sid)
+    rest_path = <span class="Constant">&quot;/sloprovisioning/symmetrix/&quot;</span> + args.sid + <span class="Constant">&quot;/storagegroup&quot;</span>
+    response = vmax_restapi_get(rest_path)
+
+    <span class="Statement">for</span> sg <span class="Statement">in</span> response[<span class="Constant">'storageGroupId'</span>]:
+        <span class="Identifier">print</span>(sg)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Get SRP details</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">list_srp_details</span>(rest_path):
+    log.debug(<span class="Constant">&quot;Getting SRP detail: &quot;</span> + rest_path)
+    response = vmax_restapi_get(rest_path)
+
+    srp        = response[<span class="Constant">'srp'</span>][<span class="Constant">0</span>][<span class="Constant">'srpId'</span>]
+    usable     = response[<span class="Constant">'srp'</span>][<span class="Constant">0</span>][<span class="Constant">'total_usable_cap_gb'</span>] / <span class="Constant">1024</span>
+    allocated  = response[<span class="Constant">'srp'</span>][<span class="Constant">0</span>][<span class="Constant">'total_allocated_cap_gb'</span>] / <span class="Constant">1024</span>
+    subscribed = response[<span class="Constant">'srp'</span>][<span class="Constant">0</span>][<span class="Constant">'total_subscribed_cap_gb'</span>] / <span class="Constant">1024</span>
+    snapshot   = response[<span class="Constant">'srp'</span>][<span class="Constant">0</span>][<span class="Constant">'total_snapshot_allocated_cap_gb'</span>] / <span class="Constant">1024</span>
+    free = usable - allocated
+    <span class="Identifier">print</span>(<span class="Constant">&quot;&quot;</span>)
+    <span class="Identifier">print</span>(<span class="Constant">&quot;SRP: &quot;</span> + srp)
+    <span class="Identifier">print</span>(<span class="Constant">&quot;Usable TB: &quot;</span> + <span class="Identifier">str</span>(<span class="Identifier">round</span>(usable, <span class="Constant">1</span>)))
+    <span class="Identifier">print</span>(<span class="Constant">&quot;Allocated TB: &quot;</span> + <span class="Identifier">str</span>(<span class="Identifier">round</span>(allocated, <span class="Constant">1</span>)))
+    <span class="Identifier">print</span>(<span class="Constant">&quot;Snapshot TB: &quot;</span> + <span class="Identifier">str</span>(<span class="Identifier">round</span>(snapshot, <span class="Constant">1</span>)))
+    <span class="Identifier">print</span>(<span class="Constant">&quot;Free TB: &quot;</span> + <span class="Identifier">str</span>(<span class="Identifier">round</span>(free, <span class="Constant">1</span>)))
+    <span class="Identifier">print</span>(<span class="Constant">&quot;Subscribed TB: &quot;</span> + <span class="Identifier">str</span>(<span class="Identifier">round</span>(subscribed, <span class="Constant">1</span>)))
+    <span class="Identifier">print</span>(<span class="Constant">&quot;&quot;</span>)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># List all SRPs available</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">list_srp</span>(args):
+    log.debug(<span class="Constant">&quot;Getting list of SRPs&quot;</span>)
+    rest_path = <span class="Constant">&quot;/sloprovisioning/symmetrix/&quot;</span> + <span class="Identifier">str</span>(args.sid) + <span class="Constant">&quot;/srp&quot;</span>
+    response = vmax_restapi_get(rest_path)
+
+    log.debug(<span class="Constant">&quot;Start getting SRPs details&quot;</span>)
+    <span class="Statement">for</span> srp <span class="Statement">in</span> response[<span class="Constant">'srpId'</span>]:
+        <span class="Comment"># Get srp details</span>
+        list_srp_details(rest_path + <span class="Constant">&quot;/&quot;</span> + srp)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Parse time parameteres and return timestamps in epoch time</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">get_timestamp</span>(args):
+    <span class="Statement">if</span> args.<span class="Identifier">min</span>:
+        <span class="Statement">if</span> args.<span class="Identifier">min</span> &lt; <span class="Constant">4</span>:
+            msg(<span class="Constant">&quot;red&quot;</span>, <span class="Constant">&quot;Error: minutes must be greater than 5&quot;</span>, <span class="Constant">1</span>)
+        start_time = epoch_time_min_ago(args.<span class="Identifier">min</span>)
+    <span class="Statement">elif</span> args.hours:
+        <span class="Statement">if</span> args.hours &lt; <span class="Constant">1</span>:
+            msg(<span class="Constant">&quot;red&quot;</span>, <span class="Constant">&quot;Error: hours must be greater than 1&quot;</span>, <span class="Constant">1</span>)
+        start_time = epoch_time_hours_ago(args.hours)
+    <span class="Statement">elif</span> args.days:
+        <span class="Statement">if</span> args.days &lt; <span class="Constant">1</span>:
+            msg(<span class="Constant">&quot;red&quot;</span>, <span class="Constant">&quot;Error: days must be greater than 1&quot;</span>, <span class="Constant">1</span>)
+        start_time = epoch_time_days_ago(args.days)
+    <span class="Statement">else</span>:
+        start_time = epoch_time_min_ago(<span class="Constant">5</span>)
+
+    log.debug(<span class="Constant">&quot;start_time:&quot;</span>)
+    log.debug(time.strftime(<span class="Constant">&quot;%d %b %Y %H:%M:%S +0000&quot;</span>, <span class="Special">\</span>
+                            time.localtime(start_time // <span class="Constant">1000</span>)))
+    <span class="Statement">return</span>(start_time)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Return payload for vmax array performance metrics</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">generate_array_performance_payload</span>(sid, start_time):
+    log.debug(<span class="Constant">'Symmetrix ID: '</span> + <span class="Identifier">str</span>(sid))
+
+    <span class="Statement">return</span> {<span class="Constant">'symmetrixId'</span>: <span class="Identifier">str</span>(sid),
+            <span class="Constant">&quot;endDate&quot;</span>: epoch_time_ms_now(),
+            <span class="Constant">&quot;startDate&quot;</span>: start_time,
+            <span class="Constant">&quot;metrics&quot;</span>: [<span class="Constant">&quot;HostIOs&quot;</span>,
+                        <span class="Constant">&quot;PercentReads&quot;</span>,
+                        <span class="Constant">&quot;PercentWrites&quot;</span>,
+                        <span class="Constant">&quot;PercentHit&quot;</span>,
+                        <span class="Constant">&quot;HostMBs&quot;</span>,
+                        <span class="Constant">&quot;ReadResponseTime&quot;</span>,
+                        <span class="Constant">&quot;WriteResponseTime&quot;</span>],
+            <span class="Constant">&quot;dataFormat&quot;</span>: <span class="Constant">&quot;Average&quot;</span> }
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Get VMAX array performance</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">array_performance</span>(args):
+    log.debug(<span class="Constant">&quot;vmax sid: &quot;</span> + args.sid)
+    start_time = get_timestamp(args)
+
+    rest_path = <span class="Constant">&quot;/performance/Array/metrics&quot;</span>
+    <span class="Comment"># Set the performance payload</span>
+    request_obj = generate_array_performance_payload(args.sid, start_time)
+
+    log.debug(<span class="Constant">&quot;start_time: &quot;</span> + epoch_time_to_human(start_time))
+    log.debug(<span class="Constant">&quot;end_time  : &quot;</span> + epoch_time_to_human(request_obj[<span class="Constant">'endDate'</span>]))
+
+    response = vmax_rest_post(rest_path, request_obj)
+
+    <span class="Statement">for</span> metrics <span class="Statement">in</span> response[<span class="Constant">&quot;resultList&quot;</span>][<span class="Constant">&quot;result&quot;</span>]:
+        <span class="Comment"># convert timestamp from unix epoch time to human readable</span>
+        <span class="Comment"># easier to see the output</span>
+        data = epoch_time_to_human(metrics[<span class="Constant">&quot;timestamp&quot;</span>]) + <span class="Constant">&quot; &quot;</span>
+        <span class="Statement">for</span> key, value <span class="Statement">in</span> metrics.items():
+            <span class="Comment"># append to data the key=value returned in result</span>
+            data += key+<span class="Constant">&quot;=&quot;</span>+<span class="Identifier">str</span>(value)+<span class="Constant">&quot;,&quot;</span>
+        <span class="Comment"># remove , from ends of string</span>
+        data = data[:-<span class="Constant">1</span>]
+        msg(<span class="Constant">&quot;blue&quot;</span>, data)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Main function</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">def</span> <span class="Identifier">main</span>():
+    <span class="Statement">global</span> log
+    <span class="Statement">global</span> args
+
+    <span class="Comment"># Create the log</span>
+    log = setup_logging()
+    <span class="Comment"># Parser the command line</span>
+    args = parse_parameters()
+    <span class="Comment"># check if we need verbose output</span>
+    <span class="Statement">if</span> <span class="Statement">not</span> args.verbose:
+        log.disabled = <span class="Identifier">True</span>
+    log.debug(<span class="Constant">'CMD line args: %s'</span>,  <span class="Identifier">vars</span>(args))
+
+    <span class="Comment"># Execute the funcion (command)</span>
+    args.func(args)
+
+
+<span class="Comment">##############################################################################</span>
+<span class="Comment"># Run from command line</span>
+<span class="Comment">##############################################################################</span>
+<span class="Statement">if</span> __name__ == <span class="Constant">'__main__'</span>:
+    main()
+
+
+<span class="Comment"># vim&#0058; ts=4</span>
+
+</pre>
+</body>
+</html>
+<!-- vim: set foldmethod=manual : -->

@@ -1,0 +1,145 @@
+#!/bin/bash
+#
+# Script para gravar CD de dados e audio
+#
+# Os programas utilizados por este script sao:
+# bash, sed, cdrecord, pacote sh-utils, cut, mkisofs, cdparanoia e mpg123
+#
+# ***Verifique se voce tem os programas na sua maquina***
+#
+# PS:  Para configurar o seu gravador, de uma olhada CD-Writing-HOWTO
+# URL: http://www.ibiblio.org/pub/Linux/docs/HOWTO/CD-Writing-HOWTO
+#
+# Autor : Thobias Salazar Trevisan <thobias[at]cos.ufrj.br>
+# Site  : http://www.lcp.coppe.ufrj.br/~thobias/scr
+#
+# Last update: Sex Fev 21 15:01:27 EST 2003
+#
+#
+# Configuracoes: 
+# dev         = device SCSI do cdrom // use o comando cdrecord -scanbus para descobrir
+# speed       = velocidade que serao gravados os CD
+# dir_temp    = dir onde sera colocada a imagem iso gerada
+# dir_temp_wav= dir onde sero colocados os arquivos .wav quando um CD for ripado
+# ripar_cd    = comando para ripar um CD
+
+dev="0,0,0"
+speed="4"
+dir_temp="/usr/thobias/gravador/temp" 
+dir_temp_wav="/usr/thobias/gravador/temp/wav"
+ripar_cd="cdparanoia -B"
+
+
+iso(){
+[ -f "$1" -a -r "$1" ] || { echo -e "\nErro: arquivo invalido ou sem \
+permissao de leitura\nfile: $1"; exit 1; } 
+echo -e "\nTamanho do arquivo = $(du -sm $1 | cut -f1)MB"
+echo -e "\nContagem regressiva pra iniciar. Se quiser interromper Ctrl+C :)"
+for i in `seq 9 0`;do echo -ne "\033[D${i}";sleep 1;done
+cdrecord -v speed="$speed" dev="$dev" -data -eject "$1"
+}
+
+# fiz algumas limpezas na tela para o comando mkisofs, soh que para poder
+# utilizar este filtro em sed eh necessario a opcao -u de unbuffered, que
+# vem com o sed 3.02.80, como o meu eh 3.02, nao utilizo este filtro. Caso
+# sua versao for maior que a requerida, descomente as linhas abaixo, e
+# comento o mkisofs atual
+dir(){
+[ -d "$1" -a -r "$1" ] || { echo -e "\nErro: diretorio invalido ou sem \
+permissao de leitura\ndiretorio: $1"; exit 1; }
+echo "Tamanho da imagem a ser gerada $(du -sm $1 | cut -f1)MB"
+r= ;while [ "$r" != "s" -a "$r" != "n" ];do
+read -n 1 -p "Deseja continuar (s/n)? " r;echo;done
+[ "$r" = "n" ] && exit
+read -p "Nome (label) do CD: " l; [ "$l" ] || l="  "
+mkisofs -V "$l" -r -J -o "${dir_temp}/001.iso" "$1"
+#mkisofs -V "$l" -r -J -o "${dir_temp}/001.iso" "$1" 2>&1 /dev/stdout |\
+#sed -u '/[0-9]%/s/[0-9]%.*$/%/g' |  sed -u '/[0-9]%/{:a;N;s/\n/ /g;/Tot/{s/To/\
+#To/;tb;};ta;:b;}'
+read -n 1 -p "Precione qualquer tecla para gravar ou Ctrl+C pra sair &)" res
+cdrecord -v speed="$speed" dev="$dev" -data -eject "${dir_temp}/001.iso"
+}
+
+wav(){
+[ -d "$1" -a -r "$1" ] || { echo -e "\nErro: diretorio invalido ou sem \
+permissao de leitura\ndiretorio: $1"; exit 1; }; echo;echo
+echo "Dica: 750 Mb de arquivos wav equivale mais ou menos a 74 min";echo
+echo "Tamanho do diretorio com os arquivos WAV  $(du -sm $1 | cut -f1)MB"
+read -n 1 -p "Precione qualquer tecla pra continuar ou Ctrl+C pra sair :P " res
+echo "
+Track At Once (TAO), faixas são gravadas com uma pausa de 2 segundos entre elas. 
+Disk  At Once (DAO), faixas são gravadas sem essa pausa"
+r= ;while [ "$r" != "dao" -a "$r" != "tao" ];do
+read -p "Qual modo voce quer gravar o CD (tao/dao)? " r;done
+[ "$r" = "dao" ] && \
+(cd "$1";cdrecord -v speed="$speed" dev="$dev" -dao -pad -audio -eject *.wav) ||\
+(cd "$1";cdrecord -v speed="$speed" dev="$dev"  -pad -audio -eject *.wav)
+}
+
+mp3(){
+[ -d "$1" -a -r "$1" ] || { echo -e "\nErro: diretorio invalido ou sem \
+permissao de leitura\ndiretorio: $1"; exit 1; }; echo;echo
+cd "$1"
+for i in *.mp3; do cp "$i" "$(echo "$i" | tr ' ' '_').new"; done
+for i in *.mp3.new; do mpg123 -w $(basename "$i" .new).wav "$i"; done
+rm -rf *.mp3.new
+for i in *.wav; do sox "$i"  -r 44100 "${dir_temp_wav}/$i" ; done
+rm -rf *.wav
+wav ${dir_temp_wav}
+cd "${dir_temp_wav}"; rm -rf *.wav
+}
+
+ripar(){
+[ -d "$dir_temp_wav" -a -w "$dir_temp_wav" ] || { echo -e "\nErro: diretorio \
+invalido ou sem permissao de escrita\ndiretorio: $dir_temp_wav"; exit 1; }
+echo;echo;read -n 1 -p "Coloque o CD e precione qualquer tecla pra continuar" res
+(cd "$dir_temp_wav"; $($ripar_cd) 2> /dev/stdout || exit 1; )
+[ "$?" -eq "1" ] && { echo erro cdparanoia;exit 1; } ;echo -e "\n\n"
+r= ;while [ "$r" != "s" -a "$r" != "n" ];do
+read -n 1 -p "Deseja gravar CD de audio ripado (s/n)? " r;echo;done
+[ "$r" = "n" ] && exit; wav "$dir_temp_wav"
+}
+
+caminho(){
+read -p "Entre com o caminho.
+PATH=" resposta; echo "$resposta"
+}
+
+read -n 1 -p "
+	            Script para Gravar CD de dados e audio
+
+		1 - Gravar uma imagem iso
+		2 - Gravar um diretorio
+		3 - Gravar CD de audio (fonte arquivos MP3)
+		4 - Gravar CD de audio (fonte arquivos WAV)
+		5 - Ripar CD de audio
+		6 - Apagar conteudo CD regravavel
+		0 - Sair
+
+	Escolha uma opcao: " opcao
+
+case "$opcao"
+in
+	1 )	echo -e "\n\n"
+		iso $(caminho)
+		;;
+	2 )	echo -e "\n\n"
+		dir $(caminho)
+		;;
+	3 )	echo -e "\n\n"
+		mp3 $(caminho)
+		;;
+	4 )	echo -e "\n\n"
+		wav $(caminho)
+		;;
+	5 )	ripar
+		;;
+	6 )	echo -e "\n\n"
+		cdrecord -v blank=all dev="$dev"
+		;;
+	0 )	echo;exit
+		;;
+	* )
+		echo -e "\nErro: Opcao Invalida\a"
+		;;
+esac

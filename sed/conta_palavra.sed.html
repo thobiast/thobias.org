@@ -1,0 +1,67 @@
+<html>
+<head><meta name="Generator" content="sedsed --htmlize">
+<title>Colorized conta_palavra.sed</title></head><body bgcolor="#000000" text="#ffffff"
+link="#ff00ff" alink="#ff00ff" vlink="#ff00ff">
+<pre>
+<font color="#00ffff"><b>#!/bin/sed -nf</b></font>
+<font color="#00ffff"><b>#</b></font>
+<font color="#00ffff"><b># Note que estamos usando borda no script (\b), assim se</b></font>
+<font color="#00ffff"><b># procurarmos por sed e tiver sedsed, o resultado vai ser 0</b></font>
+<font color="#00ffff"><b>#</b></font>
+<font color="#00ffff"><b># Thobias Salazar Trevisan &lt;thobias at lcp.coppe.ufrj.br&gt;</b></font>
+
+
+<font color="#00ffff"><b># se for a primeira linha zeramos o contador.</b></font>
+<font color="#00ffff"><b># o contador fica sempre no reserva</b></font>
+<font color="#8080ff"><b>1</b></font> <font color="#ff6060"><b>{</b></font>
+  <font color="#ffff00"><b>x</b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>^</b></font><font color="#ff6060"><b>/</b></font>0<font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>x</b></font>
+<font color="#ff6060"><b>}</b></font>  
+
+<font color="#00ffff"><b># se for a palavra que procuramos fizemos</b></font>
+<font color="#00ffff"><b># no exemplo estamos procurando pela palavra 'sed'</b></font>
+<font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>\bsed\b</b></font><font color="#ff6060"><b>/</b></font> <font color="#ff6060"><b>{</b></font>
+  <font color="#ff00ff"><b>:</b></font> <font color="#ff00ff"><b><a name="c">c</a></b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>\bsed\b</b></font><font color="#ff6060"><b>/</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>t</b></font> <a href="#a">a</a>
+  <font color="#00ffff"><b># substituimos a palavra por nada, se ocorreu sucesso na substituição</b></font>
+  <font color="#00ffff"><b># pulamos pro label 'a', senão, vamos pro label 'b'</b></font>
+  <font color="#ffff00"><b>b</b></font> <a href="#b">b</a>
+  <font color="#00ffff"><b># chegamos aqui se ocorreu sucesso na substituição. Assim pegamos o valor</b></font>
+  <font color="#00ffff"><b># que esta no reserva e fizemos valor + 1</b></font>
+  <font color="#ff00ff"><b>:</b></font> <font color="#ff00ff"><b><a name="a">a</a></b></font>
+  <font color="#ffff00"><b>x</b></font>
+  <font color="#00ffff"><b># aqui comeca o algoritmo pra incrementar o numero</b></font>
+  <font color="#00ffff"><b># link do algoritmo para contar.</b></font>
+  <font color="#00ffff"><b># http://sed.sf.net/grabbag/scripts/incr_num.sed</b></font>
+  <font color="#ff00ff"><b>:</b></font> <font color="#ff00ff"><b><a name="p">p</a></b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>9\<font color="#ff00ff"><b>(</b></font>_*\)$</b></font><font color="#ff6060"><b>/</b></font>_<font color="#00ff00"><b>\1</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>t</b></font> <a href="#p">p</a>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>^\<font color="#ff00ff"><b>(</b></font>_*\)$</b></font><font color="#ff6060"><b>/</b></font>0<font color="#00ff00"><b>\1</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b> \<font color="#ff00ff"><b>(</b></font>_*\)$</b></font><font color="#ff6060"><b>/</b></font>0<font color="#00ff00"><b>\1</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>8\<font color="#ff00ff"><b>(</b></font>_*\)$</b></font><font color="#ff6060"><b>/</b></font>9<font color="#00ff00"><b>\1</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>7\<font color="#ff00ff"><b>(</b></font>_*\)$</b></font><font color="#ff6060"><b>/</b></font>8<font color="#00ff00"><b>\1</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>6\<font color="#ff00ff"><b>(</b></font>_*\)$</b></font><font color="#ff6060"><b>/</b></font>7<font color="#00ff00"><b>\1</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>5\<font color="#ff00ff"><b>(</b></font>_*\)$</b></font><font color="#ff6060"><b>/</b></font>6<font color="#00ff00"><b>\1</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>4\<font color="#ff00ff"><b>(</b></font>_*\)$</b></font><font color="#ff6060"><b>/</b></font>5<font color="#00ff00"><b>\1</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>3\<font color="#ff00ff"><b>(</b></font>_*\)$</b></font><font color="#ff6060"><b>/</b></font>4<font color="#00ff00"><b>\1</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>2\<font color="#ff00ff"><b>(</b></font>_*\)$</b></font><font color="#ff6060"><b>/</b></font>3<font color="#00ff00"><b>\1</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>1\<font color="#ff00ff"><b>(</b></font>_*\)$</b></font><font color="#ff6060"><b>/</b></font>2<font color="#00ff00"><b>\1</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>0\<font color="#ff00ff"><b>(</b></font>_*\)$</b></font><font color="#ff6060"><b>/</b></font>1<font color="#00ff00"><b>\1</b></font><font color="#ff6060"><b>/</b></font>
+  <font color="#ffff00"><b>s</b></font><font color="#ff6060"><b>/</b></font><font color="#8080ff"><b>_</b></font><font color="#ff6060"><b>/</b></font>0<font color="#ff6060"><b>/</b></font><font color="#00ff00"><b>g</b></font>
+  <font color="#00ffff"><b># como a palavra pode aparecer mais de 1 vez na mesma linha, pulamos </b></font>
+  <font color="#00ffff"><b># pro label 'c' pra ver se existe mais</b></font>
+  <font color="#ffff00"><b>x</b></font>
+  <font color="#ffff00"><b>t</b></font> <a href="#c">c</a>
+<font color="#ff6060"><b>}</b></font>  
+<font color="#ff00ff"><b>:</b></font> <font color="#ff00ff"><b><a name="b">b</a></b></font>
+<font color="#00ffff"><b># se for última linha, imprime o que tem no reserva (o contador)</b></font>
+<font color="#8080ff"><b>$</b></font> <font color="#ff6060"><b>{</b></font>
+  <font color="#ffff00"><b>x</b></font>
+  <font color="#ffff00"><b>p</b></font>
+<font color="#ff6060"><b>}</b></font>  
+
+<font color="#00ffff"><b>### colorized by <a href="http://sedsed.sf.net">sedsed</a>, a sed script debugger/indenter/tokenizer/HTMLizer</b></font>
+
+</pre></body></html>

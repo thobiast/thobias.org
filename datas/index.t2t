@@ -1,0 +1,320 @@
+datas
+Programa em modo texto de calendário e compromissos
+
+%!encoding: iso-8859-1
+%! Target  : html
+%! Options : -n --toc --style datas.css -t html --css-sugar
+
+
+%!postproc: '(<DIV CLASS="toc" ID="toc">)'	<DIV CLASS="mini" ID="mini"> <IMG ALIGN="middle" SRC="img/mini.png" BORDER="0" ALT=""></DIV>\n\1
+%!postproc: {(.*?)}		<\1>
+
+
+
+=Datas=
+
+O datas é um programa de agenda e compromissos que funciona na linha de
+comando. Simples, rápido e sem frescuras.
+
+""" {div class="lastrelease"}
+ | Última versão: 1.2 (25 de novembro de 2005)
+""" {/div}
+
+=Motivação=
+
+Assim como eu, várias pessoas têm dificuldade em lembrar de datas
+importantes. Sempre esquecem de aniversários, reuniões,
+dia de pagar contas etc.
+
+Existem alguns programas/agendas que ajudam a lembrar, mas a maioria são com
+interfaces web, programas grandes, pesados, ou que não atendem as minhas
+necessidades.
+
+Assim surgiu o datas, um programa simples, direto e que só faz uma única
+tarefa: ajuda os //esquecidos// a lembrar estes dias.
+
+Com uma interface simples de linha de comando, é extremamente fácil e
+rápido consultar e gerenciar o calendário com os compromissos.
+Os compromissos ficam armazenados em um arquivo texto com uma estrutura
+simples.
+
+O programa possui ainda a opção de enviar um mail ou uma mensagem para celular,
+lembrando de algum compromisso com //N// dias de antecedência.
+
+=Download=
+
+O datas é dividido em dois arquivos:
+
+- //datas.txt// - um arquivo texto com os dias a serem lembrados.
+  [Clique aqui datas.txt] para baixar o arquivo com a estrutura
+  pronta do //datas.txt//.
+- //datas// - um shell script que gerencia e mostra os compromissos
+  agendados. [Clique aqui datas] para baixar o programa.
+
+
+Para os nerds, o [código fonte datas.html] do programa colorido
+para facilitar o entendimento.
+
+
+=Instalação=
+
+É necessário alterar algumas linhas no código fonte do programa. Não se
+assuste, são alterações bem simples. Edite o arquivo //datas// e altere
+as seguintes variáveis (linha 26, 30 e 34 respectivamente):
+
+ | dados='caminho_completo_para_o_arquivo_datas.txt' |
+ | mailto='usuario_que_ira_receber_os_lembretes' |
+ | celmail='endereço_de_mail_do_seu_celular' |
+
+**Variável dados**: Coloque o caminho completo para o arquivo datas.txt.
+
+**Variável mailto**: O endereço de mail de quem receberá os avisos dos
+compromissos.
+
+**Variável celmail**: O endereço de mail do seu celular. Ex:
+//celmail='seunumero@suaoperadora.com.br'//
+
+Observação: Na variável //cmd_mail// é definido o comando utilizado para enviar
+o mail. Se não for entrega local, é necessário ter um smtp configurado, ou utilize
+outro comando para enviar o mail. Altere esta linha apenas se for necessário.
+A configuração atual deve funcionar para entrega local.
+
+Depois de alterada as linhas acima, torne o arquivo executável:
+
+
+```
+prompt> chmod +x datas
+```
+
+=Como Funciona=
+
+Para começar, execute o programa:
+
+```
+prompt> ./datas
+```
+
+Se nenhum parâmetro for passado, é mostrado na tela o calendário
+do mês atual com os seus lembretes.
+
+ | [img/shot1.png]
+
+O dia atual é destacado (por padrão na cor verde) na saída do comando, e caso
+exista algum compromisso neste dia, ele também é destacado. Os demais dias
+com compromisso também estão em destaque (por padrão na cor azul claro).
+Estas cores podem ser facilmente modificadas no código fonte. Elas estão
+definidas nas variáveis //COR_HJ// e //COR_DATA// respectivamente.
+
+O mês a ser consultado pode ser especificado na chamada do programa. Para
+ver os compromissos de dezembro:
+
+```
+prompt> ./datas 12
+```
+
+ | [img/shot2.png]
+
+O ano também pode ser escolhido.
+
+
+```
+prompt> ./datas 12 2006
+```
+
+==Adicionando Compromissos==
+
+
+Em vez de criar uma interface para adicionar/remover/alterar os
+compromissos, o programa abre um editor de texto para você manipular o
+arquivo.
+
+Para abrir o editor é necessário passar o parâmetro //--edit// ou //-e//.
+
+
+```
+prompt> ./datas -e
+```
+
+ | [img/shot3.png]
+
+O editor de texto utilizado é o que está definido na variável de ambiente
+//EDITOR//. Caso esta variável não esteja setada, é utilizado o editor
+passada como parâmetro. Se nenhum for passado é utilizado o VI.
+
+```
+prompt> ./datas -e nano
+```
+
+O arquivo com os compromissos possui uma estrutura simples, e poucas
+regras precisam ser respeitadas:
+
+- As linhas que começam com o caractere '#' são comentários.
+- Existe uma entrada (um comentário) para cada um dos 12 meses
+ (**não altere estas linhas**).
+- As datas precisam ser adicionadas abaixo do mês correspondente com o
+  seguinte formato:
+
+ | dia - lembrete |
+
+Para ajudar na compreensão da estrutura, segue um pequeno exemplo deste
+arquivo:
+
+
+```
+prompt> cat datas.txt
+# datas.txt - http://thobias.org/datas
+#
+# Esse arquivo contém os compromissos agendados.
+# Sua estrutura é:
+# DD - compromisso/lembrete
+#
+# Observações:
+# - É necessário respeitar a estrutura deste arquivo para adicionar
+#   seus lembretes e, as linhas indicando os meses, _NÃO_ podem ser
+#   apagadas, mesmo que não exista nenhum lembrete no mês.
+#
+# - O "mês 00" é uma configuração especial no arquivo datas.txt. os
+#   lembretes adicionados nele, serão lembrados em todos os meses
+#   reais. Deste modo, você não precisa adicionar a mesma entrada em
+#   todos os mês. Útil para lembrete como: para pagar a conta de luz
+#   todo o dia 10.
+#
+# - Para acrescentar lembretes é só colocá-los logo abaixo do mês
+#   correspondente.
+##########################################################################
+
+# 00 - "mes" especial
+10 - pagar conta de luz
+
+# 01 - janeiro
+4  - aniversario jerusa
+
+# 02 - fevereiro
+
+# 03 - março
+03 - aniversario mandarim
+25 - aniversario germano
+
+# 04 - abril
+
+# 05 - maio
+
+# 06 - junho
+
+# 07 - julho
+
+# 08 - agosto
+
+# 09 - setembro
+
+# 10 - outubro
+14 - meu aniversario
+
+# 11 - novembro
+
+# 12 - dezembro
+08 - aniversario gordo
+14 - aniversario careca
+25 - natal
+31 - ano novo
+```
+
+O arquivo é auto explicativo. Os compromissos são adicionados após o seu
+respectivo mês.
+
+O //mês 00// é uma configuração especial no arquivo datas.txt. Os
+compromissos adicionados nele serão lembrados em todos os meses
+reais. Deste modo, você não precisa adicionar a mesma entrada em
+todos os mês. Útil para lembretes como: para pagar a conta de luz
+todo o dia 10.
+
+==Enviando Lembrete por E-mail==
+
+Utiliza-se o parâmetro //--cron// para o
+script enviar o resultado (se necessário) por mail. O mail só será enviado
+caso exista algum lembrete para daqui a N dias, onde N por padrão é 1, ou
+seja, com quantos dias de antecedência o mail com o lembrete será enviado.
+
+
+```
+prompt> ./datas --cron
+```
+
+O número de dias de antecedência pode ser modificado passando o seu novo
+valor na chamada do programa. Para que o mail seja enviado 2 dias antes
+do compromisso:
+
+
+```
+prompt> ./datas --cron 2
+```
+
+Se quiser enviar um mail no dia do compromisso, especifique o
+número zero:
+
+```
+prompt> ./datas --cron 0
+```
+
+Para automatizar este processo, esta chamada pode ser adicionada na crontab
+do sistema operacional. Por exemplo, para
+executar o programa todos os dias às 9h da manhã:
+
+```
+0 9 * * * /caminho/do/arquivo/datas --cron
+```
+
+Observação: o cron não compensa comandos que foram perdidos
+enquando o sitema estava desligado, ou seja, se você colocar o datas para
+executar via cron às 6h da manhã e a máquina não estiver ligada, o programa
+não será executado naquele dia. Então coloque-o para executar em um horário
+em que a máquina esteja ligada ou em algum servidor.
+
+
+=Changelog=
+
+**Versão 1.2 - 25 de novembro de 2005**
+- Sempre colore o dia de hoje com uma cor diferente no calendário (valeu Elias pela idéia)
+- Colore os compromissos mesmo que o mês não seja o atual
+- Adicionada variável que especifica a implementação do sed a ser utilizada (valeu Josevan)
+
+
+**Versão 1.1 - 20 de setembro de 2005**
+- Adicionado mês 00 (valeu Aurélio Marinho Jargas pela idéia)
+- Adicionado aviso pelo celular (valeu Ataliba Teixeira pela idéia/patch)
+- Adicionada opção -l para listar todos os compromissos agendados (valeu
+  Aurélio)
+- Ordenada a saída dos lembretes do mês. Não importa a ordem que estão no arquivo
+
+
+**Versão 1.0 - 15 de janeiro de 2005**
+
+=Agradecimentos=
+
+Pessoas que contribuiram:
+
+- Aurélio Marinho Jargas
+- Silvano Bolfoni Dias
+- Ataliba Teixeira
+- Elias Junior
+- Josevan Gondim
+
+
+=Patches=
+
+O Ataliba Teixeira mantém um
+[patch http://cerebro.freeshell.org/sections/aplicationpatches/datas/]
+para o programa funcionar na SDF (http://sdf.lonestar.org).
+
+=Considerações Finais=
+
+Espero que este programa seja útil para mais alguém.
+
+Se tiver algum comentário, sugestão, aviso de bug... me envie um mail:
+
+thobias (at) thobias (dot) org
+
+============================================================================
+
+ | [[img/t2tpowered.png] http://txt2tags.sourceforge.net]
+

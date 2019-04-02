@@ -1,0 +1,1583 @@
+<style>H2 {font-size: medium}</style>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+<META NAME="generator" CONTENT="http://txt2tags.sf.net">
+<TITLE>só sed</TITLE>
+</HEAD><BODY BGCOLOR="white" TEXT="black">
+<P ALIGN="center"><CENTER><H1>só sed</H1>
+<FONT SIZE=4>
+<I>Thobias Salazar Trevisan</I><BR>
+21/05/2003
+</FONT></CENTER>
+
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<P>
+ <OL>
+ <LI><A HREF="#toc1">Introdução</A>
+  <UL>
+  <LI><A HREF="#toc2">1.1. Agradecimentos</A>
+  <LI><A HREF="#toc3">1.2. Texto padrão</A>
+  </UL>
+ <LI><A HREF="#toc4">Brincando com Linhas</A>
+  <UL>
+  <LI><A HREF="#toc5">2.1. Imprimir somente as linhas com uma determinada string</A>
+  <LI><A HREF="#toc6">2.2. Imprimir somente a primeira ocorrência da linha com determinada string</A>
+  <LI><A HREF="#toc7">2.3. Imprimir a última ocorrência da linha com determinada string</A>
+  <LI><A HREF="#toc8">2.4. Imprimir da primeira ocorrência da string até o final</A>
+  <LI><A HREF="#toc9">2.5. Imprimir da última ocorrência da string até o final</A>
+  <LI><A HREF="#toc10">2.6. Apagar as linhas com uma determinada string</A>
+  <LI><A HREF="#toc11">2.7. Apagar apenas a primeira linha com determinada string I</A>
+  <LI><A HREF="#toc12">2.8. Apagar apenas a primeira linha com determinada string II</A>
+  <LI><A HREF="#toc13">2.9. Adicionar texto no início da linha</A>
+  <LI><A HREF="#toc14">2.10. Adicionar texto no final da linha</A>
+  <LI><A HREF="#toc15">2.11. Retirar linhas em branco</A>
+  <LI><A HREF="#toc16">2.12. Incluir texto no início da linha N</A>
+  <LI><A HREF="#toc17">2.13. Incluir texto no final da linha N</A>
+  <LI><A HREF="#toc18">2.14. Incluir texto na linha N apagando o conteúdo existente</A>
+  <LI><A HREF="#toc19">2.15. Incluir texto antes da linha N</A>
+  <LI><A HREF="#toc20">2.16. Incluir linha após a última</A>
+  <LI><A HREF="#toc21">2.17. Imprimir somente a linha N</A>
+  <LI><A HREF="#toc22">2.18. Retirar a linha N</A>
+  <LI><A HREF="#toc23">2.19. Extrair um trecho de uma linha</A>
+  <LI><A HREF="#toc24">2.20. Retirar espaços em branco repetidos</A>
+  <LI><A HREF="#toc25">2.21. Retirar espaços em branco no início da linha</A>
+  <LI><A HREF="#toc26">2.22. Apagar uma string do início da linha</A>
+  <LI><A HREF="#toc27">2.23. Apagar do início da linha até uma string</A>
+  <LI><A HREF="#toc28">2.24. Apagar de uma string até o final da linha</A>
+  <LI><A HREF="#toc29">2.25. Apagar a última string da linha</A>
+  <LI><A HREF="#toc30">2.26. Colocar todas as linhas em uma só</A>
+  <LI><A HREF="#toc31">2.27. Juntar a linha com a próxima</A>
+  <LI><A HREF="#toc32">2.28. Substituir caractere por outro até uma TAG</A>
+  <LI><A HREF="#toc33">2.29. Substituir caractere por outro entre TAGs</A>
+  <LI><A HREF="#toc34">2.30. Substituir string por outra somente em certas linhas</A>
+  <LI><A HREF="#toc35">2.31. Substituir string por outra somente em certas linhas II</A>
+  <LI><A HREF="#toc36">2.32. Substituir a última ocorrência de uma string por outra</A>
+  <LI><A HREF="#toc37">2.33. Trocar a ordem das palavras (última vira primeira, penúltima vira segunda....)</A>
+  <LI><A HREF="#toc38">2.34. Trocar a ordem das letras (igual ao comando rev)</A>
+  <LI><A HREF="#toc39">2.35. Trocar de maiúsculas para minúsculas</A>
+  <LI><A HREF="#toc40">2.36. Trocar de minúsculas para maiúsculas</A>
+  </UL>
+ <LI><A HREF="#toc41">Brincando com Partes do texto</A>
+  <UL>
+  <LI><A HREF="#toc42">3.1. Imprimir a linha antes de uma string</A>
+  <LI><A HREF="#toc43">3.2. Imprimir a linha antes de uma string e a linha da string</A>
+  <LI><A HREF="#toc44">3.3. Imprimir a linha após uma string</A>
+  <LI><A HREF="#toc45">3.4. Imprimir a linha após uma string e a linha da string</A>
+  <LI><A HREF="#toc46">3.5. Imprimir a linha anterior, posterior e a linha que contém uma string</A>
+  <LI><A HREF="#toc47">3.6. Imprimir a linha anterior e posterior a linha que contém uma string</A>
+  <LI><A HREF="#toc48">3.7. Imprimir N linhas antes, a linha da string e M linhas após uma string I</A>
+  <LI><A HREF="#toc49">3.8. Imprimir N linhas antes, a linha da string e M linhas após uma string II</A>
+  <LI><A HREF="#toc50">3.9. Adicionar linha antes de uma string</A>
+  <LI><A HREF="#toc51">3.10. Adicionar linha após a linha com uma determinada string</A>
+  <LI><A HREF="#toc52">3.11. Imprimir somente entre linha N e M</A>
+  <LI><A HREF="#toc53">3.12. Substituir uma string por outra somente entre determinadas linhas</A>
+  <LI><A HREF="#toc54">3.13. Imprimir linhas que contém uma ou outra string</A>
+  <LI><A HREF="#toc55">3.14. Imprimir linhas que contém uma e outra string</A>
+  <LI><A HREF="#toc56">3.15. Extrair um trecho do arquivo</A>
+  <LI><A HREF="#toc57">3.16. Extrair trecho que pode ou não estar na mesma linha</A>
+  <LI><A HREF="#toc58">3.17. Extrair trecho que pode ou não estar na mesma linha tirando os delimitadores</A>
+  <LI><A HREF="#toc59">3.18. Apagar o que está entre delimitadores</A>
+  <LI><A HREF="#toc60">3.19. Apagar um trecho se ele contém um padrão</A>
+  <LI><A HREF="#toc61">3.20. Trocar de lugar a linha com a próxima (troca de lugar linha 1 com 2, 3 com 4...) I</A>
+  <LI><A HREF="#toc62">3.21. Trocar de lugar a linha com a próxima (troca de lugar linha 1 com 2, 3 com 4...) II</A>
+  </UL>
+ <LI><A HREF="#toc63">Utilidade Pública</A>
+  <UL>
+  <LI><A HREF="#toc64">4.1. Retirar comandos HTML (tudo entre &lt; e &gt;)</A>
+  <LI><A HREF="#toc65">4.2. Pesquisar se existe algum usuário sem senha no /etc/passwd</A>
+  </UL>
+ </OL>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<P>
+<a name="toc1">
+<H1>1. Introdução</H1>
+<P>
+Este texto se propõe a ser uma maneira fácil das pessoas acharem aquele sed
+perdido para resolver seu problema, ou seja, aqui vamos direto ao ponto,
+sem frescura ou enrolação.
+<P>
+Se você está procurando um texto que explique o SED, visite estes links:
+<P>
+<UL>
+<LI><A HREF="http://sed.sourceforge.net/">http://sed.sourceforge.net/</A> - Página $HOME do sed
+<LI><A HREF="http://aurelio.net/sed/sed-HOWTO/">http://aurelio.net/sed/sed-HOWTO/</A> - sed HOWTO em pt_BR
+<LI><A HREF="http://aurelio.net/sed/">http://aurelio.net/sed/</A>           - página com links e programas em sed (pt_BR)
+<LI><A HREF="http://br.groups.yahoo.com/group/sed-br/">http://br.groups.yahoo.com/group/sed-br/</A> - página da lista sed-br
+<LI><A HREF="http://sed.sourceforge.net/sedfaq.html">http://sed.sourceforge.net/sedfaq.html</A> - The sed FAQ (english)
+<LI><A HREF="http://www.math.fu-berlin.de/user/guckes/sed/">http://www.math.fu-berlin.de/user/guckes/sed/</A> - página da lista sed users
+  (vários links e docs - english)
+<LI><A HREF="http://aurelio.net/er/">http://aurelio.net/er/</A> - expressões regulares (pt_BR)
+</UL>
+<a name="toc2">
+<H2>1.1. Agradecimentos</H2>
+<P>
+A idéia de elaborar este documento surgiu em um 
+<A HREF="http://br.groups.yahoo.com/group/sed-br/message/1482">mail</A> do Aurélio para
+a lista de discussão <A HREF="http://br.groups.yahoo.com/group/sed-br/">sed-br</A>. 
+Se você quiser acompanhar as <I>threads da criação</I> 
+aqui vão os links para as 3 threads principais: 
+<P>
+<OL>
+<LI><A HREF="http://br.groups.yahoo.com/group/sed-br/message/1483">sed FAQ (era: Re: concatenar linhas</A>
+<LI><A HREF="http://br.groups.yahoo.com/group/sed-br/message/1513">FAQ sed</A>
+<LI><A HREF="http://br.groups.yahoo.com/group/sed-br/message/1561">Opine sobre o nome do documento da lista</A>
+</OL>
+Aqui vai meu <B>muito obrigado</B> para as pessoas que ajudaram na construção deste documento.
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B>A galera que contribuiu:</B></td>
+</tr>
+</table>
+
+<P>
+<UL>
+<LI><A HREF="http://aurelio.net">Aurélio Marinho Jargas</A>
+<LI>Silvano B. Dias
+<LI>Anilton Lucas
+<LI>A lista <A HREF="http://br.groups.yahoo.com/group/sed-br/">sed-br</A>
+</UL>
+<a name="toc3">
+<H2>1.2. Texto padrão</H2>
+Em todos os exemplos vamos procurar manter sempre o mesmo texto
+para facilitar a compreensão das perguntas e respostas. Esperamos deste
+modo deixar o <I>só sed</I> mais amigável e que você ache a sua pergunta de maneira
+fácil e agil. &amp;:) 
+<P>
+<B>Dica:</B> 
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td>Leia o arquivo de entrada com calma. Analise-o, respire e releia-o.</td>
+</tr>
+</table>
+
+<P>
+Assim ficará mais fácil para você entender os exemplos e as mudanças ocorridas após a execução de cada sed.
+<P>
+O <A HREF="arquivo.txt">arquivo.txt</A> de exemplo é:
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; cat arquivo.txt
+  No início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=5>
+<a name="toc4">
+<H1>2. Brincando com Linhas</H1>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc5">
+<H2>2.1. Imprimir somente as linhas com uma determinada string</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/dia/p'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/dia/p' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc6">
+<H2>2.2. Imprimir somente a primeira ocorrência da linha com determinada string</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/dia/{p;q;}'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/dia/{p;q;}' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc7">
+<H2>2.3. Imprimir a última ocorrência da linha com determinada string</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/dia/h;${x;p;}'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/dia/h;${x;p;}' arquivo.txt
+     No quarto dia, ficou com preguiça, então falou:
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc8">
+<H2>2.4. Imprimir da primeira ocorrência da string até o final</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '/dia/,$!d'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '/dia/,$!d' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc9">
+<H2>2.5. Imprimir da última ocorrência da string até o final</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/dia/{h;${x;p;};d;};H;${x;p;}'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/dia/{h;${x;p;};d;};H;${x;p;}' arquivo.txt
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc10">
+<H2>2.6. Apagar as linhas com uma determinada string</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed  '/dia/d'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed  '/dia/d' arquivo.txt
+  No início do início, era um nada.
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc11">
+<H2>2.7. Apagar apenas a primeira linha com determinada string I</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '/dia/{H;x;/^\n/d;g;}'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '/dia/{H;x;/^\n/d;g;}' arquivo.txt
+  No início do início, era um nada.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc12">
+<H2>2.8. Apagar apenas a primeira linha com determinada string II</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/dia/{:a;n;p;ba;};p'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/dia/{:a;n;p;ba;};p' arquivo.txt
+  No início do início, era um nada.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc13">
+<H2>2.9. Adicionar texto no início da linha</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 's/^/texto incluido/'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 's/^/texto incluido/' arquivo.txt
+  texto incluidoNo início do início, era um nada.
+  texto incluido No segundo dia, fez um rascunho à lápis.
+  texto incluido  No terceiro dia, apagou e começou tudo de novo.
+  texto incluido   No quarto dia, ficou com preguiça, então falou:
+  texto incluido
+  texto incluido- Sexta-feira eu continuo, se não estiver cansado...
+  texto incluido
+  texto incluido  E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc14">
+<H2>2.10. Adicionar texto no final da linha</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 's/$/texto incluido/'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 's/$/texto incluido/' arquivo.txt
+  No início do início, era um nada.texto incluido
+   No segundo dia, fez um rascunho à lápis.texto incluido
+    No terceiro dia, apagou e começou tudo de novo.texto incluido
+     No quarto dia, ficou com preguiça, então falou:texto incluido
+  texto incluido
+  - Sexta-feira eu continuo, se não estiver cansado...texto incluido
+  texto incluido
+    E no fim, nada.texto incluido
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc15">
+<H2>2.11. Retirar linhas em branco</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '/^$/d'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '/^$/d' arquivo.txt
+  No início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  - Sexta-feira eu continuo, se não estiver cansado...
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc16">
+<H2>2.12. Incluir texto no início da linha N</H2>
+OBS: troque o número 1 para a linha que você quiser
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '1s/^/começo do arquivo/' </CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '1s/^/começo do arquivo/'  arquivo.txt
+  começo do arquivoNo início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc17">
+<H2>2.13. Incluir texto no final da linha N</H2>
+OBS: troque o número 1 para a linha que você quiser
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '1s/$/final da linha/'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '1s/$/final da linha/' arquivo.txt
+  No início do início, era um nada.final da linha
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc18">
+<H2>2.14. Incluir texto na linha N apagando o conteúdo existente</H2>
+OBS: troque o número 1 para a linha que você quiser
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '1s/.*/início do arquivo/'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '1s/.*/início do arquivo/' arquivo.txt
+  início do arquivo
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc19">
+<H2>2.15. Incluir texto antes da linha N</H2>
+OBS: troque o número 1 para a linha que você quiser
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -e '1i\' -e 'começo do arquivo'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -e '1i\' -e 'começo do arquivo' arquivo.txt
+  começo do arquivo
+  No início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc20">
+<H2>2.16. Incluir linha após a última</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -e '$a\' -e 'linha final'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -e '$a\' -e 'linha final' arquivo.txt
+  No início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+  linha final
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc21">
+<H2>2.17. Imprimir somente a linha N</H2>
+OBS: troque o número 2 para a linha que você quiser
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '2!d'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '2!d' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc22">
+<H2>2.18. Retirar a linha N</H2>
+OBS: troque o número 2 pela linha que você quiser
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '2d'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '2d' arquivo.txt
+  No início do início, era um nada.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc23">
+<H2>2.19. Extrair um trecho de uma linha</H2>
+OBS: O mesmo que cut -d, -f2
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 's/^[^,]*,\([^,]\+\),\?.*/\1/'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 's/^[^,]*,\([^,]\+\),\?.*/\1/' arquivo.txt
+   era um nada.
+   fez um rascunho à lápis.
+   apagou e começou tudo de novo.
+   ficou com preguiça
+  
+   se não estiver cansado...
+  
+   nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc24">
+<H2>2.20. Retirar espaços em branco repetidos</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 's/[ ]\+/ /g'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 's/[ ]\+/ /g' arquivo.txt
+  No início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+   No terceiro dia, apagou e começou tudo de novo.
+   No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+   E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc25">
+<H2>2.21. Retirar espaços em branco no início da linha</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 's/^ \+//'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 's/^ \+//' arquivo.txt
+  No início do início, era um nada.
+  No segundo dia, fez um rascunho à lápis.
+  No terceiro dia, apagou e começou tudo de novo.
+  No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+  E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc26">
+<H2>2.22. Apagar uma string do início da linha</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 's/^No//'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 's/^No//' arquivo.txt
+   início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc27">
+<H2>2.23. Apagar do início da linha até uma string</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 's/^.*dia//'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 's/^.*dia//' arquivo.txt
+  No início do início, era um nada.
+  , fez um rascunho à lápis.
+  , apagou e começou tudo de novo.
+  , ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc28">
+<H2>2.24. Apagar de uma string até o final da linha</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 's/dia.*$//'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 's/dia.*$//' arquivo.txt
+  No início do início, era um nada.
+   No segundo 
+    No terceiro 
+     No quarto 
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc29">
+<H2>2.25. Apagar a última string da linha</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 's/ [^ ]\+ *$//g'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 's/ [^ ]\+ *$//g' arquivo.txt
+  No início do início, era um
+   No segundo dia, fez um rascunho à
+    No terceiro dia, apagou e começou tudo de
+     No quarto dia, ficou com preguiça, então
+  
+  - Sexta-feira eu continuo, se não estiver
+  
+    E no fim,
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc30">
+<H2>2.26. Colocar todas as linhas em uma só</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed ':a;$!N;s/\n//;ta;'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed ':a;$!N;s/\n//;ta;' arquivo.txt
+  No início do início, era um nada. No segundo dia, fez um rascunho à lápis.  No terceiro dia, apagou e começou tudo de novo.   No quarto dia, ficou com preguiça, então falou:- Sexta-feira eu continuo, se não estiver cansado...  E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc31">
+<H2>2.27. Juntar a linha com a próxima</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 'N;s/\n//'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 'N;s/\n//' arquivo.txt
+  No início do início, era um nada. No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.   No quarto dia, ficou com preguiça, então falou:
+  - Sexta-feira eu continuo, se não estiver cansado...
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc32">
+<H2>2.28. Substituir caractere por outro até uma TAG</H2>
+OBS: troca 'o' por 'x' até encontrar a primeira ','
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed ':a;s/^\([^,]\+\)o/\1x/;ta'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed ':a;s/^\([^,]\+\)o/\1x/;ta' arquivo.txt
+  Nx inícix dx inícix, era um nada.
+   Nx segundx dia, fez um rascunho à lápis.
+    Nx terceirx dia, apagou e começou tudo de novo.
+     Nx quartx dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu cxntinux, se não estiver cansado...
+  
+    E nx fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc33">
+<H2>2.29. Substituir caractere por outro entre TAGs</H2>
+OBS: troca 'o' por 'x' entre a segunda e terceira ','
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed ':a;s/^\([^,]*,[^,]\+\)o/\1x/;ta'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed ':a;s/^\([^,]*,[^,]\+\)o/\1x/;ta' arquivo.txt
+  No início do início, era um nada.
+   No segundo dia, fez um rascunhx à lápis.
+    No terceiro dia, apagxu e cxmeçxu tudx de nxvx.
+     No quarto dia, ficxu cxm preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se nãx estiver cansadx...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc34">
+<H2>2.30. Substituir string por outra somente em certas linhas</H2>
+OBS: substitui 'dia' por 'noite' somente em linhas que contém a string 'terceiro'
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '/terceiro/s/dia/noite/g'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '/terceiro/s/dia/noite/g' arquivo.txt
+  No início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro noite, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc35">
+<H2>2.31. Substituir string por outra somente em certas linhas II</H2>
+OBS: substitui 'dia' por 'noite' nas linha que NÃO contém a string 'terceiro'
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '/terceiro/!s/dia/noite/g'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '/terceiro/!s/dia/noite/g' arquivo.txt
+  No início do início, era um nada.
+   No segundo noite, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto noite, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc36">
+<H2>2.32. Substituir a última ocorrência de uma string por outra</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed ':a;$!{N;ba;};s/\(.*\)dia/\1noite/'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed ':a;$!{N;ba;};s/\(.*\)dia/\1noite/' arquivo.txt
+  No início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto noite, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc37">
+<H2>2.33. Trocar a ordem das palavras (última vira primeira, penúltima vira segunda....)</H2>
+OBS: se o seu arquivo tiver o caractere '§' troque o '§' do sed por outro carectere que não exista.
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 's/^/§ /;:a;s/\(.*\)§ \+\([^ ]\+\)/\2 \1§/;ta;s/§//'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 's/^/§ /;:a;s/\(.*\)§ \+\([^ ]\+\)/\2 \1§/;ta;s/§//' arquivo.txt
+  nada. um era início, do início No 
+  lápis. à rascunho um fez dia, segundo No 
+  novo. de tudo começou e apagou dia, terceiro No 
+  falou: então preguiça, com ficou dia, quarto No 
+   
+  cansado... estiver não se continuo, eu Sexta-feira - 
+   
+  nada. fim, no E 
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc38">
+<H2>2.34. Trocar a ordem das letras (igual ao comando rev)</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 's/^/§/;:a;s/\(.*\)§\(.\)/\2\1§/;ta;s/§$//'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 's/^/§/;:a;s/\(.*\)§\(.\)/\2\1§/;ta;s/§$//' arquivo.txt
+  .adan mu are ,oicíni od oicíni oN
+  .sipál à ohnucsar mu zef ,aid odnuges oN 
+  .ovon ed odut uoçemoc e uogapa ,aid oriecret oN  
+  :uolaf oãtne ,açiugerp moc uocif ,aid otrauq oN   
+  
+  ...odasnac revitse oãn es ,ounitnoc ue arief-atxeS -
+  
+  .adan ,mif on E  
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc39">
+<H2>2.35. Trocar de maiúsculas para minúsculas</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÉÊÍÓÔÕÚÇ/abcdefghijklmnopqrstuvwxyzàáâãéêíóôõúç/'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÉÊÍÓÔÕÚÇ/abcdefghijklmnopqrstuvwxyzàáâãéêíóôõúç/' arquivo.txt
+  no início do início, era um nada.
+   no segundo dia, fez um rascunho à lápis.
+    no terceiro dia, apagou e começou tudo de novo.
+     no quarto dia, ficou com preguiça, então falou:
+  
+  - sexta-feira eu continuo, se não estiver cansado...
+  
+    e no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc40">
+<H2>2.36. Trocar de minúsculas para maiúsculas</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 'y/abcdefghijklmnopqrstuvwxyzàáâãéêíóôõúç/ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÉÊÍÓÔÕÚÇ/'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 'y/abcdefghijklmnopqrstuvwxyzàáâãéêíóôõúç/ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÉÊÍÓÔÕÚÇ/' arquivo.txt
+  NO INÍCIO DO INÍCIO, ERA UM NADA.
+   NO SEGUNDO DIA, FEZ UM RASCUNHO À LÁPIS.
+    NO TERCEIRO DIA, APAGOU E COMEÇOU TUDO DE NOVO.
+     NO QUARTO DIA, FICOU COM PREGUIÇA, ENTÃO FALOU:
+  
+  - SEXTA-FEIRA EU CONTINUO, SE NÃO ESTIVER CANSADO...
+  
+    E NO FIM, NADA.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=5>
+<a name="toc41">
+<H1>3. Brincando com Partes do texto</H1>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc42">
+<H2>3.1. Imprimir a linha antes de uma string</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/segundo/{x;p;};h'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/segundo/{x;p;};h' arquivo.txt
+  No início do início, era um nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc43">
+<H2>3.2. Imprimir a linha antes de uma string e a linha da string</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/segundo/{H;x;p;};h'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/segundo/{H;x;p;};h' arquivo.txt
+  No início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc44">
+<H2>3.3. Imprimir a linha após uma string</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/segundo/{n;p;}'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/segundo/{n;p;}' arquivo.txt
+    No terceiro dia, apagou e começou tudo de novo.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc45">
+<H2>3.4. Imprimir a linha após uma string e a linha da string</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/segundo/{N;p;}'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/segundo/{N;p;}' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc46">
+<H2>3.5. Imprimir a linha anterior, posterior e a linha que contém uma string</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/terceiro/{H;x;p;n;p;};h'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/terceiro/{H;x;p;n;p;};h' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc47">
+<H2>3.6. Imprimir a linha anterior e posterior a linha que contém uma string</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/terceiro/{x;p;n;p;};h'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/terceiro/{x;p;n;p;};h' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+     No quarto dia, ficou com preguiça, então falou:
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc48">
+<H2>3.7. Imprimir N linhas antes, a linha da string e M linhas após uma string I</H2>
+OBS: 'quarto' é a string, troque o '2' de 1,2 para o número de linhas antes, e adicione quantos 'Ns' para linhas após. No exemplo está 2 antes e 2 depois
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/quarto/{x;p;x;N;N;p;q;};1!{H;g;};1,2!s/[^\n]*\n//;h;'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/quarto/{x;p;x;N;N;p;q;};1!{H;g;};1,2!s/[^\n]*\n//;h;' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc49">
+<H2>3.8. Imprimir N linhas antes, a linha da string e M linhas após uma string II</H2>
+OBS: troque o número entre chaves '{2}' pelo número de linhas antes da string e adicione quandos 'Ns' para linhas após. No exemploestá 2 antes e 2 depois
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 'H;/quarto/{g;N;N;s/^\n//p;}; x;s/.*\(\(\n[^\n]*\)\{2\}\)/\1/;x ;d'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 'H;/quarto/{g;N;N;s/^\n//p;}; x;s/.*\(\(\n[^\n]*\)\{2\}\)/\1/;x ;d' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc50">
+<H2>3.9. Adicionar linha antes de uma string</H2>
+OBS: inclui o 'Texto adicionado' antes da linha com a string 'segundo'
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '/segundo/{h;s/.*/Texto adicionado/;p;x;}'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '/segundo/{h;s/.*/Texto adicionado/;p;x;}' arquivo.txt
+  No início do início, era um nada.
+  Texto adicionado
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc51">
+<H2>3.10. Adicionar linha após a linha com uma determinada string</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '/segundo/{p;s/.*/Texto adicionado/;}'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '/segundo/{p;s/.*/Texto adicionado/;}' arquivo.txt
+  No início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+  Texto adicionado
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc52">
+<H2>3.11. Imprimir somente entre linha N e M</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '4,6!d'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '4,6!d' arquivo.txt
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc53">
+<H2>3.12. Substituir uma string por outra somente entre determinadas linhas</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '3,6s/dia/noite/'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '3,6s/dia/noite/' arquivo.txt
+  No início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro noite, apagou e começou tudo de novo.
+     No quarto noite, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc54">
+<H2>3.13. Imprimir linhas que contém uma ou outra string</H2>
+OBS: imprime linhas que contém a string 'segundo' ou 'quarto'
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '/segundo\|quarto/!d'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '/segundo\|quarto/!d' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+     No quarto dia, ficou com preguiça, então falou:
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc55">
+<H2>3.14. Imprimir linhas que contém uma e outra string</H2>
+OBS: imprime linhas que contém 'No' e 'segundo'
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/No.*segundo/p'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/No.*segundo/p' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc56">
+<H2>3.15. Extrair um trecho do arquivo</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/segundo/,/quarto/p'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/segundo/,/quarto/p' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc57">
+<H2>3.16. Extrair trecho que pode ou não estar na mesma linha</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/segundo/{:a;/quarto/!{N;ba;};p;}'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/segundo/{:a;/quarto/!{N;ba;};p;}' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc58">
+<H2>3.17. Extrair trecho que pode ou não estar na mesma linha tirando os delimitadores</H2>
+OBS: 'segundo' é a TAG inicial e 'falou' a TAG final
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/segundo/{/falou/tc;:a;/falou/!{N;ba;};:c;s/.*segundo//;s/falou.*$//;p;}'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/segundo/{/falou/tc;:a;/falou/!{N;ba;};:c;s/.*segundo//;s/falou.*$//;p;}' arquivo.txt
+   dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então 
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc59">
+<H2>3.18. Apagar o que está entre delimitadores</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '/segundo/{/falou/{s/segundo.*falou//;t};:a;/falou/!{N;s/\n//;ta;};s/segundo.*falou/\n/;}'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '/segundo/{/falou/{s/segundo.*falou//;t};:a;/falou/!{N;s/\n//;ta;};s/segundo.*falou/\n/;}' arquivo.txt
+  No início do início, era um nada.
+   No n:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc60">
+<H2>3.19. Apagar um trecho se ele contém um padrão</H2>
+OBS: 'segundo' marca o início do trecho, 'quarto' o final, e 'rascunho' é o padrão de procura
+<P>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed '/segundo/{:a;/quarto/!{N;ba;};/rascunho/d;}'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed '/segundo/{:a;/quarto/!{N;ba;};/rascunho/d;}' arquivo.txt
+  No início do início, era um nada.
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc61">
+<H2>3.20. Trocar de lugar a linha com a próxima (troca de lugar linha 1 com 2, 3 com 4...) I</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '$ba;h;n;p;x;:a;p'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '$ba;h;n;p;x;:a;p' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+  No início do início, era um nada.
+     No quarto dia, ficou com preguiça, então falou:
+    No terceiro dia, apagou e começou tudo de novo.
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+  
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc62">
+<H2>3.21. Trocar de lugar a linha com a próxima (troca de lugar linha 1 com 2, 3 com 4...) II</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 'N;s/\([^\n]*\)\(\n\)\([^\n]*\)/\3\2\1/'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 'N;s/\([^\n]*\)\(\n\)\([^\n]*\)/\3\2\1/' arquivo.txt
+   No segundo dia, fez um rascunho à lápis.
+  No início do início, era um nada.
+     No quarto dia, ficou com preguiça, então falou:
+    No terceiro dia, apagou e começou tudo de novo.
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+  
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=5>
+<a name="toc63">
+<H1>4. Utilidade Pública</H1>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc64">
+<H2>4.1. Retirar comandos HTML (tudo entre &lt; e &gt;)</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed 's/&lt;[^&gt;]*&gt;//g'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed 's/&lt;[^&gt;]*&gt;//g' arquivo.txt
+  No início do início, era um nada.
+   No segundo dia, fez um rascunho à lápis.
+    No terceiro dia, apagou e começou tudo de novo.
+     No quarto dia, ficou com preguiça, então falou:
+  
+  - Sexta-feira eu continuo, se não estiver cansado...
+  
+    E no fim, nada.
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+<a name="toc65">
+<H2>4.2. Pesquisar se existe algum usuário sem senha no /etc/passwd</H2>
+<table cellpadding=4 border=1>
+<tr>
+<td><B><CODE>sed -n '/^[^:]\+::/p'</CODE></B></td>
+</tr>
+</table>
+
+<P>
+<table border="0"><tr><td bgcolor="#c8c8c8">
+<PRE>
+  prompt&gt; sed -n '/^[^:]\+::/p' arquivo.txt
+</PRE>
+</td></tr></table>
+<P>
+<HR NOSHADE SIZE=1>
+<P>
+This HTML page is <A HREF="http://txt2tags.sf.net"><IMG ALIGN="center" SRC="pwrbytxt2tags-2.png" BORDER="0"></A>
+(see <A HREF="sosed.t2t">source</A>)
+<P>
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-2229503-1";
+urchinTracker();
+</script>
+
+<!-- html code generated by txt2tags 1.5-dev0521 (http://txt2tags.sf.net) -->
+<!-- cmdline: txt2tags --enumtitle --toc -t html --stdout sosed.t2t -->
+</BODY></HTML>
