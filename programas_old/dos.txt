@@ -11,8 +11,8 @@
 * Autor: Thobias Salazar Trevisan                                        *
 *                                                                        *
 *------------------------------------------------------------------------*
-*    Programa residente na memÛria que se pressionar a tecla 'z' o       *
-* computador È resetado.                                                 *
+*    Programa residente na mem√≥ria que se pressionar a tecla 'z' o       *
+* computador √© resetado.                                                 *
 *                                                                        *
 *************************************************************************/
 
@@ -63,7 +63,7 @@ void main (void)
 * Autor: Thobias Salazar Trevisan                                        *
 *                                                                        *
 *------------------------------------------------------------------------*
-*   Programa residente na memÛria cada vez que uma tecla È pressionado   *
+*   Programa residente na mem√≥ria cada vez que uma tecla √© pressionado   *
 *  o programa repete a tecla.                                                                                    *
 *  Ex: c:\> ccllss                                                    *
 *                                                                        *
@@ -169,7 +169,7 @@ void main(void)
 * Autor: Thobias Salazar Trevisan                                        *
 *                                                                        *
 *------------------------------------------------------------------------*
-*   Programa residente na memÛria cada vez que pressionado as teclas ALT *
+*   Programa residente na mem√≥ria cada vez que pressionado as teclas ALT *
 * e a tecla ESC ao mesmo tempo, ele mostra tudo o que esta ligado do     *
 * teclado. insert, num_lock, caps_lock, scroll_lock, alt, ctrl, shift    *
 * esquerda, shift direita. E mostra na tela.                             *
@@ -813,10 +813,10 @@ void main(void)
 *                                                                        *
 *------------------------------------------------------------------------*
 *                                                                        *
-* Programa residente em memÛria. Ele tem uma proteÁ„o que sÛ pode ser    *
-* instalado uma ˙nica vez, caso tente execut·-lo novamente ele mostrar·  * 
-* uma mensagem avisando que j· est· instalado.                           *
-* Para execut·-lo pressione as teclas ALT + ESC                          *
+* Programa residente em mem√≥ria. Ele tem uma prote√ß√£o que s√≥ pode ser    *
+* instalado uma √∫nica vez, caso tente execut√°-lo novamente ele mostrar√°  * 
+* uma mensagem avisando que j√° est√° instalado.                           *
+* Para execut√°-lo pressione as teclas ALT + ESC                          *
 *************************************************************************/
 
 #include <dos.h>

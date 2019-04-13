@@ -17,8 +17,8 @@
 <P>
  <UL>
  <LI><A HREF="#toc1">Usar o sed para contar ?</A>
- <LI><A HREF="#toc2">Técnica Inicial</A>
- <LI><A HREF="#toc3">Usando 2 dígitos</A>
+ <LI><A HREF="#toc2">TÃ©cnica Inicial</A>
+ <LI><A HREF="#toc3">Usando 2 dÃ­gitos</A>
  <LI><A HREF="#toc4">Golpe final</A>
  <LI><A HREF="#toc5">Letras</A>
  </UL>
@@ -29,22 +29,22 @@
 <a name="toc1"></a>
 <H1>Usar o sed para contar ?</H1>
 <P>
-Todos sabemos que o sed é um canivete suíço e que trabalha com caracteres, ou seja,
-ele não sabe a diferença entre um dígito e uma letra. Para ele, tudo são
-caracteres. Então como poderíamos utilizar o sed para contar ?
+Todos sabemos que o sed Ã© um canivete suÃ­Ã§o e que trabalha com caracteres, ou seja,
+ele nÃ£o sabe a diferenÃ§a entre um dÃ­gito e uma letra. Para ele, tudo sÃ£o
+caracteres. EntÃ£o como poderÃ­amos utilizar o sed para contar ?
 <P>
-Neste texto tentarei explicar uma técnica proposta por Bruno Haible 
+Neste texto tentarei explicar uma tÃ©cnica proposta por Bruno Haible 
 (<A HREF="http://sed.sourceforge.net/local/scripts/incr_num.sed.html">incr_num.sed</A>)
-para incrementar um número em SED e, no final, vamos extrapolá-la para letras. 
-Existem outras técnicas, como a utilizada por Greg Ubben na lendária implementação da 
-calculadora DC em sed. O que, você não conhece ?! Então acesse 
-<A HREF="http://sed.sourceforge.net/local/scripts/dc.sed.html">http://sed.sourceforge.net/local/scripts/dc.sed.html</A> e tenha uma boa diversão =8)
+para incrementar um nÃºmero em SED e, no final, vamos extrapolÃ¡-la para letras. 
+Existem outras tÃ©cnicas, como a utilizada por Greg Ubben na lendÃ¡ria implementaÃ§Ã£o da 
+calculadora DC em sed. O que, vocÃª nÃ£o conhece ?! EntÃ£o acesse 
+<A HREF="http://sed.sourceforge.net/local/scripts/dc.sed.html">http://sed.sourceforge.net/local/scripts/dc.sed.html</A> e tenha uma boa diversÃ£o =8)
 <P>
 <a name="toc2"></a>
-<H1>Técnica Inicial</H1>
+<H1>TÃ©cnica Inicial</H1>
 <P>
-Bom, tudo são caracteres, então temos que tratá-los como tal. Para incrementarmos
-um número de 0 a 9 é fácil. Trocamos 0 por 1, 1 por 2, 2 por 3.... até 9. Ficando 
+Bom, tudo sÃ£o caracteres, entÃ£o temos que tratÃ¡-los como tal. Para incrementarmos
+um nÃºmero de 0 a 9 Ã© fÃ¡cil. Trocamos 0 por 1, 1 por 2, 2 por 3.... atÃ© 9. Ficando 
 assim:
 <P>
 <PRE>
@@ -74,21 +74,21 @@ Pronto, vamos testar:
   prompt&gt;
 </PRE>
 <P>
-ops! não funcionou =8(
+ops! nÃ£o funcionou =8(
 <P>
-Bom, para nos auxiliar no compreendimento da execução e entender o que o sed está
+Bom, para nos auxiliar no compreendimento da execuÃ§Ã£o e entender o que o sed estÃ¡
 fazendo, vamos utilizar a ferramenta <A HREF="http://sedsed.sourceforge.net/">sedsed</A>
 (<A HREF="http://sedsed.sourceforge.net">http://sedsed.sourceforge.net</A>), escrita pelo nosso grande amigo
-Aurélio. sedsed é um programa escrito em python para sed :) Ele é um debug
-(mostrando passo a passo o hold space, o pattern space e a instrução executada),
+AurÃ©lio. sedsed Ã© um programa escrito em python para sed :) Ele Ã© um debug
+(mostrando passo a passo o hold space, o pattern space e a instruÃ§Ã£o executada),
 ele indenta script sed e gera um html colorido do script. Vale a pena conferir
 este programa.
 <P>
-Vamos utilizar o sedsed para vermos o que está acontecendo. Como não estamos
-utilizando o hold space em nosso script, vou passar uma opção (<CODE>--hide=HOLD</CODE>)
-para omití-lo. Além disso, a saída do sedsed foi feita para console,
-utilizando cores para facilitar. Como aqui é html, vou utilizar o script 
-abaixo para deixar sua saída mais visual para o nosso exemplo.
+Vamos utilizar o sedsed para vermos o que estÃ¡ acontecendo. Como nÃ£o estamos
+utilizando o hold space em nosso script, vou passar uma opÃ§Ã£o (<CODE>--hide=HOLD</CODE>)
+para omitÃ­-lo. AlÃ©m disso, a saÃ­da do sedsed foi feita para console,
+utilizando cores para facilitar. Como aqui Ã© html, vou utilizar o script 
+abaixo para deixar sua saÃ­da mais visual para o nosso exemplo.
 <P>
 <PRE>
   prompt&gt; cat limpa.sed 
@@ -99,7 +99,7 @@ abaixo para deixar sua saída mais visual para o nosso exemplo.
   prompt&gt; 
 </PRE>
 <P>
-Vamos testar nossa primeira solução para contar:
+Vamos testar nossa primeira soluÃ§Ã£o para contar:
 <P>
 <PRE>
   prompt&gt; echo 1 | sedsed -d --hide=HOLD -f incr_tentativa_1.sed | limpa.sed 
@@ -128,18 +128,18 @@ Vamos testar nossa primeira solução para contar:
   prompt&gt;
 </PRE>
 <P>
-Destrinchando a saída. 
+Destrinchando a saÃ­da. 
 <P>
 <UL>
-<LI>as linhas que começam com um número mostram a entrada ou a saída para cada
-  instrução.
-<LI>as linhas que começam com espaços em branco são as instruções sed.
+<LI>as linhas que comeÃ§am com um nÃºmero mostram a entrada ou a saÃ­da para cada
+  instruÃ§Ã£o.
+<LI>as linhas que comeÃ§am com espaÃ§os em branco sÃ£o as instruÃ§Ãµes sed.
 </UL>
-Repare que <B>TODAS</B> as instruções são executadas com sucesso, pois o sed
-executa a próxima instrução com a entrada da anterior. Então, quando entramos
-com 1, ele vira 2, que casa com a próxima substituição (<CODE>s/2/3/</CODE>), assim
-virando 3. Este processo ocorre até a última instrução e, assim, temos
-a saída <CODE>mais de 1 digito</CODE>.
+Repare que <B>TODAS</B> as instruÃ§Ãµes sÃ£o executadas com sucesso, pois o sed
+executa a prÃ³xima instruÃ§Ã£o com a entrada da anterior. EntÃ£o, quando entramos
+com 1, ele vira 2, que casa com a prÃ³xima substituiÃ§Ã£o (<CODE>s/2/3/</CODE>), assim
+virando 3. Este processo ocorre atÃ© a Ãºltima instruÃ§Ã£o e, assim, temos
+a saÃ­da <CODE>mais de 1 digito</CODE>.
 <P>
 Mais um exemplo:
 <P>
@@ -170,13 +170,13 @@ Mais um exemplo:
   prompt&gt; 
 </PRE>
 <P>
-Note que usamos como entrada o número 5 e, assim, não ocorreu sucesso na substituição
-até a instrução (<CODE>s/5/6/</CODE>). Como esperado, após a primeira substituição com sucesso
-as demais também tiveram sucesso.
+Note que usamos como entrada o nÃºmero 5 e, assim, nÃ£o ocorreu sucesso na substituiÃ§Ã£o
+atÃ© a instruÃ§Ã£o (<CODE>s/5/6/</CODE>). Como esperado, apÃ³s a primeira substituiÃ§Ã£o com sucesso
+as demais tambÃ©m tiveram sucesso.
 <P>
-Moral da história. Temos que cuidar a ordem das substituições, senão.... =8)
+Moral da histÃ³ria. Temos que cuidar a ordem das substituiÃ§Ãµes, senÃ£o.... =8)
 <P>
-Vamos inverter a ordem para garantir que tenhamos somente 1 execução com sucesso.
+Vamos inverter a ordem para garantir que tenhamos somente 1 execuÃ§Ã£o com sucesso.
 <P>
 <PRE>
   prompt&gt; cat ./incr_tentativa_2.sed
@@ -213,14 +213,14 @@ Testando:
   prompt&gt;
 </PRE>
 <P>
-Massa!! sabemos contar até 9. =8)
+Massa!! sabemos contar atÃ© 9. =8)
 <P>
-E agora, como ultrapassar a barreira de 1 dígito ?!
+E agora, como ultrapassar a barreira de 1 dÃ­gito ?!
 <P>
 <a name="toc3"></a>
-<H1>Usando 2 dígitos</H1>
+<H1>Usando 2 dÃ­gitos</H1>
 <P>
-A primeira técnica que poderíamos tentar era fazer o 9 virar 10 :)
+A primeira tÃ©cnica que poderÃ­amos tentar era fazer o 9 virar 10 :)
 <P>
 <PRE>
   prompt&gt; cat incr_tentativa_3.sed
@@ -248,13 +248,13 @@ A primeira técnica que poderíamos tentar era fazer o 9 virar 10 :)
   prompt&gt;
 </PRE>
 <P>
-Que isso, esse negócio está louco ?! Vamos chamar o nosso amigo para nos dar
+Que isso, esse negÃ³cio estÃ¡ louco ?! Vamos chamar o nosso amigo para nos dar
 uma ajudinha.
 <P>
-Eu usei esta solução para nós enxergarmos 2 problemas que teremos que resolver
-mais adiante. Primeiro:  olhando para este sed, nós achamos que ele
-deveria funcionar para números como 22, 45, 78, etc, ou seja, números fáceis que
-basta trocar um caractere, mas não funciona:
+Eu usei esta soluÃ§Ã£o para nÃ³s enxergarmos 2 problemas que teremos que resolver
+mais adiante. Primeiro:  olhando para este sed, nÃ³s achamos que ele
+deveria funcionar para nÃºmeros como 22, 45, 78, etc, ou seja, nÃºmeros fÃ¡ceis que
+basta trocar um caractere, mas nÃ£o funciona:
 <P>
 <PRE>
   prompt&gt; echo 22 | sedsed -d --hide=HOLD -f incr_tentativa_3.sed | limpa.sed 
@@ -283,9 +283,9 @@ basta trocar um caractere, mas não funciona:
   prompt&gt; 
 </PRE>
 <P>
-Note que a nossa entrada só muda quando chegarmos à instrução (<CODE>s/2/3</CODE>). Mas 
-o sed irá trocar somente a primeira ocorrência de 2 e não a última como
-nós gostaríamos.
+Note que a nossa entrada sÃ³ muda quando chegarmos Ã  instruÃ§Ã£o (<CODE>s/2/3</CODE>). Mas 
+o sed irÃ¡ trocar somente a primeira ocorrÃªncia de 2 e nÃ£o a Ãºltima como
+nÃ³s gostarÃ­amos.
 <P>
 <PRE>
   prompt&gt; echo 22 | sed 's/2/3/'
@@ -293,8 +293,8 @@ nós gostaríamos.
   prompt&gt;
 </PRE>
 <P>
-Para resolver o problema teremos que usar o cifrão, para dizer ao sed que,
-nesses casos simples, ele deve só "somar" 1 no último "dígito".
+Para resolver o problema teremos que usar o cifrÃ£o, para dizer ao sed que,
+nesses casos simples, ele deve sÃ³ "somar" 1 no Ãºltimo "dÃ­gito".
 <P>
 <PRE>
   prompt&gt; echo 22 | sed 's/2$/3/'
@@ -302,8 +302,8 @@ nesses casos simples, ele deve só "somar" 1 no último "dígito".
   prompt&gt;
 </PRE>
 <P>
-Beleza, primeiro problema resolvido, vamos ao segundo: o que nós esperávamos
-que funcionasse também não funcionou, que era fazer 9 virar 10.
+Beleza, primeiro problema resolvido, vamos ao segundo: o que nÃ³s esperÃ¡vamos
+que funcionasse tambÃ©m nÃ£o funcionou, que era fazer 9 virar 10.
 <P>
 <PRE>
   prompt&gt; echo 9 | sedsed -d --hide=HOLD -f incr_tentativa_3.sed | limpa.sed 
@@ -332,11 +332,11 @@ que funcionasse também não funcionou, que era fazer 9 virar 10.
   prompt&gt;
 </PRE>
 <P>
-Note que o nosso 9, após a primeira instrução vira 10, mas vai casar também lá
+Note que o nosso 9, apÃ³s a primeira instruÃ§Ã£o vira 10, mas vai casar tambÃ©m lÃ¡
 em baixo, com <CODE>s/1/2/</CODE> e <CODE>s/0/1/</CODE> e assim virando o 21 :(
 <P>
-Para contornar, vamos adicionar um caractere diferente para não casar
-nas demais instruções. Utilizaremos o caractere underscore <CODE>_</CODE>. E somente no fim,
+Para contornar, vamos adicionar um caractere diferente para nÃ£o casar
+nas demais instruÃ§Ãµes. Utilizaremos o caractere underscore <CODE>_</CODE>. E somente no fim,
 trocaremos o _ por 0.
 <P>
 <PRE>
@@ -391,12 +391,12 @@ passo a passo:
 <P>
 Barbada. Trocamos 9 por 0_, depois <CODE>0 -&gt; 1</CODE> e <CODE>_  -&gt; 0</CODE>.
 <P>
-Mas isso só funciona para o 9, outros casos como 19, 29... não vai funcionar.
+Mas isso sÃ³ funciona para o 9, outros casos como 19, 29... nÃ£o vai funcionar.
 Exemplo: 19, vira 10_ e no fim, trocando o 1 por 2 vira 20_, 0 por 1 vira 21_, 
-que finalmente vira 210. Tudo bem, mas isso foi só para introduzir a tática
+que finalmente vira 210. Tudo bem, mas isso foi sÃ³ para introduzir a tÃ¡tica
 que usaremos a seguir.
 <P>
-Chega de enrolar, hora de contar até 99 :D
+Chega de enrolar, hora de contar atÃ© 99 :D
 <P>
 <PRE>
   prompt&gt; cat incr_tentativa_4.sed
@@ -435,9 +435,9 @@ OPA! Agora confundiu. Mas tudo bem, vamos testar antes:
   prompt&gt;
 </PRE>
 <P>
-Funciona! Por favor Mr. sedsed, nos ajude a entender que mágica é esta!! :)
+Funciona! Por favor Mr. sedsed, nos ajude a entender que mÃ¡gica Ã© esta!! :)
 <P>
-Vamos analisar três casos especiais:
+Vamos analisar trÃªs casos especiais:
 <P>
 <OL>
 <LI>Quando recebemos o caractere 9 como entrada:
@@ -446,7 +446,7 @@ Vamos analisar três casos especiais:
   9
       s/9/_/              &lt;&lt;&lt; --- o 9 virou _
   _
-      s/^_/0_/            &lt;&lt;&lt; --- tática. se começa com _, então temos que aumentar o número de casas deciamis virando 0_
+      s/^_/0_/            &lt;&lt;&lt; --- tÃ¡tica. se comeÃ§a com _, entÃ£o temos que aumentar o nÃºmero de casas deciamis virando 0_
   0_
       s/8\(_\)\?$/9\1/
   0_
@@ -473,15 +473,15 @@ Vamos analisar três casos especiais:
 </PRE>
 <P>
 <P>
-Primeira instrução, trocamos 9 por _. Na segunda instrução testamos 
-se _ é o primeiro caractere. Se for, então era o dígito 9 e
+Primeira instruÃ§Ã£o, trocamos 9 por _. Na segunda instruÃ§Ã£o testamos 
+se _ Ã© o primeiro caractere. Se for, entÃ£o era o dÃ­gito 9 e
 precisamos aumentar uma casa decimal. Assim ficando 0_. 
-Note que as próximas instruções não alteraram o pattern space (<CODE>0_</CODE>).
-Só casaremos lá em baixo com <CODE>s/0\(_\)\?$/1\1/</CODE>, ou seja, é a mesma coisa que
-<CODE>s/0(_)?$/1_/</CODE>, assim 0_ vira 1_,. Na última instrução trocamos o _ por zero 
-e temos o número 10.
+Note que as prÃ³ximas instruÃ§Ãµes nÃ£o alteraram o pattern space (<CODE>0_</CODE>).
+SÃ³ casaremos lÃ¡ em baixo com <CODE>s/0\(_\)\?$/1\1/</CODE>, ou seja, Ã© a mesma coisa que
+<CODE>s/0(_)?$/1_/</CODE>, assim 0_ vira 1_,. Na Ãºltima instruÃ§Ã£o trocamos o _ por zero 
+e temos o nÃºmero 10.
 <P>
-Mas por que o underscore '_' precisa ser opcional ? Próximo caso :)
+Mas por que o underscore '_' precisa ser opcional ? PrÃ³ximo caso :)
 <P>
 <LI>recebemos o valor 5.
 <PRE>
@@ -497,7 +497,7 @@ Mas por que o underscore '_' precisa ser opcional ? Próximo caso :)
   5
       s/6\(_\)\?$/7\1/
   5
-      s/5\(_\)\?$/6\1/     &lt;&lt;&lt; --- casou, 5 vira 6. Mas note que não existe o underscore aqui
+      s/5\(_\)\?$/6\1/     &lt;&lt;&lt; --- casou, 5 vira 6. Mas note que nÃ£o existe o underscore aqui
   6
       s/4\(_\)\?$/5\1/
   6
@@ -517,13 +517,13 @@ Mas por que o underscore '_' precisa ser opcional ? Próximo caso :)
 <P>
 <P>
 Para ele virar 6, o underscore precisa ser opcional. No caso
-vai ser a mesma coisa que antes: <CODE>s/5$/6/</CODE>. Podemos ver que o valor só se altera
-na instrução <CODE>s/5\(_\)\?\$/6\1/</CODE>. Como não existe o underscore, o retrovisor
-<CODE>\1</CODE>, não vai ter nada, não alterando o comportamento da saída.
+vai ser a mesma coisa que antes: <CODE>s/5$/6/</CODE>. Podemos ver que o valor sÃ³ se altera
+na instruÃ§Ã£o <CODE>s/5\(_\)\?\$/6\1/</CODE>. Como nÃ£o existe o underscore, o retrovisor
+<CODE>\1</CODE>, nÃ£o vai ter nada, nÃ£o alterando o comportamento da saÃ­da.
 <P>
-<LI>Mas se tivermos o número 59 ?!
+<LI>Mas se tivermos o nÃºmero 59 ?!
 <P>
-Neste caso o undercore também entra em ação.
+Neste caso o undercore tambÃ©m entra em aÃ§Ã£o.
 <PRE>
   prompt&gt; echo 59 | sedsed -d --hide=HOLD -f incr_tentativa_4.sed | limpa.sed 
   59
@@ -556,18 +556,18 @@ Neste caso o undercore também entra em ação.
 </PRE>
 <P>
 <P>
-Após a primeira instrução ele vira 5_ e ele não vai casar na segunda, pois
-não começa com _. Ele só casará na <CODE>s/5(_)?$/6\1/</CODE>, ficando 6_. Por fim, lá em
-baixo vira o tão esperado 60.
+ApÃ³s a primeira instruÃ§Ã£o ele vira 5_ e ele nÃ£o vai casar na segunda, pois
+nÃ£o comeÃ§a com _. Ele sÃ³ casarÃ¡ na <CODE>s/5(_)?$/6\1/</CODE>, ficando 6_. Por fim, lÃ¡ em
+baixo vira o tÃ£o esperado 60.
 </OL>
 <a name="toc4"></a>
 <H1>Golpe final</H1>
 <P>
-Okay, seu filho cresceu e está sendo alfabetizado. Já aprendeu a contar 
-até 99. Hora de ensiná-lo a quebrar barreiras e entender que, incrementar
-um número, é uma arte milenar. 
+Okay, seu filho cresceu e estÃ¡ sendo alfabetizado. JÃ¡ aprendeu a contar 
+atÃ© 99. Hora de ensinÃ¡-lo a quebrar barreiras e entender que, incrementar
+um nÃºmero, Ã© uma arte milenar. 
 <P>
-Sr. Miyagi, cadê você ?
+Sr. Miyagi, cadÃª vocÃª ?
 <P>
 Calma Daniel-San. Concentre-se no seu objetivo.
 <P>
@@ -592,7 +592,7 @@ Calma Daniel-San. Concentre-se no seu objetivo.
   prompt&gt;
 </PRE>
 <P>
-A idéia é estender o uso do underscore. 
+A idÃ©ia Ã© estender o uso do underscore. 
 <P>
 <table align="center" cellpadding=4 border=1>
 <tr>
@@ -601,15 +601,15 @@ A idéia é estender o uso do underscore.
 </table>
 
 <P>
-Alguns exemplo de como as coisas funcionam. As três primeiras instruções 
+Alguns exemplo de como as coisas funcionam. As trÃªs primeiras instruÃ§Ãµes 
 <CODE>:p;s/9\(_*\)$/_\1/;tp</CODE> significam: enquando existir 9 seguido de zero ou mais 
 undercores e fim de linha, troque o 9 por undercore. Exemplo: 
 <P>
 <table align="center" cellpadding=4 border=1>
 <tr>
 <th>entrada</th>
-<th>saída</th>
-<th>comentário</th>
+<th>saÃ­da</th>
+<th>comentÃ¡rio</th>
 </tr>
 <tr>
 <td>9</td>
@@ -624,7 +624,7 @@ undercores e fim de linha, troque o 9 por undercore. Exemplo:
 <tr>
 <td>999</td>
 <td>___</td>
-<td>três _</td>
+<td>trÃªs _</td>
 </tr>
 <tr>
 <td>49</td>
@@ -634,29 +634,29 @@ undercores e fim de linha, troque o 9 por undercore. Exemplo:
 <tr>
 <td>91</td>
 <td>91</td>
-<td>não casou</td>
+<td>nÃ£o casou</td>
 </tr>
 <tr>
 <td>598</td>
 <td>598</td>
-<td>não casou</td>
+<td>nÃ£o casou</td>
 </tr>
 </table>
 
 <P>
-A quarta instrução (<CODE>s/^\(_*\)$/0\1/</CODE>) pega casos como 9, 99, 999, etc. Casos onde temos que 
-aumentar o número de casas decimais. Note que, temos que aumentar o número de casas 
-decimais  quando recebemos <B>todos</B> os caracteres sendo o dígito 9. Neste caso todos os 9s 
-virarão underscores e, assim, casando na quarta instrução, que adicionará um 0 no início. E, 
-como vimos, este 0 vai virar 1 e os underscores virarão 0s. Casos onde exista um número diferente 
-de 9 não casará nesta instrução, pois, o loop anterior só altera para undescore os 9 que 
-estiverem no final da linha. Exemplo: após as quatro primeiras instruções temos:
+A quarta instruÃ§Ã£o (<CODE>s/^\(_*\)$/0\1/</CODE>) pega casos como 9, 99, 999, etc. Casos onde temos que 
+aumentar o nÃºmero de casas decimais. Note que, temos que aumentar o nÃºmero de casas 
+decimais  quando recebemos <B>todos</B> os caracteres sendo o dÃ­gito 9. Neste caso todos os 9s 
+virarÃ£o underscores e, assim, casando na quarta instruÃ§Ã£o, que adicionarÃ¡ um 0 no inÃ­cio. E, 
+como vimos, este 0 vai virar 1 e os underscores virarÃ£o 0s. Casos onde exista um nÃºmero diferente 
+de 9 nÃ£o casarÃ¡ nesta instruÃ§Ã£o, pois, o loop anterior sÃ³ altera para undescore os 9 que 
+estiverem no final da linha. Exemplo: apÃ³s as quatro primeiras instruÃ§Ãµes temos:
 <P>
 <table align="center" cellpadding=4 border=1>
 <tr>
 <th>entrada</th>
-<th>saída</th>
-<th>comentário</th>
+<th>saÃ­da</th>
+<th>comentÃ¡rio</th>
 </tr>
 <tr>
 <td>9</td>
@@ -671,7 +671,7 @@ estiverem no final da linha. Exemplo: após as quatro primeiras instruções temos:
 <tr>
 <td>999</td>
 <td>0___</td>
-<td>0 mais três _</td>
+<td>0 mais trÃªs _</td>
 </tr>
 <tr>
 <td>49</td>
@@ -681,8 +681,8 @@ estiverem no final da linha. Exemplo: após as quatro primeiras instruções temos:
 </table>
 
 <P>
-Note que, por exemplo em 49, a quarta instrução não altera o valor, visto que, o 
-primeiro caractere não é underscore.
+Note que, por exemplo em 49, a quarta instruÃ§Ã£o nÃ£o altera o valor, visto que, o 
+primeiro caractere nÃ£o Ã© underscore.
 <P>
 Primeiro vamos testar:
 <P>
@@ -704,10 +704,10 @@ Primeiro vamos testar:
   prompt&gt;
 </PRE>
 <P>
-Analise de novo as tabelas acima, pois o esquema está nas 4 primeiras instruções.
-Nas próximas instruções será como antes. Quer ver ?! 
+Analise de novo as tabelas acima, pois o esquema estÃ¡ nas 4 primeiras instruÃ§Ãµes.
+Nas prÃ³ximas instruÃ§Ãµes serÃ¡ como antes. Quer ver ?! 
 <P>
-sedsed, me dê a visão além do alcance!!
+sedsed, me dÃª a visÃ£o alÃ©m do alcance!!
 <P>
 <PRE>
   prompt&gt; echo 0 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed 
@@ -793,7 +793,7 @@ sedsed, me dê a visão além do alcance!!
   45
       s/6\(_*\)$/7\1/
   45
-      s/5\(_*\)$/6\1/   &lt;&lt;&lt; ----- 45 virando 46, não esqueça do $ marcando fim de linha. trocamos somente o último caractere
+      s/5\(_*\)$/6\1/   &lt;&lt;&lt; ----- 45 virando 46, nÃ£o esqueÃ§a do $ marcando fim de linha. trocamos somente o Ãºltimo caractere
   46
       s/4\(_*\)$/5\1/
   46
@@ -815,10 +815,10 @@ sedsed, me dê a visão além do alcance!!
   prompt&gt; echo 999 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed 
   999
       : p
-      s/9\(_*\)$/_\1/      &lt;&lt;&lt; --- trocamos o último 9 por _ saída = 99_
+      s/9\(_*\)$/_\1/      &lt;&lt;&lt; --- trocamos o Ãºltimo 9 por _ saÃ­da = 99_
   99_
       t p
-      s/9\(_*\)$/_\1/      &lt;&lt;&lt; --- casa também 99_, vira 9__
+      s/9\(_*\)$/_\1/      &lt;&lt;&lt; --- casa tambÃ©m 99_, vira 9__
   9__
       t p
       s/9\(_*\)$/_\1/      &lt;&lt;&lt; --- 9 seguido de 0 ou mais _ e fim de linha, troca o 9 por _
@@ -827,7 +827,7 @@ sedsed, me dê a visão além do alcance!!
       s/9\(_*\)$/_\1/
   ___
       t p
-      s/^\(_*\)$/0\1/      &lt;&lt;&lt; --- primeiro caractere é _ então aumenta as casas decimais
+      s/^\(_*\)$/0\1/      &lt;&lt;&lt; --- primeiro caractere Ã© _ entÃ£o aumenta as casas decimais
   0___
       s/8\(_*\)$/9\1/
   0___
@@ -876,7 +876,7 @@ sedsed, me dê a visão além do alcance!!
   14__
       s/5\(_*\)$/6\1/
   14__
-      s/4\(_*\)$/5\1/       &lt;&lt;&lt; --- 4 seguido de 0 ou mais _s, "soma" 1 no último dígito = 15__
+      s/4\(_*\)$/5\1/       &lt;&lt;&lt; --- 4 seguido de 0 ou mais _s, "soma" 1 no Ãºltimo dÃ­gito = 15__
   15__
       s/3\(_*\)$/4\1/
   15__
@@ -892,7 +892,7 @@ sedsed, me dê a visão além do alcance!!
   prompt&gt;
 </PRE>
 <P>
-E nosso último exemplo:
+E nosso Ãºltimo exemplo:
 <P>
 <PRE>
   prompt&gt; echo 1449 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed 
@@ -930,17 +930,17 @@ E nosso último exemplo:
   prompt&gt;
 </PRE>
 <P>
-<B>Resumão:</B>
+<B>ResumÃ£o:</B>
 <P>
-OBS: como primeira instrução eu coloquei o loop inteiro.
+OBS: como primeira instruÃ§Ã£o eu coloquei o loop inteiro.
 <P>
-Com a tabela abaixo espero deixar mais visual o processo de mudança sobre os caracteres, em outras
+Com a tabela abaixo espero deixar mais visual o processo de mudanÃ§a sobre os caracteres, em outras
 palavras, ver como ocorre a "soma".
 <P>
 <table align="center" cellpadding=4 border=1>
 <tr>
-<th>Número</th>
-<th>instrução</th>
+<th>NÃºmero</th>
+<th>instruÃ§Ã£o</th>
 <th>N. de entrada = 4</th>
 <th>N. de entrada = 99</th>
 <th>N. de entrada = 1499</th>
@@ -1061,19 +1061,19 @@ palavras, ver como ocorre a "soma".
 </table>
 
 <P>
-Como exemplo do uso "real" desta técnica, implementei um sed que conta quantas vezes uma determinada
+Como exemplo do uso "real" desta tÃ©cnica, implementei um sed que conta quantas vezes uma determinada
 palavra aparece em um texto. Confira <A HREF="../bin/conta_palavra.sed.html">conta_palavra.sed</A>.
 <P>
 <a name="toc5"></a>
 <H1>Letras</H1>
 <P>
-Com esta técnica podemos utilizar outra ou fazer nossa própria linguagem.
+Com esta tÃ©cnica podemos utilizar outra ou fazer nossa prÃ³pria linguagem.
 Vamos supor que tenhamos que contar de '<CODE>a</CODE>' a '<CODE>f</CODE>'. Exemplo:
 <P>
 <table align="center" cellpadding=4 border=1>
 <tr>
 <th>entrada</th>
-<th>saída</th>
+<th>saÃ­da</th>
 </tr>
 <tr>
 <td>a</td>
@@ -1102,7 +1102,7 @@ Vamos supor que tenhamos que contar de '<CODE>a</CODE>' a '<CODE>f</CODE>'. Exem
 </table>
 
 <P>
-Como nós tratamos tudo como caractere, basta trocar <CODE>0-9</CODE> por <CODE>a-f</CODE>.
+Como nÃ³s tratamos tudo como caractere, basta trocar <CODE>0-9</CODE> por <CODE>a-f</CODE>.
 <P>
 <PRE>
   prompt&gt; cat inc_letras.sed
@@ -1121,7 +1121,7 @@ Como nós tratamos tudo como caractere, basta trocar <CODE>0-9</CODE> por <CODE>a
   prompt&gt;
 </PRE>
 <P>
-Câmbio - testando.
+CÃ¢mbio - testando.
 <P>
 <PRE>
   prompt&gt; echo a | ./inc_letras.sed
@@ -1142,9 +1142,9 @@ os caracteres permitidos.
 <P>
 Neste outro texto, 
 <A HREF="lookup_tables_sed.html">Lookup Tables &amp; Incrementando em sed</A>,
-utilizo a técnica de lookup tables para somar e no
-final tem um exemplo de como somar e diminuir levando em consideração se o 
-valor é positivo ou negativo.
+utilizo a tÃ©cnica de lookup tables para somar e no
+final tem um exemplo de como somar e diminuir levando em consideraÃ§Ã£o se o 
+valor Ã© positivo ou negativo.
 <P>
 Fim! Hora de ZZZzzzzz
 <P>
@@ -1155,7 +1155,7 @@ Fim! Hora de ZZZzzzzz
 </table>
 
 <UL>
-<LI>Aurélio Marinho Jargas
+<LI>AurÃ©lio Marinho Jargas
 </UL>
 <HR NOSHADE SIZE=1>
 <P>

@@ -3,7 +3,7 @@ Thobias Salazar Trevisan
 %%date(%m/%d/%Y)
 
 
-%!encoding: iso-8859-1
+%!encoding: utf-8
 %!Style   : tsmmonitor.css
 %!target: html
 %!Options : --toc --css-sugar --mask-email

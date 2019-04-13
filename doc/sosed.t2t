@@ -1,69 +1,69 @@
-sÛ sed 
+s√≥ sed 
 Thobias Salazar Trevisan
 %%date(%d/%m/%Y)
 
-= IntroduÁ„o = 
+= Introdu√ß√£o = 
 
-Este texto se propıe a ser uma maneira f·cil das pessoas acharem aquele sed
+Este texto se prop√µe a ser uma maneira f√°cil das pessoas acharem aquele sed
 perdido para resolver seu problema, ou seja, aqui vamos direto ao ponto,
-sem frescura ou enrolaÁ„o.
+sem frescura ou enrola√ß√£o.
 
-Se vocÍ est· procurando um texto que explique o SED, visite estes links:
+Se voc√™ est√° procurando um texto que explique o SED, visite estes links:
 
-- http://sed.sourceforge.net/ - P·gina $HOME do sed
+- http://sed.sourceforge.net/ - P√°gina $HOME do sed
 - http://aurelio.net/sed/sed-HOWTO/ - sed HOWTO em pt_BR
-- http://aurelio.net/sed/           - p·gina com links e programas em sed (pt_BR)
-- http://br.groups.yahoo.com/group/sed-br/ - p·gina da lista sed-br
+- http://aurelio.net/sed/           - p√°gina com links e programas em sed (pt_BR)
+- http://br.groups.yahoo.com/group/sed-br/ - p√°gina da lista sed-br
 - http://sed.sourceforge.net/sedfaq.html - The sed FAQ (english)
-- http://www.math.fu-berlin.de/user/guckes/sed/ - p·gina da lista sed users
-  (v·rios links e docs - english)
-- http://aurelio.net/er/ - expressıes regulares (pt_BR)
+- http://www.math.fu-berlin.de/user/guckes/sed/ - p√°gina da lista sed users
+  (v√°rios links e docs - english)
+- http://aurelio.net/er/ - express√µes regulares (pt_BR)
 
 
 == Agradecimentos ==
 
-A idÈia de elaborar este documento surgiu em um 
-[mail http://br.groups.yahoo.com/group/sed-br/message/1482] do AurÈlio para
-a lista de discuss„o [sed-br http://br.groups.yahoo.com/group/sed-br/]. 
-Se vocÍ quiser acompanhar as //threads da criaÁ„o// 
-aqui v„o os links para as 3 threads principais: 
+A id√©ia de elaborar este documento surgiu em um 
+[mail http://br.groups.yahoo.com/group/sed-br/message/1482] do Aur√©lio para
+a lista de discuss√£o [sed-br http://br.groups.yahoo.com/group/sed-br/]. 
+Se voc√™ quiser acompanhar as //threads da cria√ß√£o// 
+aqui v√£o os links para as 3 threads principais: 
 
 + [sed FAQ (era: Re: concatenar linhas http://br.groups.yahoo.com/group/sed-br/message/1483]
 + [FAQ sed http://br.groups.yahoo.com/group/sed-br/message/1513]
 + [Opine sobre o nome do documento da lista http://br.groups.yahoo.com/group/sed-br/message/1561]
 
 
-Aqui vai meu **muito obrigado** para as pessoas que ajudaram na construÁ„o deste documento.
+Aqui vai meu **muito obrigado** para as pessoas que ajudaram na constru√ß√£o deste documento.
 
 | **A galera que contribuiu:** |
 
-- [AurÈlio Marinho Jargas http://aurelio.net]
+- [Aur√©lio Marinho Jargas http://aurelio.net]
 - Silvano B. Dias
 - Anilton Lucas
 - A lista [sed-br http://br.groups.yahoo.com/group/sed-br/]
 
 
-== Texto padr„o ==
+== Texto padr√£o ==
 Em todos os exemplos vamos procurar manter sempre o mesmo texto
-para facilitar a compreens„o das perguntas e respostas. Esperamos deste
-modo deixar o //sÛ sed// mais amig·vel e que vocÍ ache a sua pergunta de maneira
-f·cil e agil. =8) 
+para facilitar a compreens√£o das perguntas e respostas. Esperamos deste
+modo deixar o //s√≥ sed// mais amig√°vel e que voc√™ ache a sua pergunta de maneira
+f√°cil e agil. =8) 
 
 **Dica:** 
 
 | Leia o arquivo de entrada com calma. Analise-o, respire e releia-o. |
 
-Assim ficar· mais f·cil para vocÍ entender os exemplos e as mudanÁas ocorridas apÛs a execuÁ„o de cada sed.
+Assim ficar√° mais f√°cil para voc√™ entender os exemplos e as mudan√ßas ocorridas ap√≥s a execu√ß√£o de cada sed.
 
-O [arquivo.txt arquivo.txt] de exemplo È:
+O [arquivo.txt arquivo.txt] de exemplo √©:
 ---
 prompt> cat arquivo.txt
-No inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
@@ -78,57 +78,57 @@ No inÌcio do inÌcio, era um nada.
 
 ---
 prompt> sed -n '/dia/p' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 ---
 
 ---------------------
 
-== Imprimir somente a primeira ocorrÍncia da linha com determinada string ==
+== Imprimir somente a primeira ocorr√™ncia da linha com determinada string ==
 | **`sed -n '/dia/{p;q;}'`** |
 
 ---
 prompt> sed -n '/dia/{p;q;}' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
+ No segundo dia, fez um rascunho √† l√°pis.
 ---
 
 ---------------------
 
-== Imprimir a ˙ltima ocorrÍncia da linha com determinada string ==
+== Imprimir a √∫ltima ocorr√™ncia da linha com determinada string ==
 | **`sed -n '/dia/h;${x;p;}'`** |
 
 ---
 prompt> sed -n '/dia/h;${x;p;}' arquivo.txt
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 ---
 
 ---------------------
 
-== Imprimir da primeira ocorrÍncia da string atÈ o final ==
+== Imprimir da primeira ocorr√™ncia da string at√© o final ==
 | **`sed '/dia/,$!d'`** |
 
 ---
 prompt> sed '/dia/,$!d' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Imprimir da ˙ltima ocorrÍncia da string atÈ o final ==
+== Imprimir da √∫ltima ocorr√™ncia da string at√© o final ==
 | **`sed -n '/dia/{h;${x;p;};d;};H;${x;p;}'`** |
 
 ---
 prompt> sed -n '/dia/{h;${x;p;};d;};H;${x;p;}' arquivo.txt
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
@@ -140,9 +140,9 @@ prompt> sed -n '/dia/{h;${x;p;};d;};H;${x;p;}' arquivo.txt
 
 ---
 prompt> sed  '/dia/d' arquivo.txt
-No inÌcio do inÌcio, era um nada.
+No in√≠cio do in√≠cio, era um nada.
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
@@ -154,11 +154,11 @@ No inÌcio do inÌcio, era um nada.
 
 ---
 prompt> sed '/dia/{H;x;/^\n/d;g;}' arquivo.txt
-No inÌcio do inÌcio, era um nada.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
@@ -170,28 +170,28 @@ No inÌcio do inÌcio, era um nada.
 
 ---
 prompt> sed -n '/dia/{:a;n;p;ba;};p' arquivo.txt
-No inÌcio do inÌcio, era um nada.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Adicionar texto no inÌcio da linha  ==
+== Adicionar texto no in√≠cio da linha  ==
 | **`sed 's/^/texto incluido/'`** |
 
 ---
 prompt> sed 's/^/texto incluido/' arquivo.txt
-texto incluidoNo inÌcio do inÌcio, era um nada.
-texto incluido No segundo dia, fez um rascunho ‡ l·pis.
-texto incluido  No terceiro dia, apagou e comeÁou tudo de novo.
-texto incluido   No quarto dia, ficou com preguiÁa, ent„o falou:
+texto incluidoNo in√≠cio do in√≠cio, era um nada.
+texto incluido No segundo dia, fez um rascunho √† l√°pis.
+texto incluido  No terceiro dia, apagou e come√ßou tudo de novo.
+texto incluido   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 texto incluido
-texto incluido- Sexta-feira eu continuo, se n„o estiver cansado...
+texto incluido- Sexta-feira eu continuo, se n√£o estiver cansado...
 texto incluido
 texto incluido  E no fim, nada.
 ---
@@ -203,12 +203,12 @@ texto incluido  E no fim, nada.
 
 ---
 prompt> sed 's/$/texto incluido/' arquivo.txt
-No inÌcio do inÌcio, era um nada.texto incluido
- No segundo dia, fez um rascunho ‡ l·pis.texto incluido
-  No terceiro dia, apagou e comeÁou tudo de novo.texto incluido
-   No quarto dia, ficou com preguiÁa, ent„o falou:texto incluido
+No in√≠cio do in√≠cio, era um nada.texto incluido
+ No segundo dia, fez um rascunho √† l√°pis.texto incluido
+  No terceiro dia, apagou e come√ßou tudo de novo.texto incluido
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:texto incluido
 texto incluido
-- Sexta-feira eu continuo, se n„o estiver cansado...texto incluido
+- Sexta-feira eu continuo, se n√£o estiver cansado...texto incluido
 texto incluido
   E no fim, nada.texto incluido
 ---
@@ -220,29 +220,29 @@ texto incluido
 
 ---
 prompt> sed '/^$/d' arquivo.txt
-No inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
-- Sexta-feira eu continuo, se n„o estiver cansado...
+No in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
+- Sexta-feira eu continuo, se n√£o estiver cansado...
   E no fim, nada.
 ---
 
 ---------------------
 
-== Incluir texto no inÌcio da linha N ==
-OBS: troque o n˙mero 1 para a linha que vocÍ quiser
+== Incluir texto no in√≠cio da linha N ==
+OBS: troque o n√∫mero 1 para a linha que voc√™ quiser
 
-| **`sed '1s/^/comeÁo do arquivo/' `** |
+| **`sed '1s/^/come√ßo do arquivo/' `** |
 
 ---
-prompt> sed '1s/^/comeÁo do arquivo/'  arquivo.txt
-comeÁo do arquivoNo inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+prompt> sed '1s/^/come√ßo do arquivo/'  arquivo.txt
+come√ßo do arquivoNo in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
@@ -250,37 +250,37 @@ comeÁo do arquivoNo inÌcio do inÌcio, era um nada.
 ---------------------
 
 == Incluir texto no final da linha N ==
-OBS: troque o n˙mero 1 para a linha que vocÍ quiser
+OBS: troque o n√∫mero 1 para a linha que voc√™ quiser
 
 | **`sed '1s/$/final da linha/'`** |
 
 ---
 prompt> sed '1s/$/final da linha/' arquivo.txt
-No inÌcio do inÌcio, era um nada.final da linha
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.final da linha
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Incluir texto na linha N apagando o conte˙do existente ==
-OBS: troque o n˙mero 1 para a linha que vocÍ quiser
+== Incluir texto na linha N apagando o conte√∫do existente ==
+OBS: troque o n√∫mero 1 para a linha que voc√™ quiser
 
-| **`sed '1s/.*/inÌcio do arquivo/'`** |
+| **`sed '1s/.*/in√≠cio do arquivo/'`** |
 
 ---
-prompt> sed '1s/.*/inÌcio do arquivo/' arquivo.txt
-inÌcio do arquivo
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+prompt> sed '1s/.*/in√≠cio do arquivo/' arquivo.txt
+in√≠cio do arquivo
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
@@ -288,36 +288,36 @@ inÌcio do arquivo
 ---------------------
 
 == Incluir texto antes da linha N ==
-OBS: troque o n˙mero 1 para a linha que vocÍ quiser
+OBS: troque o n√∫mero 1 para a linha que voc√™ quiser
 
-| **`sed -e '1i\' -e 'comeÁo do arquivo'`** |
+| **`sed -e '1i\' -e 'come√ßo do arquivo'`** |
 
 ---
-prompt> sed -e '1i\' -e 'comeÁo do arquivo' arquivo.txt
-comeÁo do arquivo
-No inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+prompt> sed -e '1i\' -e 'come√ßo do arquivo' arquivo.txt
+come√ßo do arquivo
+No in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Incluir linha apÛs a ˙ltima ==
+== Incluir linha ap√≥s a √∫ltima ==
 | **`sed -e '$a\' -e 'linha final'`** |
 
 ---
 prompt> sed -e '$a\' -e 'linha final' arquivo.txt
-No inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 linha final
@@ -326,29 +326,29 @@ linha final
 ---------------------
 
 == Imprimir somente a linha N ==
-OBS: troque o n˙mero 2 para a linha que vocÍ quiser
+OBS: troque o n√∫mero 2 para a linha que voc√™ quiser
 
 | **`sed '2!d'`** |
 
 ---
 prompt> sed '2!d' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
+ No segundo dia, fez um rascunho √† l√°pis.
 ---
 
 ---------------------
 
 == Retirar a linha N ==
-OBS: troque o n˙mero 2 pela linha que vocÍ quiser
+OBS: troque o n√∫mero 2 pela linha que voc√™ quiser
 
 | **`sed '2d'`** |
 
 ---
 prompt> sed '2d' arquivo.txt
-No inÌcio do inÌcio, era um nada.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
@@ -363,155 +363,155 @@ OBS: O mesmo que cut -d, -f2
 ---
 prompt> sed 's/^[^,]*,\([^,]\+\),\?.*/\1/' arquivo.txt
  era um nada.
- fez um rascunho ‡ l·pis.
- apagou e comeÁou tudo de novo.
- ficou com preguiÁa
+ fez um rascunho √† l√°pis.
+ apagou e come√ßou tudo de novo.
+ ficou com pregui√ßa
 
- se n„o estiver cansado...
+ se n√£o estiver cansado...
 
  nada.
 ---
 
 ---------------------
 
-== Retirar espaÁos em branco repetidos  ==
+== Retirar espa√ßos em branco repetidos  ==
 | **`sed 's/[ ]\+/ /g'`** |
 
 ---
 prompt> sed 's/[ ]\+/ /g' arquivo.txt
-No inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
- No terceiro dia, apagou e comeÁou tudo de novo.
- No quarto dia, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
+ No terceiro dia, apagou e come√ßou tudo de novo.
+ No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
  E no fim, nada.
 ---
 
 ---------------------
 
-== Retirar espaÁos em branco no inÌcio da linha  ==
+== Retirar espa√ßos em branco no in√≠cio da linha  ==
 | **`sed 's/^ \+//'`** |
 
 ---
 prompt> sed 's/^ \+//' arquivo.txt
-No inÌcio do inÌcio, era um nada.
-No segundo dia, fez um rascunho ‡ l·pis.
-No terceiro dia, apagou e comeÁou tudo de novo.
-No quarto dia, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+No segundo dia, fez um rascunho √† l√°pis.
+No terceiro dia, apagou e come√ßou tudo de novo.
+No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
 E no fim, nada.
 ---
 
 ---------------------
 
-== Apagar uma string do inÌcio da linha  ==
+== Apagar uma string do in√≠cio da linha  ==
 | **`sed 's/^No//'`** |
 
 ---
 prompt> sed 's/^No//' arquivo.txt
- inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+ in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Apagar do inÌcio da linha atÈ uma string  ==
+== Apagar do in√≠cio da linha at√© uma string  ==
 | **`sed 's/^.*dia//'`** |
 
 ---
 prompt> sed 's/^.*dia//' arquivo.txt
-No inÌcio do inÌcio, era um nada.
-, fez um rascunho ‡ l·pis.
-, apagou e comeÁou tudo de novo.
-, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+, fez um rascunho √† l√°pis.
+, apagou e come√ßou tudo de novo.
+, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Apagar de uma string atÈ o final da linha  ==
+== Apagar de uma string at√© o final da linha  ==
 | **`sed 's/dia.*$//'`** |
 
 ---
 prompt> sed 's/dia.*$//' arquivo.txt
-No inÌcio do inÌcio, era um nada.
+No in√≠cio do in√≠cio, era um nada.
  No segundo 
   No terceiro 
    No quarto 
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Apagar a ˙ltima string da linha  ==
+== Apagar a √∫ltima string da linha  ==
 | **`sed 's/ [^ ]\+ *$//g'`** |
 
 ---
 prompt> sed 's/ [^ ]\+ *$//g' arquivo.txt
-No inÌcio do inÌcio, era um
- No segundo dia, fez um rascunho ‡
-  No terceiro dia, apagou e comeÁou tudo de
-   No quarto dia, ficou com preguiÁa, ent„o
+No in√≠cio do in√≠cio, era um
+ No segundo dia, fez um rascunho √†
+  No terceiro dia, apagou e come√ßou tudo de
+   No quarto dia, ficou com pregui√ßa, ent√£o
 
-- Sexta-feira eu continuo, se n„o estiver
+- Sexta-feira eu continuo, se n√£o estiver
 
   E no fim,
 ---
 
 ---------------------
 
-== Colocar todas as linhas em uma sÛ  ==
+== Colocar todas as linhas em uma s√≥  ==
 | **`sed ':a;$!N;s/\n//;ta;'`** |
 
 ---
 prompt> sed ':a;$!N;s/\n//;ta;' arquivo.txt
-No inÌcio do inÌcio, era um nada. No segundo dia, fez um rascunho ‡ l·pis.  No terceiro dia, apagou e comeÁou tudo de novo.   No quarto dia, ficou com preguiÁa, ent„o falou:- Sexta-feira eu continuo, se n„o estiver cansado...  E no fim, nada.
+No in√≠cio do in√≠cio, era um nada. No segundo dia, fez um rascunho √† l√°pis.  No terceiro dia, apagou e come√ßou tudo de novo.   No quarto dia, ficou com pregui√ßa, ent√£o falou:- Sexta-feira eu continuo, se n√£o estiver cansado...  E no fim, nada.
 ---
 
 ---------------------
 
-== Juntar a linha com a prÛxima  ==
+== Juntar a linha com a pr√≥xima  ==
 | **`sed 'N;s/\n//'`** |
 
 ---
 prompt> sed 'N;s/\n//' arquivo.txt
-No inÌcio do inÌcio, era um nada. No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.   No quarto dia, ficou com preguiÁa, ent„o falou:
-- Sexta-feira eu continuo, se n„o estiver cansado...
+No in√≠cio do in√≠cio, era um nada. No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.   No quarto dia, ficou com pregui√ßa, ent√£o falou:
+- Sexta-feira eu continuo, se n√£o estiver cansado...
   E no fim, nada.
 ---
 
 ---------------------
 
-== Substituir caractere por outro atÈ uma TAG ==
-OBS: troca 'o' por 'x' atÈ encontrar a primeira ','
+== Substituir caractere por outro at√© uma TAG ==
+OBS: troca 'o' por 'x' at√© encontrar a primeira ','
 
 | **`sed ':a;s/^\([^,]\+\)o/\1x/;ta'`** |
 
 ---
 prompt> sed ':a;s/^\([^,]\+\)o/\1x/;ta' arquivo.txt
-Nx inÌcix dx inÌcix, era um nada.
- Nx segundx dia, fez um rascunho ‡ l·pis.
-  Nx terceirx dia, apagou e comeÁou tudo de novo.
-   Nx quartx dia, ficou com preguiÁa, ent„o falou:
+Nx in√≠cix dx in√≠cix, era um nada.
+ Nx segundx dia, fez um rascunho √† l√°pis.
+  Nx terceirx dia, apagou e come√ßou tudo de novo.
+   Nx quartx dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu cxntinux, se n„o estiver cansado...
+- Sexta-feira eu cxntinux, se n√£o estiver cansado...
 
   E nx fim, nada.
 ---
@@ -525,12 +525,12 @@ OBS: troca 'o' por 'x' entre a segunda e terceira ','
 
 ---
 prompt> sed ':a;s/^\([^,]*,[^,]\+\)o/\1x/;ta' arquivo.txt
-No inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunhx ‡ l·pis.
-  No terceiro dia, apagxu e cxmeÁxu tudx de nxvx.
-   No quarto dia, ficxu cxm preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunhx √† l√°pis.
+  No terceiro dia, apagxu e cxme√ßxu tudx de nxvx.
+   No quarto dia, ficxu cxm pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„x estiver cansadx...
+- Sexta-feira eu continuo, se n√£x estiver cansadx...
 
   E no fim, nada.
 ---
@@ -538,18 +538,18 @@ No inÌcio do inÌcio, era um nada.
 ---------------------
 
 == Substituir string por outra somente em certas linhas ==
-OBS: substitui 'dia' por 'noite' somente em linhas que contÈm a string 'terceiro'
+OBS: substitui 'dia' por 'noite' somente em linhas que cont√©m a string 'terceiro'
 
 | **`sed '/terceiro/s/dia/noite/g'`** |
 
 ---
 prompt> sed '/terceiro/s/dia/noite/g' arquivo.txt
-No inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro noite, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro noite, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
@@ -557,54 +557,54 @@ No inÌcio do inÌcio, era um nada.
 ---------------------
 
 == Substituir string por outra somente em certas linhas II ==
-OBS: substitui 'dia' por 'noite' nas linha que N√O contÈm a string 'terceiro'
+OBS: substitui 'dia' por 'noite' nas linha que N√ÉO cont√©m a string 'terceiro'
 
 | **`sed '/terceiro/!s/dia/noite/g'`** |
 
 ---
 prompt> sed '/terceiro/!s/dia/noite/g' arquivo.txt
-No inÌcio do inÌcio, era um nada.
- No segundo noite, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto noite, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+ No segundo noite, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto noite, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Substituir a ˙ltima ocorrÍncia de uma string por outra ==
+== Substituir a √∫ltima ocorr√™ncia de uma string por outra ==
 | **`sed ':a;$!{N;ba;};s/\(.*\)dia/\1noite/'`** |
 
 ---
 prompt> sed ':a;$!{N;ba;};s/\(.*\)dia/\1noite/' arquivo.txt
-No inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto noite, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto noite, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Trocar a ordem das palavras (˙ltima vira primeira, pen˙ltima vira segunda....) ==
-OBS: se o seu arquivo tiver o caractere 'ß' troque o 'ß' do sed por outro carectere que n„o exista.
+== Trocar a ordem das palavras (√∫ltima vira primeira, pen√∫ltima vira segunda....) ==
+OBS: se o seu arquivo tiver o caractere '¬ß' troque o '¬ß' do sed por outro carectere que n√£o exista.
 
-| **`sed 's/^/ß /;:a;s/\(.*\)ß \+\([^ ]\+\)/\2 \1ß/;ta;s/ß//'`** |
+| **`sed 's/^/¬ß /;:a;s/\(.*\)¬ß \+\([^ ]\+\)/\2 \1¬ß/;ta;s/¬ß//'`** |
 
 ---
-prompt> sed 's/^/ß /;:a;s/\(.*\)ß \+\([^ ]\+\)/\2 \1ß/;ta;s/ß//' arquivo.txt
-nada. um era inÌcio, do inÌcio No 
-l·pis. ‡ rascunho um fez dia, segundo No 
-novo. de tudo comeÁou e apagou dia, terceiro No 
-falou: ent„o preguiÁa, com ficou dia, quarto No 
+prompt> sed 's/^/¬ß /;:a;s/\(.*\)¬ß \+\([^ ]\+\)/\2 \1¬ß/;ta;s/¬ß//' arquivo.txt
+nada. um era in√≠cio, do in√≠cio No 
+l√°pis. √† rascunho um fez dia, segundo No 
+novo. de tudo come√ßou e apagou dia, terceiro No 
+falou: ent√£o pregui√ßa, com ficou dia, quarto No 
  
-cansado... estiver n„o se continuo, eu Sexta-feira - 
+cansado... estiver n√£o se continuo, eu Sexta-feira - 
  
 nada. fim, no E 
 ---
@@ -612,50 +612,50 @@ nada. fim, no E
 ---------------------
 
 == Trocar a ordem das letras (igual ao comando rev) ==
-| **`sed 's/^/ß/;:a;s/\(.*\)ß\(.\)/\2\1ß/;ta;s/ß$//'`** |
+| **`sed 's/^/¬ß/;:a;s/\(.*\)¬ß\(.\)/\2\1¬ß/;ta;s/¬ß$//'`** |
 
 ---
-prompt> sed 's/^/ß/;:a;s/\(.*\)ß\(.\)/\2\1ß/;ta;s/ß$//' arquivo.txt
-.adan mu are ,oicÌni od oicÌni oN
-.sip·l ‡ ohnucsar mu zef ,aid odnuges oN 
-.ovon ed odut uoÁemoc e uogapa ,aid oriecret oN  
-:uolaf o„tne ,aÁiugerp moc uocif ,aid otrauq oN   
+prompt> sed 's/^/¬ß/;:a;s/\(.*\)¬ß\(.\)/\2\1¬ß/;ta;s/¬ß$//' arquivo.txt
+.adan mu are ,oic√≠ni od oic√≠ni oN
+.sip√°l √† ohnucsar mu zef ,aid odnuges oN 
+.ovon ed odut uo√ßemoc e uogapa ,aid oriecret oN  
+:uolaf o√£tne ,a√ßiugerp moc uocif ,aid otrauq oN   
 
-...odasnac revitse o„n es ,ounitnoc ue arief-atxeS -
+...odasnac revitse o√£n es ,ounitnoc ue arief-atxeS -
 
 .adan ,mif on E  
 ---
 
 ---------------------
 
-== Trocar de mai˙sculas para min˙sculas  ==
-| **`sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ¿¡¬√… Õ”‘’⁄«/abcdefghijklmnopqrstuvwxyz‡·‚„ÈÍÌÛÙı˙Á/'`** |
+== Trocar de mai√∫sculas para min√∫sculas  ==
+| **`sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ√Ä√Å√Ç√É√â√ä√ç√ì√î√ï√ö√á/abcdefghijklmnopqrstuvwxyz√†√°√¢√£√©√™√≠√≥√¥√µ√∫√ß/'`** |
 
 ---
-prompt> sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ¿¡¬√… Õ”‘’⁄«/abcdefghijklmnopqrstuvwxyz‡·‚„ÈÍÌÛÙı˙Á/' arquivo.txt
-no inÌcio do inÌcio, era um nada.
- no segundo dia, fez um rascunho ‡ l·pis.
-  no terceiro dia, apagou e comeÁou tudo de novo.
-   no quarto dia, ficou com preguiÁa, ent„o falou:
+prompt> sed 'y/ABCDEFGHIJKLMNOPQRSTUVWXYZ√Ä√Å√Ç√É√â√ä√ç√ì√î√ï√ö√á/abcdefghijklmnopqrstuvwxyz√†√°√¢√£√©√™√≠√≥√¥√µ√∫√ß/' arquivo.txt
+no in√≠cio do in√≠cio, era um nada.
+ no segundo dia, fez um rascunho √† l√°pis.
+  no terceiro dia, apagou e come√ßou tudo de novo.
+   no quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- sexta-feira eu continuo, se n„o estiver cansado...
+- sexta-feira eu continuo, se n√£o estiver cansado...
 
   e no fim, nada.
 ---
 
 ---------------------
 
-== Trocar de min˙sculas para mai˙sculas  ==
-| **`sed 'y/abcdefghijklmnopqrstuvwxyz‡·‚„ÈÍÌÛÙı˙Á/ABCDEFGHIJKLMNOPQRSTUVWXYZ¿¡¬√… Õ”‘’⁄«/'`** |
+== Trocar de min√∫sculas para mai√∫sculas  ==
+| **`sed 'y/abcdefghijklmnopqrstuvwxyz√†√°√¢√£√©√™√≠√≥√¥√µ√∫√ß/ABCDEFGHIJKLMNOPQRSTUVWXYZ√Ä√Å√Ç√É√â√ä√ç√ì√î√ï√ö√á/'`** |
 
 ---
-prompt> sed 'y/abcdefghijklmnopqrstuvwxyz‡·‚„ÈÍÌÛÙı˙Á/ABCDEFGHIJKLMNOPQRSTUVWXYZ¿¡¬√… Õ”‘’⁄«/' arquivo.txt
-NO INÕCIO DO INÕCIO, ERA UM NADA.
- NO SEGUNDO DIA, FEZ UM RASCUNHO ¿ L¡PIS.
-  NO TERCEIRO DIA, APAGOU E COME«OU TUDO DE NOVO.
-   NO QUARTO DIA, FICOU COM PREGUI«A, ENT√O FALOU:
+prompt> sed 'y/abcdefghijklmnopqrstuvwxyz√†√°√¢√£√©√™√≠√≥√¥√µ√∫√ß/ABCDEFGHIJKLMNOPQRSTUVWXYZ√Ä√Å√Ç√É√â√ä√ç√ì√î√ï√ö√á/' arquivo.txt
+NO IN√çCIO DO IN√çCIO, ERA UM NADA.
+ NO SEGUNDO DIA, FEZ UM RASCUNHO √Ä L√ÅPIS.
+  NO TERCEIRO DIA, APAGOU E COME√áOU TUDO DE NOVO.
+   NO QUARTO DIA, FICOU COM PREGUI√áA, ENT√ÉO FALOU:
 
-- SEXTA-FEIRA EU CONTINUO, SE N√O ESTIVER CANSADO...
+- SEXTA-FEIRA EU CONTINUO, SE N√ÉO ESTIVER CANSADO...
 
   E NO FIM, NADA.
 ---
@@ -670,7 +670,7 @@ NO INÕCIO DO INÕCIO, ERA UM NADA.
 
 ---
 prompt> sed -n '/segundo/{x;p;};h' arquivo.txt
-No inÌcio do inÌcio, era um nada.
+No in√≠cio do in√≠cio, era um nada.
 ---
 
 ---------------------
@@ -680,84 +680,84 @@ No inÌcio do inÌcio, era um nada.
 
 ---
 prompt> sed -n '/segundo/{H;x;p;};h' arquivo.txt
-No inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
+No in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
 ---
 
 ---------------------
 
-== Imprimir a linha apÛs uma string ==
+== Imprimir a linha ap√≥s uma string ==
 | **`sed -n '/segundo/{n;p;}'`** |
 
 ---
 prompt> sed -n '/segundo/{n;p;}' arquivo.txt
-  No terceiro dia, apagou e comeÁou tudo de novo.
+  No terceiro dia, apagou e come√ßou tudo de novo.
 ---
 
 ---------------------
 
-== Imprimir a linha apÛs uma string e a linha da string ==
+== Imprimir a linha ap√≥s uma string e a linha da string ==
 | **`sed -n '/segundo/{N;p;}'`** |
 
 ---
 prompt> sed -n '/segundo/{N;p;}' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
 ---
 
 ---------------------
 
-== Imprimir a linha anterior, posterior e a linha que contÈm uma string  ==
+== Imprimir a linha anterior, posterior e a linha que cont√©m uma string  ==
 | **`sed -n '/terceiro/{H;x;p;n;p;};h'`** |
 
 ---
 prompt> sed -n '/terceiro/{H;x;p;n;p;};h' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 ---
 
 ---------------------
 
-== Imprimir a linha anterior e posterior a linha que contÈm uma string ==
+== Imprimir a linha anterior e posterior a linha que cont√©m uma string ==
 | **`sed -n '/terceiro/{x;p;n;p;};h'`** |
 
 ---
 prompt> sed -n '/terceiro/{x;p;n;p;};h' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+ No segundo dia, fez um rascunho √† l√°pis.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 ---
 
 ---------------------
 
-== Imprimir N linhas antes, a linha da string e M linhas apÛs uma string I ==
-OBS: 'quarto' È a string, troque o '2' de 1,2 para o n˙mero de linhas antes, e adicione quantos 'Ns' para linhas apÛs. No exemplo est· 2 antes e 2 depois
+== Imprimir N linhas antes, a linha da string e M linhas ap√≥s uma string I ==
+OBS: 'quarto' √© a string, troque o '2' de 1,2 para o n√∫mero de linhas antes, e adicione quantos 'Ns' para linhas ap√≥s. No exemplo est√° 2 antes e 2 depois
 
 | **`sed -n '/quarto/{x;p;x;N;N;p;q;};1!{H;g;};1,2!s/[^\n]*\n//;h;'`** |
 
 ---
 prompt> sed -n '/quarto/{x;p;x;N;N;p;q;};1!{H;g;};1,2!s/[^\n]*\n//;h;' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 ---
 
 ---------------------
 
-== Imprimir N linhas antes, a linha da string e M linhas apÛs uma string II ==
-OBS: troque o n˙mero entre chaves '{2}' pelo n˙mero de linhas antes da string e adicione quandos 'Ns' para linhas apÛs. No exemploest· 2 antes e 2 depois
+== Imprimir N linhas antes, a linha da string e M linhas ap√≥s uma string II ==
+OBS: troque o n√∫mero entre chaves '{2}' pelo n√∫mero de linhas antes da string e adicione quandos 'Ns' para linhas ap√≥s. No exemploest√° 2 antes e 2 depois
 
 | **`sed 'H;/quarto/{g;N;N;s/^\n//p;}; x;s/.*\(\(\n[^\n]*\)\{2\}\)/\1/;x ;d'`** |
 
 ---
 prompt> sed 'H;/quarto/{g;N;N;s/^\n//p;}; x;s/.*\(\(\n[^\n]*\)\{2\}\)/\1/;x ;d' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 ---
 
 ---------------------
@@ -769,31 +769,31 @@ OBS: inclui o 'Texto adicionado' antes da linha com a string 'segundo'
 
 ---
 prompt> sed '/segundo/{h;s/.*/Texto adicionado/;p;x;}' arquivo.txt
-No inÌcio do inÌcio, era um nada.
+No in√≠cio do in√≠cio, era um nada.
 Texto adicionado
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Adicionar linha apÛs a linha com uma determinada string ==
+== Adicionar linha ap√≥s a linha com uma determinada string ==
 | **`sed '/segundo/{p;s/.*/Texto adicionado/;}'`** |
 
 ---
 prompt> sed '/segundo/{p;s/.*/Texto adicionado/;}' arquivo.txt
-No inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
+No in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
 Texto adicionado
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
@@ -805,9 +805,9 @@ Texto adicionado
 
 ---
 prompt> sed '4,6!d' arquivo.txt
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 ---
 
 ---------------------
@@ -817,39 +817,39 @@ prompt> sed '4,6!d' arquivo.txt
 
 ---
 prompt> sed '3,6s/dia/noite/' arquivo.txt
-No inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro noite, apagou e comeÁou tudo de novo.
-   No quarto noite, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro noite, apagou e come√ßou tudo de novo.
+   No quarto noite, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Imprimir linhas que contÈm uma ou outra string ==
-OBS: imprime linhas que contÈm a string 'segundo' ou 'quarto'
+== Imprimir linhas que cont√©m uma ou outra string ==
+OBS: imprime linhas que cont√©m a string 'segundo' ou 'quarto'
 
 | **`sed '/segundo\|quarto/!d'`** |
 
 ---
 prompt> sed '/segundo\|quarto/!d' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+ No segundo dia, fez um rascunho √† l√°pis.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 ---
 
 ---------------------
 
-== Imprimir linhas que contÈm uma e outra string ==
-OBS: imprime linhas que contÈm 'No' e 'segundo'
+== Imprimir linhas que cont√©m uma e outra string ==
+OBS: imprime linhas que cont√©m 'No' e 'segundo'
 
 | **`sed -n '/No.*segundo/p'`** |
 
 ---
 prompt> sed -n '/No.*segundo/p' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
+ No segundo dia, fez um rascunho √† l√°pis.
 ---
 
 ---------------------
@@ -859,80 +859,80 @@ prompt> sed -n '/No.*segundo/p' arquivo.txt
 
 ---
 prompt> sed -n '/segundo/,/quarto/p' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 ---
 
 ---------------------
 
-== Extrair trecho que pode ou n„o estar na mesma linha  ==
+== Extrair trecho que pode ou n√£o estar na mesma linha  ==
 | **`sed -n '/segundo/{:a;/quarto/!{N;ba;};p;}'`** |
 
 ---
 prompt> sed -n '/segundo/{:a;/quarto/!{N;ba;};p;}' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 ---
 
 ---------------------
 
-== Extrair trecho que pode ou n„o estar na mesma linha tirando os delimitadores  ==
-OBS: 'segundo' È a TAG inicial e 'falou' a TAG final
+== Extrair trecho que pode ou n√£o estar na mesma linha tirando os delimitadores  ==
+OBS: 'segundo' √© a TAG inicial e 'falou' a TAG final
 
 | **`sed -n '/segundo/{/falou/tc;:a;/falou/!{N;ba;};:c;s/.*segundo//;s/falou.*$//;p;}'`** |
 
 ---
 prompt> sed -n '/segundo/{/falou/tc;:a;/falou/!{N;ba;};:c;s/.*segundo//;s/falou.*$//;p;}' arquivo.txt
- dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o 
+ dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o 
 ---
 
 ---------------------
 
-== Apagar o que est· entre delimitadores ==
+== Apagar o que est√° entre delimitadores ==
 | **`sed '/segundo/{/falou/{s/segundo.*falou//;t};:a;/falou/!{N;s/\n//;ta;};s/segundo.*falou/\n/;}'`** |
 
 ---
 prompt> sed '/segundo/{/falou/{s/segundo.*falou//;t};:a;/falou/!{N;s/\n//;ta;};s/segundo.*falou/\n/;}' arquivo.txt
-No inÌcio do inÌcio, era um nada.
+No in√≠cio do in√≠cio, era um nada.
  No n:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Apagar um trecho se ele contÈm um padr„o ==
-OBS: 'segundo' marca o inÌcio do trecho, 'quarto' o final, e 'rascunho' È o padr„o de procura
+== Apagar um trecho se ele cont√©m um padr√£o ==
+OBS: 'segundo' marca o in√≠cio do trecho, 'quarto' o final, e 'rascunho' √© o padr√£o de procura
 
 | **`sed '/segundo/{:a;/quarto/!{N;ba;};/rascunho/d;}'`** |
 
 ---
 prompt> sed '/segundo/{:a;/quarto/!{N;ba;};/rascunho/d;}' arquivo.txt
-No inÌcio do inÌcio, era um nada.
+No in√≠cio do in√≠cio, era um nada.
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Trocar de lugar a linha com a prÛxima (troca de lugar linha 1 com 2, 3 com 4...) I ==
+== Trocar de lugar a linha com a pr√≥xima (troca de lugar linha 1 com 2, 3 com 4...) I ==
 | **`sed -n '$ba;h;n;p;x;:a;p'`** |
 
 ---
 prompt> sed -n '$ba;h;n;p;x;:a;p' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
-No inÌcio do inÌcio, era um nada.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
-  No terceiro dia, apagou e comeÁou tudo de novo.
-- Sexta-feira eu continuo, se n„o estiver cansado...
+ No segundo dia, fez um rascunho √† l√°pis.
+No in√≠cio do in√≠cio, era um nada.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
+  No terceiro dia, apagou e come√ßou tudo de novo.
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 
@@ -940,23 +940,23 @@ No inÌcio do inÌcio, era um nada.
 
 ---------------------
 
-== Trocar de lugar a linha com a prÛxima (troca de lugar linha 1 com 2, 3 com 4...) II ==
+== Trocar de lugar a linha com a pr√≥xima (troca de lugar linha 1 com 2, 3 com 4...) II ==
 | **`sed 'N;s/\([^\n]*\)\(\n\)\([^\n]*\)/\3\2\1/'`** |
 
 ---
 prompt> sed 'N;s/\([^\n]*\)\(\n\)\([^\n]*\)/\3\2\1/' arquivo.txt
- No segundo dia, fez um rascunho ‡ l·pis.
-No inÌcio do inÌcio, era um nada.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
-  No terceiro dia, apagou e comeÁou tudo de novo.
-- Sexta-feira eu continuo, se n„o estiver cansado...
+ No segundo dia, fez um rascunho √† l√°pis.
+No in√≠cio do in√≠cio, era um nada.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
+  No terceiro dia, apagou e come√ßou tudo de novo.
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 
 ---
 
 =====================
-= Utilidade P˙blica =
+= Utilidade P√∫blica =
 
 ---------------------
 
@@ -965,19 +965,19 @@ No inÌcio do inÌcio, era um nada.
 
 ---
 prompt> sed 's/<[^>]*>//g' arquivo.txt
-No inÌcio do inÌcio, era um nada.
- No segundo dia, fez um rascunho ‡ l·pis.
-  No terceiro dia, apagou e comeÁou tudo de novo.
-   No quarto dia, ficou com preguiÁa, ent„o falou:
+No in√≠cio do in√≠cio, era um nada.
+ No segundo dia, fez um rascunho √† l√°pis.
+  No terceiro dia, apagou e come√ßou tudo de novo.
+   No quarto dia, ficou com pregui√ßa, ent√£o falou:
 
-- Sexta-feira eu continuo, se n„o estiver cansado...
+- Sexta-feira eu continuo, se n√£o estiver cansado...
 
   E no fim, nada.
 ---
 
 ---------------------
 
-== Pesquisar se existe algum usu·rio sem senha no /etc/passwd ==
+== Pesquisar se existe algum usu√°rio sem senha no /etc/passwd ==
 | **`sed -n '/^[^:]\+::/p'`** |
 
 ---

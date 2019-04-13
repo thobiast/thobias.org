@@ -1,36 +1,36 @@
 RAC - Rows and Columns
-AurÈlio Marinho Jargas & Thobias Salazar Trevisan
+Aur√©lio Marinho Jargas & Thobias Salazar Trevisan
 %%date(%d/%m/%Y)
 
-%!encoding: iso-8859-1
+%!encoding: utf-8
 %!Target  : html 
 
-= ATEN«√O =
+= ATEN√á√ÉO =
 
-Esta p·gina contÈm as versıes de desenvolvimento do RAC.
-Para obter documentaÁ„o e/ou a ˙ltima vers„o EST¡VEL do programa
+Esta p√°gina cont√©m as vers√µes de desenvolvimento do RAC.
+Para obter documenta√ß√£o e/ou a √∫ltima vers√£o EST√ÅVEL do programa
 acesse o site oficial: http://aurelio.net/rac
 
-Esta vers„o È destinada a desenvolvedores e testadores!!
+Esta vers√£o √© destinada a desenvolvedores e testadores!!
 
 = RAC test-suite =
 
-[ractest ractest] È um script feito especialmente para testar e validar o
+[ractest ractest] √© um script feito especialmente para testar e validar o
 funcionamento do RAC. Atualmente o ractest realizar mais de 300 testes
-utilizando todos os tipos de endereÁamento suportados. Ent„o se vocÍ
-fez alguma alteraÁ„o no cÛdigo e gostaria de validar o resultado, esta
-ferramenta È ideal para te deixar no rumo certo. :)
+utilizando todos os tipos de endere√ßamento suportados. Ent√£o se voc√™
+fez alguma altera√ß√£o no c√≥digo e gostaria de validar o resultado, esta
+ferramenta √© ideal para te deixar no rumo certo. :)
 
-Um dos nossos objetivos È deixar o RAC port·vel, ent„o
-vocÍ pode ajudar no desenvolvimento simplesmente nos avisando de
+Um dos nossos objetivos √© deixar o RAC port√°vel, ent√£o
+voc√™ pode ajudar no desenvolvimento simplesmente nos avisando de
 como o ractest executou no seu ambiente.
 
-Apenas execute-o. Se ele n„o "reclamar" de nada, o rac est·
-de acordo com as especificaÁıes =8)
+Apenas execute-o. Se ele n√£o "reclamar" de nada, o rac est√°
+de acordo com as especifica√ß√µes =8)
 
-**Vers„o nova do test-suite liberada em 30/03/2005.**
+**Vers√£o nova do test-suite liberada em 30/03/2005.**
 
-- Adicionado testes de string e v·rios outros incorporados.
+- Adicionado testes de string e v√°rios outros incorporados.
 
 
 Baixe o [ractest ractest].
@@ -41,25 +41,25 @@ Baixe o [ractest ractest].
 
 =v1.3=
 
-== Versıes de Desenvolvimento da v1.3 ==
+== Vers√µes de Desenvolvimento da v1.3 ==
 
 [rac-1.3-devel1.tgz rac-1.3-devel1.tgz]
 
-- Adicionado suporte a endereÁamento por expressıes regulares
+- Adicionado suporte a endere√ßamento por express√µes regulares
 (regex), nos formatos BRE e ERE (default) (obrigado Silvano B. Dias pelo patch)
-- OpÁıes novas -b e --bre para usar expressıes regulares no formato
+- Op√ß√µes novas -b e --bre para usar express√µes regulares no formato
 antigo, chamado BRE (\+, \{\}, etc)
-- OpÁıes novas -i e --ignore-case para tratar mai˙sculas e min˙sculas como iguais
-- Makefile: Adicionado target noopt para compilar sem otimizaÁ„o
+- Op√ß√µes novas -i e --ignore-case para tratar mai√∫sculas e min√∫sculas como iguais
+- Makefile: Adicionado target noopt para compilar sem otimiza√ß√£o
 (obrigado Alan Kelon pela dica)
-- Bugfix: Agora remove o arquivo tempor·rio quando finalizado com Ctrl+C
-- Bugfix: Agora endereÁos com 0 (zero) funcionam corretamente
-- Bugfix: Agora mostra a ˙ltima letra no "echo -n" (obrigado lnas_90 pelo aviso)
-- Bugfix: N„o estava escapando corretamente a \ (obrigado Silvano B. Dias pelo patch)
+- Bugfix: Agora remove o arquivo tempor√°rio quando finalizado com Ctrl+C
+- Bugfix: Agora endere√ßos com 0 (zero) funcionam corretamente
+- Bugfix: Agora mostra a √∫ltima letra no "echo -n" (obrigado lnas_90 pelo aviso)
+- Bugfix: N√£o estava escapando corretamente a \ (obrigado Silvano B. Dias pelo patch)
 
 
-Duas grandes **novidades**: Suporte a endereÁamento utilizando expressıes
-regulares e a opÁ„o -i, e --ignore-case, para tratar mai˙sculas e min˙sculas
+Duas grandes **novidades**: Suporte a endere√ßamento utilizando express√µes
+regulares e a op√ß√£o -i, e --ignore-case, para tratar mai√∫sculas e min√∫sculas
 como iguais.
 
 
@@ -67,68 +67,68 @@ como iguais.
 
 =v1.2=
 
-== Versıes de Desenvolvimento da v1.2 ==
+== Vers√µes de Desenvolvimento da v1.2 ==
 
 [rac-1.2-devel1.tgz rac-1.2-devel1.tgz]
 
 - adicionado suporte a strings (thanks Silvano B. Dias)
-- Makefile: arrumada instalaÁ„o da man page (thanks Bruno Tadeu Russo)
-- Makefile: entradas para compilar no FreeBSD e friends (thanks Rud· Moura)
-- Makefile: depende de objetos, n„o sources (thanks Felipe Kellermann)
-- fixes aleatÛrios
+- Makefile: arrumada instala√ß√£o da man page (thanks Bruno Tadeu Russo)
+- Makefile: entradas para compilar no FreeBSD e friends (thanks Rud√° Moura)
+- Makefile: depende de objetos, n√£o sources (thanks Felipe Kellermann)
+- fixes aleat√≥rios
 
 
-A **grande novidade** desta vers„o È o suporte a endereÁos usando texto (strings).
-Criamos uma documentaÁ„o para ajudar os usu·rios a testarem esta nova
-funcionalidade. Para mais informaÁıes acesse:
-[RAC - EndereÁos Usando Textos (Strings) string.html]
+A **grande novidade** desta vers√£o √© o suporte a endere√ßos usando texto (strings).
+Criamos uma documenta√ß√£o para ajudar os usu√°rios a testarem esta nova
+funcionalidade. Para mais informa√ß√µes acesse:
+[RAC - Endere√ßos Usando Textos (Strings) string.html]
 
 
 =====================================================================
 
 =v1.1=
 
-==LanÁamento==
+==Lan√ßamento==
 
-Esta vers„o foi liberada em 20 de abril de 2004 com apenas uma
-modificaÁ„o em relaÁ„o a 1.1-devel3. Foi modificado a
-forma de realizar os //reallocs// na funÁ„o //get_input_info//.
-Para baixar esta vers„o, acesse o site oficial: http://aurelio.net/rac.
-De resto, faÁa a atualizaÁ„o e divirta-se. :)
+Esta vers√£o foi liberada em 20 de abril de 2004 com apenas uma
+modifica√ß√£o em rela√ß√£o a 1.1-devel3. Foi modificado a
+forma de realizar os //reallocs// na fun√ß√£o //get_input_info//.
+Para baixar esta vers√£o, acesse o site oficial: http://aurelio.net/rac.
+De resto, fa√ßa a atualiza√ß√£o e divirta-se. :)
 
 == TODOs v1.1 ==
 
-O objetivo da prÛxima vers„o È '//arrumar a casa//'. A v1.1 n„o ter·
-nenhuma funcionalidade nova, apenas limpeza e documentaÁ„o do cÛdigo
-para facilitar futuras contribs e a inclus„o de novas funcionalidades.
-Atualmente os TODOs para a v1.1 s„o:
+O objetivo da pr√≥xima vers√£o √© '//arrumar a casa//'. A v1.1 n√£o ter√°
+nenhuma funcionalidade nova, apenas limpeza e documenta√ß√£o do c√≥digo
+para facilitar futuras contribs e a inclus√£o de novas funcionalidades.
+Atualmente os TODOs para a v1.1 s√£o:
 
-- juntar as funÁıes check_col and check_lines. Somente um filtro para linhas e colunas
-- aperfeiÁoar as funÁıes exec_range_lines e exec_range_cols
-- documentar o cÛdigo
-- checar a sintaxe do endereÁo (retornar erro em sintaxe inv·lida)
+- juntar as fun√ß√µes check_col and check_lines. Somente um filtro para linhas e colunas
+- aperfei√ßoar as fun√ß√µes exec_range_lines e exec_range_cols
+- documentar o c√≥digo
+- checar a sintaxe do endere√ßo (retornar erro em sintaxe inv√°lida)
 - retirar o include getopt.h
 
 
-== Versıes de Desenvolvimento da v1.1==
+== Vers√µes de Desenvolvimento da v1.1==
 
 [rac-1.1-devel3.tgz rac-1.1-devel3.tgz]
 
-- V·rias partes do cÛdigo reescritas e remodeladas,
- est· mais r·pido e consome menos memÛria, n„o
- quebrando em arquivos gigantes (agora est· menos tosco)
+- V√°rias partes do c√≥digo reescritas e remodeladas,
+ est√° mais r√°pido e consome menos mem√≥ria, n√£o
+ quebrando em arquivos gigantes (agora est√° menos tosco)
 
 
 [rac-1.1-devel2.tgz rac-1.1-devel2.tgz]
 
 - Arrumado erro de ortografia no --help (thanks Paulo Saldanha)
-- Para melhorar a portabilidade, o programa n„o usa mais o getopt
+- Para melhorar a portabilidade, o programa n√£o usa mais o getopt
 - Makefile: pequenos ajustes visando a portabilidade
 
 
 [rac-1.1-devel1.tgz rac-1.1-devel1.tgz]
 
 - Makefile: novos targets install, uninstall e debug (thanks crg3k)
-- Adicionada uma estrutura com as vari·veis globais (thanks crg3k)
+- Adicionada uma estrutura com as vari√°veis globais (thanks crg3k)
 
 

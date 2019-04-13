@@ -12,34 +12,34 @@
 
 <P>
 <H2>Tipos de desvios</H2>
-Sed é quase uma linguagem de programação. Ela nos oferece desvios
+Sed Ã© quase uma linguagem de programaÃ§Ã£o. Ela nos oferece desvios
 (branches), ou seja, nos permite pular de um ponto do script para outro,
 como se fosse o comando GOTO de algumas linguagens. O sed oferece dois
 tipos de desvio:
 <P>
 <OL>
 <LI><B>t</B>, desvio condicional, ou seja, pula para um determinado ponto
-do script se a última substituição (<CODE>s///</CODE>) foi executada com sucesso.
+do script se a Ãºltima substituiÃ§Ã£o (<CODE>s///</CODE>) foi executada com sucesso.
 <LI><B>b</B>, desvio incondicional, ou seja, chegou no desvio sempre pula para um
 determinado ponto do script.
 </OL>
 Nos dois casos, se nenhum ponto for especificado, pula para o fim do
 script.
 <P>
-Já sabemos fazer os desvios, mas como determinar para qual ponto do
+JÃ¡ sabemos fazer os desvios, mas como determinar para qual ponto do
 script devemos pular ?
 <P>
-Simples, o sed nos possibilita a utilização de "label". Um "label" começa
-com o sinal de dois-pontos (:) e marca uma posição no script. Vamos
-praticar para clariar as idéias =8)
+Simples, o sed nos possibilita a utilizaÃ§Ã£o de "label". Um "label" comeÃ§a
+com o sinal de dois-pontos (:) e marca uma posiÃ§Ã£o no script. Vamos
+praticar para clariar as idÃ©ias =8)
 <P>
 <H2>t desvio condicional</H2>
-Às vezes precisamos executar algum comando sed N vezes,
-mas não sabemos o valor de N. O exemplo clássico é quando precisamos
-trocar um caractere por outro até encontrarmos um determinado caractere.
-Exemplo: trocar 1 por 0 até encontrarmos a primeira vírgula ','.
-Então se tivessemos como entrada o número 121,123, gostariamos de
-transformá-lo em 020,123. Nossas primeiras tentativas seriam:
+Ã€s vezes precisamos executar algum comando sed N vezes,
+mas nÃ£o sabemos o valor de N. O exemplo clÃ¡ssico Ã© quando precisamos
+trocar um caractere por outro atÃ© encontrarmos um determinado caractere.
+Exemplo: trocar 1 por 0 atÃ© encontrarmos a primeira vÃ­rgula ','.
+EntÃ£o se tivessemos como entrada o nÃºmero 121,123, gostariamos de
+transformÃ¡-lo em 020,123. Nossas primeiras tentativas seriam:
 <P>
 <PRE>
   prompt&gt; echo 121,123 | sed 's/1/0/'
@@ -56,64 +56,64 @@ transformá-lo em 020,123. Nossas primeiras tentativas seriam:
 </PRE>
 <P>
 Todas falhariam. Na primeira tentativa, trocamos
-somente a primeira ocorrência de 1 por 0. Na segunda, utilizando a
-opção <CODE>g</CODE> da substituição, trocamos todos os 1s por 0s sem respeitar
-se eles estão antes ou depois da nossa tag (a vírgula). Na terceira
-tentativa, nós especificamos que queremos o caractere 1 antes de uma
-vírgula, mas neste caso, ele trocaria somente uma
-ocorrência que satisfaça o que especificamos, ou seja, um caractere 1
-antes de uma vírgula. Na última opção, adicionamos o <CODE>g</CODE>, para trocarmos
-todos os 1 por 0. Mas também falhou, pois como o sed lê a linha e
-executa o comando uma única vez, ele irá procurar satisfazer o que
-especificamos, ou seja, um caractere 1 antes de uma vírgula.
+somente a primeira ocorrÃªncia de 1 por 0. Na segunda, utilizando a
+opÃ§Ã£o <CODE>g</CODE> da substituiÃ§Ã£o, trocamos todos os 1s por 0s sem respeitar
+se eles estÃ£o antes ou depois da nossa tag (a vÃ­rgula). Na terceira
+tentativa, nÃ³s especificamos que queremos o caractere 1 antes de uma
+vÃ­rgula, mas neste caso, ele trocaria somente uma
+ocorrÃªncia que satisfaÃ§a o que especificamos, ou seja, um caractere 1
+antes de uma vÃ­rgula. Na Ãºltima opÃ§Ã£o, adicionamos o <CODE>g</CODE>, para trocarmos
+todos os 1 por 0. Mas tambÃ©m falhou, pois como o sed lÃª a linha e
+executa o comando uma Ãºnica vez, ele irÃ¡ procurar satisfazer o que
+especificamos, ou seja, um caractere 1 antes de uma vÃ­rgula.
 <P>
 Para resolver este problema, precisamos usar o desvio. Relembrando, queremos
-trocar todas as ocorrências do caractere 1 antes de uma vírgula por 0.
-O comando para solucionar o problema é:
+trocar todas as ocorrÃªncias do caractere 1 antes de uma vÃ­rgula por 0.
+O comando para solucionar o problema Ã©:
 <P>
 <PRE>
   prompt&gt; echo 121,123 | sed ':a;s/^\([^,]*\)1/\10/;ta'
   020,123
 </PRE>
 <P>
-No início marcamos um label (<CODE>:a</CODE>), após realizamos a substituição
-do caractere 1 antes de uma vírgula (<CODE>s/^\([^,]*\)1/\10/</CODE>).
-Caso ocorra sucesso na substituição, pulamos para o label <CODE>a</CODE> (<CODE>ta</CODE>).
-Note que quando realizamos o desvio, o sed não irá ler a próxima linha,
+No inÃ­cio marcamos um label (<CODE>:a</CODE>), apÃ³s realizamos a substituiÃ§Ã£o
+do caractere 1 antes de uma vÃ­rgula (<CODE>s/^\([^,]*\)1/\10/</CODE>).
+Caso ocorra sucesso na substituiÃ§Ã£o, pulamos para o label <CODE>a</CODE> (<CODE>ta</CODE>).
+Note que quando realizamos o desvio, o sed nÃ£o irÃ¡ ler a prÃ³xima linha,
 e sim executar o mesmo comando sobre a linha, mas a linha modificada pela
-substituição anterior. Assim, executamos a substituição enquanto
-encontramos algum caractere 1 antes de uma vírgula.
+substituiÃ§Ã£o anterior. Assim, executamos a substituiÃ§Ã£o enquanto
+encontramos algum caractere 1 antes de uma vÃ­rgula.
 <P>
 Passo-a-passo:
-Na primeira execução, ocorre sucesso na substituição, assim a linha
-121,123 vira 120,123, como ocorreu sucesso na substituição pulamos com
-esta linha para o label '<CODE>a</CODE>'. Então, sobre a linha 120,123 ocorre uma
-nova substituição, virando assim 020,123. Como ocorreu sucesso na
-substituição, pulamos novamente para o label '<CODE>a</CODE>'. Deste modo, tentamos de
-novo realizar a substituição sobre a linha 020,123. Neste caso, ocorre
-falha, pois não existe mais o caractere 1 antes de uma vírgula e assim
-não pulamos para o label '<CODE>a</CODE>' e o sed irá ler a próxima linha que é EOF,
-assim encerrando sua execução.
+Na primeira execuÃ§Ã£o, ocorre sucesso na substituiÃ§Ã£o, assim a linha
+121,123 vira 120,123, como ocorreu sucesso na substituiÃ§Ã£o pulamos com
+esta linha para o label '<CODE>a</CODE>'. EntÃ£o, sobre a linha 120,123 ocorre uma
+nova substituiÃ§Ã£o, virando assim 020,123. Como ocorreu sucesso na
+substituiÃ§Ã£o, pulamos novamente para o label '<CODE>a</CODE>'. Deste modo, tentamos de
+novo realizar a substituiÃ§Ã£o sobre a linha 020,123. Neste caso, ocorre
+falha, pois nÃ£o existe mais o caractere 1 antes de uma vÃ­rgula e assim
+nÃ£o pulamos para o label '<CODE>a</CODE>' e o sed irÃ¡ ler a prÃ³xima linha que Ã© EOF,
+assim encerrando sua execuÃ§Ã£o.
 <P>
-Só para testar, vamos experimentar trocar o desvio condicional (<CODE>t</CODE>) pelo
+SÃ³ para testar, vamos experimentar trocar o desvio condicional (<CODE>t</CODE>) pelo
 desvio incondicional (<CODE>b</CODE>).
 <P>
 <PRE>
   prompt&gt; echo 121,123 | sed ':a;s/^\([^,]*\)1/\10/;ba'
 </PRE>
 <P>
-A execução entra em loop infinito. Nossa entrada após a primeira
-execução vira 120,123, após a segunda vira 020,123. Na próxima execução
-não ocorrerá mais nenhuma substituição, mas como nós não levamos em
-conta o sucesso ou não, nós simplesmente pulamos para o label '<CODE>a</CODE>' e o
-sed não lê a próxima linha, ficaremos neste loop "para sempre".
+A execuÃ§Ã£o entra em loop infinito. Nossa entrada apÃ³s a primeira
+execuÃ§Ã£o vira 120,123, apÃ³s a segunda vira 020,123. Na prÃ³xima execuÃ§Ã£o
+nÃ£o ocorrerÃ¡ mais nenhuma substituiÃ§Ã£o, mas como nÃ³s nÃ£o levamos em
+conta o sucesso ou nÃ£o, nÃ³s simplesmente pulamos para o label '<CODE>a</CODE>' e o
+sed nÃ£o lÃª a prÃ³xima linha, ficaremos neste loop "para sempre".
 <P>
 <H2>b desvio incondicional</H2>
 <P>
 Para ilustrar o seu funcionamento utilizaremos um exemplo de como 
-usar funções em sed, em outras palavras, o uso tradicional do GOTO.
+usar funÃ§Ãµes em sed, em outras palavras, o uso tradicional do GOTO.
 <P>
-Vamos ver um "diagrama" do fluxo de execução.
+Vamos ver um "diagrama" do fluxo de execuÃ§Ã£o.
 Eu sei que ficou tosco, mas meu lado artista ainda nao desabrochou =8)
 <P>
 <P ALIGN="center"><IMG ALIGN="center" SRC="sedbranch.png" BORDER="0"></P>
@@ -122,51 +122,51 @@ Eu sei que ficou tosco, mas meu lado artista ainda nao desabrochou =8)
   prompt&gt; cat func.sed
   #!/bin/sed -f
   #
-  # exemplo: emulando o uso de funções com o sed
+  # exemplo: emulando o uso de funÃ§Ãµes com o sed
   #
   
-  # início da execução, pulamos para o label 'main'
+  # inÃ­cio da execuÃ§Ã£o, pulamos para o label 'main'
   b main
   
-  # código da função 1. Ela troca vogais de minúsculas 
-  # para maiúsculas
+  # cÃ³digo da funÃ§Ã£o 1. Ela troca vogais de minÃºsculas 
+  # para maiÃºsculas
   :func1
   	s/f1/f1\
   /
   	y/aeiou/AEIOU/
-  	# lemos a próxima linha ('instrução')
+  	# lemos a prÃ³xima linha ('instruÃ§Ã£o')
   	n
   	# pulamos para o 'main'
   	b main
   
-  # código da função 2. Ela troca espaço por \n (newline)
-  # e coloca três espaços no início da linha
+  # cÃ³digo da funÃ§Ã£o 2. Ela troca espaÃ§o por \n (newline)
+  # e coloca trÃªs espaÃ§os no inÃ­cio da linha
   :func2
-  	#troca espaço por \n
+  	#troca espaÃ§o por \n
   	s/ /\
      /g
-      # lê a próxima linha
+      # lÃª a prÃ³xima linha
   	n
   	# pula pro label 'main'
   	b main
   
-  # função principal, que recebe a função desejada com seus 
-  # parâmetros e chama a função.
+  # funÃ§Ã£o principal, que recebe a funÃ§Ã£o desejada com seus 
+  # parÃ¢metros e chama a funÃ§Ã£o.
   :main
   	# se recebemos f1, pulamos para o label 'func1'
   	/f1/ b func1
   	# se recebemos f2, pulamos para o label 'func2'
   	/f2/ b func2
-  	# se recebemos sair, finalizamos a execução (q)
+  	# se recebemos sair, finalizamos a execuÃ§Ã£o (q)
   	/sair/ q
-  	# se não entrou em nenhuma destas opções, é opção desconhecida
+  	# se nÃ£o entrou em nenhuma destas opÃ§Ãµes, Ã© opÃ§Ã£o desconhecida
   	s/.*/opcao invalida/
 </PRE>
 <P>
-A idéia é usar o <CODE>'f[12]'</CODE> para especificar a função desejada e o '<CODE>b label</CODE>'
+A idÃ©ia Ã© usar o <CODE>'f[12]'</CODE> para especificar a funÃ§Ã£o desejada e o '<CODE>b label</CODE>'
 para pular de um ponto para outro do programa, alterando o fluxo 'normal'
-de execução.
-Então, para testarmos executamos este script sed:
+de execuÃ§Ã£o.
+EntÃ£o, para testarmos executamos este script sed:
 <P>
 <PRE>
   prompt&gt; ./func.sed 
@@ -191,7 +191,7 @@ Então, para testarmos executamos este script sed:
   prompt&gt; 
 </PRE>
 <P>
-Podemos chamar este script passando as instruções via "|" (pipe).
+Podemos chamar este script passando as instruÃ§Ãµes via "|" (pipe).
 <P>
 <PRE>
   prompt&gt; echo -e 'f1 bagunce estas vogais \nf2 bagunce estas vogais' | ./func.sed
@@ -210,57 +210,57 @@ Podemos chamar este script passando as instruções via "|" (pipe).
   prompt&gt;
 </PRE>
 <P>
-Note que na segunda execução, colocamos a palavra '<CODE>sair</CODE>', então o script ao
-encontrá-la, finaliza sua execução sem executar a próxima linha, no caso o
+Note que na segunda execuÃ§Ã£o, colocamos a palavra '<CODE>sair</CODE>', entÃ£o o script ao
+encontrÃ¡-la, finaliza sua execuÃ§Ã£o sem executar a prÃ³xima linha, no caso o
 '<CODE>f2</CODE>'.
 <P>
-Vamos à um outro exemplo do uso do desvio incondicional.
+Vamos Ã  um outro exemplo do uso do desvio incondicional.
 <P>
-Imagine que queremos imprimir somente da linha que contém a palavra
-'<CODE>dois</CODE>' até a que contém a palavra '<CODE>cinco</CODE>'. Como entrada tempos o seguinte
+Imagine que queremos imprimir somente da linha que contÃ©m a palavra
+'<CODE>dois</CODE>' atÃ© a que contÃ©m a palavra '<CODE>cinco</CODE>'. Como entrada tempos o seguinte
 arquivo:
 <P>
 <PRE>
   prompt&gt; cat arquivo.txt
   um
   dois
-  três
+  trÃªs
   quatro
   cinco
   seis
 </PRE>
 <P>
-Mas note que não sabemos quantas linhas existem antes da linha com '<CODE>dois</CODE>',
-entre a linha '<CODE>dois</CODE>' e '<CODE>cinco</CODE>' e após a linha '<CODE>cinco</CODE>'. Nossa primeira
-tentativa é:
+Mas note que nÃ£o sabemos quantas linhas existem antes da linha com '<CODE>dois</CODE>',
+entre a linha '<CODE>dois</CODE>' e '<CODE>cinco</CODE>' e apÃ³s a linha '<CODE>cinco</CODE>'. Nossa primeira
+tentativa Ã©:
 <P>
 <PRE>
   prompt&gt; sed -n '/dois/,/cinco/p' arquivo.txt
   dois
-  três
+  trÃªs
   quatro
   cinco
 </PRE>
 <P>
-Funcionou perfeito, mas não sabemos quantas linhas existem antes de '<CODE>dois</CODE>'
+Funcionou perfeito, mas nÃ£o sabemos quantas linhas existem antes de '<CODE>dois</CODE>'
 e '<CODE>cinco</CODE>', assim elas podem estar na mesma linha. Vamos testar esta
-solução.
+soluÃ§Ã£o.
 <P>
 <PRE>
   prompt&gt; cat arquivo.txt
   um
   dois cinco
-  três
+  trÃªs
   seis
   
   prompt&gt; sed -n '/dois/,/cinco/p' arquivo.txt
   dois cinco
-  três
+  trÃªs
   seis
 </PRE>
 <P>
-Ou seja, esta solução não funciona se as palavras estiverem na mesma
-linha, visto que ele imprimiu da linha que contém '<CODE>dois</CODE>' até o final do
+Ou seja, esta soluÃ§Ã£o nÃ£o funciona se as palavras estiverem na mesma
+linha, visto que ele imprimiu da linha que contÃ©m '<CODE>dois</CODE>' atÃ© o final do
 arquivo. Para solucionar vamos usar o desvio incondicional.
 <P>
 <PRE>
@@ -268,43 +268,43 @@ arquivo. Para solucionar vamos usar o desvio incondicional.
   dois cinco
 </PRE>
 <P>
-Quando chegamos na linha que contém '<CODE>dois</CODE>' realizamos o que está entre
+Quando chegamos na linha que contÃ©m '<CODE>dois</CODE>' realizamos o que estÃ¡ entre
 chaves <CODE>{:a;/cinco/!{N;ba;};p;}</CODE>. Primeiro marcamos um label 'a', depois
-testamos se a linha contém a palavra '<CODE>cinco</CODE>', caso contenha, <B>não</B>
-executamos o <CODE>{N;ba;}</CODE>, imprimimos a linha '<CODE>;p;}</CODE>' e encerramos. Isto é o que
-ocorre se '<CODE>dois</CODE>' e '<CODE>cinco</CODE>' estão na mesma linha.
-Caso elas não estejam ocorre o seguinte.
+testamos se a linha contÃ©m a palavra '<CODE>cinco</CODE>', caso contenha, <B>nÃ£o</B>
+executamos o <CODE>{N;ba;}</CODE>, imprimimos a linha '<CODE>;p;}</CODE>' e encerramos. Isto Ã© o que
+ocorre se '<CODE>dois</CODE>' e '<CODE>cinco</CODE>' estÃ£o na mesma linha.
+Caso elas nÃ£o estejam ocorre o seguinte.
 <P>
 <PRE>
   prompt&gt; cat arquivo.txt
   um
   dois
-  três
+  trÃªs
   quatro
   cinco
   seis
   
   prompt&gt; sed -n '/dois/{:a;/cinco/!{N;ba;};p;}' arquivo.txt
   dois
-  três
+  trÃªs
   quatro
   cinco
 </PRE>
 <P>
-Na linha que contém a palavra <CODE>dois</CODE> executamos o que está entre chaves
-'<CODE>{:a;/cinco/!{N;ba;};p;}</CODE>', primeiro marcamos um label '<CODE>a</CODE>', então
-testamos se a linha contém a palavra '<CODE>cinco</CODE>', como <B>não contém</B> executamos o
-que está entre chaves '<CODE>{N;ba;}</CODE>', ou seja, lemos a próxima linha e
-pulamos para para o label '<CODE>a</CODE>'. Testamos novamente, caso não exista lemos a
-próxima linha e pulamos para o label '<CODE>a</CODE>'. Entramos neste loop até
-encontrarmos uma linha que contém a palavra '<CODE>cinco</CODE>'. Quando encontrarmos
-<B>não entraremos</B> nas chaves <CODE>{N;ba;}</CODE>, imprimimos o que está no espaço
-padrão '<CODE>;p;}</CODE>', ou seja, todas as linhas entre '<CODE>dois</CODE>' e '<CODE>cinco</CODE>' incluindo as
-mesmas, depois lemos a próxima linha (se existir) e voltamos a repetir todo
+Na linha que contÃ©m a palavra <CODE>dois</CODE> executamos o que estÃ¡ entre chaves
+'<CODE>{:a;/cinco/!{N;ba;};p;}</CODE>', primeiro marcamos um label '<CODE>a</CODE>', entÃ£o
+testamos se a linha contÃ©m a palavra '<CODE>cinco</CODE>', como <B>nÃ£o contÃ©m</B> executamos o
+que estÃ¡ entre chaves '<CODE>{N;ba;}</CODE>', ou seja, lemos a prÃ³xima linha e
+pulamos para para o label '<CODE>a</CODE>'. Testamos novamente, caso nÃ£o exista lemos a
+prÃ³xima linha e pulamos para o label '<CODE>a</CODE>'. Entramos neste loop atÃ©
+encontrarmos uma linha que contÃ©m a palavra '<CODE>cinco</CODE>'. Quando encontrarmos
+<B>nÃ£o entraremos</B> nas chaves <CODE>{N;ba;}</CODE>, imprimimos o que estÃ¡ no espaÃ§o
+padrÃ£o '<CODE>;p;}</CODE>', ou seja, todas as linhas entre '<CODE>dois</CODE>' e '<CODE>cinco</CODE>' incluindo as
+mesmas, depois lemos a prÃ³xima linha (se existir) e voltamos a repetir todo
 o processo.
 <P>
-Simples não !?
-Agora é so usufruir destas características no seus SEDs. :)
+Simples nÃ£o !?
+Agora Ã© so usufruir destas caracterÃ­sticas no seus SEDs. :)
 <P>
 <HR NOSHADE SIZE=5>
 <P>

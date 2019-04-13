@@ -2,7 +2,7 @@
 <HTML>
 <HEAD>
 <META NAME="generator" CONTENT="http://txt2tags.sf.net">
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <LINK REL="stylesheet" TYPE="text/css" HREF="fwchange.css">
 <TITLE>fwchange</TITLE>
 </HEAD><BODY BGCOLOR="white" TEXT="black">
@@ -17,21 +17,21 @@ Atualizado em 02 Feb 2005
 <P></P>
   <UL>
   <LI><A HREF="#toc1">Oi</A>
-  <LI><A HREF="#toc2">Introdução</A>
+  <LI><A HREF="#toc2">IntroduÃ§Ã£o</A>
   <LI><A HREF="#toc3">fwchange</A>
-  <LI><A HREF="#toc4">Download &amp; Instalação</A>
-  <LI><A HREF="#toc5">As Funções</A>
+  <LI><A HREF="#toc4">Download &amp; InstalaÃ§Ã£o</A>
+  <LI><A HREF="#toc5">As FunÃ§Ãµes</A>
     <UL>
-    <LI><A HREF="#toc6">Opções Gerais</A>
+    <LI><A HREF="#toc6">OpÃ§Ãµes Gerais</A>
     <LI><A HREF="#toc7">ipblock</A>
     <LI><A HREF="#toc8">ipaccept</A>
     <LI><A HREF="#toc9">portblock</A>
     <LI><A HREF="#toc10">portaccept</A>
     <LI><A HREF="#toc11">iplimit</A>
     <LI><A HREF="#toc12">portlimit</A>
-    <LI><A HREF="#toc13">Controle de Mudanças</A>
+    <LI><A HREF="#toc13">Controle de MudanÃ§as</A>
     </UL>
-  <LI><A HREF="#toc14">Inspiração</A>
+  <LI><A HREF="#toc14">InspiraÃ§Ã£o</A>
   <LI><A HREF="#toc15">Fim</A>
   </UL>
 
@@ -41,38 +41,38 @@ Atualizado em 02 Feb 2005
 <A NAME="toc1"></A>
 <H1>Oi</H1>
 <P>
-Esta é a página do programa fwchange. Um shell-script feito para facilitar
-mudanças rápidas em um firewall.
+Esta Ã© a pÃ¡gina do programa fwchange. Um shell-script feito para facilitar
+mudanÃ§as rÃ¡pidas em um firewall.
 </P>
 <A NAME="toc2"></A>
-<H1>Introdução</H1>
+<H1>IntroduÃ§Ã£o</H1>
 <P>
-Hoje em dia, firewalls são utilizados desde pequenas/grandes empresas a
-usuários domésticos. Os administradores têm seus scripts de
-firewall que podem ter centenas/milhares de linhas. Para realizar mudanças
-no comportamento do firewall é necessário abrir o script em um editor de texto,
-procurar onde se deve incorporar a mudança e recarregar as regras. Neste
-processo perde-se tempo, ainda mais se forem mudanças temporárias.
-Com o intuito de facilitar e economizar a execução deste processo surgiu o
+Hoje em dia, firewalls sÃ£o utilizados desde pequenas/grandes empresas a
+usuÃ¡rios domÃ©sticos. Os administradores tÃªm seus scripts de
+firewall que podem ter centenas/milhares de linhas. Para realizar mudanÃ§as
+no comportamento do firewall Ã© necessÃ¡rio abrir o script em um editor de texto,
+procurar onde se deve incorporar a mudanÃ§a e recarregar as regras. Neste
+processo perde-se tempo, ainda mais se forem mudanÃ§as temporÃ¡rias.
+Com o intuito de facilitar e economizar a execuÃ§Ã£o deste processo surgiu o
 fwchange.
 </P>
 <P>
-Alguns exemplos de como este script pode ajudar na manutenção:
+Alguns exemplos de como este script pode ajudar na manutenÃ§Ã£o:
 </P>
 <OL>
-<LI>imagine que você tem um servidor cheio de músicas e vídeos e um amigo
-pede para você liberar o acesso para ele neste servidor. Realizar todo
-o processo descrito acima para uma tarefa tão simples é chato.
+<LI>imagine que vocÃª tem um servidor cheio de mÃºsicas e vÃ­deos e um amigo
+pede para vocÃª liberar o acesso para ele neste servidor. Realizar todo
+o processo descrito acima para uma tarefa tÃ£o simples Ã© chato.
 <P></P>
-<LI>você tem um servidor de mail que começa a ser bombardeado por spams que
-estão sendo enviados por um determinado IP e você quer bloqueá-lo no
+<LI>vocÃª tem um servidor de mail que comeÃ§a a ser bombardeado por spams que
+estÃ£o sendo enviados por um determinado IP e vocÃª quer bloqueÃ¡-lo no
 seu firewall.
 </OL>
 
 <P>
-Para estas e outras situações o fwchange é ideal, pois permite você
-realizar estas mudanças de maneira extremanente rápida. Ele mantém ainda
-um histórico das regras que foram executadas através do script e estão
+Para estas e outras situaÃ§Ãµes o fwchange Ã© ideal, pois permite vocÃª
+realizar estas mudanÃ§as de maneira extremanente rÃ¡pida. Ele mantÃ©m ainda
+um histÃ³rico das regras que foram executadas atravÃ©s do script e estÃ£o
 ativas no firewall.
 </P>
 <HR NOSHADE SIZE=5>
@@ -80,26 +80,26 @@ ativas no firewall.
 <A NAME="toc3"></A>
 <H1>fwchange</H1>
 <P>
-O fwcange é implementado de maneira genérica, deste modo pode-se
+O fwcange Ã© implementado de maneira genÃ©rica, deste modo pode-se
 adicionar facilmente suporte a diversos tipos de firewalls, como
 por exemplo: iptables, ipchains, ipfw etc.
-A interface do programa é a mesma, independente do tipo de firewall
+A interface do programa Ã© a mesma, independente do tipo de firewall
 utilizado.
 </P>
 <P>
-Os firewalls suportados atualmente são: <A HREF="http://www.netfilter.org">iptables</A>
+Os firewalls suportados atualmente sÃ£o: <A HREF="http://www.netfilter.org">iptables</A>
 e <A HREF="http://www.netfilter.org/ipchains">ipchains</A>.
 </P>
 <P>
-Se o fwchange não tem suporte para o tipo de firewall que você utiliza me envie um mail para adicionarmos.
+Se o fwchange nÃ£o tem suporte para o tipo de firewall que vocÃª utiliza me envie um mail para adicionarmos.
 </P>
 <P>
-Atualmente as funções disponíveis são:
+Atualmente as funÃ§Ãµes disponÃ­veis sÃ£o:
 </P>
 <TABLE ALIGN="center" CELLPADDING="4" BORDER="1">
 <TR>
 <TD>ajuda</TD>
-<TD>mostra a ajuda de todas as funções</TD>
+<TD>mostra a ajuda de todas as funÃ§Ãµes</TD>
 </TR>
 <TR>
 <TD>ipblock</TD>
@@ -119,11 +119,11 @@ Atualmente as funções disponíveis são:
 </TR>
 <TR>
 <TD>iplimit</TD>
-<TD>limita o número de conexões abertas para um IP ou sub-rede</TD>
+<TD>limita o nÃºmero de conexÃµes abertas para um IP ou sub-rede</TD>
 </TR>
 <TR>
 <TD>portlimit</TD>
-<TD>limita o número de conexões abertas para uma porta TCP ou UDP</TD>
+<TD>limita o nÃºmero de conexÃµes abertas para uma porta TCP ou UDP</TD>
 </TR>
 </TABLE>
 
@@ -131,40 +131,40 @@ Atualmente as funções disponíveis são:
 <HR NOSHADE SIZE=5>
 <P></P>
 <A NAME="toc4"></A>
-<H1>Download &amp; Instalação</H1>
+<H1>Download &amp; InstalaÃ§Ã£o</H1>
 <P>
-O fwchange é implentado no shell <B>bash</B>. As ferramentas necessárias para
-a sua execução são: bash, sed e grep.
+O fwchange Ã© implentado no shell <B>bash</B>. As ferramentas necessÃ¡rias para
+a sua execuÃ§Ã£o sÃ£o: bash, sed e grep.
 </P>
 <P>
-O script está todo em um único arquivo, basta baixá-lo: <A HREF="fwchange">fwchange</A>.
-Depois dê permissão de execução:
+O script estÃ¡ todo em um Ãºnico arquivo, basta baixÃ¡-lo: <A HREF="fwchange">fwchange</A>.
+Depois dÃª permissÃ£o de execuÃ§Ã£o:
 </P>
 <PRE>
   prompt&gt; chmod +x fwchange
 </PRE>
 <P></P>
 <P>
-Dependendo do seu Sistema Operacional algumas variáveis, talvez, precisem
+Dependendo do seu Sistema Operacional algumas variÃ¡veis, talvez, precisem
 ser ajustadas:
 </P>
 <UL>
-<LI>onde vai ficar o arquivo com o histórico:
+<LI>onde vai ficar o arquivo com o histÃ³rico:
 <PRE>
   fwhistory='/root/fwchange_history.txt'
 </PRE>
 <P></P>
-<LI>caminho para o binário do iptables:
+<LI>caminho para o binÃ¡rio do iptables:
 <PRE>
   ipt='/sbin/iptables'
 </PRE>
 <P></P>
-<LI>caminho para o binário do ipchains:
+<LI>caminho para o binÃ¡rio do ipchains:
 <PRE>
   ipc='/sbin/ipchains'
 </PRE>
 <P></P>
-<LI>tipo de firewall utilizado (default é iptables).
+<LI>tipo de firewall utilizado (default Ã© iptables).
  <I>fw='_ipt'</I> para iptables e <I>fw='_ipc'</I> para ipchains.
 <PRE>
   fw='_ipt'
@@ -172,34 +172,34 @@ ser ajustadas:
 </UL>
 
 <UL>
-<LI>mostra os comandos que o fwchange executa no firewall (default é mostrar):
+<LI>mostra os comandos que o fwchange executa no firewall (default Ã© mostrar):
 <PRE>
   verbose='1'
 </PRE>
 </UL>
 
 <P>
-Após os ajustes basta executar o fwchange na linha de comando.
+ApÃ³s os ajustes basta executar o fwchange na linha de comando.
 </P>
 <P>
-OBS: fwchange precisa de permissão de root para ser executado.
+OBS: fwchange precisa de permissÃ£o de root para ser executado.
 </P>
 <PRE>
   prompt&gt; ./fwchange -h
-  Uso: fwchange &lt;função&gt; [&lt;parâmetros&gt;]
+  Uso: fwchange &lt;funÃ§Ã£o&gt; [&lt;parÃ¢metros&gt;]
        fwchange [--help|--version]
   
-       Dica: Para listar as funções disponíveis e a sua ajuda use:
+       Dica: Para listar as funÃ§Ãµes disponÃ­veis e a sua ajuda use:
        prompt$ fwchange ajuda
   
-       As funções disponíveis atualmente são:
+       As funÃ§Ãµes disponÃ­veis atualmente sÃ£o:
   
   ipblock, ipaccept, portblock, portaccept, iplimit, portlimit, ajuda
 </PRE>
 <P></P>
 <P>
 <B>Dica</B>: Podem ser utilizados <I>aliases</I> para digitar direto o nome da
-função na linha de comando:
+funÃ§Ã£o na linha de comando:
 </P>
 <PRE>
   prompt&gt; alias ipblock='/root/fwchange ipblock'
@@ -211,36 +211,36 @@ Adicione os aliases no seu arquivo <I>.bashrc</I> para serem carregados no
 login.
 </P>
 <P>
-Hora da diversão.
+Hora da diversÃ£o.
 </P>
 <HR NOSHADE SIZE=5>
 <P></P>
 <A NAME="toc5"></A>
-<H1>As Funções</H1>
+<H1>As FunÃ§Ãµes</H1>
 <P>
-Para executar é só chamar a função desejada com as suas opções.
+Para executar Ã© sÃ³ chamar a funÃ§Ã£o desejada com as suas opÃ§Ãµes.
 </P>
 <A NAME="toc6"></A>
-<H2>Opções Gerais</H2>
+<H2>OpÃ§Ãµes Gerais</H2>
 <P>
-Algumas considerações sobre as opções que existem em todas as funções:
+Algumas consideraÃ§Ãµes sobre as opÃ§Ãµes que existem em todas as funÃ§Ãµes:
 </P>
 <UL>
-<LI><I>--chain</I> os valores possíveis são: <I>input</I>, <I>output</I> e <I>forward</I>
-  que são pacotes destinados ao firewall, pacotes que saem (origem) do
-  firewall e pacotes que passam pelo firewall, respectivamente. Se não for
-  especificada, a regra é adicionada em todas as <I>chains</I>.
+<LI><I>--chain</I> os valores possÃ­veis sÃ£o: <I>input</I>, <I>output</I> e <I>forward</I>
+  que sÃ£o pacotes destinados ao firewall, pacotes que saem (origem) do
+  firewall e pacotes que passam pelo firewall, respectivamente. Se nÃ£o for
+  especificada, a regra Ã© adicionada em todas as <I>chains</I>.
 <P></P>
 <LI><I>on</I> e <I>off</I> indica se a regra deve ser ativada ou desativada.
 <P></P>
-<LI><I>-c</I> comentário que será adicionado no arquivo com o histórico das
+<LI><I>-c</I> comentÃ¡rio que serÃ¡ adicionado no arquivo com o histÃ³rico das
   regras ativas.
 <P></P>
-<LI><I>--help</I> mostra a ajuda da função.
+<LI><I>--help</I> mostra a ajuda da funÃ§Ã£o.
 </UL>
 
 <P>
-OBS: Nas opções que têm como parâmetro <I>IP/máscara</I>, a máscara pode ser
+OBS: Nas opÃ§Ãµes que tÃªm como parÃ¢metro <I>IP/mÃ¡scara</I>, a mÃ¡scara pode ser
 informada tanto no formato CIDR quanto no <I>dotted decimal</I>.
 Exemplo: 10.10.10.0/24 ou 10.10.10.0/255.255.255.0
 </P>
@@ -249,12 +249,12 @@ Exemplo: 10.10.10.0/24 ou 10.10.10.0/255.255.255.0
 <A NAME="toc7"></A>
 <H2>ipblock</H2>
 <P>
-Esta função bloqueia um IP ou uma sub-rede. Se nenhum parâmetro
-for passado ou for '--list' são listados todos os IPs bloqueados.
-Se a máscara não for especificada é utilizada a <I>/32</I>.
+Esta funÃ§Ã£o bloqueia um IP ou uma sub-rede. Se nenhum parÃ¢metro
+for passado ou for '--list' sÃ£o listados todos os IPs bloqueados.
+Se a mÃ¡scara nÃ£o for especificada Ã© utilizada a <I>/32</I>.
 </P>
 <PRE>
-  Uso: ipblock [--chain ...] IP[/netmask] on|off [-c comentário]
+  Uso: ipblock [--chain ...] IP[/netmask] on|off [-c comentÃ¡rio]
                [--list|--help]
 </PRE>
 <P></P>
@@ -310,7 +310,7 @@ Especificar quais <I>chains</I> devem ser afetadas pela regra:
 </PRE>
 <P></P>
 <P>
-Adicionar regra com comentário:
+Adicionar regra com comentÃ¡rio:
 </P>
 <PRE>
   prompt&gt; ./fwchange ipblock 192.168.10.0/24 on -c bloqueia rede do lab
@@ -334,20 +334,20 @@ Mostrar as regras ativas:
 <A NAME="toc8"></A>
 <H2>ipaccept</H2>
 <P>
-Possui as mesmas opções da função ipblock, mas libera um IP ou uma
+Possui as mesmas opÃ§Ãµes da funÃ§Ã£o ipblock, mas libera um IP ou uma
 sub-rede.
 </P>
 <PRE>
   prompt&gt; ./fwchange ipaccept --help
   
-  Libera um determinado endereço IP ou uma sub-rede
-  OBS1: Se nenhum parâmetro for passado ou for '--list' são listados
-  todos os IPs bloqueados por esta função
-  OBS2: Os valores possíveis para a opção chain são: INPUT,OUTPUT,FORWARD
-  As chains devem estar separadas por vírgula e não pode ter espaços
+  Libera um determinado endereÃ§o IP ou uma sub-rede
+  OBS1: Se nenhum parÃ¢metro for passado ou for '--list' sÃ£o listados
+  todos os IPs bloqueados por esta funÃ§Ã£o
+  OBS2: Os valores possÃ­veis para a opÃ§Ã£o chain sÃ£o: INPUT,OUTPUT,FORWARD
+  As chains devem estar separadas por vÃ­rgula e nÃ£o pode ter espaÃ§os
   entre elas
   
-  Uso: ipaccept [--chain ...] IP[/netmask] on|off [-c comentário]
+  Uso: ipaccept [--chain ...] IP[/netmask] on|off [-c comentÃ¡rio]
                 [--list|--help]
   Ex.: ipaccept 10.10.10.3 on -c bloqueia ip do fulano
   Ex.: ipaccept 10.10.10.3 off
@@ -362,11 +362,11 @@ sub-rede.
 <A NAME="toc9"></A>
 <H2>portblock</H2>
 <P>
-Bloqueia uma determinada porta TCP ou UDP. Se não for especificado, o
-protocolo utilizado é o TCP.
+Bloqueia uma determinada porta TCP ou UDP. Se nÃ£o for especificado, o
+protocolo utilizado Ã© o TCP.
 </P>
 <PRE>
-  Uso: portblock [--chain ...] [--proto tcp|udp] porta on|off [-c comentário]
+  Uso: portblock [--chain ...] [--proto tcp|udp] porta on|off [-c comentÃ¡rio]
                  [--list|--help]
 </PRE>
 <P></P>
@@ -405,7 +405,7 @@ Especificar as <I>chains</I> da regra:
 </PRE>
 <P></P>
 <P>
-Mostrar as regras ativas desta função:
+Mostrar as regras ativas desta funÃ§Ã£o:
 </P>
 <PRE>
   prompt&gt; ./fwchange portblock --list
@@ -440,16 +440,16 @@ Apagar as regras anteriores:
 <A NAME="toc10"></A>
 <H2>portaccept</H2>
 <P>
-Possui as mesmas opções da função portblock, mas libera uma porta TCP ou
+Possui as mesmas opÃ§Ãµes da funÃ§Ã£o portblock, mas libera uma porta TCP ou
 UDP.
 </P>
 <PRE>
   prompt&gt; ./fwchange portaccept -h
   
   Libera uma determinada porta tcp ou udp
-  OBS: se não for especificado, o protocolo utilizado é o tcp
+  OBS: se nÃ£o for especificado, o protocolo utilizado Ã© o tcp
   
-  Uso: portaccept [--chain ...] [--proto tcp|udp] porta on|off [-c comentário]
+  Uso: portaccept [--chain ...] [--proto tcp|udp] porta on|off [-c comentÃ¡rio]
                   [--list|--help]
   Ex.: portaccept 80 on
   Ex.: portaccept --proto udp 53 on
@@ -464,17 +464,17 @@ UDP.
 <A NAME="toc11"></A>
 <H2>iplimit</H2>
 <P>
-Limita o número de conexões abertas (NEW) de um IP ou sub-rede.
+Limita o nÃºmero de conexÃµes abertas (NEW) de um IP ou sub-rede.
 </P>
 <TABLE ALIGN="center" CELLPADDING="4">
 <TR>
-<TD>OBS: Esta opção só está disponível para firewall iptables.</TD>
+<TD>OBS: Esta opÃ§Ã£o sÃ³ estÃ¡ disponÃ­vel para firewall iptables.</TD>
 </TR>
 </TABLE>
 
 <P></P>
 <PRE>
-  Uso: iplimit [--chain ...] IP[/netmask] intervalo escala on|off [-c comentário]
+  Uso: iplimit [--chain ...] IP[/netmask] intervalo escala on|off [-c comentÃ¡rio]
                [--list|--help]
 </PRE>
 <P></P>
@@ -485,7 +485,7 @@ A escala pode ser: 'second', 'minute', 'hour' ou 'day'
 Exemplos:
 </P>
 <P>
-Limitar um IP para 2 conexões por dia:
+Limitar um IP para 2 conexÃµes por dia:
 </P>
 <PRE>
   prompt&gt; ./fwchange iplimit 10.10.10.3 2 day on
@@ -499,7 +499,7 @@ Limitar um IP para 2 conexões por dia:
 </PRE>
 <P></P>
 <P>
-Limitar uma sub-rede na <I>chain</I> input para 5 conexões por segundo:
+Limitar uma sub-rede na <I>chain</I> input para 5 conexÃµes por segundo:
 </P>
 <PRE>
   prompt&gt; ./fwchange iplimit --chain input 10.10.10.0/255.255.255.0 5 second on
@@ -543,17 +543,17 @@ Apagar as regras anteriores:
 <A NAME="toc12"></A>
 <H2>portlimit</H2>
 <P>
-Limita o número de conexões abertas de uma porta TCP ou UDP.
+Limita o nÃºmero de conexÃµes abertas de uma porta TCP ou UDP.
 </P>
 <TABLE ALIGN="center" CELLPADDING="4">
 <TR>
-<TD>OBS: Esta opção só está disponível para firewall iptables.</TD>
+<TD>OBS: Esta opÃ§Ã£o sÃ³ estÃ¡ disponÃ­vel para firewall iptables.</TD>
 </TR>
 </TABLE>
 
 <P></P>
 <PRE>
-  Uso: portlimit [--chain ...] [--proto tcp|udp] porta intervalo escala on|off [-c comentário]
+  Uso: portlimit [--chain ...] [--proto tcp|udp] porta intervalo escala on|off [-c comentÃ¡rio]
                  [--list|--help]
 </PRE>
 <P>
@@ -563,7 +563,7 @@ A escala pode ser: 'second', 'minute', 'hour' ou 'day'
 Exemplos de uso:
 </P>
 <P>
-Limitar o número de conexões na porta 80 para 5 por segundo:
+Limitar o nÃºmero de conexÃµes na porta 80 para 5 por segundo:
 </P>
 <PRE>
   prompt&gt; ./fwchange portlimit 80 5 second on
@@ -577,7 +577,7 @@ Limitar o número de conexões na porta 80 para 5 por segundo:
 </PRE>
 <P></P>
 <P>
-Limitar o número de conexõs na <I>chain input</I> da porta udp 123 para 2 por dia:
+Limitar o nÃºmero de conexÃµs na <I>chain input</I> da porta udp 123 para 2 por dia:
 </P>
 <PRE>
   prompt&gt; ./fwchange portlimit --chain input --proto udp 123 2 day on
@@ -619,11 +619,11 @@ Apagar as regras:
 <HR NOSHADE SIZE=5>
 <P></P>
 <A NAME="toc13"></A>
-<H2>Controle de Mudanças</H2>
+<H2>Controle de MudanÃ§as</H2>
 <P>
-O fwchange tem total controle através do arquivo de histórico de quais
-regras estão ativas. Deste modo não deixa você bloquear/aceitar/limitar
-duas vezes o mesmo IP/porta bem como retirar regras que não estão ativas.
+O fwchange tem total controle atravÃ©s do arquivo de histÃ³rico de quais
+regras estÃ£o ativas. Deste modo nÃ£o deixa vocÃª bloquear/aceitar/limitar
+duas vezes o mesmo IP/porta bem como retirar regras que nÃ£o estÃ£o ativas.
 </P>
 <PRE>
   prompt&gt; ./fwchange ipblock 10.10.10.3 on
@@ -646,9 +646,9 @@ duas vezes o mesmo IP/porta bem como retirar regras que não estão ativas.
 </PRE>
 <P></P>
 <P>
-Para manter consistência das chains do arquivo de histórico e das regras do
-firewall, quando uma função é chamada com a opção <I>off</I>, as chains são
-lidas do arquivo de históricos do fwchange, ou seja, ele não respeita as
+Para manter consistÃªncia das chains do arquivo de histÃ³rico e das regras do
+firewall, quando uma funÃ§Ã£o Ã© chamada com a opÃ§Ã£o <I>off</I>, as chains sÃ£o
+lidas do arquivo de histÃ³ricos do fwchange, ou seja, ele nÃ£o respeita as
 chains passadas na linha de comando:
 </P>
 <PRE>
@@ -666,9 +666,9 @@ chains passadas na linha de comando:
 <HR NOSHADE SIZE=5>
 <P></P>
 <A NAME="toc14"></A>
-<H1>Inspiração</H1>
+<H1>InspiraÃ§Ã£o</H1>
 <P>
-A idéia deste script foi inspirada no artigo de Daniel Robbins
+A idÃ©ia deste script foi inspirada no artigo de Daniel Robbins
 <A HREF="http://www-106.ibm.com/developerworks/linux/library/l-fw/?n-l-4191">Dynamic iptables firewalls</A>
 .
 </P>
@@ -677,7 +677,7 @@ A idéia deste script foi inspirada no artigo de Daniel Robbins
 <A NAME="toc15"></A>
 <H1>Fim</H1>
 <P>
-Se tiver alguma sugestão/comentário/aviso de bug... me envie um mail:
+Se tiver alguma sugestÃ£o/comentÃ¡rio/aviso de bug... me envie um mail:
 </P>
 <TABLE ALIGN="center" CELLPADDING="4">
 <TR>

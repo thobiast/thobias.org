@@ -1,22 +1,22 @@
-Converter Arquivos de Áudio
+Converter Arquivos de Ãudio
 Thobias Salazar Trevisan
 %%date(%d/%m/%Y)
 
 %!target: html
 %!options: --style audio.css --toc
 
-=Introdução=
+=IntroduÃ§Ã£o=
 
-O objetivo deste texto é juntar em um único documento scripts //one-line//
-prontos para copiar e colar que fazem a conversão entre os principais
-formatos de áudio existente.
+O objetivo deste texto Ã© juntar em um Ãºnico documento scripts //one-line//
+prontos para copiar e colar que fazem a conversÃ£o entre os principais
+formatos de Ã¡udio existente.
 
-Se você está sentindo falta de algum formato, sabe de uma outra
-maneira ou outro programa que faça estas conversões me mande um
-mail. Contribua!! Ajude a tornar este texto útil. =8)
+Se vocÃª estÃ¡ sentindo falta de algum formato, sabe de uma outra
+maneira ou outro programa que faÃ§a estas conversÃµes me mande um
+mail. Contribua!! Ajude a tornar este texto Ãºtil. =8)
 
 **OBS**: Note que utilizei o "for" para listar os arquivos, portanto, caso
-os seus arquivos tenham espaços em branco no nome, você tem que trocar o IFS
+os seus arquivos tenham espaÃ§os em branco no nome, vocÃª tem que trocar o IFS
 para "\n" ou utilizar o "while".
 
 Exemplo:
@@ -30,21 +30,21 @@ ou
 
 ``` prompt> while read i; do .... ; done < <(ls *.mp3) 
 
-Ah, ou antes de executar os comandos use a função zzarrumanome das
+Ah, ou antes de executar os comandos use a funÃ§Ã£o zzarrumanome das
 [funcoeszz http://aurelio.net/zz], muito bom para organizar
-o nome dos arquivos de áudio.
+o nome dos arquivos de Ã¡udio.
 
 ```
 prompt> zzarrumanome --help
 
-Renomeia arquivos do diretório atual, arrumando nomes estranhos.
-Obs.: ele deixa tudo em minúsculas, retira acentuação e troca espaços em
-      branco, símbolos e pontuação pelo sublinhado _
-Use o -r para ser recursivo e o -d para renomear diretórios também
+Renomeia arquivos do diretÃ³rio atual, arrumando nomes estranhos.
+Obs.: ele deixa tudo em minÃºsculas, retira acentuaÃ§Ã£o e troca espaÃ§os em
+      branco, sÃ­mbolos e pontuaÃ§Ã£o pelo sublinhado _
+Use o -r para ser recursivo e o -d para renomear diretÃ³rios tambÃ©m
 Uso: zzarrumanome [-d] [-r] arquivo(s)
 Ex.: zzarrumanome *
      zzarrumanome -d -r .
-     zzarrumanome "DOCUMENTO MALÃO!.DOC"       # fica documento_malao.doc
+     zzarrumanome "DOCUMENTO MALÃƒO!.DOC"       # fica documento_malao.doc
      zzarrumanome "RAMONES - I Don't Care"     # fica ramones-i_don_t_care
 ```
 
@@ -52,10 +52,10 @@ Ex.: zzarrumanome *
 
 =MP3 to WAV=
 
-Uma das maneiras de realizar esta conversão é utilizando o programa
+Uma das maneiras de realizar esta conversÃ£o Ã© utilizando o programa
 [mpg123 http://www.mpg123.org].
 
-Para conveter todos os mp3 do diretório atual para wav:
+Para conveter todos os mp3 do diretÃ³rio atual para wav:
 
 ``` prompt> for i in *.mp3; do mpg123 -w "${i%.mp3}.wav" "$i"; done 
 
@@ -72,8 +72,8 @@ Usando o [lame http://lame.sourceforge.net]:
 =WAV to OGG=
 
 Usando o [oggenc http://www.gnu.org/directory/audio/ogg/OggEnc.html].
-A opção "-q" indica a qualidade do
-arquivo gerado. O default é 3 e o máximo é 10, que significa a melhor
+A opÃ§Ã£o "-q" indica a qualidade do
+arquivo gerado. O default Ã© 3 e o mÃ¡ximo Ã© 10, que significa a melhor
 qualidade.
 
 ``` prompt> for i in *.wav; do oggenc -q 5 "$i"; done
@@ -125,14 +125,14 @@ Ripar todo CD usando o [cdparanoia http://www.xiph.org/paranoia]:
 
 ``` prompt> cdparanoia -B
 
-Colocar todo os WAV na mesma frequência:
+Colocar todo os WAV na mesma frequÃªncia:
 
 ``` prompt> for i in *.wav; do sox "$i" -r 44100 "arquivo_novo_$i" ; done
 
 Ajustar o volume dos arquivos WAV usando o
 [normalize http://freshmeat.net/projects/normalize].
-Antes de gravar um CD de áudio execute
-este comando para deixar todas as músicas com o mesmo volume:
+Antes de gravar um CD de Ã¡udio execute
+este comando para deixar todas as mÃºsicas com o mesmo volume:
 
 ``` prompt> normalize -m *.wav
 

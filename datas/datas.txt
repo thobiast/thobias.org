@@ -1,21 +1,21 @@
 # datas.txt - http://thobias.org/datas
 #
-# Esse arquivo contém os compromissos agendados.
-# Sua estrutura é:
+# Esse arquivo contÃ©m os compromissos agendados.
+# Sua estrutura Ã©:
 # DD - compromisso/lembrete
 #
-# Observações:
-# - É necessário respeitar a estrutura deste arquivo para adicionar
-#   seus lembretes e, as linhas indicando os meses, _NÃO_ podem ser
-#   apagadas, mesmo que não exista nenhum lembrete no mês.
+# ObservaÃ§Ãµes:
+# - Ã‰ necessÃ¡rio respeitar a estrutura deste arquivo para adicionar
+#   seus lembretes e, as linhas indicando os meses, _NÃƒO_ podem ser
+#   apagadas, mesmo que nÃ£o exista nenhum lembrete no mÃªs.
 #
-# - O "mês 00" é uma configuração especial no arquivo datas.txt. os
-#   lembretes adicionados nele, serão lembrados em todos os meses
-#   reais. Deste modo, você não precisa adicionar a mesma entrada em
-#   todos os mês. Útil para lembrete como: para pagar a conta de luz
+# - O "mÃªs 00" Ã© uma configuraÃ§Ã£o especial no arquivo datas.txt. os
+#   lembretes adicionados nele, serÃ£o lembrados em todos os meses
+#   reais. Deste modo, vocÃª nÃ£o precisa adicionar a mesma entrada em
+#   todos os mÃªs. Ãštil para lembrete como: para pagar a conta de luz
 #   todo o dia 10.
 #
-# - Para acrescentar lembretes é só colocá-los logo abaixo do mês
+# - Para acrescentar lembretes Ã© sÃ³ colocÃ¡-los logo abaixo do mÃªs
 #   correspondente.
 ##########################################################################
 
@@ -25,7 +25,7 @@
 
 # 02 - fevereiro
 
-# 03 - março
+# 03 - marÃ§o
 
 # 04 - abril
 

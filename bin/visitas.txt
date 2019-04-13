@@ -3,49 +3,49 @@
 # Livro de Visitas
 # Thobias Salazar Trevisan 
 #
-# atualizações:
-# 25/03/2004 - Primeira versão
+# atualizaÃ§Ãµes:
+# 25/03/2004 - Primeira versÃ£o
 # 
 #
 ########################################################################
 #
 ### CONFIGS
 #
-# arquivo que conterá todas as mensagens do livro
-# quando criar este arquivo é necessário que ele tenha pelo menos
-# um caractere para podermos utilizar 'sed 1r arquivo', então
+# arquivo que conterÃ¡ todas as mensagens do livro
+# quando criar este arquivo Ã© necessÃ¡rio que ele tenha pelo menos
+# um caractere para podermos utilizar 'sed 1r arquivo', entÃ£o
 # use 'echo > $arq_visita'
 arq_visita='/tmp/visitas_meu_site.html'
 #
-# arquivo temporário para guardar a mensagem vinda do POST
+# arquivo temporÃ¡rio para guardar a mensagem vinda do POST
 temp_file='/tmp/visitas_post.txt'
 #
-# diretório para criar arquivos temporários
+# diretÃ³rio para criar arquivos temporÃ¡rios
 temp_dir='/tmp'
 #
-# diretório utilizado como lock pelo script
-# podemos utilizar está abordagem por sabermos que a
-# criação de um diretório é atômica
+# diretÃ³rio utilizado como lock pelo script
+# podemos utilizar estÃ¡ abordagem por sabermos que a
+# criaÃ§Ã£o de um diretÃ³rio Ã© atÃ´mica
 dir_lock='/tmp/lock_diretorio_livro_de_visitas'
 #
-# título da página
+# tÃ­tulo da pÃ¡gina
 titulo='Livro de Visitas'
 #
-# cores da página
+# cores da pÃ¡gina
 page_color='black'
 text_color='snow'
 link_color='lightgreen'
 #
-# coloque 1 para quando receber uma mensagem no livro receber também 
-# uma cópia por email
+# coloque 1 para quando receber uma mensagem no livro receber tambÃ©m 
+# uma cÃ³pia por email
 SEND_MAIL=0
-# email que receberá uma cópia
+# email que receberÃ¡ uma cÃ³pia
 MAIL='seu_email'
 #
 ########################################################################
 
 # ----------------------------------------------------------------------
-# monta o formulário para a postagem de uma nova mensgem no livro
+# monta o formulÃ¡rio para a postagem de uma nova mensgem no livro
 # ----------------------------------------------------------------------
 monta_formulario(){
 local estados="AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ \
@@ -78,21 +78,21 @@ Estado:
 # adiciona uma nova mensagem no livro
 # ----------------------------------------------------------------------
 adiciona_msg(){
-# temp_html arquivo que conterá a mensagem recebia via POST
-# já formatada para o livro de visitas, isto é, em html
+# temp_html arquivo que conterÃ¡ a mensagem recebia via POST
+# jÃ¡ formatada para o livro de visitas, isto Ã©, em html
 local tem temp_html="$temp_dir/livro_visitas_temp.html"
 
 # link de fd 6 com a stdout e redireciona a stdout para um arquivo.
 # a partir daqui toda a stdout vai para $temp_html
 exec 6>&1; exec > $temp_html
 
-echo "<!--  ========== INÍCIO DA MENSAGEM ==========  -->"
+echo "<!--  ========== INÃCIO DA MENSAGEM ==========  -->"
 
 date '+%d/%m/%Y'
 
 # pega somente o nome 
 tem=$(sed -n '1s/nome=\([^&]*\)&.*/\1/p' $temp_file)
-[ "$tem" ] && echo "<b>$tem</b>" || echo '<b>anônimo</b>'
+[ "$tem" ] && echo "<b>$tem</b>" || echo '<b>anÃ´nimo</b>'
 
 # pega somente o mail 
 tem=$(sed -n '1s/.*mail=\([^&]*\)&.*/\1/p' $temp_file)
@@ -110,53 +110,53 @@ echo "<hr noshade>
 # restaura a stdout e fecha o fd 6
 exec 1>&6 6>&- ;
 
-# testa se já existe o arquivo com as mensagens
+# testa se jÃ¡ existe o arquivo com as mensagens
 [ -f "$arq_visita" ] || echo > $arq_visita # precisamos de pelo menos um char
 
-# adiciona a nova mensagem no início do arquivo
+# adiciona a nova mensagem no inÃ­cio do arquivo
 ( rm -f $arq_visita; sed "1r $temp_html" > $arq_visita  ) < $arq_visita
 
-# envia uma cópia da mensagem recebia para um e-mail
+# envia uma cÃ³pia da mensagem recebia para um e-mail
 [ "$SEND_MAIL" = "1" ] && mail -s 'Livro de Visitas' $MAIL < $temp_file
 }
 
 # ----------------------------------------------------------------------
-# testa se o script está recebendo dados via POST e trata
-# os mesmos se necessário
+# testa se o script estÃ¡ recebendo dados via POST e trata
+# os mesmos se necessÃ¡rio
 # ----------------------------------------------------------------------
 testa_post(){
 
-# utilizamos um diretório como lock para não sobrescrevermos o arquivo
-# com os dados recebidos via POST enquanto o mesmo está sendo processado
+# utilizamos um diretÃ³rio como lock para nÃ£o sobrescrevermos o arquivo
+# com os dados recebidos via POST enquanto o mesmo estÃ¡ sendo processado
 trap 'rmdir ${dir_lock:-VARIAVEL_VAZIA} >/dev/null 2>&1;return' 1 2 3 15
 while ! mkdir $dir_lock >/dev/null 2>&1 ; do sleep 1;done
 
-# faz o urldecode. copiado com algumas modificações de 
+# faz o urldecode. copiado com algumas modificaÃ§Ãµes de 
 # http://aurelio.net/sed/programas/unescape.sed
 sed 's/+/ /g;s/%40/@/g;s/%0[Dd]%0[Aa]/\
 /g;s/%09/	/g;s/%21/!/g;s/%22/"/g;s/%23/#/g;s/%24/$/g;s/%26/\&/g;s/%27/'\''/g
 s/%28/\(/g;s/%29/\)/g;s/%2B/+/g;s/%2C/,/g;s/%2F/\//g;s/%3A/:/g;s/%3B/;/g
 s/%3C/</g;s/%3D/=/g;s/%3E/>/g;s/%3F/?/g;s/%5B/[/g;s/%5C/\\/g;s/%5D/]/g
-s/%5E/^/g;s/%60/`/g;s/%7B/{/g;s/%7C/|/g;s/%7D/}/g;s/%7E/~/g;s/%A1/¡/g
-s/%A2/¢/g;s/%A3/£/g;s/%A4/¤/g;s/%A5/¥/g;s/%A6/¦/g;s/%A7/§/g;s/%A8/¨/g
-s/%A9/©/g;s/%AA/ª/g;s/%AB/«/g;s/%AC/¬/g;s/%AD/­/g;s/%AE/®/g;s/%AF/¯/g
-s/%B0/°/g;s/%B1/±/g;s/%B2/²/g;s/%B3/³/g;s/%B4/´/g;s/%B5/µ/g;s/%B6/¶/g
-s/%B7/·/g;s/%B8/¸/g;s/%B9/¹/g;s/%BA/º/g;s/%BB/»/g;s/%BC/¼/g;s/%BD/½/g
-s/%BE/¾/g;s/%BF/¿/g;s/%C0/À/g;s/%C1/Á/g;s/%C2/Â/g;s/%C3/Ã/g;s/%C4/Ä/g
-s/%C5/Å/g;s/%C6/Æ/g;s/%C7/Ç/g;s/%C8/È/g;s/%C9/É/g;s/%CA/Ê/g;s/%CB/Ë/g
-s/%CC/Ì/g;s/%CD/Í/g;s/%CE/Î/g;s/%CF/Ï/g;s/%D0/Ð/g;s/%D1/Ñ/g;s/%D2/Ò/g
-s/%D3/Ó/g;s/%D4/Ô/g;s/%D5/Õ/g;s/%D6/Ö/g;s/%D7/×/g;s/%D8/Ø/g;s/%D9/Ù/g
-s/%DA/Ú/g;s/%DB/Û/g;s/%DC/Ü/g;s/%DD/Ý/g;s/%DE/Þ/g;s/%DF/ß/g;s/%E0/à/g
-s/%E1/á/g;s/%E2/â/g;s/%E3/ã/g;s/%E4/ä/g;s/%E5/å/g;s/%E6/æ/g;s/%E7/ç/g
-s/%E8/è/g;s/%E9/é/g;s/%EA/ê/g;s/%EB/ë/g;s/%EC/ì/g;s/%ED/í/g;s/%EE/î/g
-s/%EF/ï/g;s/%F0/ð/g;s/%F1/ñ/g;s/%F2/ò/g;s/%F3/ó/g;s/%F4/ô/g;s/%F5/õ/g
-s/%F6/ö/g;s/%F7/÷/g;s/%F8/ø/g;s/%F9/ù/g;s/%FA/ú/g;s/%FB/û/g;s/%FC/ü/g
-s/%FD/ý/g;s/%FE/þ/g;s/%FF/ÿ/g;s/%25/%/g' > $temp_file
+s/%5E/^/g;s/%60/`/g;s/%7B/{/g;s/%7C/|/g;s/%7D/}/g;s/%7E/~/g;s/%A1/Â¡/g
+s/%A2/Â¢/g;s/%A3/Â£/g;s/%A4/Â¤/g;s/%A5/Â¥/g;s/%A6/Â¦/g;s/%A7/Â§/g;s/%A8/Â¨/g
+s/%A9/Â©/g;s/%AA/Âª/g;s/%AB/Â«/g;s/%AC/Â¬/g;s/%AD/Â­/g;s/%AE/Â®/g;s/%AF/Â¯/g
+s/%B0/Â°/g;s/%B1/Â±/g;s/%B2/Â²/g;s/%B3/Â³/g;s/%B4/Â´/g;s/%B5/Âµ/g;s/%B6/Â¶/g
+s/%B7/Â·/g;s/%B8/Â¸/g;s/%B9/Â¹/g;s/%BA/Âº/g;s/%BB/Â»/g;s/%BC/Â¼/g;s/%BD/Â½/g
+s/%BE/Â¾/g;s/%BF/Â¿/g;s/%C0/Ã€/g;s/%C1/Ã/g;s/%C2/Ã‚/g;s/%C3/Ãƒ/g;s/%C4/Ã„/g
+s/%C5/Ã…/g;s/%C6/Ã†/g;s/%C7/Ã‡/g;s/%C8/Ãˆ/g;s/%C9/Ã‰/g;s/%CA/ÃŠ/g;s/%CB/Ã‹/g
+s/%CC/ÃŒ/g;s/%CD/Ã/g;s/%CE/ÃŽ/g;s/%CF/Ã/g;s/%D0/Ã/g;s/%D1/Ã‘/g;s/%D2/Ã’/g
+s/%D3/Ã“/g;s/%D4/Ã”/g;s/%D5/Ã•/g;s/%D6/Ã–/g;s/%D7/Ã—/g;s/%D8/Ã˜/g;s/%D9/Ã™/g
+s/%DA/Ãš/g;s/%DB/Ã›/g;s/%DC/Ãœ/g;s/%DD/Ã/g;s/%DE/Ãž/g;s/%DF/ÃŸ/g;s/%E0/Ã /g
+s/%E1/Ã¡/g;s/%E2/Ã¢/g;s/%E3/Ã£/g;s/%E4/Ã¤/g;s/%E5/Ã¥/g;s/%E6/Ã¦/g;s/%E7/Ã§/g
+s/%E8/Ã¨/g;s/%E9/Ã©/g;s/%EA/Ãª/g;s/%EB/Ã«/g;s/%EC/Ã¬/g;s/%ED/Ã­/g;s/%EE/Ã®/g
+s/%EF/Ã¯/g;s/%F0/Ã°/g;s/%F1/Ã±/g;s/%F2/Ã²/g;s/%F3/Ã³/g;s/%F4/Ã´/g;s/%F5/Ãµ/g
+s/%F6/Ã¶/g;s/%F7/Ã·/g;s/%F8/Ã¸/g;s/%F9/Ã¹/g;s/%FA/Ãº/g;s/%FB/Ã»/g;s/%FC/Ã¼/g
+s/%FD/Ã½/g;s/%FE/Ã¾/g;s/%FF/Ã¿/g;s/%25/%/g' > $temp_file
 
-# se temos input ele está em $temp_file
+# se temos input ele estÃ¡ em $temp_file
 [ -s $temp_file ] && adiciona_msg 
 
-# apaga o nosso diretório de lock 
+# apaga o nosso diretÃ³rio de lock 
 rmdir "${dir_lock:-VARIAVEL_VAZIA}"
 }
 

@@ -1,7 +1,7 @@
 TSM
 Stuff about IBM Tivoli Storage Manager
 
-%!encoding: iso-8859-1
+%!encoding: utf-8
 %!Style   : tsm.css
 %!target  : html
 %!Options : --toc --mask-email --css-sugar

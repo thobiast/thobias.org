@@ -1,30 +1,30 @@
 #!/bin/bash
 #
-# A vers„o do programa Einstein em shell script.
-# esse programa rolou na internet h· alguns anos atr·s.
+# A vers√£o do programa Einstein em shell script.
+# esse programa rolou na internet h√° alguns anos atr√°s.
 #
-# D· para brincar com muita gente que n„o È da ·rea :)
+# D√° para brincar com muita gente que n√£o √© da √°rea :)
 #
-# como perdi e, a vers„o que tinha era para windows, fiz
+# como perdi e, a vers√£o que tinha era para windows, fiz
 # uma para unix.
 #
 # Thobias Salazar Trevisan 
 
 
-f1="Meu am·vel guru, por favor me responda"
+f1="Meu am√°vel guru, por favor me responda"
 f2="Seu monte de lixo, responda"
 f3="Seu monte de bugigangas, responda"
 f4="Sua sucata e ameba, me responda"
-r1="N„o respondo para sub-alternos"
+r1="N√£o respondo para sub-alternos"
 r2="Vai procurar sua turma"
-r3="Hoje n„o È o seu dia"
-# se aumentar o n˙mero de perguntas possÌveis
+r3="Hoje n√£o √© o seu dia"
+# se aumentar o n√∫mero de perguntas poss√≠veis
 # modifiquei o valor 4 da linha abaixo 
 i=0;char_especial="/"; n="f$(($RANDOM%4+1))"
 
 read -s -n1 -p "
 	Bem-Vindo ao Einstein
-	FaÁa sua pergunta
+	Fa√ßa sua pergunta
 
 "
 if	[ "$REPLY" = "$char_especial" ];then REPLY=X
@@ -36,7 +36,7 @@ if	[ "$REPLY" = "$char_especial" ];then REPLY=X
 	done
 	read lixo; echo "Resposta: ${R%$char_especial*}"
 else
-# se aumentar o n˙mero de respostas possÌveis aumente o
+# se aumentar o n√∫mero de respostas poss√≠veis aumente o
 # valor 3 da linha abaixo    _
 	read lixo
 	n="r$(($RANDOM%3+1))"

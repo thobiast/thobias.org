@@ -6,13 +6,13 @@
 # sozinhos em uma linha.
 #
 # Note que para estas palavras-chave estejam na mesma linha
-# é necessário uma ;. Ex: if [ "$x" ];then
+# Ã© necessÃ¡rio uma ;. Ex: if [ "$x" ];then
 #
-# Então temos que substituir este ponto-e-vírgula por \n (new line)
+# EntÃ£o temos que substituir este ponto-e-vÃ­rgula por \n (new line)
 #
-# assim, o problema a resolver é:
-# trocar ; por \n quanto necessário, ou seja, não estar entre parênteses, 
-# crases, aspas, aspas-duplas, chaves, colchetes e não for comentário.
+# assim, o problema a resolver Ã©:
+# trocar ; por \n quanto necessÃ¡rio, ou seja, nÃ£o estar entre parÃªnteses, 
+# crases, aspas, aspas-duplas, chaves, colchetes e nÃ£o for comentÃ¡rio.
 #
 # Testanto:
 #
@@ -53,17 +53,17 @@
 	s/^\([^'"]*\)\(#.*\)/\1\
 \2/
 	h;s/\([^\n]*\).*/\1/
-	:a;s/^\([^"]*\)"\([^"]*\);\([^"]*\)"/\1ø1\2¿\3ø1/;ta
-	:b;s/^\([^']*\)'\([^']*\);\([^']*\)'/\1ø2\2¿\3ø2/;tb
-	:c;s/^\([^`]*\)`\([^`]*\);\([^`]*\)`/\1ø3\2¿\3ø3/;tc
-	:d;s/^\([^(]*\)(\([^)]*\);\([^)]*\))/\1ø4\2¿\3ø5/;td
-	:e;s/^\([^{]*\){\([^}]*\);\([^}]*\)}/\1ø6\2¿\3ø7/;te
-	:f;s/^\([^[]*\)\[\([^]]*\);\([^]]*\)\]/\1ø8\2¿\3ø9/;tf
+	:a;s/^\([^"]*\)"\([^"]*\);\([^"]*\)"/\1Ã¸1\2Â¿\3Ã¸1/;ta
+	:b;s/^\([^']*\)'\([^']*\);\([^']*\)'/\1Ã¸2\2Â¿\3Ã¸2/;tb
+	:c;s/^\([^`]*\)`\([^`]*\);\([^`]*\)`/\1Ã¸3\2Â¿\3Ã¸3/;tc
+	:d;s/^\([^(]*\)(\([^)]*\);\([^)]*\))/\1Ã¸4\2Â¿\3Ã¸5/;td
+	:e;s/^\([^{]*\){\([^}]*\);\([^}]*\)}/\1Ã¸6\2Â¿\3Ã¸7/;te
+	:f;s/^\([^[]*\)\[\([^]]*\);\([^]]*\)\]/\1Ã¸8\2Â¿\3Ã¸9/;tf
 	s/; *\(do\|then\|else\|done\|fi\)/\
 \1/g
-	s/¿/;/g;
-	s/ø1/"/g;s/ø2/'/g;s/ø3/`/g;s/ø4/(/g;s/ø5/)/g
-	s/ø6/{/g;s/ø7/}/g;s/ø8/[/g;s/ø9/]/g
+	s/Â¿/;/g;
+	s/Ã¸1/"/g;s/Ã¸2/'/g;s/Ã¸3/`/g;s/Ã¸4/(/g;s/Ã¸5/)/g
+	s/Ã¸6/{/g;s/Ã¸7/}/g;s/Ã¸8/[/g;s/Ã¸9/]/g
 	s/\(do\|then\|else\|done\|fi\) *;\?\( *[[:alnum:]]\+\)/\1\
  \2/g
 	p;

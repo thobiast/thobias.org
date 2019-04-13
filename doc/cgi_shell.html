@@ -15,62 +15,62 @@
 <P>
 <P>
  <OL>
- <LI><A HREF="#toc1">IntroduÁ„o</A>
- <LI><A HREF="#toc2">ConfiguraÁ„o</A>
+ <LI><A HREF="#toc1">Introdu√ß√£o</A>
+ <LI><A HREF="#toc2">Configura√ß√£o</A>
    <UL>
-   <LI><A HREF="#toc3">2.0.1. Algumas consideraÁıes importantes:</A>
+   <LI><A HREF="#toc3">2.0.1. Algumas considera√ß√µes importantes:</A>
    </UL>
- <LI><A HREF="#toc4">Divers„o</A>
+ <LI><A HREF="#toc4">Divers√£o</A>
   <UL>
   <LI><A HREF="#toc5">3.1. Iniciando</A>
-  <LI><A HREF="#toc6">3.2. MÈtodo GET</A>
-  <LI><A HREF="#toc7">3.3. MÈtodo POST</A>
+  <LI><A HREF="#toc6">3.2. M√©todo GET</A>
+  <LI><A HREF="#toc7">3.3. M√©todo POST</A>
   <LI><A HREF="#toc8">3.4. Upload</A>
   <LI><A HREF="#toc9">3.5. CheckBox</A>
   <LI><A HREF="#toc10">3.6. Radio Buttons</A>
-  <LI><A HREF="#toc11">3.7. Contador de Acesso GenÈrico</A>
+  <LI><A HREF="#toc11">3.7. Contador de Acesso Gen√©rico</A>
    <UL>
    <LI><A HREF="#toc12">3.7.1. SSI - Server Side Includes</A>
    <LI><A HREF="#toc13">3.7.2. Contador</A>
    </UL>
-  <LI><A HREF="#toc14">3.8. SeguranÁa</A>
+  <LI><A HREF="#toc14">3.8. Seguran√ßa</A>
    <UL>
-   <LI><A HREF="#toc15">3.8.1. IntroduÁ„o e ConfiguraÁ„o</A>
-   <LI><A HREF="#toc16">3.8.2. T·, e daÌ? Onde est· o CGI em Shell?</A>
+   <LI><A HREF="#toc15">3.8.1. Introdu√ß√£o e Configura√ß√£o</A>
+   <LI><A HREF="#toc16">3.8.2. T√°, e da√≠? Onde est√° o CGI em Shell?</A>
    </UL>
   </UL>
  <LI><A HREF="#toc17">LAN  +_+</A>
- <LI><A HREF="#toc18">Resum„o</A>
+ <LI><A HREF="#toc18">Resum√£o</A>
  </OL>
 <P>
 <HR NOSHADE SIZE=1>
 <P>
 <P>
 <a name="toc1"></a>
-<H1>1. IntroduÁ„o</H1>
+<H1>1. Introdu√ß√£o</H1>
 <P>
-CGI (Common Gateway Interface) È um serviÁo server-based o qual adiciona
-funcionalidade extra a uma p·gina. Esta funcionalidade È fornecida
-por um 'pequeno' programa ou 'script' que È executado no servidor onde a
-p·gina web fica. Estes programas podem ser feitos em diversas linguagens
+CGI (Common Gateway Interface) √© um servi√ßo server-based o qual adiciona
+funcionalidade extra a uma p√°gina. Esta funcionalidade √© fornecida
+por um 'pequeno' programa ou 'script' que √© executado no servidor onde a
+p√°gina web fica. Estes programas podem ser feitos em diversas linguagens
 como Perl, PHP, C, Shell Script, etc.
 <P>
-Como gosto muito de Shell Script resolvi escrever um tutorial b·sico
-sobre como fazer CGI em Shell. Isto tem v·rias vantagens, pois vocÍ pode 
-utilizar v·rios comandos do UNIX para ajudar a construir seu script, 
-por exemplo sed, awk, cut, grep, cat, echo, bc, etc. alÈm dos recursos 
-do prÛprio shell.
+Como gosto muito de Shell Script resolvi escrever um tutorial b√°sico
+sobre como fazer CGI em Shell. Isto tem v√°rias vantagens, pois voc√™ pode 
+utilizar v√°rios comandos do UNIX para ajudar a construir seu script, 
+por exemplo sed, awk, cut, grep, cat, echo, bc, etc. al√©m dos recursos 
+do pr√≥prio shell.
 <P>
-Ok, como este tutorial n„o vai ser muito grande, vamos direto ao ponto.
+Ok, como este tutorial n√£o vai ser muito grande, vamos direto ao ponto.
 <P>
 <a name="toc2"></a>
-<H1>2. ConfiguraÁ„o</H1>
+<H1>2. Configura√ß√£o</H1>
 <P>
 Como configurar o servidor web Apache para executar CGI ?
 <P>
-CGI È um mÛdulo do Apache, assim ele precisa ser carregado.
-A maioria das distribuiÁıes j· vem com o seu <I>httpd.conf</I> configurado com
-suporte ao mÛdulo do CGI (mod_cgi), bastando apenas iniciar o Apache. 
+CGI √© um m√≥dulo do Apache, assim ele precisa ser carregado.
+A maioria das distribui√ß√µes j√° vem com o seu <I>httpd.conf</I> configurado com
+suporte ao m√≥dulo do CGI (mod_cgi), bastando apenas iniciar o Apache. 
 Para se certificar procure e, se for o caso, descomente a seguinte 
 linha no seu <I>httpd.conf</I>: 
 <P>
@@ -78,36 +78,36 @@ linha no seu <I>httpd.conf</I>:
   LoadModule cgi_module /usr/lib/apache/1.3/mod_cgi.so
 </PRE>
 <P>
-<B>PS:</B> Note que a terceira coluna pode variar dependendo da vers„o do
-Apache e da distribuiÁ„o que vocÍ est· usando.
+<B>PS:</B> Note que a terceira coluna pode variar dependendo da vers√£o do
+Apache e da distribui√ß√£o que voc√™ est√° usando.
 <P>
-Existem diversas maneiras de configur·-lo: 
+Existem diversas maneiras de configur√°-lo: 
 <P>
 <OL>
 <LI>ScriptAlias
 <P>
-esta diretiva define um diretÛrio para o Apache onde ser„o armazenados os
-scripts CGI. Todos os arquivos que estiverem neste diretÛrio ser„o
-interpretados pelo Apache como programas CGI, assim ele tentar· execut·-los. 
+esta diretiva define um diret√≥rio para o Apache onde ser√£o armazenados os
+scripts CGI. Todos os arquivos que estiverem neste diret√≥rio ser√£o
+interpretados pelo Apache como programas CGI, assim ele tentar√° execut√°-los. 
 Adicione ou descomente a seguinte linha no seu arquivo <I>httpd.conf</I>
 <PRE>
   ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/ 
 </PRE>
 <P>
 <P>
-O exemplo acima instrui o Apache para que qualquer requisiÁ„o comeÁando por
-/<I>cgi-bin</I>/ deva ser acessada no diretÛrio /<I>usr/lib/cgi-bin</I>/ e deva
-ser tratada como um programa CGI, i.e., ele ir· executar o arquivo
+O exemplo acima instrui o Apache para que qualquer requisi√ß√£o come√ßando por
+/<I>cgi-bin</I>/ deva ser acessada no diret√≥rio /<I>usr/lib/cgi-bin</I>/ e deva
+ser tratada como um programa CGI, i.e., ele ir√° executar o arquivo
 requisitado.
 <P>
-se vocÍ acessar por exemplo <CODE>http://localhost/cgi-bin/meu_script.cgi</CODE>, o
-Apache ir· procurar este arquivo em
-/<I>usr/lib/cgi-bin/meu_script.cgi</I> e tentar· execut·-lo.
+se voc√™ acessar por exemplo <CODE>http://localhost/cgi-bin/meu_script.cgi</CODE>, o
+Apache ir√° procurar este arquivo em
+/<I>usr/lib/cgi-bin/meu_script.cgi</I> e tentar√° execut√°-lo.
 <P>
 <LI>fora do ScriptAlias
 <P>
-vocÍ pode especificar um diretÛrio particular e dar permiss„o para a
-execuÁ„o de CGIs.
+voc√™ pode especificar um diret√≥rio particular e dar permiss√£o para a
+execu√ß√£o de CGIs.
 <PRE>
   &lt;Directory /home/user/public_html/cgi-bin/&gt;
                   Options +ExecCGI
@@ -115,15 +115,15 @@ execuÁ„o de CGIs.
 </PRE>
 <P>
 <P>
-esta diretiva acima permite a execuÁ„o de CGIs, mas vocÍ ainda precisa 
-avisar o Apache que tipo de arquivos s„o estes CGIs. Procure 
+esta diretiva acima permite a execu√ß√£o de CGIs, mas voc√™ ainda precisa 
+avisar o Apache que tipo de arquivos s√£o estes CGIs. Procure 
 por uma linha igual ou semelhante a esta no seu <I>httpd.conf </I>e descomente.
 <PRE>
   AddHandler cgi-script .cgi .sh .pl
 </PRE>
 </OL>
-OBS: se vocÍ colocar um index.cgi em algum diretÛrio e quiser que por
-default o Apache execute-o, n„o se esqueÁa de adicionar esta extens„o no
+OBS: se voc√™ colocar um index.cgi em algum diret√≥rio e quiser que por
+default o Apache execute-o, n√£o se esque√ßa de adicionar esta extens√£o no
 seu <I>DirectoryIndex</I>.
 <P>
 <PRE>
@@ -132,34 +132,34 @@ seu <I>DirectoryIndex</I>.
   &lt;/IfModule&gt;
 </PRE>
 <P>
-O Apache ir· procurar pelo index.cgi seguindo a ordem dos argumentos, ou
-seja, o index.cgi ser· a ˙ltima opÁ„o que ele ir· procurar no diretÛrio.
+O Apache ir√° procurar pelo index.cgi seguindo a ordem dos argumentos, ou
+seja, o index.cgi ser√° a √∫ltima op√ß√£o que ele ir√° procurar no diret√≥rio.
 <P>
 <a name="toc3"></a>
-<H3>2.0.1. Algumas consideraÁıes importantes:</H3>
+<H3>2.0.1. Algumas considera√ß√µes importantes:</H3>
 <P>
  <UL>
- <LI>vocÍ n„o deve colocar seus scripts no document root do Apache,
-porque alguÈm pode pegar seus scripts, analis·-los procurando furos de
-seguranÁa, etc. AlÈm do mais, o cÛdigo do script n„o È o que vocÍ quer
-mostrar :)  Ent„o mantenha-os em /<I>usr/lib/cgi-bin</I> ou algum outro diretÛrio
+ <LI>voc√™ n√£o deve colocar seus scripts no document root do Apache,
+porque algu√©m pode pegar seus scripts, analis√°-los procurando furos de
+seguran√ßa, etc. Al√©m do mais, o c√≥digo do script n√£o √© o que voc√™ quer
+mostrar :)  Ent√£o mantenha-os em /<I>usr/lib/cgi-bin</I> ou algum outro diret√≥rio
 fora do document root.
 <P>
- <LI>o script precisa ser um execut·vel, n„o se esqueÁa de dar um <I>chmod</I>
-nele. Ah, certifique que o script tem permiss„o de execuÁ„o para o usu·rio
-que o Apache est· rodando.
+ <LI>o script precisa ser um execut√°vel, n√£o se esque√ßa de dar um <I>chmod</I>
+nele. Ah, certifique que o script tem permiss√£o de execu√ß√£o para o usu√°rio
+que o Apache est√° rodando.
  </UL>
 <a name="toc4"></a>
-<H1>3. Divers„o</H1>
+<H1>3. Divers√£o</H1>
 <a name="toc5"></a>
 <H2>3.1. Iniciando</H2>
-Assumimos que vocÍ j· tem o seu servidor web configurado para executar
-CGI. Agora È hora da divers„o :-)
+Assumimos que voc√™ j√° tem o seu servidor web configurado para executar
+CGI. Agora √© hora da divers√£o :-)
 <P>
-O b·sico que vocÍ precisa saber È que toda a saÌda padr„o (stdout) do seu 
+O b√°sico que voc√™ precisa saber √© que toda a sa√≠da padr√£o (stdout) do seu 
 script vai ser enviada para o browser.
 <P>
-O exemplo mais simples È vocÍ imprimir algo na tela. Vamos ao nosso exemplo:
+O exemplo mais simples √© voc√™ imprimir algo na tela. Vamos ao nosso exemplo:
 <P>
 <PRE>
   ================ simples.cgi ====================
@@ -179,10 +179,10 @@ O exemplo mais simples È vocÍ imprimir algo na tela. Vamos ao nosso exemplo:
 <P>
 Feito isto basta acessar o nosso arquivo.
 <A HREF="http://localhost/cgi-bin/simples.cgi">http://localhost/cgi-bin/simples.cgi</A>
-Ah, n„o se esqueÁa de colocar permiss„o de execuÁ„o no arquivo
+Ah, n√£o se esque√ßa de colocar permiss√£o de execu√ß√£o no arquivo
 <P>
-Ok, ent„o percebemos que toda saÌda do nosso script È enviada para o
-browser, toda a saÌda mesmo. Por exemplo, podemos utilizar a saÌda de um
+Ok, ent√£o percebemos que toda sa√≠da do nosso script √© enviada para o
+browser, toda a sa√≠da mesmo. Por exemplo, podemos utilizar a sa√≠da de um
 comando: 
 <P>
 <PRE>
@@ -197,14 +197,14 @@ comando:
   =================================================
 </PRE>
 <P>
-Quando utilizamos CGI o servidor coloca diversas informaÁıes sobre
-o cliente e o servidor em vari·veis de ambiente. Dentre estas informaÁıes
+Quando utilizamos CGI o servidor coloca diversas informa√ß√µes sobre
+o cliente e o servidor em vari√°veis de ambiente. Dentre estas informa√ß√µes
 pode-se destacar:
 <P>
 <table align="center" cellpadding=4 border=0>
 <tr>
 <td><I>DOCUMENT_ROOT</I></td>
-<td>diretÛrio root dos documentos html</td>
+<td>diret√≥rio root dos documentos html</td>
 </tr>
 <tr>
 <td><I>HTTP_ACCEPT</I></td>
@@ -224,7 +224,7 @@ pode-se destacar:
 </tr>
 <tr>
 <td><I>REQUEST_URI</I></td>
-<td>p·gina requisitada</td>
+<td>p√°gina requisitada</td>
 </tr>
 <tr>
 <td><I>SERVER_ADDR</I></td>
@@ -236,7 +236,7 @@ pode-se destacar:
 </tr>
 <tr>
 <td><I>SERVER_PORT</I></td>
-<td>porta que o servidor est· escutando</td>
+<td>porta que o servidor est√° escutando</td>
 </tr>
 <tr>
 <td><I>SERVER_SOFTWARE</I></td>
@@ -245,9 +245,9 @@ pode-se destacar:
 </table>
 
 <P>
-Para a lista completa destas vari·veis acesse <A HREF="http://hoohoo.ncsa.uiuc.edu/cgi/env.html">http://hoohoo.ncsa.uiuc.edu/cgi/env.html</A>.
+Para a lista completa destas vari√°veis acesse <A HREF="http://hoohoo.ncsa.uiuc.edu/cgi/env.html">http://hoohoo.ncsa.uiuc.edu/cgi/env.html</A>.
 <P>
-O exemplo a seguir mostra todas as vari·veis.
+O exemplo a seguir mostra todas as vari√°veis.
 <P>
 <PRE>
   ================ export.cgi =====================
@@ -264,23 +264,23 @@ O exemplo a seguir mostra todas as vari·veis.
   =================================================
 </PRE>
 <P>
-Okay, no protocolo http temos que enviar um cabeÁalho obrigatÛrio. 
+Okay, no protocolo http temos que enviar um cabe√ßalho obrigat√≥rio. 
 O primeiro echo sem string dentro de um script vai avisar o browser para 
-interpretar o que veio antes como cabeÁalho. Nos exemplos anteriores, a
+interpretar o que veio antes como cabe√ßalho. Nos exemplos anteriores, a
 seguinte linha  <I>content-type: text/plain</I>  informa ao browser
-para interpretar o que receber como texto puro. Se o cabeÁalho n„o possuir
-nenhuma linha, ou seja, colocarmos somente um echo, ser· utilizado o default 
-que normalmente È <I>text/plain</I>.
-Este default È configurado no arquivo <I>httpd.conf</I> do Apache na opÁ„o:
+para interpretar o que receber como texto puro. Se o cabe√ßalho n√£o possuir
+nenhuma linha, ou seja, colocarmos somente um echo, ser√° utilizado o default 
+que normalmente √© <I>text/plain</I>.
+Este default √© configurado no arquivo <I>httpd.conf</I> do Apache na op√ß√£o:
 <P>
 <PRE>
   DefaultType text/plain
 </PRE>
 <P>
-Ent„o para garantir procure sempre especificar o cabeÁalho!!
-Para enviarmos tags html e o browser interpret·-las, temos que utilizar um
-cabeÁalho diferente. Este cabeÁalho È <I>content-type: text/html</I>
-Ent„o vamos enviar tags html para deixar nossa saÌda mais bonita:
+Ent√£o para garantir procure sempre especificar o cabe√ßalho!!
+Para enviarmos tags html e o browser interpret√°-las, temos que utilizar um
+cabe√ßalho diferente. Este cabe√ßalho √© <I>content-type: text/html</I>
+Ent√£o vamos enviar tags html para deixar nossa sa√≠da mais bonita:
 <P>
 <PRE>
   ================ sobre.cgi ======================
@@ -292,7 +292,7 @@ Ent„o vamos enviar tags html para deixar nossa saÌda mais bonita:
   echo "
   &lt;html&gt; &lt;head&gt; &lt;title&gt; CGI script &lt;/title&gt; &lt;/head&gt;
   &lt;body&gt;
-  &lt;h1&gt;Algumas informaÁıes sobre a m·quina que o CGI est· rodando:&lt;/h1&gt;
+  &lt;h1&gt;Algumas informa√ß√µes sobre a m√°quina que o CGI est√° rodando:&lt;/h1&gt;
   "
   
   echo "&lt;h4&gt;uptime&lt;/h4&gt;"
@@ -312,9 +312,9 @@ Ent„o vamos enviar tags html para deixar nossa saÌda mais bonita:
 </PRE>
 <P>
 Um exemplo mais interessante seria como fazer um contador de acesso.
-A cada execuÁ„o do script o contador ser· incrementado, n„o importando se È
-uma solicitaÁ„o de reload de um mesmo endereÁo IP!!
-Isto È simples. Veja o exemplo: 
+A cada execu√ß√£o do script o contador ser√° incrementado, n√£o importando se √©
+uma solicita√ß√£o de reload de um mesmo endere√ßo IP!!
+Isto √© simples. Veja o exemplo: 
 <P>
 <PRE>
   ================ contador.cgi ===================
@@ -332,7 +332,7 @@ Isto È simples. Veja o exemplo:
   echo $((n=n+1)) &gt; "$ARQ"
   
   echo "
-  &lt;h1&gt;Esta p·gina j· foi visualizada: $n vezes&lt;/h1&gt;
+  &lt;h1&gt;Esta p√°gina j√° foi visualizada: $n vezes&lt;/h1&gt;
   &lt;br&gt;
   
   &lt;/body&gt;
@@ -340,38 +340,38 @@ Isto È simples. Veja o exemplo:
   =================================================
 </PRE>
 <P>
-Com o que sabemos atÈ agora, d· (ops!) para fazer v·rios script legais, 
+Com o que sabemos at√© agora, d√° (ops!) para fazer v√°rios script legais, 
 fazer monitoramento do sistema, de sua rede..., tudo via web.
 <P>
-Agora que j· aprendemos o b·sico, queremos interagir com o usu·rio.
-Neste ponto nÛs temos um detalhe, pois o nosso script n„o pode usar a
-entrada padr„o (stdin) para receber dados e n„o podemos fazer um <I>read</I> em um
-CGI, pois como nÛs leriamos o que o usu·rio digitasse no teclado? :) 
+Agora que j√° aprendemos o b√°sico, queremos interagir com o usu√°rio.
+Neste ponto n√≥s temos um detalhe, pois o nosso script n√£o pode usar a
+entrada padr√£o (stdin) para receber dados e n√£o podemos fazer um <I>read</I> em um
+CGI, pois como n√≥s leriamos o que o usu√°rio digitasse no teclado? :) 
 <P>
-Para realizar esta interaÁ„o existem duas maneiras. 
+Para realizar esta intera√ß√£o existem duas maneiras. 
 <P>
 <OL>
-<LI>atravÈs da URL, utilizando o mÈtodo GET, como por exemplo:
+<LI>atrav√©s da URL, utilizando o m√©todo GET, como por exemplo:
 <P>
 <CODE>http://localhost/cgi-bin/script.cgi?user=nobody&amp;profissao=vaga</CODE>
 <P>
-(veremos mais sobre o mÈtodo GET mais adiante)
+(veremos mais sobre o m√©todo GET mais adiante)
 <P>
-<LI>utilizando um formul·rio HTML. No FORM podemos utilizar dois mÈtodos, o GET
-e o POST. No mÈtodo GET, que È o default, os campos de input do FORM s„o
-concatenados a URL. J· no mÈtodo POST, os inputs s„o passados internamente do
-servidor para o script pela entrada padr„o.
+<LI>utilizando um formul√°rio HTML. No FORM podemos utilizar dois m√©todos, o GET
+e o POST. No m√©todo GET, que √© o default, os campos de input do FORM s√£o
+concatenados a URL. J√° no m√©todo POST, os inputs s√£o passados internamente do
+servidor para o script pela entrada padr√£o.
 </OL>
 <a name="toc6"></a>
-<H2>3.2. MÈtodo GET</H2>
+<H2>3.2. M√©todo GET</H2>
 <P>
-Usando o mÈtodo GET o nosso script deve pegar os inputs do usu·rio
-via uma vari·vel de ambiente, no caso a <B><I>$QUERY_STRING</I></B>.
-Tudo o que vier apÛs o caractere '?' na URL ser· colocado naquela vari·vel.
-Os campos de input do FORM s„o separados pelo caractere '&amp;' e
-possuem a seguinte construÁ„o: <I>name=value</I>.
+Usando o m√©todo GET o nosso script deve pegar os inputs do usu√°rio
+via uma vari√°vel de ambiente, no caso a <B><I>$QUERY_STRING</I></B>.
+Tudo o que vier ap√≥s o caractere '?' na URL ser√° colocado naquela vari√°vel.
+Os campos de input do FORM s√£o separados pelo caractere '&amp;' e
+possuem a seguinte constru√ß√£o: <I>name=value</I>.
 Vamos a um exemplo de um CGI que recebe como entrada um host
-que ser· executado no ping.
+que ser√° executado no ping.
 <P>
 <PRE>
   ================ ping_get.cgi ===================
@@ -410,15 +410,15 @@ que ser· executado no ping.
 </PRE>
 <P>
 <a name="toc7"></a>
-<H2>3.3. MÈtodo POST</H2>
+<H2>3.3. M√©todo POST</H2>
 <P>
-No mÈtodo POST as opÁıes do FORM n„o s„o passadas pela URL, elas s„o
+No m√©todo POST as op√ß√µes do FORM n√£o s√£o passadas pela URL, elas s√£o
 passadas internamente do servidor para o CGI. Deste modo, com este
-mÈtodo o nosso script deve ler as opÁıes pela entrada padr„o. Vamos a um
-exemplo em que o CGI envia um mail para alguÈm atravÈs da p·gina. Neste
+m√©todo o nosso script deve ler as op√ß√µes pela entrada padr√£o. Vamos a um
+exemplo em que o CGI envia um mail para algu√©m atrav√©s da p√°gina. Neste
 caso, um pouco mais complexo, temos dois arquivos. O primeiro um .html
-puro, onde construimos o FORM, e colocamos como opÁ„o '<I>action</I>' o nosso
-script. A opÁ„o action passada no FORM, indica qual script ser· chamado
+puro, onde construimos o FORM, e colocamos como op√ß√£o '<I>action</I>' o nosso
+script. A op√ß√£o action passada no FORM, indica qual script ser√° chamado
 para tratar os dados passados pelo FORM.
 <P>
 <PRE>
@@ -436,8 +436,8 @@ para tratar os dados passados pelo FORM.
   Selecione o assunto:
   &lt;select name="subject"&gt;
   &lt;option value="none"&gt;-------------------------
-  &lt;option value="venda"&gt;InformaÁıes sobre produto
-  &lt;option value="suporte"&gt;Suporte tÈcnico  
+  &lt;option value="venda"&gt;Informa√ß√µes sobre produto
+  &lt;option value="suporte"&gt;Suporte t√©cnico  
   &lt;option value="web"&gt;Problema no site
   &lt;/select&gt;
   &lt;p&gt;
@@ -454,7 +454,7 @@ para tratar os dados passados pelo FORM.
   =================================================
 </PRE>
 <P>
-Agora o nosso script lÍ da entrada padr„o e faz o tratamento necess·rio.
+Agora o nosso script l√™ da entrada padr√£o e faz o tratamento necess√°rio.
 Note que para enviar o mail, podemos utilizar qualquer programa de mail,
 por exemplo o mail, sendmail...
 <P>
@@ -495,11 +495,11 @@ por exemplo o mail, sendmail...
 </PRE>
 <P>
 Quando o seu servidor web envia os dados do FORM para o seu CGI, ele faz 
-um encode dos dados recebidos. Caracteres alfanumÈrico s„o enviados
-normalmente, espaÁos s„o convertidos para o sinal de mais (+), outros
-caracteres como tab, aspas s„o convertidos para %HH, onde HH s„o dois
-dÌgitos hexadecimais representando o cÛdigo ASCII do caractere. Este
-processo È chamado de URL encoding.
+um encode dos dados recebidos. Caracteres alfanum√©rico s√£o enviados
+normalmente, espa√ßos s√£o convertidos para o sinal de mais (+), outros
+caracteres como tab, aspas s√£o convertidos para %HH, onde HH s√£o dois
+d√≠gitos hexadecimais representando o c√≥digo ASCII do caractere. Este
+processo √© chamado de URL encoding.
 <P>
 Tabela para os caracteres mais comuns:
 <P>
@@ -543,19 +543,19 @@ Tabela para os caracteres mais comuns:
 </table>
 
 <P>
-Aqui v„o dois links para fazer e desfazer esta convers„o:
+Aqui v√£o dois links para fazer e desfazer esta convers√£o:
 <UL>
 <LI><A HREF="http://www.shelldorado.com/scripts/cmds/urlencode">http://www.shelldorado.com/scripts/cmds/urlencode</A>
 <LI><A HREF="http://www.shelldorado.com/scripts/cmds/urldecode">http://www.shelldorado.com/scripts/cmds/urldecode</A>
 </UL>
 <a name="toc8"></a>
 <H2>3.4. Upload</H2>
-Agora que j· sabemos utilizar os mÈtodos GET e POST vamos a um exemplo um
+Agora que j√° sabemos utilizar os m√©todos GET e POST vamos a um exemplo um
 pouco diferente. Vamos supor que precisamos fazer um CGI que permita
-o usu·rio fazer um upload de um arquivo para o servidor. Aqui utilizamos um
-FORM um pouco diferente. Falamos para o FORM utilizar um tipo de codificaÁ„o
+o usu√°rio fazer um upload de um arquivo para o servidor. Aqui utilizamos um
+FORM um pouco diferente. Falamos para o FORM utilizar um tipo de codifica√ß√£o
 diferente, no caso <I>enctype="multipart/form-data"</I>.
-Criamos um HTML normalmente e como opÁ„o do <I>action</I> colocamos o nosso script.
+Criamos um HTML normalmente e como op√ß√£o do <I>action</I> colocamos o nosso script.
 <P>
 <PRE>
   ================ upload.html ====================
@@ -571,11 +571,11 @@ Criamos um HTML normalmente e como opÁ„o do <I>action</I> colocamos o nosso scri
   =================================================
 </PRE>
 <P>
-O nosso script È quase igual a um POST normal. A principal diferenÁa È que
-o input para o script n„o vem em uma ˙nica linha, e sim em v·rias.
-Quem faz isto È o <I>enctype="multipart/form-data"</I>.
-Vem inclusive o conte˙do do arquivo via POST!! Ent„o pegamos tudo da entrada
-padr„o. Note que junto com o input vem outras cositas mas =8)
+O nosso script √© quase igual a um POST normal. A principal diferen√ßa √© que
+o input para o script n√£o vem em uma √∫nica linha, e sim em v√°rias.
+Quem faz isto √© o <I>enctype="multipart/form-data"</I>.
+Vem inclusive o conte√∫do do arquivo via POST!! Ent√£o pegamos tudo da entrada
+padr√£o. Note que junto com o input vem outras cositas mas =8)
 Vamos a um exemplo:
 <P>
 <PRE>
@@ -628,8 +628,8 @@ Vamos a um exemplo:
 <a name="toc9"></a>
 <H2>3.5. CheckBox</H2>
 Para relaxar um exemplo mais simples, vamos fazer um CheckBox.
-Primeiro criamos uma p·gina HTML com o FORM para checkbox normalmente. 
-Vamos utilizar o mÈtodo POST no exemplo.
+Primeiro criamos uma p√°gina HTML com o FORM para checkbox normalmente. 
+Vamos utilizar o m√©todo POST no exemplo.
 <P>
 <PRE>
   ================ checkbox.html ==================
@@ -651,13 +651,13 @@ Vamos utilizar o mÈtodo POST no exemplo.
   =================================================
 </PRE>
 <P>
-Pegamos os inputs do FORM na entrada padr„o. Eles s„o separados por &amp;.
-Todas as opÁıes que o usu·rio selecionar vir„o no POST. 
-Ah, n„o se esqueÁa, <I>name=value</I>. Um exemplo de input que recereberemos:
+Pegamos os inputs do FORM na entrada padr√£o. Eles s√£o separados por &amp;.
+Todas as op√ß√µes que o usu√°rio selecionar vir√£o no POST. 
+Ah, n√£o se esque√ßa, <I>name=value</I>. Um exemplo de input que recereberemos:
 <PRE>
   debian=1&amp;conectiva=1
 </PRE>
-Assim, sabemos que o usu·rio escolheu estas duas opÁıes. Basta fazer o
+Assim, sabemos que o usu√°rio escolheu estas duas op√ß√µes. Basta fazer o
 script.
 <P>
 <PRE>
@@ -681,8 +681,8 @@ script.
 <P>
 <a name="toc10"></a>
 <H2>3.6. Radio Buttons</H2>
-Outro exemplo È o Radio Buttons.
-TambÈm utilizaremos o mÈtodo POST aqui.
+Outro exemplo √© o Radio Buttons.
+Tamb√©m utilizaremos o m√©todo POST aqui.
 Criamos um html normalmente.
 <P>
 <PRE>
@@ -706,9 +706,9 @@ Criamos um html normalmente.
   =================================================
 </PRE>
 <P>
-O que ser· enviado pelo POST È o input escolhido. Como È Radio Buttons,
-somente uma opÁ„o È aceita, assim temos o input: name=value, onde name È a
-vari·vel distro e value È a opÁ„o escolhida pelo usu·rio. Um exemplo È: 
+O que ser√° enviado pelo POST √© o input escolhido. Como √© Radio Buttons,
+somente uma op√ß√£o √© aceita, assim temos o input: name=value, onde name √© a
+vari√°vel distro e value √© a op√ß√£o escolhida pelo usu√°rio. Um exemplo √©: 
 <I>distro=Debian</I>
 <P>
 <PRE>
@@ -727,13 +727,13 @@ vari·vel distro e value È a opÁ„o escolhida pelo usu·rio. Um exemplo È:
 </PRE>
 <P>
 <a name="toc11"></a>
-<H2>3.7. Contador de Acesso GenÈrico</H2>
+<H2>3.7. Contador de Acesso Gen√©rico</H2>
 <P>
 Um dos primeiros exemplos que vimos foi como fazer um contador de acesso
-<I>contador.cgi</I>. Aquela implementaÁ„o tem um problema de
-concorrÍncia. Se a p·gina tiver 2 acessos 'simult‚neos' ela pode deixar 
-de contabilizar 1 acesso. Vamos imaginar que temos dois acessos a p·gina
-'ao mesmo tempo'. O fluxo de execuÁ„o do CGI do primeiro acesso executa
+<I>contador.cgi</I>. Aquela implementa√ß√£o tem um problema de
+concorr√™ncia. Se a p√°gina tiver 2 acessos 'simult√¢neos' ela pode deixar 
+de contabilizar 1 acesso. Vamos imaginar que temos dois acessos a p√°gina
+'ao mesmo tempo'. O fluxo de execu√ß√£o do CGI do primeiro acesso executa
 as seguintes linhas:
 <P>
 <PRE>
@@ -741,53 +741,53 @@ as seguintes linhas:
   n="$(cat $ARQ 2&gt; /dev/null)" || n=0
 </PRE>
 <P>
-O kernel interrompe a execuÁ„o do CGI neste momento e comeÁa a executar o
-CGI do segundo acesso a p·gina. O segundo CGI È todo executado, assim, ele
+O kernel interrompe a execu√ß√£o do CGI neste momento e come√ßa a executar o
+CGI do segundo acesso a p√°gina. O segundo CGI √© todo executado, assim, ele
 leu o valor que tinha no arquivo /<I>tmp/page.hits</I>, somou 1 e sobrescreveu
 o arquivo com o novo valor. Agora o kernel volta a executar o primeiro CGI de
-onde parou, seguindo nosso algoritmo, o CGI j· tem o valor antigo do
-arquivo na vari·vel <I>n</I>, assim ele vai para a prÛxima instruÁ„o:
+onde parou, seguindo nosso algoritmo, o CGI j√° tem o valor antigo do
+arquivo na vari√°vel <I>n</I>, assim ele vai para a pr√≥xima instru√ß√£o:
 <P>
 <PRE>
    echo $((n=n+1)) &gt; "$ARQ"
 </PRE>
 <P>
 Sobrescreveu o antigo valor. <B>Note</B>: como ele foi interrompido antes da
-segunda execuÁ„o do CGI, ele estava com o valor antigo em <I>n</I>. Nosso
+segunda execu√ß√£o do CGI, ele estava com o valor antigo em <I>n</I>. Nosso
 contador perdeu 1 acesso. :/
 <P>
-Para arrumar este problema, vamos aproveitar e incluir um novo tÛpico aqui.
+Para arrumar este problema, vamos aproveitar e incluir um novo t√≥pico aqui.
 <P>
 <a name="toc12"></a>
 <H3>3.7.1. SSI - Server Side Includes</H3>
 <P>
-SSI s„o diretivas que colocamos em uma p·gina HTML pura para que o
-servidor avalie quando a p·gina for acessada. Assim podemos adiconar
-conte˙do din‚mico a p·gina sem precisarmos escrever toda ela em CGI. Para
-isto basta configurar o seu Apache corretamente. Quem fornece esta opÁ„o È
-o mÛdulo includes (mod_include), simplesmente descomentamos a linha que
-carrega este mÛdulo:
+SSI s√£o diretivas que colocamos em uma p√°gina HTML pura para que o
+servidor avalie quando a p√°gina for acessada. Assim podemos adiconar
+conte√∫do din√¢mico a p√°gina sem precisarmos escrever toda ela em CGI. Para
+isto basta configurar o seu Apache corretamente. Quem fornece esta op√ß√£o √©
+o m√≥dulo includes (mod_include), simplesmente descomentamos a linha que
+carrega este m√≥dulo:
 <P>
 <PRE>
   LoadModule includes_module /usr/lib/apache/1.3/mod_include.so
 </PRE>
 <P>
-Exitem duas maneiras de configur·-lo:
+Exitem duas maneiras de configur√°-lo:
 <P>
 <OL>
-<LI>atravÈs da extens„o do arquivo, normalmente .shtml
+<LI>atrav√©s da extens√£o do arquivo, normalmente .shtml
 <P>
-<LI>atravÈs da opÁ„o XBitHack. Esta opÁ„o testa se o arquivo HTML (.html)
-requisitado tem o bit de execuÁ„o setado, se tiver ele executar· o que
+<LI>atrav√©s da op√ß√£o XBitHack. Esta op√ß√£o testa se o arquivo HTML (.html)
+requisitado tem o bit de execu√ß√£o setado, se tiver ele executar√° o que
 tiver usando as suas diretivas. Acrescente a seguinte linha em seu
 <I>httpd.conf</I>.
 <PRE>
   XBitHack on
 </PRE>
 </OL>
-<B>PS</B>: em ambos os casos o arquivo HTML precisa ser execut·vel.
+<B>PS</B>: em ambos os casos o arquivo HTML precisa ser execut√°vel.
 <P>
-Este tÛpico est· muito bem documentado nos seguintes endereÁos:
+Este t√≥pico est√° muito bem documentado nos seguintes endere√ßos:
 <UL>
 <LI><A HREF="http://httpd.apache.org/docs/howto/ssi.html">http://httpd.apache.org/docs/howto/ssi.html</A>
 <LI><A HREF="http://httpd.apache.org/docs/mod/mod_include.html">http://httpd.apache.org/docs/mod/mod_include.html</A>
@@ -795,10 +795,10 @@ Este tÛpico est· muito bem documentado nos seguintes endereÁos:
 <a name="toc13"></a>
 <H3>3.7.2. Contador</H3>
 <P>
-Para resolver o problema de concorrÍncia vamos utilizar um <I>named pipe</I>.
-Criamos o seguinte script que ser· o daemon que receber· todos os pedidos
+Para resolver o problema de concorr√™ncia vamos utilizar um <I>named pipe</I>.
+Criamos o seguinte script que ser√° o daemon que receber√° todos os pedidos
 para incrementar o contador. Note que ele vai ser usado por qualquer
-p·gina no nosso site que precise de um contador.
+p√°gina no nosso site que precise de um contador.
 <P>
 <PRE>
   ================ daemon_contador.sh= ===========
@@ -823,40 +823,40 @@ p·gina no nosso site que precise de um contador.
   =================================================
 </PRE>
 <P>
-Como sÛ este script altera os arquivos, n„o existe problema de
-concorrÍncia.
+Como s√≥ este script altera os arquivos, n√£o existe problema de
+concorr√™ncia.
 <P>
-Este script ser· um daemon, isto È, rodar· em background. Quando uma p·gina
-sofrer um acesso, ela escrever· a sua URL no arquivo de pipe. Para testar,
+Este script ser√° um daemon, isto √©, rodar√° em background. Quando uma p√°gina
+sofrer um acesso, ela escrever√° a sua URL no arquivo de pipe. Para testar,
 execute este comando:
 <P>
 <PRE>
    echo "teste_pagina.html" &gt; /tmp/pipe_contador 
 </PRE>
 <P>
-Em cada p·gina que quisermos adicionar o contador acrescentamos a seguinte
+Em cada p√°gina que quisermos adicionar o contador acrescentamos a seguinte
 linha:
 <P>
 <PRE>
   &lt;!--#exec cmd="echo $REQUEST_URI &gt; /tmp/pipe_contador"--&gt;
 </PRE>
 <P>
-Note que a vari·vel $REQUEST_URI contÈm o nome do arquivo que o browser
+Note que a vari√°vel $REQUEST_URI cont√©m o nome do arquivo que o browser
 requisitou.
 <P>
-<B>PS</B>: assim que tiver tempo vou tentar explicar melhor este tÛpico. 
+<B>PS</B>: assim que tiver tempo vou tentar explicar melhor este t√≥pico. 
 <P>
 <a name="toc14"></a>
-<H2>3.8. SeguranÁa</H2>
+<H2>3.8. Seguran√ßa</H2>
 <P>
 <a name="toc15"></a>
-<H3>3.8.1. IntroduÁ„o e ConfiguraÁ„o</H3>
+<H3>3.8.1. Introdu√ß√£o e Configura√ß√£o</H3>
 <P>
-Este È um tÛpico importante quando falamos sobre CGI, principalmente os que tÍm algum
-tipo de interaÁ„o com o usu·rio. Mas para aumentar um pouco a seguranÁa de
-nossos CGIs podemos utilizar a opÁ„o <I>AccessFileName</I> do Apache. Ela nos
-permite especificar quais usu·rio ter„o acesso a um determinado diretÛrio.
-Por exemplo, podemos especificar quais usu·rios ter„o acesso aos scripts em 
+Este √© um t√≥pico importante quando falamos sobre CGI, principalmente os que t√™m algum
+tipo de intera√ß√£o com o usu√°rio. Mas para aumentar um pouco a seguran√ßa de
+nossos CGIs podemos utilizar a op√ß√£o <I>AccessFileName</I> do Apache. Ela nos
+permite especificar quais usu√°rio ter√£o acesso a um determinado diret√≥rio.
+Por exemplo, podemos especificar quais usu√°rios ter√£o acesso aos scripts em 
 <CODE>http://localhost/cgi-bin/controle/</CODE>
 <P>
 Primeiro vamos configurar o Apache. Procure e, se for o caso, descomente a
@@ -866,10 +866,10 @@ seguine linha em seu <I>httpd.conf</I>
   AccessFileName .htaccess
 </PRE>
 <P>
-Esta opÁ„o define para o Apache o nome do arquivo que ter· as informaÁıes
-sobre o controle de acesso de cada diretÛrio. Procure e, se for o caso,
-descomente as seguintes linhas para n„o deixar nenhum usu·rio baixar nossos
-arquivos de controle de acesso e de usu·rios e senhas.
+Esta op√ß√£o define para o Apache o nome do arquivo que ter√° as informa√ß√µes
+sobre o controle de acesso de cada diret√≥rio. Procure e, se for o caso,
+descomente as seguintes linhas para n√£o deixar nenhum usu√°rio baixar nossos
+arquivos de controle de acesso e de usu√°rios e senhas.
 <P>
 <PRE>
   &lt;Files ~ "^\.ht"&gt;
@@ -878,8 +878,8 @@ arquivos de controle de acesso e de usu·rios e senhas.
   &lt;/Files&gt;
 </PRE>
 <P>
-Este prÛximo passo È necess·rio porque normalmente a opÁ„o <I>AllowOverride</I> 
-default È <I>None</I>. Assim, para cada diretÛrio que vocÍ deseja ter este controle, 
+Este pr√≥ximo passo √© necess√°rio porque normalmente a op√ß√£o <I>AllowOverride</I> 
+default √© <I>None</I>. Assim, para cada diret√≥rio que voc√™ deseja ter este controle, 
 adicione a seguinte linha em seu <I>httpd.conf</I>:
 <P>
 <PRE>
@@ -904,26 +904,26 @@ Onde:
 <table align="center" cellpadding=4 border=1>
 <tr>
 <td align="center">AuthName</td>
-<td>mensagem que ir· aparecer quando pedir o username e passwd</td>
+<td>mensagem que ir√° aparecer quando pedir o username e passwd</td>
 </tr>
 <tr>
 <td align="center">AuthType</td>
-<td>normalmente È Basic</td>
+<td>normalmente √© Basic</td>
 </tr>
 <tr>
 <td align="center">AuthUserFile</td>
-<td>o PATH para o arquivo que contÈm a lista de user e senha v·lido</td>
+<td>o PATH para o arquivo que cont√©m a lista de user e senha v√°lido</td>
 </tr>
 <tr>
 <td>require valid-user</td>
-<td>especifica que somente usu·rios v·lidos ter„o acesso</td>
+<td>especifica que somente usu√°rios v√°lidos ter√£o acesso</td>
 </tr>
 </table>
 
 <P>
-Vamos a um exemplo. Vamos supor que queremos proteger o acesso ao diretÛrio
+Vamos a um exemplo. Vamos supor que queremos proteger o acesso ao diret√≥rio
 /<I>usr/lib/cgi-bin/controle</I>. Configuramos o <I>httpd.conf</I> como descrito
-acima. Depois criamos o seguinte arquivo neste diretÛrio.
+acima. Depois criamos o seguinte arquivo neste diret√≥rio.
 <P>
 <PRE>
   AuthName "Acesso Restrito"
@@ -933,27 +933,27 @@ acima. Depois criamos o seguinte arquivo neste diretÛrio.
   require valid-user
 </PRE>
 <P>
-Feito isto, criamos o nosso arquivo com os usu·rios v·lidos.
-<B>Importante</B>: os usu·rios que vamos criar n„o precisam existir na
-m·quina, i.e., n„o tem nenhuma relaÁ„o com o arquivo /<I>etc/passwd</I>.
+Feito isto, criamos o nosso arquivo com os usu√°rios v√°lidos.
+<B>Importante</B>: os usu√°rios que vamos criar n√£o precisam existir na
+m√°quina, i.e., n√£o tem nenhuma rela√ß√£o com o arquivo /<I>etc/passwd</I>.
 Para criar o arquivo utilizamos o comando: 
 <P>
 <PRE>
   htpasswd -m -c ./.htpasswd user
 </PRE>
 <P>
-ApÛs criarmos e adicionarmos o primeiro usu·rio, basta tirar a opÁ„o <I>-c</I>
-do comando para adicionar novos usu·rios no mesmo arquivo. Exemplo:
+Ap√≥s criarmos e adicionarmos o primeiro usu√°rio, basta tirar a op√ß√£o <I>-c</I>
+do comando para adicionar novos usu√°rios no mesmo arquivo. Exemplo:
 <I>htpasswd -m ./.htpasswd outro_user</I>
 <P>
-OBS: a cada execuÁ„o do comando aparecer· um prompt pedindo para definir
-uma senha para o usu·rio. A opÁ„o -m serve para utilizar o algoritmo
+OBS: a cada execu√ß√£o do comando aparecer√° um prompt pedindo para definir
+uma senha para o usu√°rio. A op√ß√£o -m serve para utilizar o algoritmo
 MD5 modificado pelo Apache. Mais detalhes: <I>man htpasswd</I>
 <P>
 <a name="toc16"></a>
-<H3>3.8.2. T·, e daÌ? Onde est· o CGI em Shell?</H3>
+<H3>3.8.2. T√°, e da√≠? Onde est√° o CGI em Shell?</H3>
 <P>
-Calma, isto que vimos È Apache puro. Mas agora vem o pulo do gato :)
+Calma, isto que vimos √© Apache puro. Mas agora vem o pulo do gato :)
 Vamos continuar nosso exemplo.
 Crie o seguinte arquivo e coloque em /<I>usr/lib/cgi-bin/controle</I>
 <P>
@@ -968,17 +968,17 @@ Crie o seguinte arquivo e coloque em /<I>usr/lib/cgi-bin/controle</I>
 </PRE>
 <P>
 Depois acesse <CODE>http://localhost/cgi-bin/controle/set.cgi</CODE>.
-Se tudo ocorreu bem, aparecer· uma tela pedindo usu·rio e senha. Entre com
-um usu·rio e senha que vocÍ cadastrou em <I>./.htpasswd</I>.
-Ser· mostrado todas as vari·veis de ambiente. DÍ uma olhada na vari·vel
-<B><I>REMOTE_USER</I></B>. … o nome do usu·rio que fez o login. Agora podemos ter
-CGIs onde sÛ determinados usu·rios podem acessar, e dentre estes usu·rios
-sÛ alguns ter„o acesso a certas opÁıes do script, etc.
+Se tudo ocorreu bem, aparecer√° uma tela pedindo usu√°rio e senha. Entre com
+um usu√°rio e senha que voc√™ cadastrou em <I>./.htpasswd</I>.
+Ser√° mostrado todas as vari√°veis de ambiente. D√™ uma olhada na vari√°vel
+<B><I>REMOTE_USER</I></B>. √â o nome do usu√°rio que fez o login. Agora podemos ter
+CGIs onde s√≥ determinados usu√°rios podem acessar, e dentre estes usu√°rios
+s√≥ alguns ter√£o acesso a certas op√ß√µes do script, etc.
 <P>
-Um exemplo :) Vamos imaginar que sÛ determinados usu·rios tem acesso ao CGI
-de controle sobre a m·quina. Ent„o configuramos o Apache, criamos o
-<I>.htaccess</I> e cadastramos os usu·rios v·lidos em <I>.htpasswd</I>, 
-isto no diretÛrio /<I>usr/lib/cgi-bin/controle</I>
+Um exemplo :) Vamos imaginar que s√≥ determinados usu√°rios tem acesso ao CGI
+de controle sobre a m√°quina. Ent√£o configuramos o Apache, criamos o
+<I>.htaccess</I> e cadastramos os usu√°rios v√°lidos em <I>.htpasswd</I>, 
+isto no diret√≥rio /<I>usr/lib/cgi-bin/controle</I>
 <P>
 Criamos o nosso script de controle:
 <P>
@@ -995,10 +995,10 @@ Criamos o nosso script de controle:
   
   echo "&lt;form action=\"/cgi-bin/controle/controle_post.cgi\" method=\"POST\"&gt;"
     
-  echo "&lt;h3&gt;Qual destas operaÁıes voce deseja executar ?&lt;/h3&gt;"
+  echo "&lt;h3&gt;Qual destas opera√ß√µes voce deseja executar ?&lt;/h3&gt;"
   
   [ "$REMOTE_USER" = "gerente" ] &amp;&amp; {
-  echo "&lt;input type=radio name=op value=halt&gt; Desligar m·quina&lt;br&gt;"
+  echo "&lt;input type=radio name=op value=halt&gt; Desligar m√°quina&lt;br&gt;"
   echo "&lt;input type=radio name=op value=reboot&gt; Reinicializar&lt;br&gt;"; }
   
   echo "
@@ -1013,9 +1013,9 @@ Criamos o nosso script de controle:
   =================================================
 </PRE>
 <P>
-Ok, especificamos que somente o usu·rio <I>gerente</I> ter· acesso as opÁıes
+Ok, especificamos que somente o usu√°rio <I>gerente</I> ter√° acesso as op√ß√µes
 de <I>halt</I> e <I>reboot</I>.
-Criamos o script que tratar· este input.
+Criamos o script que tratar√° este input.
 <P>
 <PRE>
   ================ controle_post.cgi ==============
@@ -1039,7 +1039,7 @@ Criamos o script que tratar· este input.
   		echo "reinicializando a maquina ..."
   		;;
   	"w" )
-  		echo "Usu·rios logado:"
+  		echo "Usu√°rios logado:"
   		echo "&lt;pre&gt;$(who)&lt;/pre&gt;"
   		;;
   	"df" )
@@ -1055,15 +1055,15 @@ Criamos o script que tratar· este input.
   =================================================
 </PRE>
 <P>
-Bom, tudo tranq¸ilo. Script sem problemas. <B>N√O</B>
+Bom, tudo tranq√ºilo. Script sem problemas. <B>N√ÉO</B>
 <P>
-Pois, se algum usu·rio olhar o source HTML da p·gina
-<CODE>http://localhost/cgi-bin/controle/controle.cgi</CODE>, ele ver· os inputs do
-FORM. Assim, ele sabe que o que È enviado pelo POST no nosso exemplo È
+Pois, se algum usu√°rio olhar o source HTML da p√°gina
+<CODE>http://localhost/cgi-bin/controle/controle.cgi</CODE>, ele ver√° os inputs do
+FORM. Assim, ele sabe que o que √© enviado pelo POST no nosso exemplo √©
 <I>op=xx</I>. 
-Ele n„o enxergar· as opÁıes <I>halt</I> e <I>reboot</I>, mas ele perceber· que s„o
-comandos e que o CGI È para executar algum comando sobre a m·quina.
-Ent„o fizemos o seguinte comando.
+Ele n√£o enxergar√° as op√ß√µes <I>halt</I> e <I>reboot</I>, mas ele perceber√° que s√£o
+comandos e que o CGI √© para executar algum comando sobre a m√°quina.
+Ent√£o fizemos o seguinte comando.
 <P>
 <PRE>
   echo "op=halt" | lynx -dump -post-data -auth=user:senha \
@@ -1072,20 +1072,20 @@ Ent„o fizemos o seguinte comando.
 <P>
 <table align="center" cellpadding=4 border=1>
 <tr>
-<td>No <I>user:senha</I>, coloque um user e senha v·lido, mas use um user diferente de <I>gerente</I></td>
+<td>No <I>user:senha</I>, coloque um user e senha v√°lido, mas use um user diferente de <I>gerente</I></td>
 </tr>
 </table>
 
 <P>
-Note que estamos indo direto a segunda p·gina <I>controle_post.cgi</I>.
-O lynx pra quem n„o sabe È um browser modo texto. No exemplo, ele est·
-enviando os dados que recebeu da entrada padr„o via o mÈtodo POST
+Note que estamos indo direto a segunda p√°gina <I>controle_post.cgi</I>.
+O lynx pra quem n√£o sabe √© um browser modo texto. No exemplo, ele est√°
+enviando os dados que recebeu da entrada padr√£o via o m√©todo POST
 para aquela URL.
 <P>
-Como no script controle_post.cgi n„o existe nenhum controle de usu·rio, o
-nosso usu·rio != de gerente conseguiu desligar a nossa m·quina. :/
+Como no script controle_post.cgi n√£o existe nenhum controle de usu√°rio, o
+nosso usu√°rio != de gerente conseguiu desligar a nossa m√°quina. :/
 <P>
-Ent„o vamos arrumar:
+Ent√£o vamos arrumar:
 <P>
 <PRE>
   ================ controle_post.cgi ==============
@@ -1113,7 +1113,7 @@ Ent„o vamos arrumar:
   			echo "reinicializando a maquina ..."
   			;;
   	"w" )
-  			echo "Usu·rios logado:"
+  			echo "Usu√°rios logado:"
   			echo "&lt;pre&gt;$(who)&lt;/pre&gt;"
   			;;
   	"df" )
@@ -1129,16 +1129,16 @@ Ent„o vamos arrumar:
   =================================================
 </PRE>
 <P>
-Moral da histÛria: quando utilizar interaÁ„o com o usu·rio tem que testar
-tudo!!! teste, teste, teste. Verifique as opcıes, vari·veis, etc.
+Moral da hist√≥ria: quando utilizar intera√ß√£o com o usu√°rio tem que testar
+tudo!!! teste, teste, teste. Verifique as opc√µes, vari√°veis, etc.
 <P>
 <a name="toc17"></a>
 <H1>4. LAN  +_+</H1>
 <P>
-Exemplo pr·tico. Vamos monitorar os host de nossa LAN. Saber quais est„o
-ativos, quais n„o respondem e informaÁıes sobre um determinado host.
-Este fonte È apenas uma estrutura b·sica, mas server para se ter uma idÈia
-do qu„o poderoso pode ficar um CGI em Shell.
+Exemplo pr√°tico. Vamos monitorar os host de nossa LAN. Saber quais est√£o
+ativos, quais n√£o respondem e informa√ß√µes sobre um determinado host.
+Este fonte √© apenas uma estrutura b√°sica, mas server para se ter uma id√©ia
+do qu√£o poderoso pode ficar um CGI em Shell.
 Crie os seguintes arquivos em /usr/lib/cgi-bin/lan
 <P>
 <PRE>
@@ -1156,8 +1156,8 @@ Crie os seguintes arquivos em /usr/lib/cgi-bin/lan
   
   echo "
   &lt;body bgcolor=white&gt;
-  &lt;div align=right&gt;Usu·rio: &lt;b&gt;$REMOTE_USER&lt;/b&gt;&lt;/div&gt;
-  &lt;center&gt;&lt;h2&gt;M·quinas da LAN&lt;/h2&gt;
+  &lt;div align=right&gt;Usu√°rio: &lt;b&gt;$REMOTE_USER&lt;/b&gt;&lt;/div&gt;
+  &lt;center&gt;&lt;h2&gt;M√°quinas da LAN&lt;/h2&gt;
   &lt;form method=\"post\" action=\"lan_info.cgi\"&gt;
   &lt;table widthborder=0 cellpadding=2&gt;"
   
@@ -1198,13 +1198,13 @@ Crie os seguintes arquivos em /usr/lib/cgi-bin/lan
   =================================================
 </PRE>
 <P>
-Abaixo o script que receber· os pedidos da p·gina principal.
-Para buscar informaÁıes nos outros <I>hosts</I> estou utilizando um
-<I>rsh</I>. VocÍ tambÈm pode utilizar ssh, È sÛ trocar.
+Abaixo o script que receber√° os pedidos da p√°gina principal.
+Para buscar informa√ß√µes nos outros <I>hosts</I> estou utilizando um
+<I>rsh</I>. Voc√™ tamb√©m pode utilizar ssh, √© s√≥ trocar.
 <P>
-PS: n„o se esqueÁa que para executar o rsh, ele precisa estar configurado e
-n„o pedir senha. Para testar <I>rsh host ls</I>. O usu·rio default do Apache
-n„o tem shell, assim vocÍ precisa rod·-lo com um outro usu·rio.
+PS: n√£o se esque√ßa que para executar o rsh, ele precisa estar configurado e
+n√£o pedir senha. Para testar <I>rsh host ls</I>. O usu√°rio default do Apache
+n√£o tem shell, assim voc√™ precisa rod√°-lo com um outro usu√°rio.
 <P>
 <PRE>
   ================ lan_info.cgi ===================
@@ -1217,7 +1217,7 @@ n„o tem shell, assim vocÍ precisa rod·-lo com um outro usu·rio.
   &lt;title&gt;Monitoramento da LAN&lt;/title&gt;&lt;/head&gt;
   
   &lt;body bgcolor=white&gt;
-  &lt;div align=right&gt;Usu·rio: &lt;b&gt;$REMOTE_USER&lt;/b&gt;&lt;/div&gt;"
+  &lt;div align=right&gt;Usu√°rio: &lt;b&gt;$REMOTE_USER&lt;/b&gt;&lt;/div&gt;"
   
   VAR=$(sed -n '1p')
   host=$(echo "$VAR" | sed 's/^host=\(.*\)\&amp;.*$/\1/')
@@ -1287,8 +1287,8 @@ n„o tem shell, assim vocÍ precisa rod·-lo com um outro usu·rio.
   =================================================
 </PRE>
 <P>
-VocÍ precisa baixar estas duas imagens utilizadas para mostrar se os hosts
-est„o respondendo ou n„o. 
+Voc√™ precisa baixar estas duas imagens utilizadas para mostrar se os hosts
+est√£o respondendo ou n√£o. 
 <table cellpadding=4 border=0>
 <tr>
 <td><IMG ALIGN="middle" SRC="penguin_on.jpg" BORDER="0"></td>
@@ -1298,24 +1298,24 @@ est„o respondendo ou n„o.
 
 <P>
 <a name="toc18"></a>
-<H1>5. Resum„o</H1>
+<H1>5. Resum√£o</H1>
 <B><I>POST &amp; GET</I></B>
 <P>
-No GET vocÍ pega as opÁıes atravÈs da vari·vel de ambiente
-<B><I>$QUERY_STRING</I></B>. No POST vocÍ pega atravÈs da entrada padr„o, ex:
+No GET voc√™ pega as op√ß√µes atrav√©s da vari√°vel de ambiente
+<B><I>$QUERY_STRING</I></B>. No POST voc√™ pega atrav√©s da entrada padr√£o, ex:
 <PRE>
   VAR=$(sed -n '1p')
 </PRE>
-ApÛs isto È sÛ pegar as opÁıes nestas vari·veis e fazer o script
-necess·rio.
+Ap√≥s isto √© s√≥ pegar as op√ß√µes nestas vari√°veis e fazer o script
+necess√°rio.
 <P>
 <HR NOSHADE SIZE=5>
 <P>
-Bom, com este texto espero ter dado uma vis„o geral de como funciona CGI em
+Bom, com este texto espero ter dado uma vis√£o geral de como funciona CGI em
 Shell Script. Assim que tiver tempo vou procurar incrementar o texto
 adicionando novos exemplo, explicando mais os conceitos... 
 <P>
-Se vocÍ quiser contribuir, me envie um <A HREF="mailto:thobias@lcp.coppe.ufrj.br">mail</A> =8)
+Se voc√™ quiser contribuir, me envie um <A HREF="mailto:thobias@lcp.coppe.ufrj.br">mail</A> =8)
 <P>
 <table cellpadding=4 border=1>
 <tr>
@@ -1326,8 +1326,8 @@ Se vocÍ quiser contribuir, me envie um <A HREF="mailto:thobias@lcp.coppe.ufrj.br
 <P>
 <UL>
 <LI>Silvano B. Dias
-<LI>AurÈlio Marinho Jargas
-<LI>VinÌcius Della LÌbera
+<LI>Aur√©lio Marinho Jargas
+<LI>Vin√≠cius Della L√≠bera
 <LI>Julio Cezar Neves
 </UL>
 <HR NOSHADE SIZE=1>

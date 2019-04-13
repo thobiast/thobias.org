@@ -1,17 +1,17 @@
 #!/bin/sed -f
 #
-# script para transformar cÛdigo C em cÛdigo colorido em HTML.
-# o cÛdigo tem que ficar entre <pre> </pre> que s„o adicionados
-# pelo script. caso contr·rio tem que adicionar <br> no final das 
-# linhas, '&nbsp;' no inÌcio....
+# script para transformar c√≥digo C em c√≥digo colorido em HTML.
+# o c√≥digo tem que ficar entre <pre> </pre> que s√£o adicionados
+# pelo script. caso contr√°rio tem que adicionar <br> no final das 
+# linhas, '&nbsp;' no in√≠cio....
 #
 # OBS:
-# Este script tem alguns "bugs", ele foi feito em 20min sÛ para
+# Este script tem alguns "bugs", ele foi feito em 20min s√≥ para
 # atender minhas necessidades na escrita de um tutorial
 #
 # OBS2: Precisa de sed >= 4.0
 #
-# ⁄ltima atualizaÁ„o: 16-06-2004
+# √öltima atualiza√ß√£o: 16-06-2004
 #
 # Thobias Salazar Trevisan 
 #
@@ -28,8 +28,8 @@ s/\([^=]\)\(\&quot;.*\&quot;\)/\1<font color="#FF0066">\2<\/font>/g
 # colorize os includes
 /^#include/s/^#include \(.*\)/<font color="purple">#include<\/font> <font color="Orchid">\1<\/font>/
 
-# colorize os coment·rios
-# OBS: pega somente coment·rios do tipo /**/ e que est„o sozinho na(s)
+# colorize os coment√°rios
+# OBS: pega somente coment√°rios do tipo /**/ e que est√£o sozinho na(s)
 # linha(s)
 \,^\([ \t]\)*\/\*,{
 1s/^/<pre>\n/

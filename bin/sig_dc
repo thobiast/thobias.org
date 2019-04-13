@@ -89,7 +89,7 @@ echo "${b:-0}" | sed ':a;s/^[01]\{1,7\}$/0&/;ta'
 
 # testa se existe o comando dc
 dc -V  >&- 2>&- || { 
-  echo "Erro: A calculadora DC n„o est· instalada."
+  echo "Erro: A calculadora DC n√£o est√° instalada."
   echo "Instale-a antes de executar o $0"
   exit 1; }
 

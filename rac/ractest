@@ -25,13 +25,13 @@ do_emu_test=1
 
 # sanity
 [ -x "$RAC" ] || {
-	echo "Erro: Executável '$RAC' não encontrado."
-	echo 'Passe o caminho completo do RAC como parâmetro ($1).'
+	echo "Erro: ExecutÃ¡vel '$RAC' nÃ£o encontrado."
+	echo 'Passe o caminho completo do RAC como parÃ¢metro ($1).'
 	echo 'Exemplo: ractest /usr/bin/rac'
 	exit
 }
 touch $RACTMP >&- 2>&- || {
-	echo "Erro: Não consigo gravar o arquivo temporário '$RACTMP'"
+	echo "Erro: NÃ£o consigo gravar o arquivo temporÃ¡rio '$RACTMP'"
 	exit
 }
 
@@ -41,18 +41,18 @@ RAC_VERSION='rac version 1.3'
 RAC_HELP='Usage: rac [OPTIONS] ADDRESS [FILE]...'
 
 # string comparisons - pt_BR
-RAC_EMPTY="Tente \`rac --help' para mais informações."
-RAC_VERSION='rac versão 1.3'
-RAC_HELP='Uso: rac [OPÇÕES] ENDEREÇO [ARQUIVO]'
+RAC_EMPTY="Tente \`rac --help' para mais informaÃ§Ãµes."
+RAC_VERSION='rac versÃ£o 1.3'
+RAC_HELP='Uso: rac [OPÃ‡Ã•ES] ENDEREÃ‡O [ARQUIVO]'
 
 # known errors
 ZERO_STEP='Erro: STEP_LINE can not be zero'         # 1~0
 ZERO_STEPSTART='Erro: line start can not be zero'   # 0~1
 INVALID_RANGE='Erro: Invalid Range.'                # 1:foo
-INVALID_OPT='Erro: Opção -z inválida'
-INVALID_LONG_OPT='Erro: Opção --foo inválida'
+INVALID_OPT='Erro: OpÃ§Ã£o -z invÃ¡lida'
+INVALID_LONG_OPT='Erro: OpÃ§Ã£o --foo invÃ¡lida'
 INVALID_ADDR='Erro: Invalid addressing.'
-STEP_NO_COUNT='Erro: A ocorrência inicial deve ser especificada.'
+STEP_NO_COUNT='Erro: A ocorrÃªncia inicial deve ser especificada.'
 REGEX_OPEN_BRACKET='Erro: brackets ([ ]) not balanced'
 REGEX_OPEN_PARENT='Erro: parentheses not balanced'
 

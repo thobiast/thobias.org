@@ -13,7 +13,7 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">
 <META NAME="Generator" CONTENT="LaTeX2HTML v2K.1beta">
 <META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
 
@@ -41,7 +41,7 @@ original version by:  Nikos Drakos, CBLU, University of Leeds
 </DIV>
 <P>
 <DIV ALIGN="CENTER">UM MECANISMO MODULAR E EFICIENTE PARA
-COMPARTILHAMENTO DE MEMÓRIA EM CLUSTERS
+COMPARTILHAMENTO DE MEMÃ“RIA EM CLUSTERS
 </DIV>
 <P>
 <DIV ALIGN="CENTER"><BR>
@@ -60,11 +60,11 @@ COMPARTILHAMENTO DE MEMÓRIA EM CLUSTERS
 <BR> 
 <P>
 =2
-TESE &nbsp;&nbsp;SUBMETIDA &nbsp;&nbsp;AO &nbsp;&nbsp;CORPO &nbsp;&nbsp;DOCENTE &nbsp;&nbsp;DA &nbsp;&nbsp;COORDENAÇÃO &nbsp;&nbsp;DOS
-PROGRAMAS DE PÓS-GRADUAÇÃO DE ENGENHARIA &nbsp;DA
+TESE &nbsp;&nbsp;SUBMETIDA &nbsp;&nbsp;AO &nbsp;&nbsp;CORPO &nbsp;&nbsp;DOCENTE &nbsp;&nbsp;DA &nbsp;&nbsp;COORDENAÃ‡ÃƒO &nbsp;&nbsp;DOS
+PROGRAMAS DE PÃ“S-GRADUAÃ‡ÃƒO DE ENGENHARIA &nbsp;DA
 &nbsp;UNIVERSIDADE FEDERAL DO RIO DE JANEIRO COMO PARTE DOS REQUISITOS
-NECESSÁRIOS PARA A OBTENÇÃO DO GRAU DE MESTRE EM
-CIÊNCIAS EM ENGENHARIA DE SISTEMAS E COMPUTAÇÃO.
+NECESSÃRIOS PARA A OBTENÃ‡ÃƒO DO GRAU DE MESTRE EM
+CIÃŠNCIAS EM ENGENHARIA DE SISTEMAS E COMPUTAÃ‡ÃƒO.
 
 <P>
 <BR>
@@ -83,7 +83,7 @@ Aprovada por:
 \begin{center}
 \rule{10cm}{.02cm} \\
 Prof. Claudio L...
-...\(^{\mathrm{a}}\). Inês de Castro Dutra, Ph.D. \\
+...\(^{\mathrm{a}}\). InÃªs de Castro Dutra, Ph.D. \\
 \vspace{.60in}
 \end{center}}$">
 </DIV>
@@ -126,27 +126,27 @@ TREVISAN, THOBIAS SALAZAR
 
 <P>
 Um Mecanismo Modular e Eficiente para
-Compartilhamento de Memória em Clusters [Rio de Janeiro] 2003
+Compartilhamento de MemÃ³ria em Clusters [Rio de Janeiro] 2003
 
 <P>
 X, 42 p. 29,7 cm (COPPE/UFRJ, M.Sc., <BR>
-Engenharia de Sistemas e Computação, 2003)
+Engenharia de Sistemas e ComputaÃ§Ã£o, 2003)
 
 <P>
 Tese - Universidade Federal do Rio de <BR>
 Janeiro, COPPE
 
 <P>
-1 - Computação de Alto Desempenho
+1 - ComputaÃ§Ã£o de Alto Desempenho
 
 <P>
 2 - Sistemas Operacionais    
 
 <P>
-3 - Memória Compartilhada Distribuída
+3 - MemÃ³ria Compartilhada DistribuÃ­da
 
 <P>
-I. COPPE/UFRJ   II. Título (série)
+I. COPPE/UFRJ   II. TÃ­tulo (sÃ©rie)
 
 <P>
 </TD></TR>
@@ -236,15 +236,15 @@ ideas.''</FONT>
 <BR>
 
 <P>
-Gostaria inicialmente de agradecer à minha família pelo apoio e 
+Gostaria inicialmente de agradecer Ã  minha famÃ­lia pelo apoio e 
 incentivo dado durante todo o curso. Obrigado aos meus pais, 
-Hamilton e Aparecida, e aos meus irmãos Germano, Lucas e Jerusa, 
+Hamilton e Aparecida, e aos meus irmÃ£os Germano, Lucas e Jerusa, 
 os quais formam a verdadeira base da minha vida.
 
 <P>
-Agradeço ao meu orientador prof. Claudio Amorim pelo incentivo 
-e pela infraestrutura proporcionada para a realização desta 
-tese. Ao meu outro orientador prof. Vítor Santos Costa pelo apoio e 
+AgradeÃ§o ao meu orientador prof. Claudio Amorim pelo incentivo 
+e pela infraestrutura proporcionada para a realizaÃ§Ã£o desta 
+tese. Ao meu outro orientador prof. VÃ­tor Santos Costa pelo apoio e 
 ajuda no estudo do kernel do Linux.
 
 <P>
@@ -252,19 +252,19 @@ Aos meus colegas da UCPel Leonardo e Rodrigo (drigator) por terem
 encarado esta ``viagem'' de vir estudar na UFRJ.
 
 <P>
-Ao Lauro, amigo que fiz durante o período que estive no LCP. Laurinho, 
-não vou esquecer das nossas ``intermináveis'' conversas e discussões 
+Ao Lauro, amigo que fiz durante o perÃ­odo que estive no LCP. Laurinho, 
+nÃ£o vou esquecer das nossas ``interminÃ¡veis'' conversas e discussÃµes 
 sobre os mais variados temas.
 
 <P>
-E por último, a um grande amigo e sócio :-) que fiz durante o 
-mestrado. Valeu Silvano, nunca esquecerei os momentos de diversão 
+E por Ãºltimo, a um grande amigo e sÃ³cio :-) que fiz durante o 
+mestrado. Valeu Silvano, nunca esquecerei os momentos de diversÃ£o 
 no LCP jogando em rede DOOM, Wolfenstein e Enemy Territory. 
-Treina que um dia você me ganha &amp;:)
+Treina que um dia vocÃª me ganha &amp;:)
 
 <P>
-Resumo da Tese apresentada à COPPE/UFRJ como parte dos requisitos
-necessários para a obtenção do grau de Mestre em Ciências (M.Sc.)
+Resumo da Tese apresentada Ã  COPPE/UFRJ como parte dos requisitos
+necessÃ¡rios para a obtenÃ§Ã£o do grau de Mestre em CiÃªncias (M.Sc.)
 
 <P>
 <BR>
@@ -273,7 +273,7 @@ necessários para a obtenção do grau de Mestre em Ciências (M.Sc.)
 </DIV>
 <P>
 <DIV ALIGN="CENTER">UM MECANISMO MODULAR E EFICIENTE PARA           
-COMPARTILHAMENTO DE MEMÓRIA EM CLUSTERS
+COMPARTILHAMENTO DE MEMÃ“RIA EM CLUSTERS
 </DIV>
 <P>
 <DIV ALIGN="CENTER"><BR>
@@ -301,14 +301,14 @@ COMPARTILHAMENTO DE MEMÓRIA EM CLUSTERS
 Orientadores: Claudio Luis de Amorim
 
 <P>
- Vítor Santos Costa
+ VÃ­tor Santos Costa
 
 <P>
 <BR>
 <BR>
 
 <P>
- Programa: Engenharia de Sistemas e Computação
+ Programa: Engenharia de Sistemas e ComputaÃ§Ã£o
 
 <P>
 <BR>
@@ -317,22 +317,22 @@ Orientadores: Claudio Luis de Amorim
 <P>
 Nesta tese propomos o sistema MOMEMTO (<EM>MOre MEMory Than Others</EM>), 
 um novo conjunto de mecanismos em kernel para suportar o 
-compartilhamento global das memórias distribuídas dos nós do cluster,
-permitindo à aplicação utilizar mais memória do que a disponível em 
-qualquer nó. MOMEMTO oferece primitivas básicas de sincronização, o que 
-permite ao programador um maior controle sobre o uso da memória e abre 
-espaço para otimizações feitas especificamente para cada aplicação. 
-Além disso, com estas primitivas pode-se decidir <EM>quando</EM> e 
-<EM>quais</EM> páginas de memória compartilhada precisam ser sincronizadas. 
+compartilhamento global das memÃ³rias distribuÃ­das dos nÃ³s do cluster,
+permitindo Ã  aplicaÃ§Ã£o utilizar mais memÃ³ria do que a disponÃ­vel em 
+qualquer nÃ³. MOMEMTO oferece primitivas bÃ¡sicas de sincronizaÃ§Ã£o, o que 
+permite ao programador um maior controle sobre o uso da memÃ³ria e abre 
+espaÃ§o para otimizaÃ§Ãµes feitas especificamente para cada aplicaÃ§Ã£o. 
+AlÃ©m disso, com estas primitivas pode-se decidir <EM>quando</EM> e 
+<EM>quais</EM> pÃ¡ginas de memÃ³ria compartilhada precisam ser sincronizadas. 
 O sistema MOMEMTO foi implementado no kernel 2.4 do Linux e comparamos seu
-desempenho com implementações em TreadMarks e MPI de alguns benchmarks.
+desempenho com implementaÃ§Ãµes em TreadMarks e MPI de alguns benchmarks.
 Nos experimentos o sistema apresentou um baixo <EM>overhead</EM> e melhorou 
-substancialmente o tempo de execução das aplicações.
-Ainda mais importante que os resultados obtidos nos experimentos é o fato
+substancialmente o tempo de execuÃ§Ã£o das aplicaÃ§Ãµes.
+Ainda mais importante que os resultados obtidos nos experimentos Ã© o fato
 de que 
 MOMEMTO se mostra como uma alternativa promissora para o compartilhamento 
-de memória global em clusters e abre espaço para novas pesquisas nesta área, 
-visando soluções específicas para classes de aplicações.
+de memÃ³ria global em clusters e abre espaÃ§o para novas pesquisas nesta Ã¡rea, 
+visando soluÃ§Ãµes especÃ­ficas para classes de aplicaÃ§Ãµes.
 
 <P>
 
@@ -374,7 +374,7 @@ A MODULAR AND EFFICIENT MECHANISM FOR MEMORY SHARING IN CLUSTERS
 Advisors: Claudio Luis de Amorim 
 
 <P>
- Vítor Santos Costa
+ VÃ­tor Santos Costa
 
 <P>
 <BR>
@@ -422,17 +422,17 @@ Sum&aacute;rio</A>
 <LI><A NAME="tex2html72"
   HREF="#SECTION00300000000000000000">Lista de Tabelas</A>
 <LI><A NAME="tex2html73"
-  HREF="#SECTION00400000000000000000">1. Introdução</A>
+  HREF="#SECTION00400000000000000000">1. IntroduÃ§Ã£o</A>
 <UL>
 <LI><A NAME="tex2html74"
-  HREF="#SECTION00410000000000000000">1.1 Visão Geral</A>
+  HREF="#SECTION00410000000000000000">1.1 VisÃ£o Geral</A>
 <LI><A NAME="tex2html75"
-  HREF="#SECTION00420000000000000000">1.2 Contribuições da Tese</A>
+  HREF="#SECTION00420000000000000000">1.2 ContribuiÃ§Ãµes da Tese</A>
 <LI><A NAME="tex2html76"
-  HREF="#SECTION00430000000000000000">1.3 Organização da Tese</A>
+  HREF="#SECTION00430000000000000000">1.3 OrganizaÃ§Ã£o da Tese</A>
 </UL><BR>
 <LI><A NAME="tex2html77"
-  HREF="#SECTION00500000000000000000">2. Conhecimentos Básicos</A>
+  HREF="#SECTION00500000000000000000">2. Conhecimentos BÃ¡sicos</A>
 <UL>
 <LI><A NAME="tex2html78"
   HREF="#SECTION00510000000000000000">2.1 Sistemas DSM</A>
@@ -449,14 +449,14 @@ Sum&aacute;rio</A>
 <LI><A NAME="tex2html83"
   HREF="#SECTION00630000000000000000">3.3 Interface</A>
 <LI><A NAME="tex2html84"
-  HREF="#SECTION00640000000000000000">3.4 Protótipo</A>
+  HREF="#SECTION00640000000000000000">3.4 ProtÃ³tipo</A>
 <UL>
 <LI><A NAME="tex2html85"
   HREF="#SECTION00641000000000000000">3.4.1 Chamadas de Sistema</A>
 <LI><A NAME="tex2html86"
-  HREF="#SECTION00642000000000000000">3.4.2 Falha de Página</A>
+  HREF="#SECTION00642000000000000000">3.4.2 Falha de PÃ¡gina</A>
 <LI><A NAME="tex2html87"
-  HREF="#SECTION00643000000000000000">3.4.3 Consumo de Memória</A>
+  HREF="#SECTION00643000000000000000">3.4.3 Consumo de MemÃ³ria</A>
 <LI><A NAME="tex2html88"
   HREF="#SECTION00644000000000000000">3.4.4 Barreira</A>
 </UL>
@@ -467,9 +467,9 @@ Sum&aacute;rio</A>
 <LI><A NAME="tex2html90"
   HREF="#SECTION00710000000000000000">4.1 Ambiente de testes</A>
 <LI><A NAME="tex2html91"
-  HREF="#SECTION00720000000000000000">4.2 Aplicações</A>
+  HREF="#SECTION00720000000000000000">4.2 AplicaÃ§Ãµes</A>
 <LI><A NAME="tex2html92"
-  HREF="#SECTION00730000000000000000">4.3 Multiplicação de Vetores</A>
+  HREF="#SECTION00730000000000000000">4.3 MultiplicaÃ§Ã£o de Vetores</A>
 <UL>
 <LI><A NAME="tex2html93"
   HREF="#SECTION00731000000000000000">4.3.1 Resultados</A>
@@ -489,14 +489,14 @@ Sum&aacute;rio</A>
 <LI><A NAME="tex2html98"
   HREF="#SECTION00810000000000000000">5.1 <I>Swap</I> Sobre a Rede</A>
 <LI><A NAME="tex2html99"
-  HREF="#SECTION00820000000000000000">5.2 Memória Compartilhada Distribuída</A>
+  HREF="#SECTION00820000000000000000">5.2 MemÃ³ria Compartilhada DistribuÃ­da</A>
 </UL><BR>
 <LI><A NAME="tex2html100"
-  HREF="#SECTION00900000000000000000">6. Conclusões</A>
+  HREF="#SECTION00900000000000000000">6. ConclusÃµes</A>
 <LI><A NAME="tex2html101"
   HREF="#SECTION001000000000000000000">Refer&ecirc;ncias Bibliogr&aacute;ficas</A>
 <LI><A NAME="tex2html102"
-  HREF="#SECTION001100000000000000000">A. Fonte do programa multiplicação de vetores</A>
+  HREF="#SECTION001100000000000000000">A. Fonte do programa multiplicaÃ§Ã£o de vetores</A>
 <LI><A NAME="tex2html103"
   HREF="#SECTION001200000000000000000">About this document ...</A>
 </UL>
@@ -508,15 +508,15 @@ Lista de Figuras</A>
 <LI>2.1. <A NAME="tex2html1"
   HREF="#404">Estrutura geral de um sistema DSM</A>
 <LI>. <A NAME="tex2html2"
-  HREF="#525">Memória Virtual no Linux</A>
+  HREF="#525">MemÃ³ria Virtual no Linux</A>
 <LI>. <A NAME="tex2html3"
-  HREF="#545">Estrutura básica do MOMEMTO - 1</A>
+  HREF="#545">Estrutura bÃ¡sica do MOMEMTO - 1</A>
 <LI>. <A NAME="tex2html4"
-  HREF="#556">Estrutura básica do MOMEMTO - 2</A>
+  HREF="#556">Estrutura bÃ¡sica do MOMEMTO - 2</A>
 <LI>. <A NAME="tex2html6"
-  HREF="#820">Disposição das residências</A>
+  HREF="#820">DisposiÃ§Ã£o das residÃªncias</A>
 <LI>. <A NAME="tex2html7"
-  HREF="#829">Computação do vetor resultante</A>
+  HREF="#829">ComputaÃ§Ã£o do vetor resultante</A>
 <LI>4.3. <A NAME="tex2html8"
   HREF="#839">MOMEMTO x TMK</A>
 <LI>4.4. <A NAME="tex2html12"
@@ -532,103 +532,103 @@ Lista de Figuras</A>
 Lista de Tabelas</A>
 </H2><UL>
 <LI>. <A NAME="tex2html9"
-  HREF="#848">Tempo de processamento para MV Pequeno para cada nó</A>
+  HREF="#848">Tempo de processamento para MV Pequeno para cada nÃ³</A>
 <LI>. <A NAME="tex2html10"
-  HREF="#862">Tempo de execução para MV Grande</A>
+  HREF="#862">Tempo de execuÃ§Ã£o para MV Grande</A>
 <LI>4.3. <A NAME="tex2html11"
   HREF="#871">Tempo de processamento para MV Grande</A>
 <LI>. <A NAME="tex2html14"
-  HREF="#900">Tempo de comunicação</A>
+  HREF="#900">Tempo de comunicaÃ§Ã£o</A>
 <LI>4.5. <A NAME="tex2html15"
   HREF="#920">Entrada utilizada para o IS</A>
 <LI>. <A NAME="tex2html17"
-  HREF="#940">Estatísticas do MOMEMTO - CLASS A</A>
+  HREF="#940">EstatÃ­sticas do MOMEMTO - CLASS A</A>
 <LI>. <A NAME="tex2html18"
-  HREF="#953">Comunicação no MOMEMTO - CLASS A</A>
+  HREF="#953">ComunicaÃ§Ã£o no MOMEMTO - CLASS A</A>
 <LI>. <A NAME="tex2html19"
-  HREF="#964">Estatísticas para TreadMarks - CLASS A</A>
+  HREF="#964">EstatÃ­sticas para TreadMarks - CLASS A</A>
 <LI>. <A NAME="tex2html20"
-  HREF="#976">Estatísticas para o  MPI - CLASS A</A>
+  HREF="#976">EstatÃ­sticas para o  MPI - CLASS A</A>
 <LI>. <A NAME="tex2html22"
-  HREF="#1003">Estatísticas do MOMEMTO - CLASS B</A>
+  HREF="#1003">EstatÃ­sticas do MOMEMTO - CLASS B</A>
 <LI>. <A NAME="tex2html23"
-  HREF="#1012">Comunicação no MOMEMTO - CLASS B</A>
+  HREF="#1012">ComunicaÃ§Ã£o no MOMEMTO - CLASS B</A>
 <LI>. <A NAME="tex2html24"
-  HREF="#1023">Estatísticas para TreadMarks - CLASS B</A>
+  HREF="#1023">EstatÃ­sticas para TreadMarks - CLASS B</A>
 <LI>. <A NAME="tex2html25"
-  HREF="#1035">Estatísticas para o  MPI - CLASS B</A></UL>
+  HREF="#1035">EstatÃ­sticas para o  MPI - CLASS B</A></UL>
 <P>
 
 <P>
 
 <H1><A NAME="SECTION00400000000000000000">
-1. Introdução</A>
+1. IntroduÃ§Ã£o</A>
 </H1>
 
 <P>
 
 <H1><A NAME="SECTION00410000000000000000">
-1.1 Visão Geral</A>
+1.1 VisÃ£o Geral</A>
 </H1> 
-Nos últimos anos tem ocorrido um significativo aumento no interesse do uso
+Nos Ãºltimos anos tem ocorrido um significativo aumento no interesse do uso
 de clusters de PCs (Computadores Pessoais) como alternativa efetiva para se
-alcançar alto desempenho com baixo custo. Hoje em dia, clusters abrangem
+alcanÃ§ar alto desempenho com baixo custo. Hoje em dia, clusters abrangem
 desde pequenos sistemas [<A
- HREF="tese.html#cluster3">2</A>], utilizados em laboratórios de
-pesquisa e universidade por exemplo, até 
-grandes máquinas, tais como [<A
+ HREF="tese.html#cluster3">2</A>], utilizados em laboratÃ³rios de
+pesquisa e universidade por exemplo, atÃ© 
+grandes mÃ¡quinas, tais como [<A
  HREF="tese.html#cluster1">3</A>,<A
  HREF="tese.html#cluster2">4</A>], utilizadas em 
-aplicações paralelas que demandam alto poder de processamento.
-Clusters são utilizados tanto no ambiente acadêmico quanto no empresarial, 
-em áreas como aplicações científicas, bancos de dados, servidores 
-web e simulações.
+aplicaÃ§Ãµes paralelas que demandam alto poder de processamento.
+Clusters sÃ£o utilizados tanto no ambiente acadÃªmico quanto no empresarial, 
+em Ã¡reas como aplicaÃ§Ãµes cientÃ­ficas, bancos de dados, servidores 
+web e simulaÃ§Ãµes.
 
 <P>
-Embora clusters ofereçam escalabilidade em relação ao número de CPUs, bem
-como espaço de memória, eles podem ser limitados pela capacidade de
-comunicação nó-para-nó. Deste modo, escrever aplicações paralelas
-eficientes que escalem pode ser uma tarefa difícil. Nós argumentamos
-que uma das principais dificuldades para se escrever tais aplicações é a
-dependência em Sistemas Operacionais (SO) tradicionais <I>off-the-shelf</I>, 
-ou seja, disponível em qualquer loja de informática. Tradicionalmente, 
-cada nó no cluster roda sua própria cópia do sistema operacional e alguns
-utilitários de comunicação de dados e compartilhamento de recursos sobre um
-SO de propósito geral. Em outras palavras, os SOs continuam a tratar clusters 
-como uma coleção de computadores conectados, onde cada um trabalha de forma
+Embora clusters ofereÃ§am escalabilidade em relaÃ§Ã£o ao nÃºmero de CPUs, bem
+como espaÃ§o de memÃ³ria, eles podem ser limitados pela capacidade de
+comunicaÃ§Ã£o nÃ³-para-nÃ³. Deste modo, escrever aplicaÃ§Ãµes paralelas
+eficientes que escalem pode ser uma tarefa difÃ­cil. NÃ³s argumentamos
+que uma das principais dificuldades para se escrever tais aplicaÃ§Ãµes Ã© a
+dependÃªncia em Sistemas Operacionais (SO) tradicionais <I>off-the-shelf</I>, 
+ou seja, disponÃ­vel em qualquer loja de informÃ¡tica. Tradicionalmente, 
+cada nÃ³ no cluster roda sua prÃ³pria cÃ³pia do sistema operacional e alguns
+utilitÃ¡rios de comunicaÃ§Ã£o de dados e compartilhamento de recursos sobre um
+SO de propÃ³sito geral. Em outras palavras, os SOs continuam a tratar clusters 
+como uma coleÃ§Ã£o de computadores conectados, onde cada um trabalha de forma
 independente. Infelizmente, 
 sistemas operacionais tradicionais foram projetados para um
-ambiente computacional diferente e não suportam todas as funcionalidades
-necessárias para extrair &nbsp;todas &nbsp;as &nbsp;vantagens que clusters
+ambiente computacional diferente e nÃ£o suportam todas as funcionalidades
+necessÃ¡rias para extrair &nbsp;todas &nbsp;as &nbsp;vantagens que clusters
 oferecem. Pesquisadores muitas vezes trabalham em volta deste
-problema no nível da aplicação. TreadMarks [<A
+problema no nÃ­vel da aplicaÃ§Ã£o. TreadMarks [<A
  HREF="tese.html#amza96treadmarks">7</A>],
-por exemplo, implementa um ambiente de memória compartilhada em clusters.
-Escrevendo drivers de comunicação que rodam
+por exemplo, implementa um ambiente de memÃ³ria compartilhada em clusters.
+Escrevendo drivers de comunicaÃ§Ã£o que rodam
 nas interfaces de rede, como M-VIA [<A
  HREF="tese.html#mvia">1</A>], eliminam alguns <EM>overheads</EM> 
-de comunicação mas não integram a aplicação ao SO.
+de comunicaÃ§Ã£o mas nÃ£o integram a aplicaÃ§Ã£o ao SO.
 
 <P>
-Estas soluções
-não são suficientes para obter o máximo desempenho de um cluster, visto que elas 
-não preenchem o espaço entre o objetivo original dos SOs,
+Estas soluÃ§Ãµes
+nÃ£o sÃ£o suficientes para obter o mÃ¡ximo desempenho de um cluster, visto que elas 
+nÃ£o preenchem o espaÃ§o entre o objetivo original dos SOs,
 que foram projetados para computadores pessoais e servidores, 
-e questões específicas de desempenho que surgiram com os clusters.
+e questÃµes especÃ­ficas de desempenho que surgiram com os clusters.
 
 <P>
-Nosso trabalho &nbsp;concentra-se no &nbsp;problema de &nbsp;fornecer uma &nbsp;abstração de
-memória compartilhada, procurando alcançar um melhor desempenho para
-a aplicação. Primeiro, nós observamos que várias aplicações paralelas, de
+Nosso trabalho &nbsp;concentra-se no &nbsp;problema de &nbsp;fornecer uma &nbsp;abstraÃ§Ã£o de
+memÃ³ria compartilhada, procurando alcanÃ§ar um melhor desempenho para
+a aplicaÃ§Ã£o. Primeiro, nÃ³s observamos que vÃ¡rias aplicaÃ§Ãµes paralelas, de
 NAS-benchmarks [<A
  HREF="tese.html#bailey91nas">9</A>] a sistemas de bancos de dados [<A
  HREF="tese.html#google">14</A>], 
-freqüentemente precisam não só de escalabilidade de processadores, mas também 
-de <EM>escalabilidade de memória</EM>. Por exemplo, assuma um cluster com 16 
-máquinas, onde cada uma tem 512 MB de memória RAM, rodando um NAS-benchmark 
-CLASS-A (aplicações que utilizam muita memória) 
+freqÃ¼entemente precisam nÃ£o sÃ³ de escalabilidade de processadores, mas tambÃ©m 
+de <EM>escalabilidade de memÃ³ria</EM>. Por exemplo, assuma um cluster com 16 
+mÃ¡quinas, onde cada uma tem 512 MB de memÃ³ria RAM, rodando um NAS-benchmark 
+CLASS-A (aplicaÃ§Ãµes que utilizam muita memÃ³ria) 
 ou um banco de dados com uma grande quantidade de dados que requeira
-8GB de memória. Infelizmente, vários sistemas software DSM (Distributed Shared Memory) 
+8GB de memÃ³ria. Infelizmente, vÃ¡rios sistemas software DSM (Distributed Shared Memory) 
 atuais [<A
  HREF="tese.html#kli">29</A>,<A
  HREF="tese.html#amza96treadmarks">7</A>,<A
@@ -636,114 +636,114 @@ atuais [<A
  HREF="tese.html#whately">39</A>,<A
  HREF="tese.html#JIAJIA">23</A>,<A
  HREF="tese.html#Cashmere-VLM">19</A>]
-ficam limitados ao tamanho da memória local de cada nó e, assim, não
-podem explorar todas as vantagens das memórias agregadas dos nós para 
-compartilhamento. Nós argumentamos que uma solução eficiente para este
-problema requer adaptar o gerenciamento de memória virtual do SO para o
+ficam limitados ao tamanho da memÃ³ria local de cada nÃ³ e, assim, nÃ£o
+podem explorar todas as vantagens das memÃ³rias agregadas dos nÃ³s para 
+compartilhamento. NÃ³s argumentamos que uma soluÃ§Ã£o eficiente para este
+problema requer adaptar o gerenciamento de memÃ³ria virtual do SO para o
 cluster.
 
 <P>
-Nossa segunda observação é que sistemas DSM  
-provêem mecanismos de coerência sofisticados e poderosos para assegurar 
-consistência de memória, e a implementação destes sistemas pode ser complexa 
+Nossa segunda observaÃ§Ã£o Ã© que sistemas DSM  
+provÃªem mecanismos de coerÃªncia sofisticados e poderosos para assegurar 
+consistÃªncia de memÃ³ria, e a implementaÃ§Ã£o destes sistemas pode ser complexa 
 e introduzir <EM>overheads</EM> substanciais.
-Entretanto, muitas aplicações
-requerem formas mais simples para garantir consistência de memória e podem
-obter melhor desempenho se usarem um mecanismo mais apropriado. Cada aplicação tem
-suas próprias características, comportamento, padrões de acesso, 
-sendo que, estas informações podem levar o sistema operacional a um melhor 
-gerenciamento de sua memória e ao compartilhamento mais eficiente dos dados 
-entre os nós para cada aplicação. 
+Entretanto, muitas aplicaÃ§Ãµes
+requerem formas mais simples para garantir consistÃªncia de memÃ³ria e podem
+obter melhor desempenho se usarem um mecanismo mais apropriado. Cada aplicaÃ§Ã£o tem
+suas prÃ³prias caracterÃ­sticas, comportamento, padrÃµes de acesso, 
+sendo que, estas informaÃ§Ãµes podem levar o sistema operacional a um melhor 
+gerenciamento de sua memÃ³ria e ao compartilhamento mais eficiente dos dados 
+entre os nÃ³s para cada aplicaÃ§Ã£o. 
 
 <P>
-Em casos particulares pode valer a pena o esforço de implementar mecanismos 
-específicos para suportar aplicações populares, tais como bancos de dados, 
-simulações e aplicações científicas.
+Em casos particulares pode valer a pena o esforÃ§o de implementar mecanismos 
+especÃ­ficos para suportar aplicaÃ§Ãµes populares, tais como bancos de dados, 
+simulaÃ§Ãµes e aplicaÃ§Ãµes cientÃ­ficas.
 
 <P>
-Nesta tese nós propomos a inclusão do seguinte conjunto de abstrações
-no kernel para o gerenciamento de memória global em clusters:
+Nesta tese nÃ³s propomos a inclusÃ£o do seguinte conjunto de abstraÃ§Ãµes
+no kernel para o gerenciamento de memÃ³ria global em clusters:
 
 <P>
 
 <UL>
-<LI>No nível mais baixo, nós estendemos o mecanismo de memória virtual do 
-SO, com mínimas modificações nas estrututas do kernel, para enxergar o
+<LI>No nÃ­vel mais baixo, nÃ³s estendemos o mecanismo de memÃ³ria virtual do 
+SO, com mÃ­nimas modificaÃ§Ãµes nas estrututas do kernel, para enxergar o
 cluster; 
 </LI>
-<LI>Oferecemos um mecanismo modular que provê primitivas básicas
-de sincronização com mínimo <I>overhead</I>.
+<LI>Oferecemos um mecanismo modular que provÃª primitivas bÃ¡sicas
+de sincronizaÃ§Ã£o com mÃ­nimo <I>overhead</I>.
 </LI>
 </UL>
 
 <P>
-Nosso trabalho também é inspirado por pesquisas anteriores em sistemas
+Nosso trabalho tambÃ©m Ã© inspirado por pesquisas anteriores em sistemas
 operacionais. Como em nano-kernels [<A
- HREF="tese.html#engler95exokernel">20</A>], nós  
-argumentamos que os usuários devem ter a opção de como conseguir máximo
-desempenho, e isto pode ser alcançado oferecendo diferentes interfaces para 
-o SO, ou seja, tornando-o mais adaptável à aplicação.
+ HREF="tese.html#engler95exokernel">20</A>], nÃ³s  
+argumentamos que os usuÃ¡rios devem ter a opÃ§Ã£o de como conseguir mÃ¡ximo
+desempenho, e isto pode ser alcanÃ§ado oferecendo diferentes interfaces para 
+o SO, ou seja, tornando-o mais adaptÃ¡vel Ã  aplicaÃ§Ã£o.
 O sucesso de sistemas operacionais <EM>open-source</EM>, como Linux e os 
-BSDs, proporcionaram acesso a imensa documentação e a clarificação das 
+BSDs, proporcionaram acesso a imensa documentaÃ§Ã£o e a clarificaÃ§Ã£o das 
 interfaces do SO, contribuindo para que <I>internals</I> do kernel se 
-tornassem  disponíveis e compartilhadas livremente. Assim, muitos usuários 
+tornassem  disponÃ­veis e compartilhadas livremente. Assim, muitos usuÃ¡rios 
 se acostumaram a aplicar <EM>patches</EM> e a reconfigurar o kernel para as 
 necessidades do seu sistema.
 
 <P>
 Nesta tese apresentamos o sistema MOMEMTO (<EM>MOre MEMory Than
 Others</EM>), o qual estende o kernel do Linux 2.4 incluindo um
-conjunto de mecanismos que suportam memória compartilhada global. No nível
-mais baixo, o sistema altera o mecanismo de memória virtual 
+conjunto de mecanismos que suportam memÃ³ria compartilhada global. No nÃ­vel
+mais baixo, o sistema altera o mecanismo de memÃ³ria virtual 
 (<I>Virtual Memory</I> - VM) do Linux e o
-mecanismo de rede, estendendo-os para proverem um mecanismo básico de memória
-compartilhada com granulosidade de uma página. Acima desta camada, provemos um 
-conjunto de módulos que utilizam estes mecanismos para oferecerem 
-um conjunto de abstrações 
-ao usuário.  Resultados preliminares demonstram que o sistema MOMEMTO alcança
+mecanismo de rede, estendendo-os para proverem um mecanismo bÃ¡sico de memÃ³ria
+compartilhada com granulosidade de uma pÃ¡gina. Acima desta camada, provemos um 
+conjunto de mÃ³dulos que utilizam estes mecanismos para oferecerem 
+um conjunto de abstraÃ§Ãµes 
+ao usuÃ¡rio.  Resultados preliminares demonstram que o sistema MOMEMTO alcanÃ§a
 um bom desempenho quando comparado tanto a TreadMarks[<A
  HREF="tese.html#amza96treadmarks">7</A>]  
 como a MPI [<A
- HREF="tese.html#mpi">5</A>]. Em particular, MOMEMTO pode executar aplicações que requerem 
-mais memória que TreadMarks pode oferecer.
+ HREF="tese.html#mpi">5</A>]. Em particular, MOMEMTO pode executar aplicaÃ§Ãµes que requerem 
+mais memÃ³ria que TreadMarks pode oferecer.
 
 <P>
 
 <H1><A NAME="SECTION00420000000000000000">
-1.2 Contribuições da Tese</A>
+1.2 ContribuiÃ§Ãµes da Tese</A>
 </H1> 
 
 <P>
-As principais contribuições da tese são:
+As principais contribuiÃ§Ãµes da tese sÃ£o:
 
 <UL>
-<LI>A proposta de um modelo em kernel para agregar a memória dos nós do
+<LI>A proposta de um modelo em kernel para agregar a memÃ³ria dos nÃ³s do
 cluster.
 </LI>
-<LI>A implementação e avaliação de um mecanismo em kernel para o
-compartilhamento de memória em clusters.
+<LI>A implementaÃ§Ã£o e avaliaÃ§Ã£o de um mecanismo em kernel para o
+compartilhamento de memÃ³ria em clusters.
 </LI>
 </UL>
 
 <P>
 
 <H1><A NAME="SECTION00430000000000000000">
-1.3 Organização da Tese</A>
+1.3 OrganizaÃ§Ã£o da Tese</A>
 </H1>
-A tese está organizada da seguinte forma.
-No capítulo 2 abordamos os conceitos básicos de sistemas 
-<I>software DSM</I>, seus problemas e soluções.
-No capítulo 3 descrevemos o sistema MOMEMTO e sua implementação. 
-Os experimentos são descritos e analisados no capítulo 4.
-Os trabalhos relacionados são abordados no capítulo 5. Por fim, no capítulo
-6 apresentamos as conclusões e sugestões para trabalhos futuros.
+A tese estÃ¡ organizada da seguinte forma.
+No capÃ­tulo 2 abordamos os conceitos bÃ¡sicos de sistemas 
+<I>software DSM</I>, seus problemas e soluÃ§Ãµes.
+No capÃ­tulo 3 descrevemos o sistema MOMEMTO e sua implementaÃ§Ã£o. 
+Os experimentos sÃ£o descritos e analisados no capÃ­tulo 4.
+Os trabalhos relacionados sÃ£o abordados no capÃ­tulo 5. Por fim, no capÃ­tulo
+6 apresentamos as conclusÃµes e sugestÃµes para trabalhos futuros.
 
 <P>
 
 <P>
 
 <H1><A NAME="SECTION00500000000000000000">
-2. Conhecimentos Básicos</A>
+2. Conhecimentos BÃ¡sicos</A>
 </H1>
 
 <P>
@@ -751,12 +751,12 @@ Os trabalhos relacionados são abordados no capítulo 5. Por fim, no capítulo
 <H1><A NAME="SECTION00510000000000000000">
 2.1 Sistemas DSM</A>
 </H1>
-Em clusters, a memória de cada nó não é compartilhada fisicamente com a dos
-outros, deste modo toda a comunicação entre processos é realizada sobre a
+Em clusters, a memÃ³ria de cada nÃ³ nÃ£o Ã© compartilhada fisicamente com a dos
+outros, deste modo toda a comunicaÃ§Ã£o entre processos Ã© realizada sobre a
 rede. 
 
 <P>
-Atualmente, os principais paradigmas para a programação em cluster são
+Atualmente, os principais paradigmas para a programaÃ§Ã£o em cluster sÃ£o
 baseados em passagem de mensagens, utilizando protocolos como PVM[<A
  HREF="tese.html#pvm">22</A>]
 ou MPI[<A
@@ -764,25 +764,25 @@ ou MPI[<A
 implementados tanto em hardware como em software.
 
 <P>
-No paradigma baseado em passagem de mensagens, o sistema de memória distribuída é
-totalmente exposto ao programador e, assim, toda a comunicação entre
-processos é realizada explicitamente pelo mesmo. 
+No paradigma baseado em passagem de mensagens, o sistema de memÃ³ria distribuÃ­da Ã©
+totalmente exposto ao programador e, assim, toda a comunicaÃ§Ã£o entre
+processos Ã© realizada explicitamente pelo mesmo. 
 O programador precisa saber <I>onde</I> 
-estão os dados, decidir <I>quais</I> e para <I>quem</I> eles precisam ser 
-enviados, tornando a programação uma tarefa complexa, 
-especialmente para aplicações com estrutura de dados complexa.
+estÃ£o os dados, decidir <I>quais</I> e para <I>quem</I> eles precisam ser 
+enviados, tornando a programaÃ§Ã£o uma tarefa complexa, 
+especialmente para aplicaÃ§Ãµes com estrutura de dados complexa.
 
 <P>
 Por sua vez, 
-no paradigma baseado em memória compartilhada distribuída (Distributed Shared
-Memory - DSM) é criada uma abstração de memória compartilhada, fornecendo
-um espaço de endereçamento compartilhado. Uma das principais vantagens
-deste modelo está em esconder do programador a arquitetura de memória
-distribuída e prover uma extensão natural do modelo de programação
-seqüencial. A Figura <A HREF="tese.html#fig:geral_DSM">2.1</A> apresenta a estrutura geral de 
-um sistema DSM, onde o software ou hardware DSM fornece a ilusão de um espaço 
-de endereçamento único, alterando o comportamento das memórias que estão
-fisicamente distribuídas.
+no paradigma baseado em memÃ³ria compartilhada distribuÃ­da (Distributed Shared
+Memory - DSM) Ã© criada uma abstraÃ§Ã£o de memÃ³ria compartilhada, fornecendo
+um espaÃ§o de endereÃ§amento compartilhado. Uma das principais vantagens
+deste modelo estÃ¡ em esconder do programador a arquitetura de memÃ³ria
+distribuÃ­da e prover uma extensÃ£o natural do modelo de programaÃ§Ã£o
+seqÃ¼encial. A Figura <A HREF="tese.html#fig:geral_DSM">2.1</A> apresenta a estrutura geral de 
+um sistema DSM, onde o software ou hardware DSM fornece a ilusÃ£o de um espaÃ§o 
+de endereÃ§amento Ãºnico, alterando o comportamento das memÃ³rias que estÃ£o
+fisicamente distribuÃ­das.
 
 <P>
 
@@ -802,15 +802,15 @@ Estrutura geral de um sistema DSM</CAPTION>
 </DIV><P></P>
 
 <P>
-Utilizando DSM, uma aplicação pode ser escrita como se estivesse executando
-em um multiprocessador de memória compartilhada, acessando os dados
-compartilhados com operações normais de leitura e escrita. A
-tarefa de passagem de mensagens é escondida do programador.
+Utilizando DSM, uma aplicaÃ§Ã£o pode ser escrita como se estivesse executando
+em um multiprocessador de memÃ³ria compartilhada, acessando os dados
+compartilhados com operaÃ§Ãµes normais de leitura e escrita. A
+tarefa de passagem de mensagens Ã© escondida do programador.
 
 <P>
-Comparando sistemas de hardware e software DSM, a altíssima relação
-custo/benefício impede que os sistemas hardware DSM sejam acessíveis à
-maioria dos usuários. Em contra partida, os sistemas de software DSM como
+Comparando sistemas de hardware e software DSM, a altÃ­ssima relaÃ§Ã£o
+custo/benefÃ­cio impede que os sistemas hardware DSM sejam acessÃ­veis Ã 
+maioria dos usuÃ¡rios. Em contra partida, os sistemas de software DSM como
 Treadmarks [<A
  HREF="tese.html#amza96treadmarks">7</A>], HLRC[<A
  HREF="tese.html#zhou96performance">40</A>], 
@@ -820,19 +820,19 @@ Orca[<A
 ADSM [<A
  HREF="tese.html#monnerat98efficiently">31</A>], JIAJIA [<A
  HREF="tese.html#JIAJIA">23</A>], entre outros,  
-têm sido amplamente estudados e utilizados devido à sua facilidade
-de implementação e ao seu baixo custo.
+tÃªm sido amplamente estudados e utilizados devido Ã  sua facilidade
+de implementaÃ§Ã£o e ao seu baixo custo.
 
 <P>
 
 <H1><A NAME="SECTION00520000000000000000">
 2.2 Desempenho de Sistemas Software DSM</A>
 </H1>
-Sistemas de memória compartilhada distribuída implementados em software 
+Sistemas de memÃ³ria compartilhada distribuÃ­da implementados em software 
 (<I>software DSM</I>)[<A
- HREF="tese.html#Li86">28</A>] têm como objetivo oferecer uma abstração de
-memória compartilhada para aplicações paralelas que são executadas
-em arquiteturas de memória fisicamente distribuída, tais como as dos clusters.
+ HREF="tese.html#Li86">28</A>] tÃªm como objetivo oferecer uma abstraÃ§Ã£o de
+memÃ³ria compartilhada para aplicaÃ§Ãµes paralelas que sÃ£o executadas
+em arquiteturas de memÃ³ria fisicamente distribuÃ­da, tais como as dos clusters.
 
 <P>
 Para a manuten&#231;&#227;o da coer&#234;ncia dos dados &#233; necess&#225;rio que as
@@ -859,82 +859,82 @@ atualiza&#231;&#245;es sejam feitas [<A
  HREF="tese.html#bianchini96categorizing">13</A>].
 
 <P>
-Os sistemas <I>software DSM</I> sofrem de um alto tráfego de comunicação e de 
-<I>overheads</I> induzidos pelo protocolo de coerência que limitam seu desempenho 
+Os sistemas <I>software DSM</I> sofrem de um alto trÃ¡fego de comunicaÃ§Ã£o e de 
+<I>overheads</I> induzidos pelo protocolo de coerÃªncia que limitam seu desempenho 
 [<A
- HREF="tese.html#iftode99shared">24</A>]. Várias alternativas foram criadas para diminuir esse
-tráfego como, por exemplo, empregar modelos de consistência relaxados
+ HREF="tese.html#iftode99shared">24</A>]. VÃ¡rias alternativas foram criadas para diminuir esse
+trÃ¡fego como, por exemplo, empregar modelos de consistÃªncia relaxados
 [<A
  HREF="tese.html#keleher:1992:lrc">27</A>,<A
  HREF="tese.html#brian91midway">11</A>,<A
  HREF="tese.html#cox99performance">15</A>,<A
  HREF="tese.html#iftode96scope">25</A>]. 
-Um modelo de consistência de memória especifica
-quando operações de coerência de dados devem tornar-se visíveis para os outros
-processadores, ou seja, quando as modificações feitas em dados
+Um modelo de consistÃªncia de memÃ³ria especifica
+quando operaÃ§Ãµes de coerÃªncia de dados devem tornar-se visÃ­veis para os outros
+processadores, ou seja, quando as modificaÃ§Ãµes feitas em dados
 compartilhados devem ser observadas pelos processadores.
 <I>Software DSM</I> baseados nestes modelos podem reduzir os
-<I>overheads</I> atrasando e/ou restringindo a comunicação e as transações de
-coerência o máximo possível. <I>Softwares DSM</I> baseados em consistência
-relaxada e que permitem "múltiplos-escritores"&nbsp; tentam reduzir a comunicação
-e os custos de coerência ainda mais, permitindo que dois ou mais
-processadores modifiquem concorrentemente suas cópias locais de dados
-compartilhados e combinem o resultado destas modificações nas operações de
-sincronização[<A
+<I>overheads</I> atrasando e/ou restringindo a comunicaÃ§Ã£o e as transaÃ§Ãµes de
+coerÃªncia o mÃ¡ximo possÃ­vel. <I>Softwares DSM</I> baseados em consistÃªncia
+relaxada e que permitem "mÃºltiplos-escritores"&nbsp; tentam reduzir a comunicaÃ§Ã£o
+e os custos de coerÃªncia ainda mais, permitindo que dois ou mais
+processadores modifiquem concorrentemente suas cÃ³pias locais de dados
+compartilhados e combinem o resultado destas modificaÃ§Ãµes nas operaÃ§Ãµes de
+sincronizaÃ§Ã£o[<A
  HREF="tese.html#keleher:1992:lrc">27</A>,<A
  HREF="tese.html#amza96treadmarks">7</A>]. 
-Esta técnica diminui o efeito negativo do falso compartilhamento
-em sistemas cuja unidade de coerência é grande, como os <I>softwares DSM</I>
-que utilizam a página de memória virtual como unidade de coerência.
-O falso compartilhamento ocorre quando múltiplos escritores acessam dados
-não relacionados que estão localizados na mesma página e pelo menos um
-acesso é uma escrita ao dado.
+Esta tÃ©cnica diminui o efeito negativo do falso compartilhamento
+em sistemas cuja unidade de coerÃªncia Ã© grande, como os <I>softwares DSM</I>
+que utilizam a pÃ¡gina de memÃ³ria virtual como unidade de coerÃªncia.
+O falso compartilhamento ocorre quando mÃºltiplos escritores acessam dados
+nÃ£o relacionados que estÃ£o localizados na mesma pÃ¡gina e pelo menos um
+acesso Ã© uma escrita ao dado.
 TreadMarks [<A
  HREF="tese.html#amza96treadmarks">7</A>] e HLRC [<A
  HREF="tese.html#zhou96performance">40</A>]
-são exemplos de sistemas que garantem a consistência de forma
+sÃ£o exemplos de sistemas que garantem a consistÃªncia de forma
 relaxada, utilizando o modelo <I>Lazy Release Consistency</I> (LRC)
 [<A
- HREF="tese.html#keleher:1992:lrc">27</A>], e que permitem a existência de múltiplos
-escritores. O protocolo LRC atrasa a propagação de mensagens de coerência
-até pontos de sincronização como <EM>lock</EM> ou barreiras.
+ HREF="tese.html#keleher:1992:lrc">27</A>], e que permitem a existÃªncia de mÃºltiplos
+escritores. O protocolo LRC atrasa a propagaÃ§Ã£o de mensagens de coerÃªncia
+atÃ© pontos de sincronizaÃ§Ã£o como <EM>lock</EM> ou barreiras.
 
 <P>
-Um exemplo de software DSM que utiliza a técnica de múltiplos escritores é
-o TreadMarks. Neste sistema, uma página é inicialmente protegida contra escrita, 
-de forma que na primeira escrita a ela é gerada uma violação de acesso. 
-Durante o tratamento desta violação é feita uma cópia exata da página (um
-<I>twin</I>) e a escrita à cópia original da página é liberada. Quando a
-coleta das modificações é necessária, o <I>twin</I> e a versão corrente da
-página são comparadas para criar uma codificação das modificações (um
-<I>diff</I>). A utilização de <I>twins</I> e <I>diffs</I> em TreadMarks
-permite aos processadores modificarem simultaneamente suas cópias locais de
-páginas compartilhadas.
+Um exemplo de software DSM que utiliza a tÃ©cnica de mÃºltiplos escritores Ã©
+o TreadMarks. Neste sistema, uma pÃ¡gina Ã© inicialmente protegida contra escrita, 
+de forma que na primeira escrita a ela Ã© gerada uma violaÃ§Ã£o de acesso. 
+Durante o tratamento desta violaÃ§Ã£o Ã© feita uma cÃ³pia exata da pÃ¡gina (um
+<I>twin</I>) e a escrita Ã  cÃ³pia original da pÃ¡gina Ã© liberada. Quando a
+coleta das modificaÃ§Ãµes Ã© necessÃ¡ria, o <I>twin</I> e a versÃ£o corrente da
+pÃ¡gina sÃ£o comparadas para criar uma codificaÃ§Ã£o das modificaÃ§Ãµes (um
+<I>diff</I>). A utilizaÃ§Ã£o de <I>twins</I> e <I>diffs</I> em TreadMarks
+permite aos processadores modificarem simultaneamente suas cÃ³pias locais de
+pÃ¡ginas compartilhadas.
 
 <P>
 Desta forma, quando ocorre uma falha de acesso, o processador consulta 
-sua lista de notificações de escrita para descobrir quais os <I>diffs</I>
-necessários para atualizar a página. O processador então solicita os
+sua lista de notificaÃ§Ãµes de escrita para descobrir quais os <I>diffs</I>
+necessÃ¡rios para atualizar a pÃ¡gina. O processador entÃ£o solicita os
 <I>diffs</I> correspondentes e espera que eles sejam criados, enviados e
 recebidos. Depois de recebidos todos os <I>diffs</I> requisitados, o
-processador que sofreu a falha os aplica à sua cópia desatualizada. Uma
-descrição mais detalhada de TreadMarks pode ser encontrada em 
+processador que sofreu a falha os aplica Ã  sua cÃ³pia desatualizada. Uma
+descriÃ§Ã£o mais detalhada de TreadMarks pode ser encontrada em 
 [<A
  HREF="tese.html#amza96treadmarks">7</A>]. 
 
 <P>
-A maioria dos protocolos que permitem múltiplos escritores utilizam o
+A maioria dos protocolos que permitem mÃºltiplos escritores utilizam o
 mecanismo de <I>twinning</I> e <I>diffing</I>. Esses protocolos conseguem
-diminuir o efeito do falso compartilhamento, permitindo que vários
-processadores alterem concorrentemente uma página compartilhada. Porém,
-o suporte a múltiplos escritores cria custos adicionais no caso de páginas
-que não estão sujeitas ao falso compartilhamento, pois é necessário
-detectar, armazenar e aplicar modificações a essas páginas.
-Estes custos adicionais podem ser eliminados no caso de páginas que não
-sofrem falso compartilhamento, limitando as alterações a apenas um processador 
-por vez. Assim, foi proposta a utilização de técnicas de adaptação entre
-protocolos único escritor e múltiplos escritores. Uma descrição detalhada desta
-técnica pode ser encontrada em <I>Adaptive TreadMarks</I> 
+diminuir o efeito do falso compartilhamento, permitindo que vÃ¡rios
+processadores alterem concorrentemente uma pÃ¡gina compartilhada. PorÃ©m,
+o suporte a mÃºltiplos escritores cria custos adicionais no caso de pÃ¡ginas
+que nÃ£o estÃ£o sujeitas ao falso compartilhamento, pois Ã© necessÃ¡rio
+detectar, armazenar e aplicar modificaÃ§Ãµes a essas pÃ¡ginas.
+Estes custos adicionais podem ser eliminados no caso de pÃ¡ginas que nÃ£o
+sofrem falso compartilhamento, limitando as alteraÃ§Ãµes a apenas um processador 
+por vez. Assim, foi proposta a utilizaÃ§Ã£o de tÃ©cnicas de adaptaÃ§Ã£o entre
+protocolos Ãºnico escritor e mÃºltiplos escritores. Uma descriÃ§Ã£o detalhada desta
+tÃ©cnica pode ser encontrada em <I>Adaptive TreadMarks</I> 
 (ATmk) [<A
  HREF="tese.html#amza97software">8</A>], ADSM [<A
  HREF="tese.html#monnerat98efficiently">31</A>,<A
@@ -943,66 +943,66 @@ HAP[<A
  HREF="tese.html#whately">39</A>].
 
 <P>
-Várias outras técnicas foram pesquisadas para aumentar o desempenho de
-<I>softwares DSM</I>. Dentre estas pode-se destacar: pré-busca
+VÃ¡rias outras tÃ©cnicas foram pesquisadas para aumentar o desempenho de
+<I>softwares DSM</I>. Dentre estas pode-se destacar: prÃ©-busca
 [<A
  HREF="tese.html#bianchini96hiding">12</A>,<A
  HREF="tese.html#karlsson97effectiveness">26</A>,<A
  HREF="tese.html#mowry98comparative">33</A>] 
-e adaptação entre protocolos 
-único escritor e múltiplos escritores
+e adaptaÃ§Ã£o entre protocolos 
+Ãºnico escritor e mÃºltiplos escritores
 [<A
  HREF="tese.html#amza97software">8</A>,<A
  HREF="tese.html#monnerat98efficiently">31</A>,<A
  HREF="tese.html#adsm">32</A>].
 
 <P>
-Na técnica de <I>prefetching</I> (pré-busca) o dado remoto é buscado com
-antecedência, isto é, antes de ser efetivamente necessário, tentando diminuir 
-a latência de acesso a dados remotos de softwares DSM em tempo de execução.
-A utilização desta técnica de forma efetiva em softwares DSM é difícil
-devido a duas razões principais:
+Na tÃ©cnica de <I>prefetching</I> (prÃ©-busca) o dado remoto Ã© buscado com
+antecedÃªncia, isto Ã©, antes de ser efetivamente necessÃ¡rio, tentando diminuir 
+a latÃªncia de acesso a dados remotos de softwares DSM em tempo de execuÃ§Ã£o.
+A utilizaÃ§Ã£o desta tÃ©cnica de forma efetiva em softwares DSM Ã© difÃ­cil
+devido a duas razÃµes principais:
 
 <P>
 
 <UL>
-<LI>Pode não ser fácil prever os acessos futuros a dados;
+<LI>Pode nÃ£o ser fÃ¡cil prever os acessos futuros a dados;
 
 <P>
 </LI>
-<LI>Pré-buscas geram muitos <I>overheads</I> quando solicitadas 
+<LI>PrÃ©-buscas geram muitos <I>overheads</I> quando solicitadas 
 desnecessariamente devido ao alto tempo gasto para gerar, enviar e receber estes
-dados que não foram necessários.
+dados que nÃ£o foram necessÃ¡rios.
 </LI>
 </UL>
 
 <P>
-As principais fontes de atraso em <I>softwares DSM</I> estão relacionadas 
-à latência de comunicação e às ações de coerência [<A
- HREF="tese.html#raquel">34</A>]. Latência de 
-comunicação causa atrasos no processamento, degradando o desempenho do sistema. 
-As ações de coerência também podem afetar negativamente o desempenho do sistema.
-Como o modelo de consistência de memória é a interface
-entre o programador e o sistema, ele especifica como a memória irá aparecer
-para o programador. Isto influencia na complexidade de programação e no
-desempenho. Um modelo de consistência de memória rígido torna a programação
-mais fácil, em contra-partida deixa menos oportunidades para otimizações.
-Além disso, diferentes tipos de aplicações requerem diferentes tipos de
-modelos de consistência, visto que a escolha do modelo influenciará no
-desempenho da aplicação.
+As principais fontes de atraso em <I>softwares DSM</I> estÃ£o relacionadas 
+Ã  latÃªncia de comunicaÃ§Ã£o e Ã s aÃ§Ãµes de coerÃªncia [<A
+ HREF="tese.html#raquel">34</A>]. LatÃªncia de 
+comunicaÃ§Ã£o causa atrasos no processamento, degradando o desempenho do sistema. 
+As aÃ§Ãµes de coerÃªncia tambÃ©m podem afetar negativamente o desempenho do sistema.
+Como o modelo de consistÃªncia de memÃ³ria Ã© a interface
+entre o programador e o sistema, ele especifica como a memÃ³ria irÃ¡ aparecer
+para o programador. Isto influencia na complexidade de programaÃ§Ã£o e no
+desempenho. Um modelo de consistÃªncia de memÃ³ria rÃ­gido torna a programaÃ§Ã£o
+mais fÃ¡cil, em contra-partida deixa menos oportunidades para otimizaÃ§Ãµes.
+AlÃ©m disso, diferentes tipos de aplicaÃ§Ãµes requerem diferentes tipos de
+modelos de consistÃªncia, visto que a escolha do modelo influenciarÃ¡ no
+desempenho da aplicaÃ§Ã£o.
 
 <P>
-Como vimos, existem várias técnicas para melhorar o desempenho de
-sistemas software DSM, por exemplo, protocolo de invalidação ou atualização,
-técnicas de múltiplos escritores, técnica de pré-busca, entre outros.
-Entretanto, estas opções não alcançam bom desempenho para todas as
-aplicações. Por exemplo, quando utilizado em aplicações com único escritor
-(<EM>single-writer</EM>), o suporte a múltiplos escritores pode degradar o 
+Como vimos, existem vÃ¡rias tÃ©cnicas para melhorar o desempenho de
+sistemas software DSM, por exemplo, protocolo de invalidaÃ§Ã£o ou atualizaÃ§Ã£o,
+tÃ©cnicas de mÃºltiplos escritores, tÃ©cnica de prÃ©-busca, entre outros.
+Entretanto, estas opÃ§Ãµes nÃ£o alcanÃ§am bom desempenho para todas as
+aplicaÃ§Ãµes. Por exemplo, quando utilizado em aplicaÃ§Ãµes com Ãºnico escritor
+(<EM>single-writer</EM>), o suporte a mÃºltiplos escritores pode degradar o 
 desempenho do sistema, pois os mecanismos de <EM>twin</EM> e <EM>diff</EM> 
-geram <EM>overhead</EM> e complexidade que não serão úteis para a aplicação.
-O problema é que os custos de desempenho desses sistemas otimizados ainda
-são muito altos e não conseguem melhorar o desempenho para todas as
-aplicações. 
+geram <EM>overhead</EM> e complexidade que nÃ£o serÃ£o Ãºteis para a aplicaÃ§Ã£o.
+O problema Ã© que os custos de desempenho desses sistemas otimizados ainda
+sÃ£o muito altos e nÃ£o conseguem melhorar o desempenho para todas as
+aplicaÃ§Ãµes. 
 
 <P>
 
@@ -1017,25 +1017,25 @@ aplicações.
 <H1><A NAME="SECTION00610000000000000000">
 3.1 O Sistema</A>
 </H1>
-MOMEMTO foi projetado para permitir a aplicação compartilhar as
-memórias dos nós do cluster como uma extensão transparente da
-memória local. Mais especificamente, é um sistema em modo kernel que visa 
-melhorar a utilização das memórias agregadas dos nós do cluster oferecendo 
-à aplicação uma área de memória compartilhada maior do que a proporcionada 
+MOMEMTO foi projetado para permitir a aplicaÃ§Ã£o compartilhar as
+memÃ³rias dos nÃ³s do cluster como uma extensÃ£o transparente da
+memÃ³ria local. Mais especificamente, Ã© um sistema em modo kernel que visa 
+melhorar a utilizaÃ§Ã£o das memÃ³rias agregadas dos nÃ³s do cluster oferecendo 
+Ã  aplicaÃ§Ã£o uma Ã¡rea de memÃ³ria compartilhada maior do que a proporcionada 
 por softwares DSM atuais [<A
  HREF="tese.html#trevisan">36</A>].
-No seu nível mais baixo, o sistema estende o mecanismo de
-memória virtual do kernel para prover um mecanismo básico
-de compartilhamento de páginas de memória. Como MOMEMTO utiliza a
-funcionalidade do kernel do Linux, começaremos apresentando o gerenciamento
-de memória virtual neste sistema, mas outros sistemas UNIX [<A
+No seu nÃ­vel mais baixo, o sistema estende o mecanismo de
+memÃ³ria virtual do kernel para prover um mecanismo bÃ¡sico
+de compartilhamento de pÃ¡ginas de memÃ³ria. Como MOMEMTO utiliza a
+funcionalidade do kernel do Linux, comeÃ§aremos apresentando o gerenciamento
+de memÃ³ria virtual neste sistema, mas outros sistemas UNIX [<A
  HREF="tese.html#unix">37</A>,<A
  HREF="tese.html#bsd">30</A>]
-são semelhantes.
+sÃ£o semelhantes.
 
 <P>
-No Linux, todas as informações relacionadas com o espaço de endereçamento do 
-processo estão incluídas na estrutura referenciada pelo campo <IMG
+No Linux, todas as informaÃ§Ãµes relacionadas com o espaÃ§o de endereÃ§amento do 
+processo estÃ£o incluÃ­das na estrutura referenciada pelo campo <IMG
  WIDTH="38" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img3.png"
  ALT="$mm$"> no descritor 
@@ -1043,7 +1043,7 @@ do processo (<EM>struct task_struct</EM>).
 O campo <IMG
  WIDTH="38" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img3.png"
- ALT="$mm$"> é um ponteiro para uma estrutura do tipo <IMG
+ ALT="$mm$"> Ã© um ponteiro para uma estrutura do tipo <IMG
  WIDTH="97" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img4.png"
  ALT="$mm\_struct$">.
@@ -1058,7 +1058,7 @@ Cada processo tem uma <IMG
 <DIV ALIGN="CENTER"><A NAME="fig:vma"></A><A NAME="525"></A>
 <TABLE>
 <CAPTION ALIGN="BOTTOM"><STRONG>Figura:</STRONG>
-Memória Virtual no Linux</CAPTION>
+MemÃ³ria Virtual no Linux</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <IMG
  WIDTH="600" HEIGHT="225" ALIGN="BOTTOM" BORDER="0"
@@ -1070,7 +1070,7 @@ Memória Virtual no Linux</CAPTION>
 </DIV><P></P>
 
 <P>
-O Linux implementa a área virtual de memória (VMA) através da estrutura 
+O Linux implementa a Ã¡rea virtual de memÃ³ria (VMA) atravÃ©s da estrutura 
 <!-- MATH
  $vm\_area\_struct$
  -->
@@ -1078,41 +1078,41 @@ O Linux implementa a área virtual de memória (VMA) através da estrutura
  WIDTH="137" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img6.png"
  ALT="$vm\_area\_struct$">.
-Uma VMA é um intervalo contíguo de endereço linear, ou seja, uma região 
-homogênea de memória virtual de um processo. Cada processo 
-tem uma lista de VMAs, como ilustra a Figura <A HREF="tese.html#fig:vma">3.1</A>. Exemplos de VMAs são:
+Uma VMA Ã© um intervalo contÃ­guo de endereÃ§o linear, ou seja, uma regiÃ£o 
+homogÃªnea de memÃ³ria virtual de um processo. Cada processo 
+tem uma lista de VMAs, como ilustra a Figura <A HREF="tese.html#fig:vma">3.1</A>. Exemplos de VMAs sÃ£o:
 
 <P>
 
 <UL>
-<LI>VMA que armazena o executável;
+<LI>VMA que armazena o executÃ¡vel;
 </LI>
-<LI>VMA para variáveis globais;
+<LI>VMA para variÃ¡veis globais;
 </LI>
 <LI>VMA para a pilha (<I>stack</I>).
 </LI>
 </UL>
 
 <P>
-Todas as VMAs de um processo são ligadas através de uma árvore. O kernel encontra 
-uma área de memória através do campo <IMG
+Todas as VMAs de um processo sÃ£o ligadas atravÃ©s de uma Ã¡rvore. O kernel encontra 
+uma Ã¡rea de memÃ³ria atravÃ©s do campo <IMG
  WIDTH="57" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img7.png"
  ALT="$mmap$"> da <IMG
  WIDTH="97" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img4.png"
  ALT="$mm\_struct$">. 
-Quando o kernel tem um endereço 
-e quer encontrar a qual VMA este endereço pertence, ele usa a função 
+Quando o kernel tem um endereÃ§o 
+e quer encontrar a qual VMA este endereÃ§o pertence, ele usa a funÃ§Ã£o 
 <IMG
  WIDTH="89" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img8.png"
- ALT="$find\_vma$">, que pode ser encontrada em <EM>mm/mmap.c</EM>. As regiões de memória 
+ ALT="$find\_vma$">, que pode ser encontrada em <EM>mm/mmap.c</EM>. As regiÃµes de memÃ³ria 
 de cada processo podem ser acessadas no arquivo <EM>/proc/pid/maps</EM> onde 
 <IMG
  WIDTH="30" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img9.png"
- ALT="$pid$"> é o <IMG
+ ALT="$pid$"> Ã© o <IMG
  WIDTH="21" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img10.png"
  ALT="$id$"> do processo. Alguns campos da <!-- MATH
@@ -1121,7 +1121,7 @@ de cada processo podem ser acessadas no arquivo <EM>/proc/pid/maps</EM> onde
 <IMG
  WIDTH="137" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img6.png"
- ALT="$vm\_area\_struct$"> são: 
+ ALT="$vm\_area\_struct$"> sÃ£o: 
 
 <P>
 
@@ -1132,7 +1132,7 @@ de cada processo podem ser acessadas no arquivo <EM>/proc/pid/maps</EM> onde
  ALT="$vm\_start$"> e <IMG
  WIDTH="70" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img12.png"
- ALT="$vm\_end$">: endereços de memória virtual de início e de fim 
+ ALT="$vm\_end$">: endereÃ§os de memÃ³ria virtual de inÃ­cio e de fim 
 da VMA;
 </LI>
 <LI><IMG
@@ -1146,13 +1146,13 @@ da VMA;
 <LI><IMG
  WIDTH="78" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img14.png"
- ALT="$vm\_next$">: ponteiro para a próxima VMA;
+ ALT="$vm\_next$">: ponteiro para a prÃ³xima VMA;
 </LI>
 <LI><IMG
  WIDTH="68" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img15.png"
- ALT="$vm\_ops$">: um conjunto de funções que o kernel deve chamar para 
-operar sobre esta área. Este campo é um ponteiro para uma estrutura 
+ ALT="$vm\_ops$">: um conjunto de funÃ§Ãµes que o kernel deve chamar para 
+operar sobre esta Ã¡rea. Este campo Ã© um ponteiro para uma estrutura 
 do tipo <!-- MATH
  $vm\_operations\_struct$
  -->
@@ -1170,23 +1170,23 @@ A estrutura <!-- MATH
 <IMG
  WIDTH="188" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img16.png"
- ALT="$vm\_operations\_struct$"> manipula eventos específicos sobre uma
-VMA. Um dos campos desta estrutura é o <IMG
+ ALT="$vm\_operations\_struct$"> manipula eventos especÃ­ficos sobre uma
+VMA. Um dos campos desta estrutura Ã© o <IMG
  WIDTH="62" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img17.png"
  ALT="$nopage$">. Quando um 
-processo tenta acessar uma página que não está na memória e pertence
-à uma VMA válida, ou seja, tem um endereço válido, esta função é 
-chamada, se estiver definida, para esta VMA. Se a função <IMG
+processo tenta acessar uma pÃ¡gina que nÃ£o estÃ¡ na memÃ³ria e pertence
+Ã  uma VMA vÃ¡lida, ou seja, tem um endereÃ§o vÃ¡lido, esta funÃ§Ã£o Ã© 
+chamada, se estiver definida, para esta VMA. Se a funÃ§Ã£o <IMG
  WIDTH="62" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img17.png"
  ALT="$nopage$"> 
-não estiver definida para esta área o kernel aloca uma nova página. 
-É importante salientar que um endereço pode ser coberto por uma VMA mesmo
-se o kernel ainda não tenha alocado uma página para armazená-lo. O kernel
-do Linux realiza paginação sob demanda, ou seja, uma página só será alocada
-quando o processo acessá-la.
-Informações detalhadas sobre o kernel e o sistema de memória virtual do Linux 
+nÃ£o estiver definida para esta Ã¡rea o kernel aloca uma nova pÃ¡gina. 
+Ã‰ importante salientar que um endereÃ§o pode ser coberto por uma VMA mesmo
+se o kernel ainda nÃ£o tenha alocado uma pÃ¡gina para armazenÃ¡-lo. O kernel
+do Linux realiza paginaÃ§Ã£o sob demanda, ou seja, uma pÃ¡gina sÃ³ serÃ¡ alocada
+quando o processo acessÃ¡-la.
+InformaÃ§Ãµes detalhadas sobre o kernel e o sistema de memÃ³ria virtual do Linux 
 podem ser encontradas em [<A
  HREF="tese.html#livro_kernel">16</A>,<A
  HREF="tese.html#ldd">6</A>].
@@ -1195,20 +1195,20 @@ podem ser encontradas em [<A
 MOMEMTO cria e gerencia uma VMA do processo, 
 deixando as demais serem gerenciadas pelo sistema operacional.
 Um processo usa o sistema da
-mesma maneira como se estivesse utilizando um <TT>mmap()</TT> para memória
-anônima. Mais precisamente,
-o usuário requisita um novo intervalo de endereços, MOMEMTO cria um novo 
-intervalo de memória e o insere na lista de VMAs do processo. Na prática, o
-processo utilizará esta memória do mesmo modo como se ele tivesse feito uma
-chamada às funções <TT>mmap()</TT> ou <TT>malloc()</TT>.
+mesma maneira como se estivesse utilizando um <TT>mmap()</TT> para memÃ³ria
+anÃ´nima. Mais precisamente,
+o usuÃ¡rio requisita um novo intervalo de endereÃ§os, MOMEMTO cria um novo 
+intervalo de memÃ³ria e o insere na lista de VMAs do processo. Na prÃ¡tica, o
+processo utilizarÃ¡ esta memÃ³ria do mesmo modo como se ele tivesse feito uma
+chamada Ã s funÃ§Ãµes <TT>mmap()</TT> ou <TT>malloc()</TT>.
 
 <P>
-A memória de MOMEMTO é alocada sob demanda. Em uma falha de página, o kernel
-chama a função <TT>nopage</TT>
+A memÃ³ria de MOMEMTO Ã© alocada sob demanda. Em uma falha de pÃ¡gina, o kernel
+chama a funÃ§Ã£o <TT>nopage</TT>
 para realizar o tratamento adequado. 
-Quando a falha de página ocorre em um endereço que pertence à VMA gerenciada por 
-MOMEMTO, é realizado um tratamento específico para esta página.
-Este processo será descrito na seção 3.4.2.
+Quando a falha de pÃ¡gina ocorre em um endereÃ§o que pertence Ã  VMA gerenciada por 
+MOMEMTO, Ã© realizado um tratamento especÃ­fico para esta pÃ¡gina.
+Este processo serÃ¡ descrito na seÃ§Ã£o 3.4.2.
 
 <P>
 
@@ -1216,7 +1216,7 @@ Este processo será descrito na seção 3.4.2.
 <DIV ALIGN="CENTER"><A NAME="fig:basic"></A><A NAME="545"></A>
 <TABLE>
 <CAPTION ALIGN="BOTTOM"><STRONG>Figura:</STRONG>
-Estrutura básica do MOMEMTO - 1</CAPTION>
+Estrutura bÃ¡sica do MOMEMTO - 1</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <IMG
  WIDTH="656" HEIGHT="320" ALIGN="BOTTOM" BORDER="0"
@@ -1229,35 +1229,35 @@ Estrutura básica do MOMEMTO - 1</CAPTION>
 
 <P>
 A Figura &nbsp;<A HREF="tese.html#fig:basic">3.2</A> demonstra como MOMEMTO interage com uma
-aplicação. Cada processo tem vários segmentos de memória virtual em seu
-espaço de endereçamento. Os segmentos normais do Linux são locais a cada
-nó. Em contraste, os segmentos de MOMEMTO são compartilhados entre
-os nós do cluster. Do ponto de vista da aplicação, o espaço compartilhado
-é visto com um único bloco contíguo de memória. 
+aplicaÃ§Ã£o. Cada processo tem vÃ¡rios segmentos de memÃ³ria virtual em seu
+espaÃ§o de endereÃ§amento. Os segmentos normais do Linux sÃ£o locais a cada
+nÃ³. Em contraste, os segmentos de MOMEMTO sÃ£o compartilhados entre
+os nÃ³s do cluster. Do ponto de vista da aplicaÃ§Ã£o, o espaÃ§o compartilhado
+Ã© visto com um Ãºnico bloco contÃ­guo de memÃ³ria. 
 Do ponto de vista do sistema, os
-segmentos compartilhados de cada nó são agregados para formar um grande segmento
-compartilhado, onde cada nó pode ter mapeado em memória algumas
-páginas do segmento compartilhado, mas não necessariamente todas. 
+segmentos compartilhados de cada nÃ³ sÃ£o agregados para formar um grande segmento
+compartilhado, onde cada nÃ³ pode ter mapeado em memÃ³ria algumas
+pÃ¡ginas do segmento compartilhado, mas nÃ£o necessariamente todas. 
 
 <P>
 
 <H1><A NAME="SECTION00620000000000000000">
 3.2 Design</A>
 </H1>
-MOMEMTO permite uma alta flexibilidade para a aplicação. Isto é 
-alcançado através de chamadas de sistema que controlam políticas ou através
-de diferentes módulos que implementam diferentes mecanismos de coerência.
+MOMEMTO permite uma alta flexibilidade para a aplicaÃ§Ã£o. Isto Ã© 
+alcanÃ§ado atravÃ©s de chamadas de sistema que controlam polÃ­ticas ou atravÃ©s
+de diferentes mÃ³dulos que implementam diferentes mecanismos de coerÃªncia.
 
 <P>
-No nível mais baixo, MOMEMTO somente compartilha páginas entre os nós.
-Para agregar a memória dos nós, utilizamos protocolo baseado em 
-residência (<I>home</I>), 
-onde cada nó é responsável por uma fração do número total de páginas, como
+No nÃ­vel mais baixo, MOMEMTO somente compartilha pÃ¡ginas entre os nÃ³s.
+Para agregar a memÃ³ria dos nÃ³s, utilizamos protocolo baseado em 
+residÃªncia (<I>home</I>), 
+onde cada nÃ³ Ã© responsÃ¡vel por uma fraÃ§Ã£o do nÃºmero total de pÃ¡ginas, como
 ilustra a Figura <A HREF="tese.html#fig:basic2">3.3</A>. 
-Inicialmente, cada nó tem em memória somente as páginas das quais ele é a
-residência. Para as demais, uma página física só será alocada
-quando o nó acessá-la. Quando este acesso ocorrer, o sistema
-buscará uma cópia desta página na sua residência.
+Inicialmente, cada nÃ³ tem em memÃ³ria somente as pÃ¡ginas das quais ele Ã© a
+residÃªncia. Para as demais, uma pÃ¡gina fÃ­sica sÃ³ serÃ¡ alocada
+quando o nÃ³ acessÃ¡-la. Quando este acesso ocorrer, o sistema
+buscarÃ¡ uma cÃ³pia desta pÃ¡gina na sua residÃªncia.
 
 <P>
 
@@ -1265,7 +1265,7 @@ buscará uma cópia desta página na sua residência.
 <DIV ALIGN="CENTER"><A NAME="fig:basic2"></A><A NAME="556"></A>
 <TABLE>
 <CAPTION ALIGN="BOTTOM"><STRONG>Figura:</STRONG>
-Estrutura básica do MOMEMTO - 2</CAPTION>
+Estrutura bÃ¡sica do MOMEMTO - 2</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <IMG
  WIDTH="662" HEIGHT="373" ALIGN="BOTTOM" BORDER="0"
@@ -1277,28 +1277,28 @@ Estrutura básica do MOMEMTO - 2</CAPTION>
 </DIV><P></P>
 
 <P>
-A estratégia utilizada atualmente para decidir qual nó será a
-residência de uma página é a seguinte:
-as páginas são divididas estaticamente entre os nós e cada
-nó aloca as páginas que lhe pertencem na inicialização, 
-gerando uma falha de página para cada uma.
+A estratÃ©gia utilizada atualmente para decidir qual nÃ³ serÃ¡ a
+residÃªncia de uma pÃ¡gina Ã© a seguinte:
+as pÃ¡ginas sÃ£o divididas estaticamente entre os nÃ³s e cada
+nÃ³ aloca as pÃ¡ginas que lhe pertencem na inicializaÃ§Ã£o, 
+gerando uma falha de pÃ¡gina para cada uma.
 
 <P>
-MOMEMTO oferece primitivas básicas para o compartilhamento de dados entre
-os nós do cluster, ou seja, não garante consistência.
-O sistema não é responsável por sincronização e tampouco por atualização. Ao
-contrário, esta é uma tarefa para camadas mais altas e possivelmente para a
-aplicação. A maioria dos protocolos DSM realizam atualização de páginas em
-pontos de sincronização, mas a melhor política de atualização varia entre
-aplicações. Freqüentemente a aplicação conhece quais
-processadores têm cópia de uma página e pode facilmente descobrir quais
-páginas precisam ser atualizadas. Entretanto, mecanismos genéricos de mais
-alto nível
-podem ser implementados através de módulos de kernel ou bibliotecas para 
-aplicações. O MOMEMTO procura, portanto, manter-se como uma ferramenta básica que 
-pode ser utilizada por várias aplicações e permite ao programador um maior
-controle sobre o gerenciamento da memória compartilhada e é um mecanismo
-sobre o qual serviços deverão ser implementados, tais como DSM, MPI,
+MOMEMTO oferece primitivas bÃ¡sicas para o compartilhamento de dados entre
+os nÃ³s do cluster, ou seja, nÃ£o garante consistÃªncia.
+O sistema nÃ£o Ã© responsÃ¡vel por sincronizaÃ§Ã£o e tampouco por atualizaÃ§Ã£o. Ao
+contrÃ¡rio, esta Ã© uma tarefa para camadas mais altas e possivelmente para a
+aplicaÃ§Ã£o. A maioria dos protocolos DSM realizam atualizaÃ§Ã£o de pÃ¡ginas em
+pontos de sincronizaÃ§Ã£o, mas a melhor polÃ­tica de atualizaÃ§Ã£o varia entre
+aplicaÃ§Ãµes. FreqÃ¼entemente a aplicaÃ§Ã£o conhece quais
+processadores tÃªm cÃ³pia de uma pÃ¡gina e pode facilmente descobrir quais
+pÃ¡ginas precisam ser atualizadas. Entretanto, mecanismos genÃ©ricos de mais
+alto nÃ­vel
+podem ser implementados atravÃ©s de mÃ³dulos de kernel ou bibliotecas para 
+aplicaÃ§Ãµes. O MOMEMTO procura, portanto, manter-se como uma ferramenta bÃ¡sica que 
+pode ser utilizada por vÃ¡rias aplicaÃ§Ãµes e permite ao programador um maior
+controle sobre o gerenciamento da memÃ³ria compartilhada e Ã© um mecanismo
+sobre o qual serviÃ§os deverÃ£o ser implementados, tais como DSM, MPI,
 cache para banco de dados, etc.
 
 <P>
@@ -1306,86 +1306,86 @@ cache para banco de dados, etc.
 <H1><A NAME="SECTION00630000000000000000">
 3.3 Interface</A>
 </H1>
-A interface entre MOMEMTO e a aplicação se dá através de três novas 
+A interface entre MOMEMTO e a aplicaÃ§Ã£o se dÃ¡ atravÃ©s de trÃªs novas 
 chamadas de sistema adicionadas ao sistema operacional.
 
 <P>
 <I>mmto_mmap</I>, <I>mmto_load</I> e <I>mmto_sync</I>.
 
 <P>
-A <I>mmto_mmap</I> faz o mapeamento de uma área de memória
-virtual que irá ser compartilhada entre os nós.
-Esta chamada de sistema, similar a função <TT>mmap</TT>,
-recebe como parâmetros um
-número indicando em bytes a quantidade de memória a ser alocada e uma 
-<I>flag</I> que especifica como as residências serão distribuídas. 
+A <I>mmto_mmap</I> faz o mapeamento de uma Ã¡rea de memÃ³ria
+virtual que irÃ¡ ser compartilhada entre os nÃ³s.
+Esta chamada de sistema, similar a funÃ§Ã£o <TT>mmap</TT>,
+recebe como parÃ¢metros um
+nÃºmero indicando em bytes a quantidade de memÃ³ria a ser alocada e uma 
+<I>flag</I> que especifica como as residÃªncias serÃ£o distribuÃ­das. 
 Com esta <I>flag</I> pode-se implementar diferentes algoritmos para a
-distribuição das residências.
-Atualmente, o valor suportado pelo sistema para esta <I>flag</I> é 
-<TT>SEQUENTIAL</TT>, descrito na próxima seção.
+distribuiÃ§Ã£o das residÃªncias.
+Atualmente, o valor suportado pelo sistema para esta <I>flag</I> Ã© 
+<TT>SEQUENTIAL</TT>, descrito na prÃ³xima seÃ§Ã£o.
 
 <P>
-Por sua vez, a chamada de sistema <I>mmto_load</I> recebe como parâmetro um 
-arquivo texto com os nós que irão compartilhar memória. Todos os nós devem 
+Por sua vez, a chamada de sistema <I>mmto_load</I> recebe como parÃ¢metro um 
+arquivo texto com os nÃ³s que irÃ£o compartilhar memÃ³ria. Todos os nÃ³s devem 
 executar esta chamada de sistema para iniciar o sistema. Usando um arquivo para
-especificar os nós, podemos reaproveitar arquivos gerados e utilizados por
+especificar os nÃ³s, podemos reaproveitar arquivos gerados e utilizados por
 outros sistemas. Por exemplo, MOMEMTO pode ler arquivos gerados por
 escalonadores de tarefas como PBS[<A
  HREF="tese.html#pbs">38</A>] e SGE[<A
  HREF="tese.html#sge">35</A>], e assim saber 
-quais nós foram alocados para executar a aplicação.
+quais nÃ³s foram alocados para executar a aplicaÃ§Ã£o.
 
 <P>
-A <I>mmto_sync</I> provê um mecanismo para a sincronização. Ela recebe
-como argumento o endereço de uma página virtual compartilhada e uma
-<I>flag</I> que determina qual ação deve ser tomada sobre esta página.
-Atualmente existem duas opções para esta <I>flag</I>: 
+A <I>mmto_sync</I> provÃª um mecanismo para a sincronizaÃ§Ã£o. Ela recebe
+como argumento o endereÃ§o de uma pÃ¡gina virtual compartilhada e uma
+<I>flag</I> que determina qual aÃ§Ã£o deve ser tomada sobre esta pÃ¡gina.
+Atualmente existem duas opÃ§Ãµes para esta <I>flag</I>: 
 
 <P>
 
 <UL>
-<LI><TT>MMTO_UPDATE</TT>, que permite ao usuário atualizar uma página de
-memória compartilhada. A atualização é feita enviando o conteúdo da página 
-para a residência, a qual então envia para os nós que tiverem cópia;
+<LI><TT>MMTO_UPDATE</TT>, que permite ao usuÃ¡rio atualizar uma pÃ¡gina de
+memÃ³ria compartilhada. A atualizaÃ§Ã£o Ã© feita enviando o conteÃºdo da pÃ¡gina 
+para a residÃªncia, a qual entÃ£o envia para os nÃ³s que tiverem cÃ³pia;
 
 <P>
 </LI>
-<LI><TT>MMTO_FREE</TT>, que possibilita a liberação de uma página compartilhada 
-residente fisicamente em memória. 
+<LI><TT>MMTO_FREE</TT>, que possibilita a liberaÃ§Ã£o de uma pÃ¡gina compartilhada 
+residente fisicamente em memÃ³ria. 
 </LI>
 </UL>
 
 <P>
 
 <H1><A NAME="SECTION00640000000000000000">
-3.4 Protótipo</A>
+3.4 ProtÃ³tipo</A>
 </H1>
-O protótipo atual de MOMEMTO foi implementado sobre o Linux kernel 2.4 e
-provê funcionalidade essencial para o compartilhamento de memória. 
-Escolhemos Linux por diversas razões, principalmente porque ele
-é amplamente utilizado e é <I>open source</I>. Uma
-outra vantagem é o seu sofisticado mecanismo de módulos. O Linux utiliza
-<EM>linkagem</EM> dinâmica em kernel, o que permite carregar e descarregar módulos
-no kernel enquanto o mesmo está rodando. Deste modo, pode-se adicionar  
-código especializado para uma determinada aplicação sem precisar
-reinicializar a máquina e sem alterar o funcionamento básico do sistema
-operacional para as demais aplicações.
+O protÃ³tipo atual de MOMEMTO foi implementado sobre o Linux kernel 2.4 e
+provÃª funcionalidade essencial para o compartilhamento de memÃ³ria. 
+Escolhemos Linux por diversas razÃµes, principalmente porque ele
+Ã© amplamente utilizado e Ã© <I>open source</I>. Uma
+outra vantagem Ã© o seu sofisticado mecanismo de mÃ³dulos. O Linux utiliza
+<EM>linkagem</EM> dinÃ¢mica em kernel, o que permite carregar e descarregar mÃ³dulos
+no kernel enquanto o mesmo estÃ¡ rodando. Deste modo, pode-se adicionar  
+cÃ³digo especializado para uma determinada aplicaÃ§Ã£o sem precisar
+reinicializar a mÃ¡quina e sem alterar o funcionamento bÃ¡sico do sistema
+operacional para as demais aplicaÃ§Ãµes.
 A maior parte do sistema foi implementado utilizando esta funcionalidade
-com mínimas mudanças no kernel. 
-As mudanças no kernel foram necessárias apenas para tornar 
-alguns símbolos do kernel visíveis a módulos, e
+com mÃ­nimas mudanÃ§as no kernel. 
+As mudanÃ§as no kernel foram necessÃ¡rias apenas para tornar 
+alguns sÃ­mbolos do kernel visÃ­veis a mÃ³dulos, e
 foram implementados como um <I>patch</I>. 
-Estes símbolos são:
+Estes sÃ­mbolos sÃ£o:
 <TT>vm_area_cachep</TT>, <TT>insert_vm_struct</TT>,
 <TT>make_pages_present</TT>, <TT>lru_cache_add</TT>,
 <TT>mark_page_accessed</TT> e <TT>zap_page_range</TT>. 
-Com a utilização de módulos para implementar o sistema, deixamos o
-código mais portável. Por exemplo, a maioria das distribuições Linux
-modificam os kernels distribuídos em suas versões, o que pode levar a
-erros ao aplicar um <EM>patch</EM> como o de MOMEMTO. Além disto, seria
-necessário distribuír um <EM>patch</EM> específico para cada versão do kernel, os
-quais estão sempre mudando, enquanto que, com a utilização de módulos basta
-compilá-los para o kernel do usuário.
+Com a utilizaÃ§Ã£o de mÃ³dulos para implementar o sistema, deixamos o
+cÃ³digo mais portÃ¡vel. Por exemplo, a maioria das distribuiÃ§Ãµes Linux
+modificam os kernels distribuÃ­dos em suas versÃµes, o que pode levar a
+erros ao aplicar um <EM>patch</EM> como o de MOMEMTO. AlÃ©m disto, seria
+necessÃ¡rio distribuÃ­r um <EM>patch</EM> especÃ­fico para cada versÃ£o do kernel, os
+quais estÃ£o sempre mudando, enquanto que, com a utilizaÃ§Ã£o de mÃ³dulos basta
+compilÃ¡-los para o kernel do usuÃ¡rio.
 
 <P>
 
@@ -1394,7 +1394,7 @@ compilá-los para o kernel do usuário.
 </H2>
 
 <P>
-Nesta seção serão descritos os detalhes técnicos de todas as chamadas de
+Nesta seÃ§Ã£o serÃ£o descritos os detalhes tÃ©cnicos de todas as chamadas de
 sistemas adicionadas ao sistema operacional por MOMEMTO.
 
 <P>
@@ -1404,29 +1404,29 @@ sistemas adicionadas ao sistema operacional por MOMEMTO.
 </H3>
 
 <P>
-Esta chamada de sistema é utilizada para alocar um intervalo de endereços de
-memória virtual. As principais tarefas são:
+Esta chamada de sistema Ã© utilizada para alocar um intervalo de endereÃ§os de
+memÃ³ria virtual. As principais tarefas sÃ£o:
 
 <P>
 
 <UL>
-<LI>Todos os nós criam uma VMA com memória anônima<A NAME="tex2html5"
+<LI>Todos os nÃ³s criam uma VMA com memÃ³ria anÃ´nima<A NAME="tex2html5"
   HREF="#foot632"><SUP>3.1</SUP></A> [<A
  HREF="tese.html#unix">37</A>]
-para a área compartilhada. O tamanho desta área é obtido como argumento na 
+para a Ã¡rea compartilhada. O tamanho desta Ã¡rea Ã© obtido como argumento na 
 chamada de sistema e inserida na lista de VMAs do processo. 
 
 <P>
 </LI>
-<LI>A esta VMA é atribuída a <I>flag</I> <TT>VM_LOCKED</TT>, em outras
-palavras, todo este intervalo de endereços é marcado como não 
-substituível (<I>s</I>wapable), ou seja, o kernel não pode retirar estas
-páginas da memória.
+<LI>A esta VMA Ã© atribuÃ­da a <I>flag</I> <TT>VM_LOCKED</TT>, em outras
+palavras, todo este intervalo de endereÃ§os Ã© marcado como nÃ£o 
+substituÃ­vel (<I>s</I>wapable), ou seja, o kernel nÃ£o pode retirar estas
+pÃ¡ginas da memÃ³ria.
 
 <P>
 </LI>
-<LI>Finalmente, é configurado o tratamento para qualquer
-falha de página que ocorra nesta VMA, que será descrito a seguir.
+<LI>Finalmente, Ã© configurado o tratamento para qualquer
+falha de pÃ¡gina que ocorra nesta VMA, que serÃ¡ descrito a seguir.
 </LI>
 </UL>
 
@@ -1435,59 +1435,59 @@ falha de página que ocorra nesta VMA, que será descrito a seguir.
 <H3><A NAME="SECTION00641200000000000000">
 3.4.1.2 mmto_load</A>
 </H3>
-A função desta chamada de sistema é inicializar as estruturas internas do
-sistema. Tem como argumento um arquivo contendo os nós que irão
-compartilhar memória. Dentre suas principais atribuições pode-se citar:
+A funÃ§Ã£o desta chamada de sistema Ã© inicializar as estruturas internas do
+sistema. Tem como argumento um arquivo contendo os nÃ³s que irÃ£o
+compartilhar memÃ³ria. Dentre suas principais atribuiÃ§Ãµes pode-se citar:
 
 <P>
 
 <UL>
-<LI>A divisão das residências, que nesta primeira implementação 
-é feita de forma estática e por blocos. Assim, cada nó recebe <IMG
+<LI>A divisÃ£o das residÃªncias, que nesta primeira implementaÃ§Ã£o 
+Ã© feita de forma estÃ¡tica e por blocos. Assim, cada nÃ³ recebe <IMG
  WIDTH="39" HEIGHT="37" ALIGN="MIDDLE" BORDER="0"
  SRC="img20.png"
  ALT="$1/N$"> do 
-número total de páginas. 
-O arquivo recebido como argumento nesta chamada de sistema contém
-os <I>hosts</I> que irão compartilhar memória. O primeiro nó do arquivo
+nÃºmero total de pÃ¡ginas. 
+O arquivo recebido como argumento nesta chamada de sistema contÃ©m
+os <I>hosts</I> que irÃ£o compartilhar memÃ³ria. O primeiro nÃ³ do arquivo
 recebe o primeiro bloco com (<IMG
  WIDTH="39" HEIGHT="37" ALIGN="MIDDLE" BORDER="0"
  SRC="img20.png"
- ALT="$1/N$">) de memória compartilhada e assim por diante.
-Esta técnica foi utilizada para simplificar a implementação e para 
-facilitar o compreendimento da distribuição das residências.
+ ALT="$1/N$">) de memÃ³ria compartilhada e assim por diante.
+Esta tÃ©cnica foi utilizada para simplificar a implementaÃ§Ã£o e para 
+facilitar o compreendimento da distribuiÃ§Ã£o das residÃªncias.
 
 <P>
 </LI>
-<LI>Após esta divisão, é gerada uma falha de página para cada uma das
-que o nó é a residência, ou seja, as páginas que o nó é a residência
-estão sempre em memória. Para as demais, uma página física só
-será alocada quando o nó acessar a página.
+<LI>ApÃ³s esta divisÃ£o, Ã© gerada uma falha de pÃ¡gina para cada uma das
+que o nÃ³ Ã© a residÃªncia, ou seja, as pÃ¡ginas que o nÃ³ Ã© a residÃªncia
+estÃ£o sempre em memÃ³ria. Para as demais, uma pÃ¡gina fÃ­sica sÃ³
+serÃ¡ alocada quando o nÃ³ acessar a pÃ¡gina.
 
 <P>
 </LI>
-<LI>Por fim, são criadas <IMG
+<LI>Por fim, sÃ£o criadas <IMG
  WIDTH="54" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img21.png"
  ALT="$N-1$"> threads de kernel, onde <IMG
  WIDTH="22" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img22.png"
- ALT="$N$"> é o número
-total de nós. Cada thread de kernel é responsável por receber pedidos de
-falha de página vindo de outros nós para páginas que ele é a residência e
-também por receber atualizações de páginas.
+ ALT="$N$"> Ã© o nÃºmero
+total de nÃ³s. Cada thread de kernel Ã© responsÃ¡vel por receber pedidos de
+falha de pÃ¡gina vindo de outros nÃ³s para pÃ¡ginas que ele Ã© a residÃªncia e
+tambÃ©m por receber atualizaÃ§Ãµes de pÃ¡ginas.
 </LI>
 </UL>
 
 <P>
-Há algumas vantagens na utilização de threads de kernel por MOMEMTO, por 
+HÃ¡ algumas vantagens na utilizaÃ§Ã£o de threads de kernel por MOMEMTO, por 
 exemplo, a troca de contexto (<I>context switch</I>) entre threads de kernel 
-são mais leves do que entre processos comuns, porque elas rodam somente em modo
-kernel. Outra vantagem é que as utilizando o nosso sistema realiza
+sÃ£o mais leves do que entre processos comuns, porque elas rodam somente em modo
+kernel. Outra vantagem Ã© que as utilizando o nosso sistema realiza
 menos trocas de contextos. Por exemplo, quando um processo recebe
-uma atualização de página, a thread de kernel que está conectada com o nó
-que enviou a atualização é acordada, faz a cópia direta para a página do
-usuário e voltar a dormir. Todo o processo ocorre sem a necessidade de troca 
+uma atualizaÃ§Ã£o de pÃ¡gina, a thread de kernel que estÃ¡ conectada com o nÃ³
+que enviou a atualizaÃ§Ã£o Ã© acordada, faz a cÃ³pia direta para a pÃ¡gina do
+usuÃ¡rio e voltar a dormir. Todo o processo ocorre sem a necessidade de troca 
 de contexto.
 
 <P>
@@ -1495,136 +1495,136 @@ de contexto.
 <H3><A NAME="SECTION00641300000000000000">
 3.4.1.3 mmto_sync</A>
 </H3>
-A <I>mmto_sync</I> provê um mecanismo para a sincronização. Ela recebe
-como argumento o endereço de uma página virtual compartilhada e uma
-<I>flag</I> que determina qual ação deve ser tomada sobre esta página.
-Atualmente as duas <I>flags</I> suportadas são: 
+A <I>mmto_sync</I> provÃª um mecanismo para a sincronizaÃ§Ã£o. Ela recebe
+como argumento o endereÃ§o de uma pÃ¡gina virtual compartilhada e uma
+<I>flag</I> que determina qual aÃ§Ã£o deve ser tomada sobre esta pÃ¡gina.
+Atualmente as duas <I>flags</I> suportadas sÃ£o: 
 
 <P>
 
 <UL>
-<LI><TT>MMTO_UPDATE</TT>, que&nbsp; permite &nbsp;ao &nbsp;usuário &nbsp;decidir&nbsp; <I>quando</I> &nbsp;e <I>qual</I>
-&nbsp;página compartilhada os outros nós devem receber uma cópia atualizada. Quando 
-o usuário atualiza uma página, se o nó for a residência da página uma cópia
-atualizada é enviada para quem tiver cópia, caso contrário, é enviada primeiro
-uma cópia para a residência da página, o qual então reenvia para quem
-tiver cópia. 
+<LI><TT>MMTO_UPDATE</TT>, que&nbsp; permite &nbsp;ao &nbsp;usuÃ¡rio &nbsp;decidir&nbsp; <I>quando</I> &nbsp;e <I>qual</I>
+&nbsp;pÃ¡gina compartilhada os outros nÃ³s devem receber uma cÃ³pia atualizada. Quando 
+o usuÃ¡rio atualiza uma pÃ¡gina, se o nÃ³ for a residÃªncia da pÃ¡gina uma cÃ³pia
+atualizada Ã© enviada para quem tiver cÃ³pia, caso contrÃ¡rio, Ã© enviada primeiro
+uma cÃ³pia para a residÃªncia da pÃ¡gina, o qual entÃ£o reenvia para quem
+tiver cÃ³pia. 
 </LI>
-<LI><TT>MMTO_FREE</TT>, que possibilita a liberação física de uma página
-compartilhada de memória, ou seja, libera uma página residente em memória.
-Esta opção só tem efeito em páginas que o nó não for a residência.
+<LI><TT>MMTO_FREE</TT>, que possibilita a liberaÃ§Ã£o fÃ­sica de uma pÃ¡gina
+compartilhada de memÃ³ria, ou seja, libera uma pÃ¡gina residente em memÃ³ria.
+Esta opÃ§Ã£o sÃ³ tem efeito em pÃ¡ginas que o nÃ³ nÃ£o for a residÃªncia.
 </LI>
 </UL>
 
 <P>
 
 <H2><A NAME="SECTION00642000000000000000">
-3.4.2 Falha de Página</A>
+3.4.2 Falha de PÃ¡gina</A>
 </H2>
-Na inicialização é forçada uma falha de página para cada uma das páginas
-que o nó é a residência. Estas falhas de páginas são utilizadas para o nó 
-ter em memória as quais ele é a residência.
-O primeiro acesso às outras páginas compartilhadas resultam em 
-um pedido de página que é enviado à sua residência, a qual 
-então envia uma cópia para o nó
+Na inicializaÃ§Ã£o Ã© forÃ§ada uma falha de pÃ¡gina para cada uma das pÃ¡ginas
+que o nÃ³ Ã© a residÃªncia. Estas falhas de pÃ¡ginas sÃ£o utilizadas para o nÃ³ 
+ter em memÃ³ria as quais ele Ã© a residÃªncia.
+O primeiro acesso Ã s outras pÃ¡ginas compartilhadas resultam em 
+um pedido de pÃ¡gina que Ã© enviado Ã  sua residÃªncia, a qual 
+entÃ£o envia uma cÃ³pia para o nÃ³
 que realizou o pedido e marca um bit em uma estrutura interna de MOMEMTO,
-indicando que aquele nó tem uma cópia.
+indicando que aquele nÃ³ tem uma cÃ³pia.
 
 <P>
-Os nós se comunicam utilizando sockets TCP. Para diminuir o <I>overhead</I>
-do TCP/IP, uma conexão é estabelecida entre os nós na inicialização, ou
-seja, cada nó abre uma conexão com uma thread de kernel dos nós remotos e
+Os nÃ³s se comunicam utilizando sockets TCP. Para diminuir o <I>overhead</I>
+do TCP/IP, uma conexÃ£o Ã© estabelecida entre os nÃ³s na inicializaÃ§Ã£o, ou
+seja, cada nÃ³ abre uma conexÃ£o com uma thread de kernel dos nÃ³s remotos e
 assim todos permanecem conectados entre si. O
-protocolo implementado por MOMEMTO é basicamente composto de mensagens de
-<I>pedido</I> e <I>resposta</I> que são enviadas sobre a rede TCP/IP. 
-Estas mensagens são utilizadas para pedir ou atualizar uma página remota.
-Para cada atualização realizada pela aplicação apenas 4 bytes são adicionados 
-pelo sistema, que são utilizados para informar qual página receberá os dados
-atualizados. O resto dos bytes trafegados são dados úteis da aplicação e é
-gerada apenas uma mensagem para esta operação. Por sua vez, na falha de
-página são utilizadas duas mensagens: uma com 4 bytes para especificar a
-página requisitada e outra para receber os dados referentes à ela.
+protocolo implementado por MOMEMTO Ã© basicamente composto de mensagens de
+<I>pedido</I> e <I>resposta</I> que sÃ£o enviadas sobre a rede TCP/IP. 
+Estas mensagens sÃ£o utilizadas para pedir ou atualizar uma pÃ¡gina remota.
+Para cada atualizaÃ§Ã£o realizada pela aplicaÃ§Ã£o apenas 4 bytes sÃ£o adicionados 
+pelo sistema, que sÃ£o utilizados para informar qual pÃ¡gina receberÃ¡ os dados
+atualizados. O resto dos bytes trafegados sÃ£o dados Ãºteis da aplicaÃ§Ã£o e Ã©
+gerada apenas uma mensagem para esta operaÃ§Ã£o. Por sua vez, na falha de
+pÃ¡gina sÃ£o utilizadas duas mensagens: uma com 4 bytes para especificar a
+pÃ¡gina requisitada e outra para receber os dados referentes Ã  ela.
 
 <P>
-Como todas as VMAs têm o mesmo tamanho, mas podem ter sido alocadas
-com endereços virtuais diferentes, os nós se comunicam
-utilizando o deslocamento (<I>offset</I>) dentro da VMA em vez do endereço 
-virtual da página.
+Como todas as VMAs tÃªm o mesmo tamanho, mas podem ter sido alocadas
+com endereÃ§os virtuais diferentes, os nÃ³s se comunicam
+utilizando o deslocamento (<I>offset</I>) dentro da VMA em vez do endereÃ§o 
+virtual da pÃ¡gina.
 
 <P>
 
 <H2><A NAME="SECTION00643000000000000000">
-3.4.3 Consumo de Memória</A>
+3.4.3 Consumo de MemÃ³ria</A>
 </H2>
-MOMEMTO tem um baixo consumo de memória quando comparado com as estruturas
-de dados de memória virtual do kernel. Todas as estruturas requeridas pelo
-sistema são inicializadas quando a aplicação é executada e liberadas quando
+MOMEMTO tem um baixo consumo de memÃ³ria quando comparado com as estruturas
+de dados de memÃ³ria virtual do kernel. Todas as estruturas requeridas pelo
+sistema sÃ£o inicializadas quando a aplicaÃ§Ã£o Ã© executada e liberadas quando
 ela termina.
 
 <P>
-O sistema utiliza três principais estruturas de dados que são alocadas como
-vetores contíguos:
+O sistema utiliza trÃªs principais estruturas de dados que sÃ£o alocadas como
+vetores contÃ­guos:
 
 <P>
 <DL COMPACT>
 <DT>-</DT>
-<DD><TT>home</TT> é um vetor de bytes onde o índice <IMG
+<DD><TT>home</TT> Ã© um vetor de bytes onde o Ã­ndice <IMG
  WIDTH="11" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img23.png"
  ALT="$i$"> tem 
-a residência para a página <IMG
+a residÃªncia para a pÃ¡gina <IMG
  WIDTH="11" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img23.png"
  ALT="$i$">, o que permite implementar mecanismos
-genéricos para distribuição das residências;
+genÃ©ricos para distribuiÃ§Ã£o das residÃªncias;
 </DD>
 <DT>-</DT>
-<DD><TT>copy</TT> é um vetor de campos de bits, um para cada página que
-o nó é a residência. Cada bit do campo de bits indica se o nó
-correspondente tem ou não uma cópia da página;
+<DD><TT>copy</TT> Ã© um vetor de campos de bits, um para cada pÃ¡gina que
+o nÃ³ Ã© a residÃªncia. Cada bit do campo de bits indica se o nÃ³
+correspondente tem ou nÃ£o uma cÃ³pia da pÃ¡gina;
 </DD>
 <DT>-</DT>
-<DD><TT>last</TT> indica qual nó acessou por último a página.
+<DD><TT>last</TT> indica qual nÃ³ acessou por Ãºltimo a pÃ¡gina.
 </DD>
 </DL>
 
 <P>
-Deste modo, os gastos de memória em MOMEMTO são:
+Deste modo, os gastos de memÃ³ria em MOMEMTO sÃ£o:
 
 <P>
 <DL COMPACT>
 <DT>-</DT>
-<DD>6 bytes por página da qual o nó é a residência;
+<DD>6 bytes por pÃ¡gina da qual o nÃ³ Ã© a residÃªncia;
 </DD>
 <DT>-</DT>
-<DD>1 byte para as outras páginas.
+<DD>1 byte para as outras pÃ¡ginas.
 </DD>
 </DL>
 
 <P>
-MOMEMTO não modifica a estrutura VMA do kernel.
-As estruturas de dados requeridas por MOMEMTO são alocadas quando a
-aplicação começa a executar e liberadas quando a aplicação termina e
-além disto, são locais ao módulo. Assim, MOMEMTO não adiciona nenhum 
-<I>overhead</I> na execução de aplicações que não o utilizam e nem
-para a execução do kernel.
+MOMEMTO nÃ£o modifica a estrutura VMA do kernel.
+As estruturas de dados requeridas por MOMEMTO sÃ£o alocadas quando a
+aplicaÃ§Ã£o comeÃ§a a executar e liberadas quando a aplicaÃ§Ã£o termina e
+alÃ©m disto, sÃ£o locais ao mÃ³dulo. Assim, MOMEMTO nÃ£o adiciona nenhum 
+<I>overhead</I> na execuÃ§Ã£o de aplicaÃ§Ãµes que nÃ£o o utilizam e nem
+para a execuÃ§Ã£o do kernel.
 
 <P>
 
 <H2><A NAME="SECTION00644000000000000000">
 3.4.4 Barreira</A>
 </H2>
-Com o objetivo de oferecer sincronização, foi implementada uma barreira
-centralizada como uma biblioteca para a aplicação no nível de usuário.
-Esta barreira somente sincroniza a computação, ou seja, não implementa 
-consistência de memória. 
-Quando um nó alcança uma barreira ele envia uma mensagem de 4 bytes
-, com o número da barreira, para o gerente de barreira [<A
+Com o objetivo de oferecer sincronizaÃ§Ã£o, foi implementada uma barreira
+centralizada como uma biblioteca para a aplicaÃ§Ã£o no nÃ­vel de usuÃ¡rio.
+Esta barreira somente sincroniza a computaÃ§Ã£o, ou seja, nÃ£o implementa 
+consistÃªncia de memÃ³ria. 
+Quando um nÃ³ alcanÃ§a uma barreira ele envia uma mensagem de 4 bytes
+, com o nÃºmero da barreira, para o gerente de barreira [<A
  HREF="tese.html#culler">17</A>]. 
-O gerente espera por mensagens de todos os nós
-envolvidos e,  após receber as mensagens de todos os nós, envia uma
-mensagem também de 4 bytes liberando-os da barreira. Toda a comunicação
-realizada na barreira é através de sockets TCP.
+O gerente espera por mensagens de todos os nÃ³s
+envolvidos e,  apÃ³s receber as mensagens de todos os nÃ³s, envia uma
+mensagem tambÃ©m de 4 bytes liberando-os da barreira. Toda a comunicaÃ§Ã£o
+realizada na barreira Ã© atravÃ©s de sockets TCP.
 
 <P>
 
@@ -1636,11 +1636,11 @@ realizada na barreira é através de sockets TCP.
 
 <P>
 Com os experimentos realizados, espera-se avaliar o impacto do 
-protótipo do MOMEMTO. Entretanto, salientamos que uma comparação direta de outros 
-sistemas com MOMEMTO é difícil, visto que o sistema utiliza o paradigma de memória
-compartilhada mas, ao mesmo tempo, não garante consistência de memória.
-Para tentar realizar uma comparação substancial desta tese, comparamos 
-MOMEMTO com um software tradicional do paradigma de memória compartilhada
+protÃ³tipo do MOMEMTO. Entretanto, salientamos que uma comparaÃ§Ã£o direta de outros 
+sistemas com MOMEMTO Ã© difÃ­cil, visto que o sistema utiliza o paradigma de memÃ³ria
+compartilhada mas, ao mesmo tempo, nÃ£o garante consistÃªncia de memÃ³ria.
+Para tentar realizar uma comparaÃ§Ã£o substancial desta tese, comparamos 
+MOMEMTO com um software tradicional do paradigma de memÃ³ria compartilhada
 (TreadMarks) e um software do paradigma de troca de mensagens (MPI).
 
 <P>
@@ -1648,44 +1648,44 @@ MOMEMTO com um software tradicional do paradigma de memória compartilhada
 <H1><A NAME="SECTION00710000000000000000">
 4.1 Ambiente de testes</A>
 </H1>
-Todos os testes foram realizados em um cluster de 8 nós, onde cada nó contém um 
-processador Pentium III de 650MHz. Cada nó possui 512 MBytes de memória RAM, 
-cache L2 de 256 KBytes e duas caches L1 (uma de instrução e outra de dados)
-com 16 KBytes cada. Os nós estão conectados por uma rede <EM>Fast Ethernet</EM> e
-cada nó tem uma interface de rede <EM>onboard Ethernet Pro 100</EM>.
+Todos os testes foram realizados em um cluster de 8 nÃ³s, onde cada nÃ³ contÃ©m um 
+processador Pentium III de 650MHz. Cada nÃ³ possui 512 MBytes de memÃ³ria RAM, 
+cache L2 de 256 KBytes e duas caches L1 (uma de instruÃ§Ã£o e outra de dados)
+com 16 KBytes cada. Os nÃ³s estÃ£o conectados por uma rede <EM>Fast Ethernet</EM> e
+cada nÃ³ tem uma interface de rede <EM>onboard Ethernet Pro 100</EM>.
 Utilizamos em nossos experimentos o sistema operacional Linux com o 
-kernel 2.4.17, TreadMarks versão 1.0.3.2 e MPI LAM 6.5.3.
+kernel 2.4.17, TreadMarks versÃ£o 1.0.3.2 e MPI LAM 6.5.3.
 
 <P>
 
 <H1><A NAME="SECTION00720000000000000000">
-4.2 Aplicações</A>
+4.2 AplicaÃ§Ãµes</A>
 </H1>
-Para avaliar MOMEMTO escolhemos duas aplicações: 
-multiplicação de vetores e <EM>Integer Sort</EM> (IS), as quais são descritas e
+Para avaliar MOMEMTO escolhemos duas aplicaÃ§Ãµes: 
+multiplicaÃ§Ã£o de vetores e <EM>Integer Sort</EM> (IS), as quais sÃ£o descritas e
 analisadas a seguir.
 
 <P>
 
 <H1><A NAME="SECTION00730000000000000000">
-4.3 Multiplicação de Vetores</A>
+4.3 MultiplicaÃ§Ã£o de Vetores</A>
 </H1>
-Inicialmente escolhemos uma multiplicação de vetores (MV), onde 
+Inicialmente escolhemos uma multiplicaÃ§Ã£o de vetores (MV), onde 
 o elemento <IMG
  WIDTH="11" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img23.png"
- ALT="$i$"> de um vetor é multiplicado com o elemento <IMG
+ ALT="$i$"> de um vetor Ã© multiplicado com o elemento <IMG
  WIDTH="11" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img23.png"
  ALT="$i$"> do outro,
-resultando em um vetor de mesmo tamanho. Esta aplicação foi escolhida
-devido ao fato de ter um padrão de acesso bem definido e de requerer uma grande
-quantidade de memória. A aplicação consiste de três vetores <IMG
+resultando em um vetor de mesmo tamanho. Esta aplicaÃ§Ã£o foi escolhida
+devido ao fato de ter um padrÃ£o de acesso bem definido e de requerer uma grande
+quantidade de memÃ³ria. A aplicaÃ§Ã£o consiste de trÃªs vetores <IMG
  WIDTH="92" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
  SRC="img24.png"
  ALT="$C = A * B$">,
-onde cada nó inicializa um vetor. As residências são atribuídas de forma
-estática e contígua, assim garantimos que cada nó será a residência de 
+onde cada nÃ³ inicializa um vetor. As residÃªncias sÃ£o atribuÃ­das de forma
+estÃ¡tica e contÃ­gua, assim garantimos que cada nÃ³ serÃ¡ a residÃªncia de 
 um dos vetores, como demonstra a Figura <A HREF="tese.html#fig:mv_homes">4.1</A>.
 
 <P>
@@ -1694,7 +1694,7 @@ um dos vetores, como demonstra a Figura <A HREF="tese.html#fig:mv_homes">4.1</A>
 <DIV ALIGN="CENTER"><A NAME="fig:mv_homes"></A><A NAME="820"></A>
 <TABLE>
 <CAPTION ALIGN="BOTTOM"><STRONG>Figura:</STRONG>
-Disposição das residências</CAPTION>
+DisposiÃ§Ã£o das residÃªncias</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <IMG
  WIDTH="256" HEIGHT="202" ALIGN="BOTTOM" BORDER="0"
@@ -1706,12 +1706,12 @@ Disposição das residências</CAPTION>
 </DIV><P></P>
 
 <P>
-A computação do vetor <IMG
+A computaÃ§Ã£o do vetor <IMG
  WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
  SRC="img26.png"
  ALT="$C$">, ilustrada na Figura <A HREF="tese.html#fig:mv_dados">4.2</A>,
-é dividida igualmente entre três nós, onde  
-cada um calcula uma terça parte do vetor resultante.
+Ã© dividida igualmente entre trÃªs nÃ³s, onde  
+cada um calcula uma terÃ§a parte do vetor resultante.
 
 <P>
 
@@ -1719,12 +1719,12 @@ cada um calcula uma terça parte do vetor resultante.
 4.3.1 Resultados</A>
 </H2>
 Foram realizados dois experimentos. No primeiro experimento, chamado MV
-Pequeno, nós utilizamos 36.000 páginas compartilhadas (12.000 por vetor),
-o que representa um total de 141 MB de memória compartilhada. No segundo
-teste, chamado MV Grande, foram utilizadas 211.194 páginas compartilhadas 
+Pequeno, nÃ³s utilizamos 36.000 pÃ¡ginas compartilhadas (12.000 por vetor),
+o que representa um total de 141 MB de memÃ³ria compartilhada. No segundo
+teste, chamado MV Grande, foram utilizadas 211.194 pÃ¡ginas compartilhadas 
 (70.398 por vetor), representando um total de 825 MB. Ressaltamos que esta 
-quantidade de memória é maior que a memória física disponível em 
-qualquer nó do cluster.
+quantidade de memÃ³ria Ã© maior que a memÃ³ria fÃ­sica disponÃ­vel em 
+qualquer nÃ³ do cluster.
 
 <P>
 
@@ -1732,7 +1732,7 @@ qualquer nó do cluster.
 <DIV ALIGN="CENTER"><A NAME="fig:mv_dados"></A><A NAME="829"></A>
 <TABLE>
 <CAPTION ALIGN="BOTTOM"><STRONG>Figura:</STRONG>
-Computação do vetor resultante</CAPTION>
+ComputaÃ§Ã£o do vetor resultante</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <IMG
  WIDTH="300" HEIGHT="217" ALIGN="BOTTOM" BORDER="0"
@@ -1747,16 +1747,16 @@ Computação do vetor resultante</CAPTION>
 A Figura <A HREF="tese.html#fig:mmtovstmk">4.3</A> mostra o tempo total no teste MV Pequeno para 
 MOMEMTO e TreadMarks (TMK) [<A
  HREF="tese.html#amza96treadmarks">7</A>]. Ambos sistemas utilizam 
-o mesmo algoritmo para realizar a multiplicação de vetores.
-Como pode-se observar, há uma melhora no tempo de execução da aplicação 
-de 48% para MOMEMTO quando comparado à versão em TMK. Esta melhora está
-diretamente relacionada com o número de falhas de página, chamadas de
-sistema e latência de interrupção em ambos sistemas. Como o mecanismo de
-memória compartilhada oferecido por MOMEMTO é implementado dentro do
-kernel, o número de trocas de contexto e a latência no recebimento de 
-interrupções é menor quando comparado a TreadMarks. Nós acreditamos que
+o mesmo algoritmo para realizar a multiplicaÃ§Ã£o de vetores.
+Como pode-se observar, hÃ¡ uma melhora no tempo de execuÃ§Ã£o da aplicaÃ§Ã£o 
+de 48% para MOMEMTO quando comparado Ã  versÃ£o em TMK. Esta melhora estÃ¡
+diretamente relacionada com o nÃºmero de falhas de pÃ¡gina, chamadas de
+sistema e latÃªncia de interrupÃ§Ã£o em ambos sistemas. Como o mecanismo de
+memÃ³ria compartilhada oferecido por MOMEMTO Ã© implementado dentro do
+kernel, o nÃºmero de trocas de contexto e a latÃªncia no recebimento de 
+interrupÃ§Ãµes Ã© menor quando comparado a TreadMarks. NÃ³s acreditamos que
 este ganho deve permanecer significativo mesmo quando MOMEMTO implementar
-um protocolo de consistência relaxada como o usado em TreadMarks.
+um protocolo de consistÃªncia relaxada como o usado em TreadMarks.
 
 <P>
 
@@ -1776,31 +1776,31 @@ MOMEMTO x TMK</CAPTION>
 </DIV><P></P>
 
 <P>
-Falhas de páginas em MOMEMTO ocorrem sob demanda, ou seja, somente quando
-um nó acessar uma página do vetor que ele não seja a residência é que vai
-ocorrer a busca da página. Após o nó calcular todos os elementos desta
-página irá ocorrer a atualização da mesma. Deste modo, dentro do tempo de
-processamento, que foi de 9,96s, está o tempo gasto em falhas de páginas,
-atualizações e duas barreiras, as quais foram utilizadas para sincronizar
-a execução após os nós inicalizarem os seus vetores e após o cálculo do
-vetor resultante. Estes tempos são mostrados na Tabela <A HREF="tese.html#tab:small-times">4.1</A>. 
-O tempo gasto no cálculo do vetor foi de 0,55s.
+Falhas de pÃ¡ginas em MOMEMTO ocorrem sob demanda, ou seja, somente quando
+um nÃ³ acessar uma pÃ¡gina do vetor que ele nÃ£o seja a residÃªncia Ã© que vai
+ocorrer a busca da pÃ¡gina. ApÃ³s o nÃ³ calcular todos os elementos desta
+pÃ¡gina irÃ¡ ocorrer a atualizaÃ§Ã£o da mesma. Deste modo, dentro do tempo de
+processamento, que foi de 9,96s, estÃ¡ o tempo gasto em falhas de pÃ¡ginas,
+atualizaÃ§Ãµes e duas barreiras, as quais foram utilizadas para sincronizar
+a execuÃ§Ã£o apÃ³s os nÃ³s inicalizarem os seus vetores e apÃ³s o cÃ¡lculo do
+vetor resultante. Estes tempos sÃ£o mostrados na Tabela <A HREF="tese.html#tab:small-times">4.1</A>. 
+O tempo gasto no cÃ¡lculo do vetor foi de 0,55s.
 
 <P>
 <BR><P></P>
 <DIV ALIGN="CENTER"><A NAME="848"></A>
 <TABLE>
 <CAPTION><STRONG>Tabela:</STRONG>
-Tempo de processamento para MV Pequeno para cada nó</CAPTION>
+Tempo de processamento para MV Pequeno para cada nÃ³</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
 <TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">Número</TD>
+<TD ALIGN="CENTER">NÃºmero</TD>
 <TD ALIGN="CENTER">Total</TD>
 <TD ALIGN="CENTER">Rede</TD>
-<TD ALIGN="CENTER">Média</TD>
+<TD ALIGN="CENTER">MÃ©dia</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Atualizações</TD>
+<TR><TD ALIGN="CENTER">AtualizaÃ§Ãµes</TD>
 <TD ALIGN="CENTER">4000</TD>
 <TD ALIGN="CENTER">2,78s</TD>
 <TD ALIGN="CENTER">2,75s</TD>
@@ -1809,7 +1809,7 @@ Tempo de processamento para MV Pequeno para cada nó</CAPTION>
  SRC="img29.png"
  ALT="$\mu$">s</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Falhas de Páginas</TD>
+<TR><TD ALIGN="CENTER">Falhas de PÃ¡ginas</TD>
 <TD ALIGN="CENTER">8000</TD>
 <TD ALIGN="CENTER">6,63s</TD>
 <TD ALIGN="CENTER">6,58s</TD>
@@ -1835,54 +1835,54 @@ Tempo de processamento para MV Pequeno para cada nó</CAPTION>
 </DIV><P></P><BR>
 
 <P>
-O campo <I>Média</I> representa o tempo médio para cada operação.
-No total foram realizadas 4.000 atualizações de páginas (uma terça parte do
+O campo <I>MÃ©dia</I> representa o tempo mÃ©dio para cada operaÃ§Ã£o.
+No total foram realizadas 4.000 atualizaÃ§Ãµes de pÃ¡ginas (uma terÃ§a parte do
 vetor <IMG
  WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
  SRC="img26.png"
- ALT="$C$">) pelo nó que realizou o cálculo. O nó 3, que é a residência do 
+ ALT="$C$">) pelo nÃ³ que realizou o cÃ¡lculo. O nÃ³ 3, que Ã© a residÃªncia do 
 vetor <IMG
  WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
  SRC="img26.png"
- ALT="$C$">, não realizou atualização de página. O número total de falhas de
-páginas por nó foi de 8.000, ou seja, como cada nó realiza o cálculo de uma
-terça parte do vetor resultante, todos os nós tomaram falhas de páginas de
-uma terça parte dos dois vetores que eles não são a residência. A diferença
+ ALT="$C$">, nÃ£o realizou atualizaÃ§Ã£o de pÃ¡gina. O nÃºmero total de falhas de
+pÃ¡ginas por nÃ³ foi de 8.000, ou seja, como cada nÃ³ realiza o cÃ¡lculo de uma
+terÃ§a parte do vetor resultante, todos os nÃ³s tomaram falhas de pÃ¡ginas de
+uma terÃ§a parte dos dois vetores que eles nÃ£o sÃ£o a residÃªncia. A diferenÃ§a
 entre o tempo <IMG
  WIDTH="50" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img30.png"
  ALT="$Total$"> e o de <IMG
  WIDTH="46" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img31.png"
- ALT="$Rede$"> foi o tempo gasto executando o código 
+ ALT="$Rede$"> foi o tempo gasto executando o cÃ³digo 
 de MOMEMTO. Assim, o tempo para
-atualização foi de 1% e para falha de página de 1,47% do tempo <IMG
+atualizaÃ§Ã£o foi de 1% e para falha de pÃ¡gina de 1,47% do tempo <IMG
  WIDTH="50" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img30.png"
  ALT="$Total$">.
-Estes tempos mostram que o <I>overhead</I> que MOMEMTO impõe é mínimo quando 
-comparado à latência da rede, a qual pode ser melhorada utilizando
-outras tecnologias de comunicação como Myrinet ou Giganet.
+Estes tempos mostram que o <I>overhead</I> que MOMEMTO impÃµe Ã© mÃ­nimo quando 
+comparado Ã  latÃªncia da rede, a qual pode ser melhorada utilizando
+outras tecnologias de comunicaÃ§Ã£o como Myrinet ou Giganet.
 
 <P>
-O tempo gasto na barreira foi um pouco elevado devido ao fato de cada nó
-quando chega em cada barreira abrir uma conexão TCP com o gerente. 
+O tempo gasto na barreira foi um pouco elevado devido ao fato de cada nÃ³
+quando chega em cada barreira abrir uma conexÃ£o TCP com o gerente. 
 Pode-se melhorar este tempo utilizando
-técnicas mais sofisticadas como discutido em outros trabalhos 
+tÃ©cnicas mais sofisticadas como discutido em outros trabalhos 
 [<A
  HREF="tese.html#culler">17</A>].
 
 <P>
-Este primeiro experimento reforça nosso argumento de que o desempenho da
-aplicação pode ser melhorado significantemente através de protocolos mais
-específicos para manter a coerência de memória.
+Este primeiro experimento reforÃ§a nosso argumento de que o desempenho da
+aplicaÃ§Ã£o pode ser melhorado significantemente atravÃ©s de protocolos mais
+especÃ­ficos para manter a coerÃªncia de memÃ³ria.
 
 <P>
-Em nosso segundo teste com multiplicação de vetores, nós estudamos se
-MOMEMTO poderia realmente trabalhar com uma grande quantidade de memória. O
-experimento requer 825 MB de memória compartilhada. TreadMarks não conseguiu
+Em nosso segundo teste com multiplicaÃ§Ã£o de vetores, nÃ³s estudamos se
+MOMEMTO poderia realmente trabalhar com uma grande quantidade de memÃ³ria. O
+experimento requer 825 MB de memÃ³ria compartilhada. TreadMarks nÃ£o conseguiu
 executar com esta
-carga em nosso ambiente de teste e, por esta razão, apresentamos os
+carga em nosso ambiente de teste e, por esta razÃ£o, apresentamos os
 resultados somente para MOMEMTO na Tabela <A HREF="tese.html#tab:large">4.2</A>. 
 
 <P>
@@ -1890,13 +1890,13 @@ resultados somente para MOMEMTO na Tabela <A HREF="tese.html#tab:large">4.2</A>.
 <DIV ALIGN="CENTER"><A NAME="862"></A>
 <TABLE>
 <CAPTION><STRONG>Tabela:</STRONG>
-Tempo de execução para MV Grande</CAPTION>
+Tempo de execuÃ§Ã£o para MV Grande</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
 <TR><TD ALIGN="CENTER">&nbsp;</TD>
 <TD ALIGN="CENTER">Total</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Inicialização</TD>
+<TR><TD ALIGN="CENTER">InicializaÃ§Ã£o</TD>
 <TD ALIGN="CENTER">2,73s</TD>
 </TR>
 <TR><TD ALIGN="CENTER">Processamento</TD>
@@ -1910,12 +1910,12 @@ Tempo de execução para MV Grande</CAPTION>
 </DIV><P></P><BR>
 
 <P>
-O tempo total de execução para MOMEMTO foi de 63,2s para esta carga. Como
+O tempo total de execuÃ§Ã£o para MOMEMTO foi de 63,2s para esta carga. Como
 no teste anterior, o tempo total de processamento inclui o tempo para
-atualizações, falhas de páginas e duas barreiras. Estes tempos são mostrados
+atualizaÃ§Ãµes, falhas de pÃ¡ginas e duas barreiras. Estes tempos sÃ£o mostrados
 na Tabela <A HREF="tese.html#tab:ltimes">4.3</A>. 
-O tempo gasto realmente no cálculo do vetor foi de 5,35s e o restante 
-(55,12s) foram custos da paralelização.
+O tempo gasto realmente no cÃ¡lculo do vetor foi de 5,35s e o restante 
+(55,12s) foram custos da paralelizaÃ§Ã£o.
 
 <P>
 <BR><P></P>
@@ -1926,12 +1926,12 @@ Tempo de processamento para MV Grande</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
 <TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">Número</TD>
+<TD ALIGN="CENTER">NÃºmero</TD>
 <TD ALIGN="CENTER">Total</TD>
 <TD ALIGN="CENTER">Rede</TD>
-<TD ALIGN="CENTER">Média</TD>
+<TD ALIGN="CENTER">MÃ©dia</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Atualizações</TD>
+<TR><TD ALIGN="CENTER">AtualizaÃ§Ãµes</TD>
 <TD ALIGN="CENTER">23466</TD>
 <TD ALIGN="CENTER">16,34s</TD>
 <TD ALIGN="CENTER">16,22s</TD>
@@ -1940,7 +1940,7 @@ Tempo de processamento para MV Grande</CAPTION>
  SRC="img29.png"
  ALT="$\mu$">s</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Falhas de Páginas</TD>
+<TR><TD ALIGN="CENTER">Falhas de PÃ¡ginas</TD>
 <TD ALIGN="CENTER">46932</TD>
 <TD ALIGN="CENTER">38,78s</TD>
 <TD ALIGN="CENTER">38,15s</TD>
@@ -1966,39 +1966,39 @@ Tempo de processamento para MV Grande</CAPTION>
 </DIV><P></P><BR>
 
 <P>
-Cada nó realizou 23.466 falhas de página (um terço do vetor <IMG
+Cada nÃ³ realizou 23.466 falhas de pÃ¡gina (um terÃ§o do vetor <IMG
  WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
  SRC="img26.png"
- ALT="$C$">). Cada nó
-gerou 46.932 falhas de páginas, correspondente aos dois vetores para o qual o nó
-não era a residência. O tempo médio gasto em MOMEMTO foi <IMG
+ ALT="$C$">). Cada nÃ³
+gerou 46.932 falhas de pÃ¡ginas, correspondente aos dois vetores para o qual o nÃ³
+nÃ£o era a residÃªncia. O tempo mÃ©dio gasto em MOMEMTO foi <IMG
  WIDTH="32" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img32.png"
  ALT="$5,3$"> <IMG
  WIDTH="16" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img29.png"
  ALT="$\mu$">s
-para atualização e <IMG
+para atualizaÃ§Ã£o e <IMG
  WIDTH="41" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img33.png"
  ALT="$13,3$"> <IMG
  WIDTH="16" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img29.png"
- ALT="$\mu$">s para falha de página.
+ ALT="$\mu$">s para falha de pÃ¡gina.
 
 <P>
-Nestes experimentos preliminares, o protocolo simples de consistência
-utilizado por MOMEMTO permite à aplicação decidir sobre a política e o
-protoloco utilizado na atualização. Esta característica pode ter
-contribuído para o melhor desempenho do sistema quando comparado com
+Nestes experimentos preliminares, o protocolo simples de consistÃªncia
+utilizado por MOMEMTO permite Ã  aplicaÃ§Ã£o decidir sobre a polÃ­tica e o
+protoloco utilizado na atualizaÃ§Ã£o. Esta caracterÃ­stica pode ter
+contribuÃ­do para o melhor desempenho do sistema quando comparado com
 TreadMarks. 
 
 <P>
 Com o intuito de avaliar o mecanismo em kernel oferecido por
-MOMEMTO, comparamos a mesma aplicação com uma implementação
+MOMEMTO, comparamos a mesma aplicaÃ§Ã£o com uma implementaÃ§Ã£o
 utilizando o paradigma de troca de mensagens. As Figuras <A HREF="tese.html#fig:mpi_small">4.4</A> 
-e <A HREF="tese.html#fig:mpi_large">4.5</A> mostram o tempo de execução para a multiplicação de 
-vetores com MOMEMTO e a mesma aplicação implementada em MPI[<A
+e <A HREF="tese.html#fig:mpi_large">4.5</A> mostram o tempo de execuÃ§Ã£o para a multiplicaÃ§Ã£o de 
+vetores com MOMEMTO e a mesma aplicaÃ§Ã£o implementada em MPI[<A
  HREF="tese.html#mpi">5</A>].
 
 <P>
@@ -2036,56 +2036,56 @@ MOMEMTO x MPI para MV Grande</CAPTION>
 </DIV><P></P>
 
 <P>
-Como no teste anterior, em ambos sistemas cada nó calcula uma terça parte 
+Como no teste anterior, em ambos sistemas cada nÃ³ calcula uma terÃ§a parte 
 do vetor <IMG
  WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
  SRC="img26.png"
- ALT="$C$">, cada nó é a residência de um vetor e o inicializa na execução. 
-Na versão em MPI, mensagens são utilizadas para distribuir as partes
-utilizadas por outros nós do vetor <IMG
+ ALT="$C$">, cada nÃ³ Ã© a residÃªncia de um vetor e o inicializa na execuÃ§Ã£o. 
+Na versÃ£o em MPI, mensagens sÃ£o utilizadas para distribuir as partes
+utilizadas por outros nÃ³s do vetor <IMG
  WIDTH="19" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img36.png"
  ALT="$A$"> e <IMG
  WIDTH="20" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img37.png"
- ALT="$B$">, ou seja, o nó 0 envia uma
-terça parte do seu vetor para o nó 1 e uma outra terça parte para o nó 2.
-O mesmo processo ocorre no nó 1 sobre o seu vetor, <IMG
+ ALT="$B$">, ou seja, o nÃ³ 0 envia uma
+terÃ§a parte do seu vetor para o nÃ³ 1 e uma outra terÃ§a parte para o nÃ³ 2.
+O mesmo processo ocorre no nÃ³ 1 sobre o seu vetor, <IMG
  WIDTH="20" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img37.png"
  ALT="$B$">. No final, o
-nó que é a residência do vetor <IMG
+nÃ³ que Ã© a residÃªncia do vetor <IMG
  WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
  SRC="img26.png"
  ALT="$C$"> recebe mensagens com os resultados dos outros
-nós.
+nÃ³s.
 
 <P>
-Na Figura <A HREF="tese.html#fig:mpi_small">4.4</A>, cada vetor tem 12.000 páginas (MV Pequeno). Embora
-MOMEMTO mostre um aumento de 3,5% no tempo de execução quando comparado
+Na Figura <A HREF="tese.html#fig:mpi_small">4.4</A>, cada vetor tem 12.000 pÃ¡ginas (MV Pequeno). Embora
+MOMEMTO mostre um aumento de 3,5% no tempo de execuÃ§Ã£o quando comparado
 com MPI, o tempo de processamento diminuiu em 7,5% com 
-MOMEMTO. A razão para o tempo gasto na inicialização ser maior com MOMEMTO
-é devido ao fato dele forçar uma falha de página na inicialização para cada
-uma que o nó é a residência.
+MOMEMTO. A razÃ£o para o tempo gasto na inicializaÃ§Ã£o ser maior com MOMEMTO
+Ã© devido ao fato dele forÃ§ar uma falha de pÃ¡gina na inicializaÃ§Ã£o para cada
+uma que o nÃ³ Ã© a residÃªncia.
 
 <P>
 No teste MV Grande, apresentado na Figura <A HREF="tese.html#fig:mpi_large">4.5</A>, onde cada vetor
-tem 70.398 páginas, o tempo de execução diminuiu 27% na versão com MOMEMTO.
+tem 70.398 pÃ¡ginas, o tempo de execuÃ§Ã£o diminuiu 27% na versÃ£o com MOMEMTO.
 
 <P>
-Em geral, analisando o número de mensagens,
+Em geral, analisando o nÃºmero de mensagens,
 MPI &nbsp;realizou &nbsp;menos &nbsp;trocas que MOMEMTO. No pior caso, MOMEMTO
-precisa de 3 vezes mais mensagens que MPI. Isto ocorre para uma página
-que o nó não é a residência e ele precisa acessar uma página do vetor <IMG
+precisa de 3 vezes mais mensagens que MPI. Isto ocorre para uma pÃ¡gina
+que o nÃ³ nÃ£o Ã© a residÃªncia e ele precisa acessar uma pÃ¡gina do vetor <IMG
  WIDTH="20" HEIGHT="18" ALIGN="BOTTOM" BORDER="0"
  SRC="img26.png"
  ALT="$C$">,
-sofrendo uma falha de página e atualizando a mesma
-após o cálculo. Falhas de página no MOMEMTO gastam 2 mensagens em modo kernel
-e a atualização é feita através de uma chamada de sistema e uma mensagem
-enviada também em modo kernel. A Tabela <A HREF="tese.html#tab:comm">4.4</A> mostra os tempos de
-comunicação com MOMEMTO e MPI. Este tempo no MOMEMTO é gasto
-realizando atualizações e falhas de páginas, enquanto que em MPI é 
+sofrendo uma falha de pÃ¡gina e atualizando a mesma
+apÃ³s o cÃ¡lculo. Falhas de pÃ¡gina no MOMEMTO gastam 2 mensagens em modo kernel
+e a atualizaÃ§Ã£o Ã© feita atravÃ©s de uma chamada de sistema e uma mensagem
+enviada tambÃ©m em modo kernel. A Tabela <A HREF="tese.html#tab:comm">4.4</A> mostra os tempos de
+comunicaÃ§Ã£o com MOMEMTO e MPI. Este tempo no MOMEMTO Ã© gasto
+realizando atualizaÃ§Ãµes e falhas de pÃ¡ginas, enquanto que em MPI Ã© 
 recebendo e enviando mensagens dos vetores <IMG
  WIDTH="19" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img36.png"
@@ -2103,7 +2103,7 @@ mensagens com o resultado do vetor <IMG
 <DIV ALIGN="CENTER"><A NAME="900"></A>
 <TABLE>
 <CAPTION><STRONG>Tabela:</STRONG>
-Tempo de comunicação</CAPTION>
+Tempo de comunicaÃ§Ã£o</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
 <TR><TD ALIGN="CENTER">&nbsp;</TD>
@@ -2126,46 +2126,46 @@ Tempo de comunicação</CAPTION>
 </DIV><P></P><BR>
 
 <P>
-No teste MV Pequeno, MOMEMTO foi 6% mais rápido que MPI e no teste MV
-Grande reduziu o tempo de comunicação em 33% comparando com MPI.
+No teste MV Pequeno, MOMEMTO foi 6% mais rÃ¡pido que MPI e no teste MV
+Grande reduziu o tempo de comunicaÃ§Ã£o em 33% comparando com MPI.
 
 <P>
-Novamente, nós argumentamos que o melhor desempenho de MOMEMTO é
-relacionado com o baixo <I>overhead</I> de suas operações em kernel.
-MOMEMTO sofre menos trocas de contexto e tem a latência nas interrupções
-menor que a versão em MPI.
+Novamente, nÃ³s argumentamos que o melhor desempenho de MOMEMTO Ã©
+relacionado com o baixo <I>overhead</I> de suas operaÃ§Ãµes em kernel.
+MOMEMTO sofre menos trocas de contexto e tem a latÃªncia nas interrupÃ§Ãµes
+menor que a versÃ£o em MPI.
 
 <P>
 
 <H1><A NAME="SECTION00740000000000000000">
 4.4 IS - Integer Sort</A>
 </H1>
-A aplicação Integer Sort (IS) [<A
+A aplicaÃ§Ã£o Integer Sort (IS) [<A
  HREF="tese.html#bailey92nas">18</A>] ordena um vetor de N inteiros
-usando chaves no intervalo [0,Bmax] através da técnica <I>Bucket Sort</I>.
-As chaves são divididas igualmente entre os processadores do sistema. As
-principais estruturas de dados são um vetor de chaves e um vetor que indica
-a densidade das chaves a serem ordenadas. A computação é dividida em <IMG
+usando chaves no intervalo [0,Bmax] atravÃ©s da tÃ©cnica <I>Bucket Sort</I>.
+As chaves sÃ£o divididas igualmente entre os processadores do sistema. As
+principais estruturas de dados sÃ£o um vetor de chaves e um vetor que indica
+a densidade das chaves a serem ordenadas. A computaÃ§Ã£o Ã© dividida em <IMG
  WIDTH="22" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img22.png"
  ALT="$N$">
 fases, onde <IMG
  WIDTH="22" HEIGHT="17" ALIGN="BOTTOM" BORDER="0"
  SRC="img22.png"
- ALT="$N$"> é o número de processadores executando  a aplicação.
+ ALT="$N$"> Ã© o nÃºmero de processadores executando  a aplicaÃ§Ã£o.
 
 <P>
-Na versão MPI foi utilizada a implementação do IS que vem com o 
+Na versÃ£o MPI foi utilizada a implementaÃ§Ã£o do IS que vem com o 
 <I>NAS Parallel Benchmarks 2.3</I> [<A
  HREF="tese.html#bailey92nas">18</A>]. Com TreadMarks
-foi utilizada a implementação distribuída do IS baseada em barreiras da 
-versão 1.0.3.2. A implementação em MOMEMTO foi baseada no algoritmo 
-utilizado na versão TreadMarks, pois os dois utilizam memória compartilhada.
-Foi necessário, entretanto, utilizar a chamada de sistema <IMG
+foi utilizada a implementaÃ§Ã£o distribuÃ­da do IS baseada em barreiras da 
+versÃ£o 1.0.3.2. A implementaÃ§Ã£o em MOMEMTO foi baseada no algoritmo 
+utilizado na versÃ£o TreadMarks, pois os dois utilizam memÃ³ria compartilhada.
+Foi necessÃ¡rio, entretanto, utilizar a chamada de sistema <IMG
  WIDTH="101" HEIGHT="34" ALIGN="MIDDLE" BORDER="0"
  SRC="img38.png"
  ALT="$mmto\_sync$">
-para, quando necessário, realizar a coerência dos dados compartilhados.
+para, quando necessÃ¡rio, realizar a coerÃªncia dos dados compartilhados.
 
 <P>
 Foram realizados testes com duas entradas para IS, CLASS A e CLASS B, como
@@ -2200,8 +2200,8 @@ Entrada utilizada para o IS</CAPTION>
  SRC="img42.png"
  ALT="$Bmax=2^{21}$"></TD>
 </TR>
-<TR><TD ALIGN="CENTER">10 iterações</TD>
-<TD ALIGN="CENTER">10 iterações</TD>
+<TR><TD ALIGN="CENTER">10 iteraÃ§Ãµes</TD>
+<TD ALIGN="CENTER">10 iteraÃ§Ãµes</TD>
 </TR>
 </TABLE>
 
@@ -2215,14 +2215,14 @@ Entrada utilizada para o IS</CAPTION>
 <H2><A NAME="SECTION00741000000000000000">
 4.4.1 CLASS A</A>
 </H2>
-A Figura <A HREF="tese.html#fig:mmto_mpi_tmk_A">4.6</A> mostra o tempo total de execução para as três
-implementações. A execução do IS CLASS A, utilizando o algoritmo sequencial que 
+A Figura <A HREF="tese.html#fig:mmto_mpi_tmk_A">4.6</A> mostra o tempo total de execuÃ§Ã£o para as trÃªs
+implementaÃ§Ãµes. A execuÃ§Ã£o do IS CLASS A, utilizando o algoritmo sequencial que 
 acompanha o NAS foi de 14,11s.
-Utilizando MOMEMTO houve uma redução de 31% e 18% no tempo de execução
-em relação ao Tmk e MPI, respectivamente, em 2 nós.
-Por sua vez, com 4 nós a redução foi de 54% quando comparado a Tmk e
-19% a MPI. Finalmente, para 8 nós MOMEMTO reduziu em 79%
-o tempo de execução em relação a Tmk e 1,27% em comparação a MPI.
+Utilizando MOMEMTO houve uma reduÃ§Ã£o de 31% e 18% no tempo de execuÃ§Ã£o
+em relaÃ§Ã£o ao Tmk e MPI, respectivamente, em 2 nÃ³s.
+Por sua vez, com 4 nÃ³s a reduÃ§Ã£o foi de 54% quando comparado a Tmk e
+19% a MPI. Finalmente, para 8 nÃ³s MOMEMTO reduziu em 79%
+o tempo de execuÃ§Ã£o em relaÃ§Ã£o a Tmk e 1,27% em comparaÃ§Ã£o a MPI.
 
 <P>
 
@@ -2247,24 +2247,24 @@ MOMEMTO x TMK x MPI - Class A</CAPTION>
 4.4.1.1 MOMEMTO</A>
 </H3> 
 Discutiremos primeiro o resultado para MOMEMTO.
-A Tabela <A HREF="tese.html#tab:mmto_bytes_A">4.6</A> mostra a quantidade de bytes e o número de
-mensagens gasto durante a execução da aplicação.
+A Tabela <A HREF="tese.html#tab:mmto_bytes_A">4.6</A> mostra a quantidade de bytes e o nÃºmero de
+mensagens gasto durante a execuÃ§Ã£o da aplicaÃ§Ã£o.
 
 <P>
 <BR><P></P>
 <DIV ALIGN="CENTER"><A NAME="940"></A>
 <TABLE>
 <CAPTION><STRONG>Tabela:</STRONG>
-Estatísticas do MOMEMTO - CLASS A</CAPTION>
+EstatÃ­sticas do MOMEMTO - CLASS A</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
 <TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">2 nós</TD>
-<TD ALIGN="CENTER">4 nós</TD>
-<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">2 nÃ³s</TD>
+<TD ALIGN="CENTER">4 nÃ³s</TD>
+<TD ALIGN="CENTER">8 nÃ³s</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Número de mensagens</TD>
+<TR><TD ALIGN="CENTER">NÃºmero de mensagens</TD>
 <TD ALIGN="CENTER">3.584</TD>
 <TD ALIGN="CENTER">6.912</TD>
 <TD ALIGN="CENTER">11.648</TD>
@@ -2276,7 +2276,7 @@ Estatísticas do MOMEMTO - CLASS A</CAPTION>
 <TD ALIGN="CENTER">31.5MB</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Tempo de comunicação</TD>
+<TR><TD ALIGN="CENTER">Tempo de comunicaÃ§Ã£o</TD>
 <TD ALIGN="CENTER">1,42s</TD>
 <TD ALIGN="CENTER">2,81s</TD>
 <TD ALIGN="CENTER">4,80s</TD>
@@ -2290,44 +2290,44 @@ Estatísticas do MOMEMTO - CLASS A</CAPTION>
 </DIV><P></P><BR>
 
 <P>
-O <I>Número de mensagens</I> e <I>Bytes trafegados</I> englobam as mensagens utilizadas 
-pelo sistema (<EM>overhead</EM>) e os dados úteis da aplicação. O tempo de comunicação foi o
-tempo gasto realizando barreiras, atualizações e falhas de páginas.
-A Tabela <A HREF="tese.html#tab:mmto_comm_A">4.7</A> detalha o tempo de comunicação.
+O <I>NÃºmero de mensagens</I> e <I>Bytes trafegados</I> englobam as mensagens utilizadas 
+pelo sistema (<EM>overhead</EM>) e os dados Ãºteis da aplicaÃ§Ã£o. O tempo de comunicaÃ§Ã£o foi o
+tempo gasto realizando barreiras, atualizaÃ§Ãµes e falhas de pÃ¡ginas.
+A Tabela <A HREF="tese.html#tab:mmto_comm_A">4.7</A> detalha o tempo de comunicaÃ§Ã£o.
 
 <P>
 <BR><P></P>
 <DIV ALIGN="CENTER"><A NAME="953"></A>
 <TABLE>
 <CAPTION><STRONG>Tabela:</STRONG>
-Comunicação no MOMEMTO - CLASS A</CAPTION>
+ComunicaÃ§Ã£o no MOMEMTO - CLASS A</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
 <TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">2 nós</TD>
-<TD ALIGN="CENTER">4 nós</TD>
-<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">2 nÃ³s</TD>
+<TD ALIGN="CENTER">4 nÃ³s</TD>
+<TD ALIGN="CENTER">8 nÃ³s</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Número de atualizações</TD>
+<TR><TD ALIGN="CENTER">NÃºmero de atualizaÃ§Ãµes</TD>
 <TD ALIGN="CENTER">2560</TD>
 <TD ALIGN="CENTER">2560</TD>
 <TD ALIGN="CENTER">2560</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Tempo em atualizações</TD>
+<TR><TD ALIGN="CENTER">Tempo em atualizaÃ§Ãµes</TD>
 <TD ALIGN="CENTER">0,71s</TD>
 <TD ALIGN="CENTER">1,04s</TD>
 <TD ALIGN="CENTER">1,23s</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Número de falhas de páginas</TD>
+<TR><TD ALIGN="CENTER">NÃºmero de falhas de pÃ¡ginas</TD>
 <TD ALIGN="CENTER">512</TD>
 <TD ALIGN="CENTER">1536</TD>
 <TD ALIGN="CENTER">3584</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Tempo gasto em falhas de páginas</TD>
+<TR><TD ALIGN="CENTER">Tempo gasto em falhas de pÃ¡ginas</TD>
 <TD ALIGN="CENTER">0,51s</TD>
 <TD ALIGN="CENTER">1,48s</TD>
 <TD ALIGN="CENTER">2,97s</TD>
@@ -2347,50 +2347,50 @@ Comunicação no MOMEMTO - CLASS A</CAPTION>
 </DIV><P></P><BR>
 
 <P>
-O número de atualizações se mantém quando se aumenta o número de nós. Isto
-mostra um desbalanceamento do algoritmo da aplicação, visto que sempre o nó
+O nÃºmero de atualizaÃ§Ãµes se mantÃ©m quando se aumenta o nÃºmero de nÃ³s. Isto
+mostra um desbalanceamento do algoritmo da aplicaÃ§Ã£o, visto que sempre o nÃ³
 zero realiza mais processamento que os demais. Entretanto, o seu tempo
-aumenta, pois o nó zero tem que enviar as atualizações para mais nós.
+aumenta, pois o nÃ³ zero tem que enviar as atualizaÃ§Ãµes para mais nÃ³s.
 
 <P>
-O número de falhas de página aumenta de acordo com o número de nós, pois
-o número de páginas que cada nó será a residência diminui, gerando assim
-mais falhas de páginas para acessar a área compartilhada. O tempo gasto em
-barreira também sofre um aumento, o que era esperado, visto que o
-algoritmo utilizado não é escalável, pois cada
-nó abre uma conexão com o gerente quando chega à uma barreira.
+O nÃºmero de falhas de pÃ¡gina aumenta de acordo com o nÃºmero de nÃ³s, pois
+o nÃºmero de pÃ¡ginas que cada nÃ³ serÃ¡ a residÃªncia diminui, gerando assim
+mais falhas de pÃ¡ginas para acessar a Ã¡rea compartilhada. O tempo gasto em
+barreira tambÃ©m sofre um aumento, o que era esperado, visto que o
+algoritmo utilizado nÃ£o Ã© escalÃ¡vel, pois cada
+nÃ³ abre uma conexÃ£o com o gerente quando chega Ã  uma barreira.
 
 <P>
-Como MOMEMTO não impõe um modelo de consistência de memória, para cada
-atualização realizada pela aplicação apenas 4 bytes são adicionados pelo
-sistema, que são utilizados para informar qual página receberá os dados
-atualizados. O resto dos bytes trafegados são dados úteis da aplicação e é
-gerada apenas uma mensagem para esta operação. Por sua vez, na falha de
-página são utilizadas duas mensagens: uma com 4 bytes para especificar a
-página requisitada e outra para receber os dados referentes à ela.
+Como MOMEMTO nÃ£o impÃµe um modelo de consistÃªncia de memÃ³ria, para cada
+atualizaÃ§Ã£o realizada pela aplicaÃ§Ã£o apenas 4 bytes sÃ£o adicionados pelo
+sistema, que sÃ£o utilizados para informar qual pÃ¡gina receberÃ¡ os dados
+atualizados. O resto dos bytes trafegados sÃ£o dados Ãºteis da aplicaÃ§Ã£o e Ã©
+gerada apenas uma mensagem para esta operaÃ§Ã£o. Por sua vez, na falha de
+pÃ¡gina sÃ£o utilizadas duas mensagens: uma com 4 bytes para especificar a
+pÃ¡gina requisitada e outra para receber os dados referentes Ã  ela.
 
 <P>
 
 <H3><A NAME="SECTION00741200000000000000">
 4.4.1.2 TreadMarks</A>
 </H3> 
-A Tabela <A HREF="tese.html#tab:tmk-A">4.8</A> demonstra as estatísticas para TreadMarks.
+A Tabela <A HREF="tese.html#tab:tmk-A">4.8</A> demonstra as estatÃ­sticas para TreadMarks.
 
 <P>
 <BR><P></P>
 <DIV ALIGN="CENTER"><A NAME="964"></A>
 <TABLE>
 <CAPTION><STRONG>Tabela:</STRONG>
-Estatísticas para TreadMarks - CLASS A</CAPTION>
+EstatÃ­sticas para TreadMarks - CLASS A</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
 <TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">2 nós</TD>
-<TD ALIGN="CENTER">4 nós</TD>
-<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">2 nÃ³s</TD>
+<TD ALIGN="CENTER">4 nÃ³s</TD>
+<TD ALIGN="CENTER">8 nÃ³s</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Número de mensagens</TD>
+<TR><TD ALIGN="CENTER">NÃºmero de mensagens</TD>
 <TD ALIGN="CENTER">21.093</TD>
 <TD ALIGN="CENTER">84.451</TD>
 <TD ALIGN="CENTER">223.155</TD>
@@ -2402,7 +2402,7 @@ Estatísticas para TreadMarks - CLASS A</CAPTION>
 <TD ALIGN="CENTER">733MB</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Falhas de Páginas</TD>
+<TR><TD ALIGN="CENTER">Falhas de PÃ¡ginas</TD>
 <TD ALIGN="CENTER">5.632</TD>
 <TD ALIGN="CENTER">16.512</TD>
 <TD ALIGN="CENTER">45.760</TD>
@@ -2428,34 +2428,34 @@ Estatísticas para TreadMarks - CLASS A</CAPTION>
 </DIV><P></P><BR>
 
 <P>
-Como podemos observar, o número de mensagens e a quantidade de bytes
-trafegados cresce vertiginosamente quando aumentamos o número de nós.
-Este comportamento é devido aos efeitos do protocolo de coerência de
-Tmk que, quando aumenta o número de nós, aumenta a quantidade de
-falhas de página e <I>diffs</I> gastos pelo sistema.
+Como podemos observar, o nÃºmero de mensagens e a quantidade de bytes
+trafegados cresce vertiginosamente quando aumentamos o nÃºmero de nÃ³s.
+Este comportamento Ã© devido aos efeitos do protocolo de coerÃªncia de
+Tmk que, quando aumenta o nÃºmero de nÃ³s, aumenta a quantidade de
+falhas de pÃ¡gina e <I>diffs</I> gastos pelo sistema.
 
 <P>
 
 <H3><A NAME="SECTION00741300000000000000">
 4.4.1.3 MPI</A>
 </H3> 
-Como demonstra a Tabela <A HREF="tese.html#tab:mpi-A">4.9</A>, quando aumentamos o número de nós
-a aplicação transfere a mesma soma de bytes, mas utiliza mais mensagens.
-O tempo de processamento e comunicação também é diminuído, mostrando um
-balanceamento da aplicação.
+Como demonstra a Tabela <A HREF="tese.html#tab:mpi-A">4.9</A>, quando aumentamos o nÃºmero de nÃ³s
+a aplicaÃ§Ã£o transfere a mesma soma de bytes, mas utiliza mais mensagens.
+O tempo de processamento e comunicaÃ§Ã£o tambÃ©m Ã© diminuÃ­do, mostrando um
+balanceamento da aplicaÃ§Ã£o.
 
 <P>
 <BR><P></P>
 <DIV ALIGN="CENTER"><A NAME="976"></A>
 <TABLE>
 <CAPTION><STRONG>Tabela:</STRONG>
-Estatísticas para o  MPI - CLASS A</CAPTION>
+EstatÃ­sticas para o  MPI - CLASS A</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
 <TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">2 nós</TD>
-<TD ALIGN="CENTER">4 nós</TD>
-<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">2 nÃ³s</TD>
+<TD ALIGN="CENTER">4 nÃ³s</TD>
+<TD ALIGN="CENTER">8 nÃ³s</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
 <TR><TD ALIGN="CENTER">Tempo de processamento</TD>
@@ -2464,7 +2464,7 @@ Estatísticas para o  MPI - CLASS A</CAPTION>
 <TD ALIGN="CENTER">1,99s</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Tempo de comunicação</TD>
+<TR><TD ALIGN="CENTER">Tempo de comunicaÃ§Ã£o</TD>
 <TD ALIGN="CENTER">10,10s</TD>
 <TD ALIGN="CENTER">7,11s</TD>
 <TD ALIGN="CENTER">4,27s</TD>
@@ -2476,7 +2476,7 @@ Estatísticas para o  MPI - CLASS A</CAPTION>
 <TD ALIGN="CENTER">171MB</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Número de mensagens</TD>
+<TR><TD ALIGN="CENTER">NÃºmero de mensagens</TD>
 <TD ALIGN="CENTER">110</TD>
 <TD ALIGN="CENTER">484</TD>
 <TD ALIGN="CENTER">2.024</TD>
@@ -2492,24 +2492,24 @@ Estatísticas para o  MPI - CLASS A</CAPTION>
 <P>
 
 <H3><A NAME="SECTION00741400000000000000">
-4.4.1.4 Discussão</A>
+4.4.1.4 DiscussÃ£o</A>
 </H3> 
-Como podemos observar, MOMEMTO reduziu em média 89,86% o número de
-mensagens em relação a Tmk. Está redução ocorreu basicamente devido a
-MOMEMTO não impor um modelo de consistência e deixar o mesmo a cargo do
-programador. Em Tmk, para 2 nós, foram gastas 4.864 mensagens em
+Como podemos observar, MOMEMTO reduziu em mÃ©dia 89,86% o nÃºmero de
+mensagens em relaÃ§Ã£o a Tmk. EstÃ¡ reduÃ§Ã£o ocorreu basicamente devido a
+MOMEMTO nÃ£o impor um modelo de consistÃªncia e deixar o mesmo a cargo do
+programador. Em Tmk, para 2 nÃ³s, foram gastas 4.864 mensagens em
 <I>diffs</I> e 5.632 em
-falhas de página, enquanto MOMEMTO não realizou nenhum <I>diff</I> e foram
-geradas apenas 512 falhas de páginas, visto que, após o primeiro acesso o nó
-manteve a página em memória e não ocorreram mais falhas a ela. Outro ponto 
-a salientar é que o padrão da aplicação é único escritor (<EM>single-writer</EM>) 
-enquanto Tmk é múltiplos escritores (<EM>multiple-writer</EM>). Tmk tem um alto
-<EM>overhead</EM> para permitir múltiplos escritores para esta aplicação.
+falhas de pÃ¡gina, enquanto MOMEMTO nÃ£o realizou nenhum <I>diff</I> e foram
+geradas apenas 512 falhas de pÃ¡ginas, visto que, apÃ³s o primeiro acesso o nÃ³
+manteve a pÃ¡gina em memÃ³ria e nÃ£o ocorreram mais falhas a ela. Outro ponto 
+a salientar Ã© que o padrÃ£o da aplicaÃ§Ã£o Ã© Ãºnico escritor (<EM>single-writer</EM>) 
+enquanto Tmk Ã© mÃºltiplos escritores (<EM>multiple-writer</EM>). Tmk tem um alto
+<EM>overhead</EM> para permitir mÃºltiplos escritores para esta aplicaÃ§Ã£o.
 
 <P>
 Quando comparamos nosso sistema com MPI, notamos que MPI transfere mais
-dados e utiliza menos mensagens. Como o algoritmo das duas implementações
-são bem distintos fica difícil uma comparação mais profunda sobre ambos.
+dados e utiliza menos mensagens. Como o algoritmo das duas implementaÃ§Ãµes
+sÃ£o bem distintos fica difÃ­cil uma comparaÃ§Ã£o mais profunda sobre ambos.
 Entretanto, podemos observar que o mesmo algoritmo de Tmk quando
 utilizado com MOMEMTO deixa os tempos competitivos com MPI e
 sinaliza que MOMEMTO pode obter resultados competitivos a MPI.
@@ -2519,9 +2519,9 @@ sinaliza que MOMEMTO pode obter resultados competitivos a MPI.
 <H2><A NAME="SECTION00742000000000000000">
 4.4.2 CLASS B</A>
 </H2>
-A Figura <A HREF="tese.html#fig:mmto_mpi_tmk_B">4.7</A> mostra os tempos de execucão para MOMEMTO, Tmk e MPI
-rodando a aplicação IS para 2, 4 e 8 nós.
-A execução do IS CLASS B utilizando o algoritmo sequencial distribuído
+A Figura <A HREF="tese.html#fig:mmto_mpi_tmk_B">4.7</A> mostra os tempos de execucÃ£o para MOMEMTO, Tmk e MPI
+rodando a aplicaÃ§Ã£o IS para 2, 4 e 8 nÃ³s.
+A execuÃ§Ã£o do IS CLASS B utilizando o algoritmo sequencial distribuÃ­do
 junto com o NAS foi de 66,84s.
 
 <P>
@@ -2546,30 +2546,30 @@ MOMEMTO x TMK x MPI - Class B</CAPTION>
 <H3><A NAME="SECTION00742100000000000000">
 4.4.2.1 MOMEMTO</A>
 </H3>
-A Tabela <A HREF="tese.html#tab:mmto_bytes_B">4.10</A> apresenta o número de mensagens geradas por
+A Tabela <A HREF="tese.html#tab:mmto_bytes_B">4.10</A> apresenta o nÃºmero de mensagens geradas por
 MOMEMTO e a quantidade de bytes trafegados.
-Aumentando o número de nós, cresce o número de mensagens geradas pelo
-sistema e a quantidade de bytes trafegados. Este comportamento está
-relacionado ao aumento do número de falhas de páginas no sistema. Cada
-nó foi a residência de menos páginas quando aumentamos o número de nós,
+Aumentando o nÃºmero de nÃ³s, cresce o nÃºmero de mensagens geradas pelo
+sistema e a quantidade de bytes trafegados. Este comportamento estÃ¡
+relacionado ao aumento do nÃºmero de falhas de pÃ¡ginas no sistema. Cada
+nÃ³ foi a residÃªncia de menos pÃ¡ginas quando aumentamos o nÃºmero de nÃ³s,
 gerando assim mais mensagens e bytes trafegados pelo sistema.
-Na Tabela <A HREF="tese.html#tab:mmto_comm_B">4.11</A>, são detalhados estes valores.
+Na Tabela <A HREF="tese.html#tab:mmto_comm_B">4.11</A>, sÃ£o detalhados estes valores.
 
 <P>
 <BR><P></P>
 <DIV ALIGN="CENTER"><A NAME="1003"></A>
 <TABLE>
 <CAPTION><STRONG>Tabela:</STRONG>
-Estatísticas do MOMEMTO - CLASS B</CAPTION>
+EstatÃ­sticas do MOMEMTO - CLASS B</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
 <TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">2 nós</TD>
-<TD ALIGN="CENTER">4 nós</TD>
-<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">2 nÃ³s</TD>
+<TD ALIGN="CENTER">4 nÃ³s</TD>
+<TD ALIGN="CENTER">8 nÃ³s</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Número de mensagens</TD>
+<TR><TD ALIGN="CENTER">NÃºmero de mensagens</TD>
 <TD ALIGN="CENTER">14.336</TD>
 <TD ALIGN="CENTER">17.408</TD>
 <TD ALIGN="CENTER">31.232</TD>
@@ -2593,28 +2593,28 @@ Estatísticas do MOMEMTO - CLASS B</CAPTION>
 <DIV ALIGN="CENTER"><A NAME="1012"></A>
 <TABLE>
 <CAPTION><STRONG>Tabela:</STRONG>
-Comunicação no MOMEMTO - CLASS B</CAPTION>
+ComunicaÃ§Ã£o no MOMEMTO - CLASS B</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
 <TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">2 nós</TD>
-<TD ALIGN="CENTER">4 nós</TD>
-<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">2 nÃ³s</TD>
+<TD ALIGN="CENTER">4 nÃ³s</TD>
+<TD ALIGN="CENTER">8 nÃ³s</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Tempo em atualizações</TD>
+<TR><TD ALIGN="CENTER">Tempo em atualizaÃ§Ãµes</TD>
 <TD ALIGN="CENTER">3,08s</TD>
 <TD ALIGN="CENTER">4,68s</TD>
 <TD ALIGN="CENTER">5,48s</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Número de falhas de páginas</TD>
+<TR><TD ALIGN="CENTER">NÃºmero de falhas de pÃ¡ginas</TD>
 <TD ALIGN="CENTER">2.048</TD>
 <TD ALIGN="CENTER">6.144</TD>
 <TD ALIGN="CENTER">14.336</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Tempo gasto em falhas de páginas</TD>
+<TR><TD ALIGN="CENTER">Tempo gasto em falhas de pÃ¡ginas</TD>
 <TD ALIGN="CENTER">2,08s</TD>
 <TD ALIGN="CENTER">5,74s</TD>
 <TD ALIGN="CENTER">11,93s</TD>
@@ -2634,33 +2634,33 @@ Comunicação no MOMEMTO - CLASS B</CAPTION>
 </DIV><P></P><BR>
 
 <P>
-O aumento no tempo de barreira é devido ao fato do sistema a cada barreira
-abrir uma conexão com o gerente, e quando aumentamos o número de nós
-geramos mais mensagens. Sabemos que este algoritmo não é escalável e pode
-ser melhorado utilizando outros métodos descritos na literatura.
+O aumento no tempo de barreira Ã© devido ao fato do sistema a cada barreira
+abrir uma conexÃ£o com o gerente, e quando aumentamos o nÃºmero de nÃ³s
+geramos mais mensagens. Sabemos que este algoritmo nÃ£o Ã© escalÃ¡vel e pode
+ser melhorado utilizando outros mÃ©todos descritos na literatura.
 
 <P>
 
 <H3><A NAME="SECTION00742200000000000000">
 4.4.2.2 TreadMarks</A>
 </H3> 
-A Tabela <A HREF="tese.html#tab:tmk-B">4.12</A> mostra as estatísticas para TreadMarks.
+A Tabela <A HREF="tese.html#tab:tmk-B">4.12</A> mostra as estatÃ­sticas para TreadMarks.
 
 <P>
 <BR><P></P>
 <DIV ALIGN="CENTER"><A NAME="1023"></A>
 <TABLE>
 <CAPTION><STRONG>Tabela:</STRONG>
-Estatísticas para TreadMarks - CLASS B</CAPTION>
+EstatÃ­sticas para TreadMarks - CLASS B</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
 <TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">2 nós</TD>
-<TD ALIGN="CENTER">4 nós</TD>
-<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">2 nÃ³s</TD>
+<TD ALIGN="CENTER">4 nÃ³s</TD>
+<TD ALIGN="CENTER">8 nÃ³s</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Número de mensagens</TD>
+<TR><TD ALIGN="CENTER">NÃºmero de mensagens</TD>
 <TD ALIGN="CENTER">84.069</TD>
 <TD ALIGN="CENTER">292.383</TD>
 <TD ALIGN="CENTER">705.373</TD>
@@ -2672,7 +2672,7 @@ Estatísticas para TreadMarks - CLASS B</CAPTION>
 <TD ALIGN="CENTER">1375MB</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Falhas de Páginas</TD>
+<TR><TD ALIGN="CENTER">Falhas de PÃ¡ginas</TD>
 <TD ALIGN="CENTER">22.528</TD>
 <TD ALIGN="CENTER">105.472</TD>
 <TD ALIGN="CENTER">269.824</TD>
@@ -2698,18 +2698,18 @@ Estatísticas para TreadMarks - CLASS B</CAPTION>
 </DIV><P></P><BR>
 
 <P>
-Como podemos observar, Tmk não tem um bom desempenho quando aumentamos o
-número de nós. O principal problema está no número de <EM>diffs</EM>, falhas de
-páginas e a quantidade de bytes trafegados. Do total
-de bytes transmitidos em 8 nós (1375 MB), 4 MB são dados de Tmk, ou seja, 
-informações para manter a coerência dos dados da aplicação e dados internos.
+Como podemos observar, Tmk nÃ£o tem um bom desempenho quando aumentamos o
+nÃºmero de nÃ³s. O principal problema estÃ¡ no nÃºmero de <EM>diffs</EM>, falhas de
+pÃ¡ginas e a quantidade de bytes trafegados. Do total
+de bytes transmitidos em 8 nÃ³s (1375 MB), 4 MB sÃ£o dados de Tmk, ou seja, 
+informaÃ§Ãµes para manter a coerÃªncia dos dados da aplicaÃ§Ã£o e dados internos.
 
 <P>
 
 <H3><A NAME="SECTION00742300000000000000">
 4.4.2.3 MPI</A>
 </H3>
-Na Tabela <A HREF="tese.html#tab:mpi-B">4.13</A> são demonstrados os tempos relativos à execução
+Na Tabela <A HREF="tese.html#tab:mpi-B">4.13</A> sÃ£o demonstrados os tempos relativos Ã  execuÃ§Ã£o
 de MPI.
 
 <P>
@@ -2717,13 +2717,13 @@ de MPI.
 <DIV ALIGN="CENTER"><A NAME="1035"></A>
 <TABLE>
 <CAPTION><STRONG>Tabela:</STRONG>
-Estatísticas para o  MPI - CLASS B</CAPTION>
+EstatÃ­sticas para o  MPI - CLASS B</CAPTION>
 <TR><TD><DIV ALIGN="CENTER">
 <TABLE CELLPADDING=3 BORDER="1" ALIGN="CENTER">
 <TR><TD ALIGN="CENTER">&nbsp;</TD>
-<TD ALIGN="CENTER">2 nós</TD>
-<TD ALIGN="CENTER">4 nós</TD>
-<TD ALIGN="CENTER">8 nós</TD>
+<TD ALIGN="CENTER">2 nÃ³s</TD>
+<TD ALIGN="CENTER">4 nÃ³s</TD>
+<TD ALIGN="CENTER">8 nÃ³s</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
 <TR><TD ALIGN="CENTER">Tempo de processamento</TD>
@@ -2732,7 +2732,7 @@ Estatísticas para o  MPI - CLASS B</CAPTION>
 <TD ALIGN="CENTER">7,89s</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Tempo de comunicação</TD>
+<TR><TD ALIGN="CENTER">Tempo de comunicaÃ§Ã£o</TD>
 <TD ALIGN="CENTER">42,5s</TD>
 <TD ALIGN="CENTER">28,36s</TD>
 <TD ALIGN="CENTER">17,11s</TD>
@@ -2744,7 +2744,7 @@ Estatísticas para o  MPI - CLASS B</CAPTION>
 <TD ALIGN="CENTER">469MB</TD>
 <TD ALIGN="CENTER">&nbsp;</TD>
 </TR>
-<TR><TD ALIGN="CENTER">Número de mensagens</TD>
+<TR><TD ALIGN="CENTER">NÃºmero de mensagens</TD>
 <TD ALIGN="CENTER">110</TD>
 <TD ALIGN="CENTER">484</TD>
 <TD ALIGN="CENTER">2.024</TD>
@@ -2758,36 +2758,36 @@ Estatísticas para o  MPI - CLASS B</CAPTION>
 </DIV><P></P><BR>
 
 <P>
-O número de mensagens aumentou, como esperado, quando aumentou
-o número de nós. Entretanto, a quantidade de bytes trafegados permaneceu
+O nÃºmero de mensagens aumentou, como esperado, quando aumentou
+o nÃºmero de nÃ³s. Entretanto, a quantidade de bytes trafegados permaneceu
 a mesma.
 
 <P>
 
 <H3><A NAME="SECTION00742400000000000000">
-4.4.2.4 Discussão</A>
+4.4.2.4 DiscussÃ£o</A>
 </H3>
-MOMEMTO reduziu o tempo de execução quando comparando a Tmk em 
-23%, 43% e 63% para 2, 4 e 8 nós respectivamente. Novamente podemos
-observar que a quantidade de bytes e o número de mensagens em MOMEMTO é
-bastante inferior a Tmk. MOMEMTO não utiliza <I>diff</I> ou <I>twin</I>, e
-deixa a consistência a cargo do programador. Deste modo, oferece mais
-flexibilidade ao programador e abre espaço para otimizações.
-Com esta avaliação preliminar, podemos concluir que MOMEMTO consegue 
-agregar a memória dos nós no cluster de forma eficiente, permitindo à aplicação 
-rodar com uma grande quantidade de memória compartilhada e melhorar sua execução
-através de primitivas básicas de sincronização com baixo <I>overhead</I>.
+MOMEMTO reduziu o tempo de execuÃ§Ã£o quando comparando a Tmk em 
+23%, 43% e 63% para 2, 4 e 8 nÃ³s respectivamente. Novamente podemos
+observar que a quantidade de bytes e o nÃºmero de mensagens em MOMEMTO Ã©
+bastante inferior a Tmk. MOMEMTO nÃ£o utiliza <I>diff</I> ou <I>twin</I>, e
+deixa a consistÃªncia a cargo do programador. Deste modo, oferece mais
+flexibilidade ao programador e abre espaÃ§o para otimizaÃ§Ãµes.
+Com esta avaliaÃ§Ã£o preliminar, podemos concluir que MOMEMTO consegue 
+agregar a memÃ³ria dos nÃ³s no cluster de forma eficiente, permitindo Ã  aplicaÃ§Ã£o 
+rodar com uma grande quantidade de memÃ³ria compartilhada e melhorar sua execuÃ§Ã£o
+atravÃ©s de primitivas bÃ¡sicas de sincronizaÃ§Ã£o com baixo <I>overhead</I>.
 
 <P>
 
 <H1><A NAME="SECTION00800000000000000000">
 5. Trabalhos Relacionados</A>
 </H1>
-Diversos estudos têm examinado métodos para usar a memória remota em um
-cluster. Aplicações comuns são o uso da rede como memória para <I>swap</I>
-e sistemas de memória compartilhada distribuída que provêem
-uma abstração de memória compartilhada sobre a rede. 
-Trabalhos relacionados a estas duas técnicas serão descritos a seguir.
+Diversos estudos tÃªm examinado mÃ©todos para usar a memÃ³ria remota em um
+cluster. AplicaÃ§Ãµes comuns sÃ£o o uso da rede como memÃ³ria para <I>swap</I>
+e sistemas de memÃ³ria compartilhada distribuÃ­da que provÃªem
+uma abstraÃ§Ã£o de memÃ³ria compartilhada sobre a rede. 
+Trabalhos relacionados a estas duas tÃ©cnicas serÃ£o descritos a seguir.
 
 <P>
 
@@ -2795,69 +2795,69 @@ Trabalhos relacionados a estas duas técnicas serão descritos a seguir.
 5.1 <I>Swap</I> Sobre a Rede</A>
 </H1>
 O GMS [<A
- HREF="tese.html#GMS">21</A>] (<I>Global Memory Service</I>) realiza um gerenciamento de memória 
-distribuído no cluster. Este sistema adiciona em cada nó uma área de memória global, 
-onde esta cresce ou diminui de acordo com a carga do nó. A idéia básica é prover 
-<I>swap</I> sobre a rede para as aplicações e assim eliminar a maioria dos acessos ao 
-disco. Ele utiliza nós ociosos para receber páginas de nós muito ativos.
-Entretanto, ele não utiliza informações sobre a aplicação para fazer a política de 
-substituição e não tenta otimizar a localização de páginas compartilhadas.
-Ele difere da nossa proposta pois não existe o compartilhamento de dados
-entre os nós que executam a aplicação.
+ HREF="tese.html#GMS">21</A>] (<I>Global Memory Service</I>) realiza um gerenciamento de memÃ³ria 
+distribuÃ­do no cluster. Este sistema adiciona em cada nÃ³ uma Ã¡rea de memÃ³ria global, 
+onde esta cresce ou diminui de acordo com a carga do nÃ³. A idÃ©ia bÃ¡sica Ã© prover 
+<I>swap</I> sobre a rede para as aplicaÃ§Ãµes e assim eliminar a maioria dos acessos ao 
+disco. Ele utiliza nÃ³s ociosos para receber pÃ¡ginas de nÃ³s muito ativos.
+Entretanto, ele nÃ£o utiliza informaÃ§Ãµes sobre a aplicaÃ§Ã£o para fazer a polÃ­tica de 
+substituiÃ§Ã£o e nÃ£o tenta otimizar a localizaÃ§Ã£o de pÃ¡ginas compartilhadas.
+Ele difere da nossa proposta pois nÃ£o existe o compartilhamento de dados
+entre os nÃ³s que executam a aplicaÃ§Ã£o.
 
 <P>
 
 <H1><A NAME="SECTION00820000000000000000">
-5.2 Memória Compartilhada Distribuída</A>
+5.2 MemÃ³ria Compartilhada DistribuÃ­da</A>
 </H1>
 Cashmere-VLM [<A
- HREF="tese.html#Cashmere-VLM">19</A>] é um software DSM que realiza <I>swap</I> sobre a 
-rede. Ele procura aumentar a área compartilhada da aplicação liberando memória do 
-nó quando ele está sobrecarregado, ou seja, libera páginas de um nó levando em 
-consideração as cópias que existem nos outros nós do cluster. Cashmere-VLM
-é implementado no nível do usuário e utiliza um modelo de consistência
-fixo. Uma característica interessante de Cashmere-VLM é que ele permite a
-uma página trocar de <I>home</I> dinamicamente.
+ HREF="tese.html#Cashmere-VLM">19</A>] Ã© um software DSM que realiza <I>swap</I> sobre a 
+rede. Ele procura aumentar a Ã¡rea compartilhada da aplicaÃ§Ã£o liberando memÃ³ria do 
+nÃ³ quando ele estÃ¡ sobrecarregado, ou seja, libera pÃ¡ginas de um nÃ³ levando em 
+consideraÃ§Ã£o as cÃ³pias que existem nos outros nÃ³s do cluster. Cashmere-VLM
+Ã© implementado no nÃ­vel do usuÃ¡rio e utiliza um modelo de consistÃªncia
+fixo. Uma caracterÃ­stica interessante de Cashmere-VLM Ã© que ele permite a
+uma pÃ¡gina trocar de <I>home</I> dinamicamente.
 
 <P>
-O trabalho relacionado mais próximo ao nosso é JIAJIA [<A
- HREF="tese.html#JIAJIA">23</A>], que é um 
-software DSM onde a memória física dos computadores são combinadas em um grande 
-espaço compartilhado. Este sistema utiliza um protocolo de coerência baseado em
+O trabalho relacionado mais prÃ³ximo ao nosso Ã© JIAJIA [<A
+ HREF="tese.html#JIAJIA">23</A>], que Ã© um 
+software DSM onde a memÃ³ria fÃ­sica dos computadores sÃ£o combinadas em um grande 
+espaÃ§o compartilhado. Este sistema utiliza um protocolo de coerÃªncia baseado em
 <I>locks</I>. Novamente, MOMEMTO difere deste trabalho no fato que nosso
-sistema compartilha páginas dentro do kernel e não força um protocolo de
-coerência, permitindo mais flexibilidade para a aplicação.
+sistema compartilha pÃ¡ginas dentro do kernel e nÃ£o forÃ§a um protocolo de
+coerÃªncia, permitindo mais flexibilidade para a aplicaÃ§Ã£o.
 
 <P>
 
 <H1><A NAME="SECTION00900000000000000000">
-6. Conclusões</A>
+6. ConclusÃµes</A>
 </H1>
 Nesta tese foi apresentado o sistema MOMEMTO (<EM>MOre MEMory Than
 Others</EM>), um novo conjunto de mecanismos 
-de kernel &nbsp;que &nbsp;suportam &nbsp;memória &nbsp;compartilhada &nbsp;global nos clusters.
+de kernel &nbsp;que &nbsp;suportam &nbsp;memÃ³ria &nbsp;compartilhada &nbsp;global nos clusters.
 MOMEMTO &nbsp;foi &nbsp;concebido &nbsp;para &nbsp;oferecer
-mais &nbsp;flexibilidade em &nbsp;um &nbsp;sistema de memória compartilhada e para 
-explorar todas as memórias distribuídas dos nós do cluster.
+mais &nbsp;flexibilidade em &nbsp;um &nbsp;sistema de memÃ³ria compartilhada e para 
+explorar todas as memÃ³rias distribuÃ­das dos nÃ³s do cluster.
 
 <P>
-Oferecendo primitivas básicas de sincronização, MOMEMTO permite a aplicação
-ter um maior controle sobre o uso de sua memória e abre espaço para
-otimizações feitas especificamente para cada aplicação.
+Oferecendo primitivas bÃ¡sicas de sincronizaÃ§Ã£o, MOMEMTO permite a aplicaÃ§Ã£o
+ter um maior controle sobre o uso de sua memÃ³ria e abre espaÃ§o para
+otimizaÃ§Ãµes feitas especificamente para cada aplicaÃ§Ã£o.
 
 <P>
-MOMEMTO mostrou um baixo <I>overhead</I> de execução em nossos experimentos
-e pode realmente executar de maneira satisfatória para
-aplicações que requeiram uma grande quantidade de memória compartilhada,
-introduzindo baixo <I>overhead</I> no sistema de gerenciamento de memória
-virtual no kernel. É necessário, entretanto, estender significativamente o
+MOMEMTO mostrou um baixo <I>overhead</I> de execuÃ§Ã£o em nossos experimentos
+e pode realmente executar de maneira satisfatÃ³ria para
+aplicaÃ§Ãµes que requeiram uma grande quantidade de memÃ³ria compartilhada,
+introduzindo baixo <I>overhead</I> no sistema de gerenciamento de memÃ³ria
+virtual no kernel. Ã‰ necessÃ¡rio, entretanto, estender significativamente o
 escopo dos experimentos para avaliar melhor o impacto de MOMEMTO sobre 
-diferentes tipos de aplicações.
+diferentes tipos de aplicaÃ§Ãµes.
 
 <P>
-Em trabalhos futuros espera-se analisar o impacto da utilização de vários
-modelos de consistência de memória para determinadas classes de aplicações,
-além de realizar testes do sistema com diferentes classes de aplicações.
+Em trabalhos futuros espera-se analisar o impacto da utilizaÃ§Ã£o de vÃ¡rios
+modelos de consistÃªncia de memÃ³ria para determinadas classes de aplicaÃ§Ãµes,
+alÃ©m de realizar testes do sistema com diferentes classes de aplicaÃ§Ãµes.
 
 <P>
 
@@ -3082,7 +3082,7 @@ Monnerat,&nbsp;L.&nbsp;R., Bianchini,&nbsp;R.
 <P></P><DT><A NAME="adsm">32</A>
 <DD>
 Monnerat.,&nbsp;L.R.R.
-<BR>``Adaptação Eficiente a Padrões de Compartilhamento em Software
+<BR>``AdaptaÃ§Ã£o Eficiente a PadrÃµes de Compartilhamento em Software
   DSMs.''.
 <BR><EM>Tese de Mestrado, COPPE/UFRJ</EM>, Dezembro 1997.
 
@@ -3097,8 +3097,8 @@ Mowry,&nbsp;T.&nbsp;C., Chan,&nbsp;C., Lo,&nbsp;A.
 <P></P><DT><A NAME="raquel">34</A>
 <DD>
 Pinto,&nbsp;R.
-<BR><EM>Estratégias de Software e Hardware para Otimização de Sistemas
-  de Memória Compartilhada Distribuída</EM>.
+<BR><EM>EstratÃ©gias de Software e Hardware para OtimizaÃ§Ã£o de Sistemas
+  de MemÃ³ria Compartilhada DistribuÃ­da</EM>.
 <BR>PhD thesis, Federal University of Rio de Janeiro, Brazil, December
   2001.
 
@@ -3149,14 +3149,14 @@ Zhou,&nbsp;Y., Iftode,&nbsp;L., Li,&nbsp;K.
 
 <H1><A NAME="SECTION001100000000000000000"></A>
 <A NAME="ap:1"></A><BR>
-A. Fonte do programa multiplicação de vetores
+A. Fonte do programa multiplicaÃ§Ã£o de vetores
 </H1>
 
 <P>
 <PRE>
-/* Multiplicação de vetores
+/* MultiplicaÃ§Ã£o de vetores
  *
- * Última atualização Nov 18 11:53:26 BRT 2002
+ * Ãšltima atualizaÃ§Ã£o Nov 18 11:53:26 BRT 2002
  * 
  * Thobias Salazar Trevisan &lt;thobias@cos.ufrj.br&gt;
  */
@@ -3323,11 +3323,11 @@ The command line arguments were: <BR>
 <P>
 The translation was initiated by Thobias on 2003-07-02<BR><HR><H4>Footnotes</H4>
 <DL>
-<DT><A NAME="foot632">... anônima</A><A NAME="foot632"
+<DT><A NAME="foot632">... anÃ´nima</A><A NAME="foot632"
  HREF="tese.html#tex2html5"><SUP>3.1</SUP></A>
-<DD>Memória
-anônima é a que não está vinculada a nenhum arquivo, i.e., a
-mesma memória utilizada em um <TT>malloc</TT>.
+<DD>MemÃ³ria
+anÃ´nima Ã© a que nÃ£o estÃ¡ vinculada a nenhum arquivo, i.e., a
+mesma memÃ³ria utilizada em um <TT>malloc</TT>.
 
 </DL><HR>
 <!--Navigation Panel-->

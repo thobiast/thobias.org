@@ -11,32 +11,32 @@
 </FONT></CENTER>
 
 <P>
-Sed È quase uma linguagem de programaÁ„o. Ela nos oferece desvios
+Sed √© quase uma linguagem de programa√ß√£o. Ela nos oferece desvios
 (branches), ou seja, nos permite pular de um ponto do script para outro,
 como se fosse o comando GOTO de algumas linguagens. O sed oferece dois
 tipos de desvio:
 <P>
 <OL>
 <LI><B>t</B>, desvio condicional, ou seja, pula para um determinado ponto
-do script se a ˙ltima substituiÁ„o (s///) foi executada com sucesso.
+do script se a √∫ltima substitui√ß√£o (s///) foi executada com sucesso.
 <LI><B>b</B>, desvio incondicional, ou seja, chegou no desvio sempre pula para um
 determinado ponto do script.
 </OL>
 Nos dois casos, se nenhum ponto for especificado, pula para o fim do
 script.
 <P>
-J· sabemos fazer os desvios, mas como determinar para qual ponto do
+J√° sabemos fazer os desvios, mas como determinar para qual ponto do
 script devemos pular ?
 <P>
-Simples, o sed nos possibilita a utilizaÁ„o de label. Um label comeÁa
-com o sinal de dois-pontos (:) e marca uma posiÁ„o no script.
+Simples, o sed nos possibilita a utiliza√ß√£o de label. Um label come√ßa
+com o sinal de dois-pontos (:) e marca uma posi√ß√£o no script.
 <P>
 Vamos praticar!! As vezes precisamos executar algum comando sed N vezes,
-mas n„o sabemos o valor de N. O exemplo cl·ssico È quando precisamos
-trocar um caractere por outro atÈ encontrarmos um determinado caractere.
-Exemplo: trocar 1 por 0 atÈ encontrarmos a primeira vÌrgula ','.
-Ent„o se tivessemos como entrada o n˙mero 121,213, gostariamos de
-transform·-lo em 020,213. Nossas primeiras tentativas seriam:
+mas n√£o sabemos o valor de N. O exemplo cl√°ssico √© quando precisamos
+trocar um caractere por outro at√© encontrarmos um determinado caractere.
+Exemplo: trocar 1 por 0 at√© encontrarmos a primeira v√≠rgula ','.
+Ent√£o se tivessemos como entrada o n√∫mero 121,213, gostariamos de
+transform√°-lo em 020,213. Nossas primeiras tentativas seriam:
 <P>
 <PRE>
   prompt&gt; echo 121,213 | sed 's/1/0/'
@@ -53,104 +53,104 @@ transform·-lo em 020,213. Nossas primeiras tentativas seriam:
 </PRE>
 <P>
 Todas falhariam. Na primeira tentativa, trocamos
-somente a primeira ocorrÍncia de 1 por 0. Na segunda, utilizando a
-opÁ„o g da substituiÁ„o, trocamos todos os 1s por 0s sem respeitar
-se eles est„o antes ou depois da nossa tag (a vÌrgula). Na terceira
-tentativa, nÛs especificamos que queremos o caractere 1 antes de uma
-vÌrgula, mas neste caso, como o sed È guloso ele trocaria somente uma
-ocorrÍncia que satisfaÁa o que especificamos, ou seja, um caractere 1
-antes de uma vÌrgula. Na ˙ltima opÁ„o, adicionamos o g, para trocarmos
-todos os 1 por 0. Mas tambÈm falhou, pois como o sed lÍ a linha e
-executa o comando uma ˙nica vez, ele ir· procurar satisfazer o que
-especificamos, ou seja, um caractere 1 antes de uma vÌrgula.
+somente a primeira ocorr√™ncia de 1 por 0. Na segunda, utilizando a
+op√ß√£o g da substitui√ß√£o, trocamos todos os 1s por 0s sem respeitar
+se eles est√£o antes ou depois da nossa tag (a v√≠rgula). Na terceira
+tentativa, n√≥s especificamos que queremos o caractere 1 antes de uma
+v√≠rgula, mas neste caso, como o sed √© guloso ele trocaria somente uma
+ocorr√™ncia que satisfa√ßa o que especificamos, ou seja, um caractere 1
+antes de uma v√≠rgula. Na √∫ltima op√ß√£o, adicionamos o g, para trocarmos
+todos os 1 por 0. Mas tamb√©m falhou, pois como o sed l√™ a linha e
+executa o comando uma √∫nica vez, ele ir√° procurar satisfazer o que
+especificamos, ou seja, um caractere 1 antes de uma v√≠rgula.
 <P>
 Para resolver este problema, precisamos usar o desvio. Relembrando, queremos
-trocar todas as ocorrÍncias do caractere 1 antes de uma vÌrgula por 0.
-O comando para solucionar o problema È:
+trocar todas as ocorr√™ncias do caractere 1 antes de uma v√≠rgula por 0.
+O comando para solucionar o problema √©:
 <P>
 <PRE>
   prompt&gt; echo 121,213 | sed ':a;s/^\([^,]*\)1/\10/;ta'
   020,213
 </PRE>
 <P>
-No inÌcio marcamos um label (:a), apÛs realizamos a substituiÁ„o
-do caractere 1 antes de uma vÌrgula (s/^\([^,]*\)1/\10/).
-Caso ocorra sucesso na substituiÁ„o, pulamos para o label a (ta).
-Note que quando realizamos o desvio, o sed n„o ir· ler a prÛxima linha,
+No in√≠cio marcamos um label (:a), ap√≥s realizamos a substitui√ß√£o
+do caractere 1 antes de uma v√≠rgula (s/^\([^,]*\)1/\10/).
+Caso ocorra sucesso na substitui√ß√£o, pulamos para o label a (ta).
+Note que quando realizamos o desvio, o sed n√£o ir√° ler a pr√≥xima linha,
 e sim executar o mesmo comando sobre a linha, mas a linha modificada pela
-substituiÁ„o anterior. Assim, executamos a substituiÁ„o enquanto
-encontramos algum caractere 1 antes de uma vÌrgula.
+substitui√ß√£o anterior. Assim, executamos a substitui√ß√£o enquanto
+encontramos algum caractere 1 antes de uma v√≠rgula.
 <P>
 Passo-a-passo:
-Na primeira execuÁ„o, ocorre sucesso na substituiÁ„o, assim a linha
-121,213 vira 120,213, como ocorreu sucesso na substituiÁ„o pulamos com
-esta linha para o label 'a'. Ent„o, sobre a linha 120,213 ocorre uma
-nova substituiÁ„o, virando assim 020,213. Como ocorreu sucesso na
-substituiÁ„o, pulamos novamente para o label 'a'. Deste modo, tentamos de
-novo realizar a substituiÁ„o sobre a linha 020,213. Neste caso, ocorre
-falha, pois n„o existe mais o caractere 1 antes de uma vÌrgula e assim
-n„o pulamos para o label 'a' e o sed ir· ler a prÛxima linha que È EOF,
-assim encerrando sua execuÁ„o.
+Na primeira execu√ß√£o, ocorre sucesso na substitui√ß√£o, assim a linha
+121,213 vira 120,213, como ocorreu sucesso na substitui√ß√£o pulamos com
+esta linha para o label 'a'. Ent√£o, sobre a linha 120,213 ocorre uma
+nova substitui√ß√£o, virando assim 020,213. Como ocorreu sucesso na
+substitui√ß√£o, pulamos novamente para o label 'a'. Deste modo, tentamos de
+novo realizar a substitui√ß√£o sobre a linha 020,213. Neste caso, ocorre
+falha, pois n√£o existe mais o caractere 1 antes de uma v√≠rgula e assim
+n√£o pulamos para o label 'a' e o sed ir√° ler a pr√≥xima linha que √© EOF,
+assim encerrando sua execu√ß√£o.
 <P>
-SÛ para testar, vamos experimentar trocar o desvio condicional (t) pelo
+S√≥ para testar, vamos experimentar trocar o desvio condicional (t) pelo
 desvio incondicional (b).
 <P>
 <PRE>
   prompt&gt; echo 121,213 | sed ':a;s/^\([^,]*\)1/\10/;ba'
 </PRE>
 <P>
-A execuÁ„o entra em loop infinito. Nossa entrada apÛs a primeira
-execuÁ„o vira 120,213, apÛs a segunda vira 020,213. Na prÛxima execuÁ„o
-n„o ocorrer· mais nenhuma substituiÁ„o, mas como nÛs n„o levamos em
-conta o sucesso ou n„o, nÛs simplesmente pulamos para o label 'a' e o
-sed n„o lÍ a prÛxima linha, ficaremos neste loop para sempre.
+A execu√ß√£o entra em loop infinito. Nossa entrada ap√≥s a primeira
+execu√ß√£o vira 120,213, ap√≥s a segunda vira 020,213. Na pr√≥xima execu√ß√£o
+n√£o ocorrer√° mais nenhuma substitui√ß√£o, mas como n√≥s n√£o levamos em
+conta o sucesso ou n√£o, n√≥s simplesmente pulamos para o label 'a' e o
+sed n√£o l√™ a pr√≥xima linha, ficaremos neste loop para sempre.
 <P>
-Para vocÍ n„o achar que o 'b' n„o È ˙til, vamos a um exemplo do seu uso.
-Imagine que queremos imprimir somente da linha que contÈm a palavra
-'dois' atÈ a que contÈm a palavra 'cinco'. Como entrada tempos o seguinte
+Para voc√™ n√£o achar que o 'b' n√£o √© √∫til, vamos a um exemplo do seu uso.
+Imagine que queremos imprimir somente da linha que cont√©m a palavra
+'dois' at√© a que cont√©m a palavra 'cinco'. Como entrada tempos o seguinte
 arquivo:
 <P>
 <PRE>
   prompt&gt; cat arquivo.txt
   um
   dois
-  trÍs
+  tr√™s
   quatro
   cinco
   seis
 </PRE>
 <P>
-Mas note que n„o sabemos quantas linhas existem antes da linha com 'dois',
-entre a linha 'dois' e 'cinco' e apÛs a linha 'cinco'. Nossa primeira
-tentativa È:
+Mas note que n√£o sabemos quantas linhas existem antes da linha com 'dois',
+entre a linha 'dois' e 'cinco' e ap√≥s a linha 'cinco'. Nossa primeira
+tentativa √©:
 <P>
 <PRE>
   prompt&gt; sed -n '/dois/,/cinco/p' arquivo.txt
   dois
-  trÍs
+  tr√™s
   quatro
   cinco
 </PRE>
 <P>
-Funcionou perfeito, mas n„o sabemos quantas linhas existem antes de 'dois'
+Funcionou perfeito, mas n√£o sabemos quantas linhas existem antes de 'dois'
 e 'cinco', assim elas podem estar na mesma linha. Vamos testar esta
-soluÁ„o.
+solu√ß√£o.
 <P>
 <PRE>
   prompt&gt; cat arquivo.txt
   um
   dois cinco
-  trÍs
+  tr√™s
   seis
   
   prompt&gt; sed -n '/dois/,/cinco/p' arquivo.txt
   dois cinco
-  trÍs
+  tr√™s
   seis
 </PRE>
 <P>
-Ou seja, esta soluÁ„o n„o funciona se as palavras estiverem na mesma
-linha, visto que ele imprimiu da linha que contÈm 'dois' atÈ o final do
+Ou seja, esta solu√ß√£o n√£o funciona se as palavras estiverem na mesma
+linha, visto que ele imprimiu da linha que cont√©m 'dois' at√© o final do
 arquivo. Para solucionar vamos usar o desvio incondicional.
 <P>
 <PRE>
@@ -158,43 +158,43 @@ arquivo. Para solucionar vamos usar o desvio incondicional.
   dois cinco
 </PRE>
 <P>
-Quando chegamos na linha que contÈm 'dois' realizamos o que est· entre
+Quando chegamos na linha que cont√©m 'dois' realizamos o que est√° entre
 chaves {:a;/cinco/!{N;ba;};p;}. Primeiro marcamos um label 'a', depois
-testamos se a linha contÈm a palavra 'cinco', caso contenha, n„o
-executamos o {N;ba;}, imprimimos a linha ';p;}' e encerramos. Isto È o que
-ocorre se 'dois' e 'cinco' est„o na mesma linha.
-Caso elas n„o estejam ocorre o seguinte.
+testamos se a linha cont√©m a palavra 'cinco', caso contenha, n√£o
+executamos o {N;ba;}, imprimimos a linha ';p;}' e encerramos. Isto √© o que
+ocorre se 'dois' e 'cinco' est√£o na mesma linha.
+Caso elas n√£o estejam ocorre o seguinte.
 <P>
 <PRE>
   prompt&gt; cat arquivo.txt
   um
   dois
-  trÍs
+  tr√™s
   quatro
   cinco
   seis
   
   prompt&gt; sed -n '/dois/{:a;/cinco/!{N;ba;};p;}' arquivo.txt
   dois
-  trÍs
+  tr√™s
   quatro
   cinco
 </PRE>
 <P>
-Na linha que contÈm dois executamos o que est· entre chaves
-'{:a;/cinco/!{N;ba;};p;}', primeiro marcamos um label 'a', ent„o
-testamos se a linha contÈm a palavra 'cinco', como n„o contÈm executamos o
-que est· entre chaves '{N;ba;}', ou seja, lemos a prÛxima linha e
-pulamos para para o label 'a'. Testamos novamente, caso n„o exista lemos a
-prÛxima linha e pulamos para o label 'a'. Entramos neste loop atÈ
-encontrarmos uma linha que contÈm a palavra 'cinco'. Quando encontrarmos
-n„o entraremos nas chaves {N;ba;}, imprimimos o que est· no espaÁo
-padr„o ';p;}', ou seja, todas as linhas entre 'dois' e 'cinco' incluindo as
-mesmas, depois lemos a prÛxima linha (se existir) e voltamos a repetir todo
+Na linha que cont√©m dois executamos o que est√° entre chaves
+'{:a;/cinco/!{N;ba;};p;}', primeiro marcamos um label 'a', ent√£o
+testamos se a linha cont√©m a palavra 'cinco', como n√£o cont√©m executamos o
+que est√° entre chaves '{N;ba;}', ou seja, lemos a pr√≥xima linha e
+pulamos para para o label 'a'. Testamos novamente, caso n√£o exista lemos a
+pr√≥xima linha e pulamos para o label 'a'. Entramos neste loop at√©
+encontrarmos uma linha que cont√©m a palavra 'cinco'. Quando encontrarmos
+n√£o entraremos nas chaves {N;ba;}, imprimimos o que est√° no espa√ßo
+padr√£o ';p;}', ou seja, todas as linhas entre 'dois' e 'cinco' incluindo as
+mesmas, depois lemos a pr√≥xima linha (se existir) e voltamos a repetir todo
 o processo.
 <P>
-Simples n„o !?
-Agora È so usufruir destas caracterÌsticas no seus SEDs. :)
+Simples n√£o !?
+Agora √© so usufruir destas caracter√≠sticas no seus SEDs. :)
 <P>
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
 </script>

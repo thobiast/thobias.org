@@ -7,28 +7,28 @@ Thobias Salazar Trevisan
 
 = Usando lookup-tables =
 
-Macacos me mordam Batman. Mas eu já tenho let, expr, bc, dc, $(( )), 
-além do [Usando o sed para contar inc_sed.html], para que complicar mais ?!
+Macacos me mordam Batman. Mas eu jÃ¡ tenho let, expr, bc, dc, $(( )), 
+alÃ©m do [Usando o sed para contar inc_sed.html], para que complicar mais ?!
 
-Hei garoto-prodígio, para se ter conhecimento é preciso praticar. Lembre-se
+Hei garoto-prodÃ­gio, para se ter conhecimento Ã© preciso praticar. Lembre-se
 sempre do Sr. Miyagi: 
 
-	Daniel-San, pinte a cerca! Lixe o assoalho!! Lixe com a mão esquerda, lixe com a mão direita....
+	Daniel-San, pinte a cerca! Lixe o assoalho!! Lixe com a mÃ£o esquerda, lixe com a mÃ£o direita....
 
-Utilizando a técnica de 
+Utilizando a tÃ©cnica de 
 [lookup tables http://sed.sourceforge.net/grabbag/tutorials/lookup_tables.txt],
-podemos diminuir aquele sed para incrementar um número. Primeiro uma 
-explicação sobre esta técnica.
+podemos diminuir aquele sed para incrementar um nÃºmero. Primeiro uma 
+explicaÃ§Ã£o sobre esta tÃ©cnica.
 
 
 == Lookup Tables ==
 
-Lookup tables é uma técnica ninja, onde utilizamos uma espada (`s///`) afiada 
-para cortar nossa entrada e deixar somente o pedaço que nos interessa.
+Lookup tables Ã© uma tÃ©cnica ninja, onde utilizamos uma espada (`s///`) afiada 
+para cortar nossa entrada e deixar somente o pedaÃ§o que nos interessa.
 
 Vamos introduzir (ops) o assunto aos poucos.
 Imagine que tenhamos a seguinte entrada 12345678901, e queremos pegar o caractere 
-após o 3, no caso o 4. Então nós usaríamos este sed:
+apÃ³s o 3, no caso o 4. EntÃ£o nÃ³s usarÃ­amos este sed:
 
 ---
 prompt> echo 12345678901 | sed 's/.*3\(.\).*/\1/'
@@ -36,17 +36,17 @@ prompt> echo 12345678901 | sed 's/.*3\(.\).*/\1/'
 prompt>
 ---
 
-Qualquer coisa até encontrarmos o 3 (`.*3`), depois que encontrarmos,
-criamos um grupo com o próximo caractere (`\(.\)`), no caso o 4, 
+Qualquer coisa atÃ© encontrarmos o 3 (`.*3`), depois que encontrarmos,
+criamos um grupo com o prÃ³ximo caractere (`\(.\)`), no caso o 4, 
 mais um `.*` para pegar o resto da linha e, trocamos tudo isto, pelo 
-grupo que criamos, ou seja, o próximo caractere depois do 3.
+grupo que criamos, ou seja, o prÃ³ximo caractere depois do 3.
 
-Com o sed acima, podemos colocar no lugar do 3 qualquer número que 
-irá retornar sempre o próximo, como se fosse uma lista circular
-(round-robin). Agora imagine que nós não sabemos qual vai ser o
-valor que estará no lugar do 3 ou que nós queremos passá-lo junto no
-echo. Para isto, criamos um caractere especial para separá-lo da nossa
-lista e, usamos backreference para achá-lo na lista. Exemplo:
+Com o sed acima, podemos colocar no lugar do 3 qualquer nÃºmero que 
+irÃ¡ retornar sempre o prÃ³ximo, como se fosse uma lista circular
+(round-robin). Agora imagine que nÃ³s nÃ£o sabemos qual vai ser o
+valor que estarÃ¡ no lugar do 3 ou que nÃ³s queremos passÃ¡-lo junto no
+echo. Para isto, criamos um caractere especial para separÃ¡-lo da nossa
+lista e, usamos backreference para achÃ¡-lo na lista. Exemplo:
 
 ---
 prompt> echo 3=12345678901 | sed 's/^\(.\)=.*\1\(.\).*/\2/'
@@ -57,16 +57,16 @@ prompt>
 ---
 
 Criamos um grupo com o primeiro caractere, e dizemos ao sed para procurar
-qualquer caractere repetido 0 ou mais vezes `.*` até encontrar esse
-caractere que está no primeiro grupo (`\1`). Após encontrá-lo, cria um novo 
-grupo com o próximo caractere e substitua tudo isto por este segundo grupo. 
+qualquer caractere repetido 0 ou mais vezes `.*` atÃ© encontrar esse
+caractere que estÃ¡ no primeiro grupo (`\1`). ApÃ³s encontrÃ¡-lo, cria um novo 
+grupo com o prÃ³ximo caractere e substitua tudo isto por este segundo grupo. 
 No primeiro exemplo, seria a mesma coisa que:
 
 --- prompt> echo 3=12345678901 | sed 's/^3=.*3\(.\).*/\1/'
 
-Agora imagine que este sed esteje em um script, é muito mais fácil usar uma
-solução genérica do que, para cada número, ter que editar o script para
-colocar o número desejado. Na solução genérica, você passa o número
+Agora imagine que este sed esteje em um script, Ã© muito mais fÃ¡cil usar uma
+soluÃ§Ã£o genÃ©rica do que, para cada nÃºmero, ter que editar o script para
+colocar o nÃºmero desejado. Na soluÃ§Ã£o genÃ©rica, vocÃª passa o nÃºmero
 quando chama o script.
 
 
@@ -82,13 +82,13 @@ s/^\(.*\)\(.\)\n.*\2\(.\).*/\1\3/
 prompt>
 ---
 
-Calma que é a mesma coisa.
-A grande diferença deste script para o anterior é que aqui o
-caractere que separa o caractere desejado da lista é o newline (`\n`) e,
+Calma que Ã© a mesma coisa.
+A grande diferenÃ§a deste script para o anterior Ã© que aqui o
+caractere que separa o caractere desejado da lista Ã© o newline (`\n`) e,
 nos colocamos a lista dentro do script sed. [sedsed http://sedsed.sourceforge.net]
-vai nos ajudar a entender. sedsed é um programa em python para sed escrito
-pelo Aurélio. A saída dele é para console, assim vou utilizar um sed para
-deixar sua saída mais legível para o nosso exemplo:
+vai nos ajudar a entender. sedsed Ã© um programa em python para sed escrito
+pelo AurÃ©lio. A saÃ­da dele Ã© para console, assim vou utilizar um sed para
+deixar sua saÃ­da mais legÃ­vel para o nosso exemplo:
 
 ---
 prompt> cat limpa.sed 
@@ -114,41 +114,41 @@ prompt> echo 0 | sedsed -d --hide=HOLD -f lookup_table.sed | limpa.sed
 prompt>
 ---
 
-Entendendo a saída:
+Entendendo a saÃ­da:
 
-- as linhas que começam com um número mostram a entrada ou a saída para cada instrução.
-- as linhas que começam com espaços em branco são as instruções sed.
+- as linhas que comeÃ§am com um nÃºmero mostram a entrada ou a saÃ­da para cada instruÃ§Ã£o.
+- as linhas que comeÃ§am com espaÃ§os em branco sÃ£o as instruÃ§Ãµes sed.
 
 
-O comando G anexa o que está no hold space (neste caso uma linha em branco) 
-no pattern space. Repare que após sua execução nossa entrada vira (`0\n`). 
-Com a próxima instrução (`s/$/12345678901/`), colocamos após o (`\n`) a 
-ordem de como incrementamos um número, em outras palavras, depois 
-do 1 vem o 2, depois 3 até 0, que vira 1 e recomeça o incremento. 
+O comando G anexa o que estÃ¡ no hold space (neste caso uma linha em branco) 
+no pattern space. Repare que apÃ³s sua execuÃ§Ã£o nossa entrada vira (`0\n`). 
+Com a prÃ³xima instruÃ§Ã£o (`s/$/12345678901/`), colocamos apÃ³s o (`\n`) a 
+ordem de como incrementamos um nÃºmero, em outras palavras, depois 
+do 1 vem o 2, depois 3 atÃ© 0, que vira 1 e recomeÃ§a o incremento. 
 
-O pattern space após a segunda instrução está assim:
+O pattern space apÃ³s a segunda instruÃ§Ã£o estÃ¡ assim:
 
 ---
 0\n12345678901
 
-que é igual a:
+que Ã© igual a:
 
 0
 12345678901
 ---
 
-É como no exemplo anterior, só que neste caso, nós passamos para o script
-só a entrada, ele te devolve o próximo caractere após o que você passou.
-Agora, com muita calma, vamos analisar o último comando, que é a chave da
-porta do tesouro. Como Jack, vamos por partes nesta expressão regular.
+Ã‰ como no exemplo anterior, sÃ³ que neste caso, nÃ³s passamos para o script
+sÃ³ a entrada, ele te devolve o prÃ³ximo caractere apÃ³s o que vocÃª passou.
+Agora, com muita calma, vamos analisar o Ãºltimo comando, que Ã© a chave da
+porta do tesouro. Como Jack, vamos por partes nesta expressÃ£o regular.
 
-Primeiro, repare que o segundo grupo é de apenas 1 caractere e logo após
-este caractere vem o newline (`\n`). No exemplo, o primeiro grupo será
-vazio. Até agora o que temos é o último caractere antes do (`\n`) no grupo 2.
-Com este grupo nós vamos indexar o que vem após o (`\n`) para pegar o
+Primeiro, repare que o segundo grupo Ã© de apenas 1 caractere e logo apÃ³s
+este caractere vem o newline (`\n`). No exemplo, o primeiro grupo serÃ¡
+vazio. AtÃ© agora o que temos Ã© o Ãºltimo caractere antes do (`\n`) no grupo 2.
+Com este grupo nÃ³s vamos indexar o que vem apÃ³s o (`\n`) para pegar o
 caractere depois do que estiver no grupo 2. Usamos o grupo 2 para marcar um
-ponto da nossa cadeia (12345678901), e pegamos o próximo caractere. Para
-pegar o próximo caractere após o (`\2`) criamos um terceiro grupo com ele. 
+ponto da nossa cadeia (12345678901), e pegamos o prÃ³ximo caractere. Para
+pegar o prÃ³ximo caractere apÃ³s o (`\2`) criamos um terceiro grupo com ele. 
 
 Vamos executar mais uma vez este script com uma entrada diferente:
 
@@ -167,17 +167,17 @@ prompt>
 
 Agora, no grupo 1 vai ter os caracteres 1 e 2. No grupo 2 vai estar o
 caractere antes do (`\n`), no caso o 3. Como criamos um grupo com o
-caractere 3, que está em (`\2`), vamos utilizá-lo para indexar a nossa lista de
-caracteres, ou seja, após o (`\n`) qualquer caractere repetido 0 ou 
-mais vezes até encontrar o que está no grupo 2, no caso o caractere 3.
-Criamos um grupo com este próximo caractere, e trocamos tudo isto, pelo
-grupo 1, que contém os caracteres 1e 2, e o grupo 3, que vai ter o 
-caractere 4. Calma, respire fundo e releia a última execução e este parágrafo.
+caractere 3, que estÃ¡ em (`\2`), vamos utilizÃ¡-lo para indexar a nossa lista de
+caracteres, ou seja, apÃ³s o (`\n`) qualquer caractere repetido 0 ou 
+mais vezes atÃ© encontrar o que estÃ¡ no grupo 2, no caso o caractere 3.
+Criamos um grupo com este prÃ³ximo caractere, e trocamos tudo isto, pelo
+grupo 1, que contÃ©m os caracteres 1e 2, e o grupo 3, que vai ter o 
+caractere 4. Calma, respire fundo e releia a Ãºltima execuÃ§Ã£o e este parÃ¡grafo.
 
 Sacaram o poder das lookup tables =8)
 
-Você pode fazer mapeamento n:1, 1:n, n:m. Vamos a um exemplo de 1:n, onde
-passamos um número e o sed nos devolve a fruta relativa a este número:
+VocÃª pode fazer mapeamento n:1, 1:n, n:m. Vamos a um exemplo de 1:n, onde
+passamos um nÃºmero e o sed nos devolve a fruta relativa a este nÃºmero:
 
 ---
 prompt> cat exemplo2.sed 
@@ -204,13 +204,13 @@ prompt>
 
 Criamos um grupo com o primeiro caractere (antes do `\n`), depois usamos
 este caractere para indexar a nossa lista, e criamos um segundo grupo com 
-as letras após este número. A última instrução é para garatir que, 
-encontramos alguma fruta com o número que recebemos como entrada.
+as letras apÃ³s este nÃºmero. A Ãºltima instruÃ§Ã£o Ã© para garatir que, 
+encontramos alguma fruta com o nÃºmero que recebemos como entrada.
 
-Último exemplo, vamos criar um mapeamento n:m
+Ãšltimo exemplo, vamos criar um mapeamento n:m
 
-Vamos supor que você tenha uma lista de palavras, e que você tenha que
-sempre pegar a próxima da lista. Exemplo:
+Vamos supor que vocÃª tenha uma lista de palavras, e que vocÃª tenha que
+sempre pegar a prÃ³xima da lista. Exemplo:
 
 ---
 prompt> cat exemplo3.sed 
@@ -249,14 +249,14 @@ prompt>
 
 = Contador com Lookup Table = 
 
-Recomendo que, antes de seguir em frente, você leia 
+Recomendo que, antes de seguir em frente, vocÃª leia 
 [Usando o sed para contar inc_sed.html], para entender como 
 o algoritmo abaixo funciona.
 
-O que o algoritmo de somar faz basicamente é, trocar todos os 9s no
-final da linha por _, testar se precisa aumentar o número de
-casa decimais e depois incrementar o último dígito da linha. Para fazer esta
-última parte podemos usar uma lookup table. Vamos a mais uma tentativa:
+O que o algoritmo de somar faz basicamente Ã©, trocar todos os 9s no
+final da linha por _, testar se precisa aumentar o nÃºmero de
+casa decimais e depois incrementar o Ãºltimo dÃ­gito da linha. Para fazer esta
+Ãºltima parte podemos usar uma lookup table. Vamos a mais uma tentativa:
 
 ---
 prompt> cat incr_tentativa_6.sed 
@@ -274,11 +274,11 @@ prompt>
 ---
 
 Repare que temos o loop inicial para trocar os 9s por _ e o teste (primeira
-instrução) para testar se devemos ou não aumentar o número de casas
-decimais. Na última instrução, trocamos todos os _ por 0. A diferença está
-em como vamos incrementar um número entre 0 e 9. Ao invés de fazer uma
-instrução para cada substituição, ou seja, `s/0/1/`, `s1/2/`, `s/2/3/`...
-utilizamos esta técnica. Vamos testar:
+instruÃ§Ã£o) para testar se devemos ou nÃ£o aumentar o nÃºmero de casas
+decimais. Na Ãºltima instruÃ§Ã£o, trocamos todos os _ por 0. A diferenÃ§a estÃ¡
+em como vamos incrementar um nÃºmero entre 0 e 9. Ao invÃ©s de fazer uma
+instruÃ§Ã£o para cada substituiÃ§Ã£o, ou seja, `s/0/1/`, `s1/2/`, `s/2/3/`...
+utilizamos esta tÃ©cnica. Vamos testar:
 
 ---
 prompt> echo 0 | incr_tentativa_6.sed  
@@ -307,9 +307,9 @@ prompt> echo 0 | sedsed -d --hide=HOLD -f incr_tentativa_6.sed | limpa.sed
     t nove
     G                                          <<< --- adiciona o \n
 0\n
-    s/$/12345678901/                           <<< --- adiciona a lista após o \n
+    s/$/12345678901/                           <<< --- adiciona a lista apÃ³s o \n
 0\n12345678901
-    s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/  <<< --- pegamos o que vem após o 0
+    s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/  <<< --- pegamos o que vem apÃ³s o 0
 1
     s/_/0/g
 1
@@ -318,18 +318,18 @@ prompt>
 ---
 
 
-Como no nosso exemplo não tem 9, as primeiras instruções não têm efeito, 
-ou seja, não mudam a entrada.
+Como no nosso exemplo nÃ£o tem 9, as primeiras instruÃ§Ãµes nÃ£o tÃªm efeito, 
+ou seja, nÃ£o mudam a entrada.
 
-A instrução `G`, anexa uma linha em branco no patter space, repare que
-após sua execução nossa entrada vira (`0\n`). Com a próxima instrução
-(`s/$/12345678901/`), colocamos após o `\n` a ordem de como incrementamos
-um número.
+A instruÃ§Ã£o `G`, anexa uma linha em branco no patter space, repare que
+apÃ³s sua execuÃ§Ã£o nossa entrada vira (`0\n`). Com a prÃ³xima instruÃ§Ã£o
+(`s/$/12345678901/`), colocamos apÃ³s o `\n` a ordem de como incrementamos
+um nÃºmero.
 
-O grande esquema está na próxima instrução.
-(`s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/`), passando um número à ela, o
-que retorna é o mesmo número, mmmmmaaassssss o último dígito será o 
-próximo na cadeia. 
+O grande esquema estÃ¡ na prÃ³xima instruÃ§Ã£o.
+(`s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/`), passando um nÃºmero Ã  ela, o
+que retorna Ã© o mesmo nÃºmero, mmmmmaaassssss o Ãºltimo dÃ­gito serÃ¡ o 
+prÃ³ximo na cadeia. 
 
 Mais 2 exemplos:
 
@@ -352,7 +352,7 @@ prompt> echo 1499 | sedsed -d --hide=HOLD -f incr_tentativa_6.sed | limpa.sed
 14__\n
     s/$/12345678901/                    <<< --- adicionamos a lista
 14__\n12345678901
-    s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/  <<< --- retorna o mesmo número mas com o **último** dígito "mais" 1
+    s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/  <<< --- retorna o mesmo nÃºmero mas com o **Ãºltimo** dÃ­gito "mais" 1
 15__
     s/_/0/g
 1500
@@ -376,7 +376,7 @@ prompt> echo 1449 | sedsed -d --hide=HOLD -f incr_tentativa_6.sed | limpa.sed
 144_\n
     s/$/12345678901/
 144_\n12345678901
-    s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/   <<< --- último dígito mais 1
+    s/^\(.*\)\(.\)\(_*\)\n.*\2\(.\).*/\1\4\3/   <<< --- Ãºltimo dÃ­gito mais 1
 145_
     s/_/0/g
 1450
@@ -385,17 +385,17 @@ prompt>
 ---
 
 
-O princípio de fazer a some é o mesmo de antes, a diferença está em como
-"somar" 1 ao último "dígito".
+O princÃ­pio de fazer a some Ã© o mesmo de antes, a diferenÃ§a estÃ¡ em como
+"somar" 1 ao Ãºltimo "dÃ­gito".
 
-= SED o Matemático =
+= SED o MatemÃ¡tico =
 
-Seu filho está crescendo e já sabe contar. Hora de ensiná-lo que na vida
-nem sempre se soma, também temos que diminuir e, em certas
-ocisiões, ficamos devendo alguma coisa. =8) 
+Seu filho estÃ¡ crescendo e jÃ¡ sabe contar. Hora de ensinÃ¡-lo que na vida
+nem sempre se soma, tambÃ©m temos que diminuir e, em certas
+ocisiÃµes, ficamos devendo alguma coisa. =8) 
 
 Depois de aprender a somar utilizando lookup table, vamos a um exemplo onde
-passamos o valor e o tipo de operação que desejamos fazer sobre este número.
+passamos o valor e o tipo de operaÃ§Ã£o que desejamos fazer sobre este nÃºmero.
 
 ---
 prompt> cat count.sed 
@@ -462,10 +462,10 @@ prompt>
 ---
 
 
-Para subtrair temos que cuidar se o número é 0 e inverter a nossa tabela,
+Para subtrair temos que cuidar se o nÃºmero Ã© 0 e inverter a nossa tabela,
 ou seja, 98765432109.
 
-Com um pouco de análise você verá que os princípos são os mesmo.
+Com um pouco de anÃ¡lise vocÃª verÃ¡ que os princÃ­pos sÃ£o os mesmo.
 
 E assim, terminamos mais um tour pelo maravilhoso mundo do sed! =8)
 

@@ -2,7 +2,7 @@ tapeutil, itdt and mtlib commands
 Collection of useful tapeutil and mtlib commands 
 
 
-%!encoding: iso-8859-1
+%!encoding: utf-8
 %!Style   : itdt.css
 %!target  : html
 %!Options : --mask-email --css-sugar

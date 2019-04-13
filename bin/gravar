@@ -67,8 +67,8 @@ echo "Dica: 750 Mb de arquivos wav equivale mais ou menos a 74 min";echo
 echo "Tamanho do diretorio com os arquivos WAV  $(du -sm $1 | cut -f1)MB"
 read -n 1 -p "Precione qualquer tecla pra continuar ou Ctrl+C pra sair :P " res
 echo "
-Track At Once (TAO), faixas s„o gravadas com uma pausa de 2 segundos entre elas. 
-Disk  At Once (DAO), faixas s„o gravadas sem essa pausa"
+Track At Once (TAO), faixas s√£o gravadas com uma pausa de 2 segundos entre elas. 
+Disk  At Once (DAO), faixas s√£o gravadas sem essa pausa"
 r= ;while [ "$r" != "dao" -a "$r" != "tao" ];do
 read -p "Qual modo voce quer gravar o CD (tao/dao)? " r;done
 [ "$r" = "dao" ] && \

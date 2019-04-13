@@ -11,7 +11,7 @@
  * contador final 
  *
  * Como executar:
- * Utilizando a implementação LAM
+ * Utilizando a implementaÃ§Ã£o LAM
  *
  *    lamboot -v nodes.txt
  *    mpicc -o exemplo_mpi exemplo_mpi.c

@@ -3,7 +3,7 @@ TSM scripts
 Collection of useful TSM scripts
 
 
-%!encoding: iso-8859-1
+%!encoding: utf-8
 %!Style   : tsm_scr.css
 %!target  : html
 %!Options : --mask-email --css-sugar

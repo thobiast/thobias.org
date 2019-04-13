@@ -16,7 +16,7 @@ Atualizado em 07 Nov 2004
 <P>
 <P>
  <UL>
- <LI><A HREF="#toc1">Ol·</A>
+ <LI><A HREF="#toc1">Ol√°</A>
   <UL>
   <LI><A HREF="#toc2">Os sites</A>
   </UL>
@@ -28,49 +28,49 @@ Atualizado em 07 Nov 2004
    </UL>
  <LI><A HREF="#toc7">Screenshot</A>
  <LI><A HREF="#toc8">Download</A>
- <LI><A HREF="#toc9">ConsideraÁıes Finais</A>
+ <LI><A HREF="#toc9">Considera√ß√µes Finais</A>
  </UL>
 <P>
 <HR NOSHADE SIZE=1>
 <P>
 <P>
 <a name="toc1"></a>
-<H1>Ol·</H1>
+<H1>Ol√°</H1>
 <P>
-Bem-vindo(a) ‡ p·gina do programa RSShell.
+Bem-vindo(a) √† p√°gina do programa RSShell.
 <P>
 Muitas pessoas acessam alguns sites todos os dias a procura de
-notÌcias interessantes. Entretanto, perde-se muito tempo
-e gasta-se conex„o acessando cada um destes sites no browser.
-Esperar carregar todas as imagens, banners, flash, java etc, sÛ para
-ver se <I>hoje</I> tem alguma notÌcia legal. Este È o ponto do RSShell,
-que tem como objetivo poupar tempo e conex„o.
+not√≠cias interessantes. Entretanto, perde-se muito tempo
+e gasta-se conex√£o acessando cada um destes sites no browser.
+Esperar carregar todas as imagens, banners, flash, java etc, s√≥ para
+ver se <I>hoje</I> tem alguma not√≠cia legal. Este √© o ponto do RSShell,
+que tem como objetivo poupar tempo e conex√£o.
 <P>
-O RSShell acessa os sites prÈ-configurados, utilizando um browser modo
-texto chamado <A HREF="http://lynx.isc.org">lynx</A>, coleta as notÌcias e monta uma
-p·gina com todos os sites e suas respectivas manchetes com links para cada
-uma delas. A que lhe interessar È sÛ clicar em cima que a p·gina referente
-a esta notÌcia È carregada. Utilizando o lynx somente o texto da p·gina È
-acessado, desta maneira n„o È realizado o download destes sites <I>bloated</I>.
+O RSShell acessa os sites pr√©-configurados, utilizando um browser modo
+texto chamado <A HREF="http://lynx.isc.org">lynx</A>, coleta as not√≠cias e monta uma
+p√°gina com todos os sites e suas respectivas manchetes com links para cada
+uma delas. A que lhe interessar √© s√≥ clicar em cima que a p√°gina referente
+a esta not√≠cia √© carregada. Utilizando o lynx somente o texto da p√°gina √©
+acessado, desta maneira n√£o √© realizado o download destes sites <I>bloated</I>.
 RSShell foi todo escrito em Shell Script (BASH).
 <P>
 <a name="toc2"></a>
 <H2>Os sites</H2>
 <P>
-O RSShell foi feito de maneira genÈrica, ou seja, funciona para
-<B>qualquer</B> site que tenha suporte a RSS. Sites que n„o tem este suporte
-n„o funcionam. N„o sabe o que È RSS? Acesse:
+O RSShell foi feito de maneira gen√©rica, ou seja, funciona para
+<B>qualquer</B> site que tenha suporte a RSS. Sites que n√£o tem este suporte
+n√£o funcionam. N√£o sabe o que √© RSS? Acesse:
 <A HREF="http://en.wikipedia.org/wiki/RSS_%28protocol%29">RSS no Wikipedia</A>
 <P>
-A lista com os sites a serem acessados est· no final do cÛdigo fonte do
-programa. Pode-se customiz·-los adicionando ou removendo as URLs dos
-arquivos RSS dos sites. … necess·rio deixar uma URL por linha.
+A lista com os sites a serem acessados est√° no final do c√≥digo fonte do
+programa. Pode-se customiz√°-los adicionando ou removendo as URLs dos
+arquivos RSS dos sites. √â necess√°rio deixar uma URL por linha.
 <P>
-TambÈm existe a opÁ„o de criar seÁıes. Adicione-as no final do cÛdigo
-fonte. Ao contr·rio das URLs, as seÁıes <B>tem</B> que comeÁar pelo sinal de
+Tamb√©m existe a op√ß√£o de criar se√ß√µes. Adicione-as no final do c√≥digo
+fonte. Ao contr√°rio das URLs, as se√ß√µes <B>tem</B> que come√ßar pelo sinal de
 menos.
 <P>
-DÍ uma olhada no cÛdigo que ficar· mais claro. … bem simples de
+D√™ uma olhada no c√≥digo que ficar√° mais claro. √â bem simples de
 costumizar para os seus sites favoritos.
 <P>
 <a name="toc3"></a>
@@ -81,21 +81,21 @@ Existem duas maneiras de utilizar o RSShell:
 <a name="toc4"></a>
 <H3>Crontab ou Linha de Comando</H3>
 <P>
-Normalmente acessa-se sites de notÌcias algumas vezes por dia. Se vocÍ
-acessa uma vez por dia, por exemplo, ‡s 9h da manh„, vocÍ pode colocar o
-programa para rodar todos os dias ‡s 8:50h no <I>cron</I> de sua m·quina.
-Assim, quando acessar ‡s 9h ter· as ˙ltimas notÌcias.
+Normalmente acessa-se sites de not√≠cias algumas vezes por dia. Se voc√™
+acessa uma vez por dia, por exemplo, √†s 9h da manh√£, voc√™ pode colocar o
+programa para rodar todos os dias √†s 8:50h no <I>cron</I> de sua m√°quina.
+Assim, quando acessar √†s 9h ter√° as √∫ltimas not√≠cias.
 <P>
-Se for v·rias vezes por dia, pode colocar no <I>cron</I> para rodar uma vez a cada
-uma hora, duas horas.... … sÛ escolher.
+Se for v√°rias vezes por dia, pode colocar no <I>cron</I> para rodar uma vez a cada
+uma hora, duas horas.... √â s√≥ escolher.
 <P>
-Outra alternativa È executar o programa direto na linha de comando quando
-for necess·rio. Quer ler?! … sÛ rodar.
+Outra alternativa √© executar o programa direto na linha de comando quando
+for necess√°rio. Quer ler?! √â s√≥ rodar.
 <P>
 <B>OBS</B>:
-O RSShell gera a p·gina HTML na saÌda padr„o (<I>stdout</I>). Caso seja utilizado
-<I>cron</I> ou a linha de comando, sua saÌda deve ser redirecionada para um
-arquivo para posteriormente ser acessado atravÈs de algum browser.
+O RSShell gera a p√°gina HTML na sa√≠da padr√£o (<I>stdout</I>). Caso seja utilizado
+<I>cron</I> ou a linha de comando, sua sa√≠da deve ser redirecionada para um
+arquivo para posteriormente ser acessado atrav√©s de algum browser.
 <P>
 <PRE>
   prompt&gt; ./rsshell &gt; rsshell.html
@@ -104,12 +104,12 @@ arquivo para posteriormente ser acessado atravÈs de algum browser.
 <a name="toc5"></a>
 <H3>CGI</H3>
 <P>
-O RSShell tambÈm pode ser utilizado como um script CGI.
-N„o sabe o que È CGI? Acesse <A HREF="http://thobias.org/doc/cgi_shell.html">http://thobias.org/doc/cgi_shell.html</A>
+O RSShell tamb√©m pode ser utilizado como um script CGI.
+N√£o sabe o que √© CGI? Acesse <A HREF="http://thobias.org/doc/cgi_shell.html">http://thobias.org/doc/cgi_shell.html</A>
 <P>
-Nesta opÁ„o È necess·rio colocar o programa em algum servidor web.
+Nesta op√ß√£o √© necess√°rio colocar o programa em algum servidor web.
 Quando for acessada esta URL, o RSShell busca
-as notÌcias dos sites e monta a p·gina de forma din‚mica.
+as not√≠cias dos sites e monta a p√°gina de forma din√¢mica.
 <P>
 <PRE>
   http://localhost/cgi-bin/rsshell
@@ -118,25 +118,25 @@ as notÌcias dos sites e monta a p·gina de forma din‚mica.
 <a name="toc6"></a>
 <H3>Personalizar o HTML</H3>
 <P>
-A p·gina HTML gerada pelo RSShell È bem simples. Para personalizar vocÍ
-deve utilizar a opÁ„o '--css' e informar um arquivo CSS. Exemplo:
+A p√°gina HTML gerada pelo RSShell √© bem simples. Para personalizar voc√™
+deve utilizar a op√ß√£o '--css' e informar um arquivo CSS. Exemplo:
 <P>
 <PRE>
   prompt&gt; ./rsshell --css arquivo.css &gt; pagina.html
 </PRE>
 <P>
-Utilizando CSS vocÍ pode deixar a p·gina do seu gosto. As notÌcias est„o em
-tabelas HTML. Para facilitar a customizaÁ„o as seguintes TAGs HTML
+Utilizando CSS voc√™ pode deixar a p√°gina do seu gosto. As not√≠cias est√£o em
+tabelas HTML. Para facilitar a customiza√ß√£o as seguintes TAGs HTML
 foram utilizadas.
 <P>
 <table align="center" cellpadding=4 border=1>
 <tr>
 <td>h1</td>
-<td>TÌtulo da p·gina</td>
+<td>T√≠tulo da p√°gina</td>
 </tr>
 <tr>
 <td>h2</td>
-<td>Nome da seÁ„o (ex: NotÌcias Inform·tica)</td>
+<td>Nome da se√ß√£o (ex: Not√≠cias Inform√°tica)</td>
 </tr>
 <tr>
 <td>h3</td>
@@ -149,7 +149,7 @@ foram utilizadas.
 <H1>Screenshot</H1>
 <P>
 Como uma imagem vale mais do que mil palavras, alguns exemplos de uso do
-RSShell em aÁ„o.
+RSShell em a√ß√£o.
 <P>
 <P ALIGN="center"><IMG ALIGN="center" SRC="rsshell_1.jpg" BORDER="0"></P>
 <P>
@@ -160,16 +160,16 @@ RSShell em aÁ„o.
 <P>
 Link para baixar o programa: <A HREF="rsshell">RSShell</A>
 <P>
-OBS: ApÛs baixar n„o esqueÁa de dar permiss„o de execuÁ„o para o arquivo.
+OBS: Ap√≥s baixar n√£o esque√ßa de dar permiss√£o de execu√ß√£o para o arquivo.
 <P>
 <PRE>
   prompt&gt; chmod +x rsshell
 </PRE>
 <P>
 <a name="toc9"></a>
-<H1>ConsideraÁıes Finais</H1>
+<H1>Considera√ß√µes Finais</H1>
 <P>
-Gostou?! Achou algum bug?! Tem algum coment·rio?! Me envie um mail:
+Gostou?! Achou algum bug?! Tem algum coment√°rio?! Me envie um mail:
 thobias [at ] thobias.org
 <P>
 Divirta-se!!!

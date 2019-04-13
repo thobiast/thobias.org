@@ -1,7 +1,7 @@
 datas
-Programa em modo texto de calend·rio e compromissos
+Programa em modo texto de calend√°rio e compromissos
 
-%!encoding: iso-8859-1
+%!encoding: utf-8
 %! Target  : html
 %! Options : -n --toc --style datas.css -t html --css-sugar
 
@@ -13,37 +13,37 @@ Programa em modo texto de calend·rio e compromissos
 
 =Datas=
 
-O datas È um programa de agenda e compromissos que funciona na linha de
-comando. Simples, r·pido e sem frescuras.
+O datas √© um programa de agenda e compromissos que funciona na linha de
+comando. Simples, r√°pido e sem frescuras.
 
 """ {div class="lastrelease"}
- | ⁄ltima vers„o: 1.2 (25 de novembro de 2005)
+ | √öltima vers√£o: 1.2 (25 de novembro de 2005)
 """ {/div}
 
-=MotivaÁ„o=
+=Motiva√ß√£o=
 
-Assim como eu, v·rias pessoas tÍm dificuldade em lembrar de datas
-importantes. Sempre esquecem de anivers·rios, reuniıes,
+Assim como eu, v√°rias pessoas t√™m dificuldade em lembrar de datas
+importantes. Sempre esquecem de anivers√°rios, reuni√µes,
 dia de pagar contas etc.
 
-Existem alguns programas/agendas que ajudam a lembrar, mas a maioria s„o com
-interfaces web, programas grandes, pesados, ou que n„o atendem as minhas
+Existem alguns programas/agendas que ajudam a lembrar, mas a maioria s√£o com
+interfaces web, programas grandes, pesados, ou que n√£o atendem as minhas
 necessidades.
 
-Assim surgiu o datas, um programa simples, direto e que sÛ faz uma ˙nica
+Assim surgiu o datas, um programa simples, direto e que s√≥ faz uma √∫nica
 tarefa: ajuda os //esquecidos// a lembrar estes dias.
 
-Com uma interface simples de linha de comando, È extremamente f·cil e
-r·pido consultar e gerenciar o calend·rio com os compromissos.
+Com uma interface simples de linha de comando, √© extremamente f√°cil e
+r√°pido consultar e gerenciar o calend√°rio com os compromissos.
 Os compromissos ficam armazenados em um arquivo texto com uma estrutura
 simples.
 
-O programa possui ainda a opÁ„o de enviar um mail ou uma mensagem para celular,
-lembrando de algum compromisso com //N// dias de antecedÍncia.
+O programa possui ainda a op√ß√£o de enviar um mail ou uma mensagem para celular,
+lembrando de algum compromisso com //N// dias de anteced√™ncia.
 
 =Download=
 
-O datas È dividido em dois arquivos:
+O datas √© dividido em dois arquivos:
 
 - //datas.txt// - um arquivo texto com os dias a serem lembrados.
   [Clique aqui datas.txt] para baixar o arquivo com a estrutura
@@ -52,34 +52,34 @@ O datas È dividido em dois arquivos:
   agendados. [Clique aqui datas] para baixar o programa.
 
 
-Para os nerds, o [cÛdigo fonte datas.html] do programa colorido
+Para os nerds, o [c√≥digo fonte datas.html] do programa colorido
 para facilitar o entendimento.
 
 
-=InstalaÁ„o=
+=Instala√ß√£o=
 
-… necess·rio alterar algumas linhas no cÛdigo fonte do programa. N„o se
-assuste, s„o alteraÁıes bem simples. Edite o arquivo //datas// e altere
-as seguintes vari·veis (linha 26, 30 e 34 respectivamente):
+√â necess√°rio alterar algumas linhas no c√≥digo fonte do programa. N√£o se
+assuste, s√£o altera√ß√µes bem simples. Edite o arquivo //datas// e altere
+as seguintes vari√°veis (linha 26, 30 e 34 respectivamente):
 
  | dados='caminho_completo_para_o_arquivo_datas.txt' |
  | mailto='usuario_que_ira_receber_os_lembretes' |
- | celmail='endereÁo_de_mail_do_seu_celular' |
+ | celmail='endere√ßo_de_mail_do_seu_celular' |
 
-**Vari·vel dados**: Coloque o caminho completo para o arquivo datas.txt.
+**Vari√°vel dados**: Coloque o caminho completo para o arquivo datas.txt.
 
-**Vari·vel mailto**: O endereÁo de mail de quem receber· os avisos dos
+**Vari√°vel mailto**: O endere√ßo de mail de quem receber√° os avisos dos
 compromissos.
 
-**Vari·vel celmail**: O endereÁo de mail do seu celular. Ex:
+**Vari√°vel celmail**: O endere√ßo de mail do seu celular. Ex:
 //celmail='seunumero@suaoperadora.com.br'//
 
-ObservaÁ„o: Na vari·vel //cmd_mail// È definido o comando utilizado para enviar
-o mail. Se n„o for entrega local, È necess·rio ter um smtp configurado, ou utilize
-outro comando para enviar o mail. Altere esta linha apenas se for necess·rio.
-A configuraÁ„o atual deve funcionar para entrega local.
+Observa√ß√£o: Na vari√°vel //cmd_mail// √© definido o comando utilizado para enviar
+o mail. Se n√£o for entrega local, √© necess√°rio ter um smtp configurado, ou utilize
+outro comando para enviar o mail. Altere esta linha apenas se for necess√°rio.
+A configura√ß√£o atual deve funcionar para entrega local.
 
-Depois de alterada as linhas acima, torne o arquivo execut·vel:
+Depois de alterada as linhas acima, torne o arquivo execut√°vel:
 
 
 ```
@@ -88,24 +88,24 @@ prompt> chmod +x datas
 
 =Como Funciona=
 
-Para comeÁar, execute o programa:
+Para come√ßar, execute o programa:
 
 ```
 prompt> ./datas
 ```
 
-Se nenhum par‚metro for passado, È mostrado na tela o calend·rio
-do mÍs atual com os seus lembretes.
+Se nenhum par√¢metro for passado, √© mostrado na tela o calend√°rio
+do m√™s atual com os seus lembretes.
 
  | [img/shot1.png]
 
-O dia atual È destacado (por padr„o na cor verde) na saÌda do comando, e caso
-exista algum compromisso neste dia, ele tambÈm È destacado. Os demais dias
-com compromisso tambÈm est„o em destaque (por padr„o na cor azul claro).
-Estas cores podem ser facilmente modificadas no cÛdigo fonte. Elas est„o
-definidas nas vari·veis //COR_HJ// e //COR_DATA// respectivamente.
+O dia atual √© destacado (por padr√£o na cor verde) na sa√≠da do comando, e caso
+exista algum compromisso neste dia, ele tamb√©m √© destacado. Os demais dias
+com compromisso tamb√©m est√£o em destaque (por padr√£o na cor azul claro).
+Estas cores podem ser facilmente modificadas no c√≥digo fonte. Elas est√£o
+definidas nas vari√°veis //COR_HJ// e //COR_DATA// respectivamente.
 
-O mÍs a ser consultado pode ser especificado na chamada do programa. Para
+O m√™s a ser consultado pode ser especificado na chamada do programa. Para
 ver os compromissos de dezembro:
 
 ```
@@ -114,7 +114,7 @@ prompt> ./datas 12
 
  | [img/shot2.png]
 
-O ano tambÈm pode ser escolhido.
+O ano tamb√©m pode ser escolhido.
 
 
 ```
@@ -125,10 +125,10 @@ prompt> ./datas 12 2006
 
 
 Em vez de criar uma interface para adicionar/remover/alterar os
-compromissos, o programa abre um editor de texto para vocÍ manipular o
+compromissos, o programa abre um editor de texto para voc√™ manipular o
 arquivo.
 
-Para abrir o editor È necess·rio passar o par‚metro //--edit// ou //-e//.
+Para abrir o editor √© necess√°rio passar o par√¢metro //--edit// ou //-e//.
 
 
 ```
@@ -137,9 +137,9 @@ prompt> ./datas -e
 
  | [img/shot3.png]
 
-O editor de texto utilizado È o que est· definido na vari·vel de ambiente
-//EDITOR//. Caso esta vari·vel n„o esteja setada, È utilizado o editor
-passada como par‚metro. Se nenhum for passado È utilizado o VI.
+O editor de texto utilizado √© o que est√° definido na vari√°vel de ambiente
+//EDITOR//. Caso esta vari√°vel n√£o esteja setada, √© utilizado o editor
+passada como par√¢metro. Se nenhum for passado √© utilizado o VI.
 
 ```
 prompt> ./datas -e nano
@@ -148,15 +148,15 @@ prompt> ./datas -e nano
 O arquivo com os compromissos possui uma estrutura simples, e poucas
 regras precisam ser respeitadas:
 
-- As linhas que comeÁam com o caractere '#' s„o coment·rios.
-- Existe uma entrada (um coment·rio) para cada um dos 12 meses
- (**n„o altere estas linhas**).
-- As datas precisam ser adicionadas abaixo do mÍs correspondente com o
+- As linhas que come√ßam com o caractere '#' s√£o coment√°rios.
+- Existe uma entrada (um coment√°rio) para cada um dos 12 meses
+ (**n√£o altere estas linhas**).
+- As datas precisam ser adicionadas abaixo do m√™s correspondente com o
   seguinte formato:
 
  | dia - lembrete |
 
-Para ajudar na compreens„o da estrutura, segue um pequeno exemplo deste
+Para ajudar na compreens√£o da estrutura, segue um pequeno exemplo deste
 arquivo:
 
 
@@ -164,22 +164,22 @@ arquivo:
 prompt> cat datas.txt
 # datas.txt - http://thobias.org/datas
 #
-# Esse arquivo contÈm os compromissos agendados.
-# Sua estrutura È:
+# Esse arquivo cont√©m os compromissos agendados.
+# Sua estrutura √©:
 # DD - compromisso/lembrete
 #
-# ObservaÁıes:
-# - … necess·rio respeitar a estrutura deste arquivo para adicionar
-#   seus lembretes e, as linhas indicando os meses, _N√O_ podem ser
-#   apagadas, mesmo que n„o exista nenhum lembrete no mÍs.
+# Observa√ß√µes:
+# - √â necess√°rio respeitar a estrutura deste arquivo para adicionar
+#   seus lembretes e, as linhas indicando os meses, _N√ÉO_ podem ser
+#   apagadas, mesmo que n√£o exista nenhum lembrete no m√™s.
 #
-# - O "mÍs 00" È uma configuraÁ„o especial no arquivo datas.txt. os
-#   lembretes adicionados nele, ser„o lembrados em todos os meses
-#   reais. Deste modo, vocÍ n„o precisa adicionar a mesma entrada em
-#   todos os mÍs. ⁄til para lembrete como: para pagar a conta de luz
+# - O "m√™s 00" √© uma configura√ß√£o especial no arquivo datas.txt. os
+#   lembretes adicionados nele, ser√£o lembrados em todos os meses
+#   reais. Deste modo, voc√™ n√£o precisa adicionar a mesma entrada em
+#   todos os m√™s. √ötil para lembrete como: para pagar a conta de luz
 #   todo o dia 10.
 #
-# - Para acrescentar lembretes È sÛ coloc·-los logo abaixo do mÍs
+# - Para acrescentar lembretes √© s√≥ coloc√°-los logo abaixo do m√™s
 #   correspondente.
 ##########################################################################
 
@@ -191,7 +191,7 @@ prompt> cat datas.txt
 
 # 02 - fevereiro
 
-# 03 - marÁo
+# 03 - mar√ßo
 03 - aniversario mandarim
 25 - aniversario germano
 
@@ -219,28 +219,28 @@ prompt> cat datas.txt
 31 - ano novo
 ```
 
-O arquivo È auto explicativo. Os compromissos s„o adicionados apÛs o seu
-respectivo mÍs.
+O arquivo √© auto explicativo. Os compromissos s√£o adicionados ap√≥s o seu
+respectivo m√™s.
 
-O //mÍs 00// È uma configuraÁ„o especial no arquivo datas.txt. Os
-compromissos adicionados nele ser„o lembrados em todos os meses
-reais. Deste modo, vocÍ n„o precisa adicionar a mesma entrada em
-todos os mÍs. ⁄til para lembretes como: para pagar a conta de luz
+O //m√™s 00// √© uma configura√ß√£o especial no arquivo datas.txt. Os
+compromissos adicionados nele ser√£o lembrados em todos os meses
+reais. Deste modo, voc√™ n√£o precisa adicionar a mesma entrada em
+todos os m√™s. √ötil para lembretes como: para pagar a conta de luz
 todo o dia 10.
 
 ==Enviando Lembrete por E-mail==
 
-Utiliza-se o par‚metro //--cron// para o
-script enviar o resultado (se necess·rio) por mail. O mail sÛ ser· enviado
-caso exista algum lembrete para daqui a N dias, onde N por padr„o È 1, ou
-seja, com quantos dias de antecedÍncia o mail com o lembrete ser· enviado.
+Utiliza-se o par√¢metro //--cron// para o
+script enviar o resultado (se necess√°rio) por mail. O mail s√≥ ser√° enviado
+caso exista algum lembrete para daqui a N dias, onde N por padr√£o √© 1, ou
+seja, com quantos dias de anteced√™ncia o mail com o lembrete ser√° enviado.
 
 
 ```
 prompt> ./datas --cron
 ```
 
-O n˙mero de dias de antecedÍncia pode ser modificado passando o seu novo
+O n√∫mero de dias de anteced√™ncia pode ser modificado passando o seu novo
 valor na chamada do programa. Para que o mail seja enviado 2 dias antes
 do compromisso:
 
@@ -250,7 +250,7 @@ prompt> ./datas --cron 2
 ```
 
 Se quiser enviar um mail no dia do compromisso, especifique o
-n˙mero zero:
+n√∫mero zero:
 
 ```
 prompt> ./datas --cron 0
@@ -258,42 +258,42 @@ prompt> ./datas --cron 0
 
 Para automatizar este processo, esta chamada pode ser adicionada na crontab
 do sistema operacional. Por exemplo, para
-executar o programa todos os dias ‡s 9h da manh„:
+executar o programa todos os dias √†s 9h da manh√£:
 
 ```
 0 9 * * * /caminho/do/arquivo/datas --cron
 ```
 
-ObservaÁ„o: o cron n„o compensa comandos que foram perdidos
-enquando o sitema estava desligado, ou seja, se vocÍ colocar o datas para
-executar via cron ‡s 6h da manh„ e a m·quina n„o estiver ligada, o programa
-n„o ser· executado naquele dia. Ent„o coloque-o para executar em um hor·rio
-em que a m·quina esteja ligada ou em algum servidor.
+Observa√ß√£o: o cron n√£o compensa comandos que foram perdidos
+enquando o sitema estava desligado, ou seja, se voc√™ colocar o datas para
+executar via cron √†s 6h da manh√£ e a m√°quina n√£o estiver ligada, o programa
+n√£o ser√° executado naquele dia. Ent√£o coloque-o para executar em um hor√°rio
+em que a m√°quina esteja ligada ou em algum servidor.
 
 
 =Changelog=
 
-**Vers„o 1.2 - 25 de novembro de 2005**
-- Sempre colore o dia de hoje com uma cor diferente no calend·rio (valeu Elias pela idÈia)
-- Colore os compromissos mesmo que o mÍs n„o seja o atual
-- Adicionada vari·vel que especifica a implementaÁ„o do sed a ser utilizada (valeu Josevan)
+**Vers√£o 1.2 - 25 de novembro de 2005**
+- Sempre colore o dia de hoje com uma cor diferente no calend√°rio (valeu Elias pela id√©ia)
+- Colore os compromissos mesmo que o m√™s n√£o seja o atual
+- Adicionada vari√°vel que especifica a implementa√ß√£o do sed a ser utilizada (valeu Josevan)
 
 
-**Vers„o 1.1 - 20 de setembro de 2005**
-- Adicionado mÍs 00 (valeu AurÈlio Marinho Jargas pela idÈia)
-- Adicionado aviso pelo celular (valeu Ataliba Teixeira pela idÈia/patch)
-- Adicionada opÁ„o -l para listar todos os compromissos agendados (valeu
-  AurÈlio)
-- Ordenada a saÌda dos lembretes do mÍs. N„o importa a ordem que est„o no arquivo
+**Vers√£o 1.1 - 20 de setembro de 2005**
+- Adicionado m√™s 00 (valeu Aur√©lio Marinho Jargas pela id√©ia)
+- Adicionado aviso pelo celular (valeu Ataliba Teixeira pela id√©ia/patch)
+- Adicionada op√ß√£o -l para listar todos os compromissos agendados (valeu
+  Aur√©lio)
+- Ordenada a sa√≠da dos lembretes do m√™s. N√£o importa a ordem que est√£o no arquivo
 
 
-**Vers„o 1.0 - 15 de janeiro de 2005**
+**Vers√£o 1.0 - 15 de janeiro de 2005**
 
 =Agradecimentos=
 
 Pessoas que contribuiram:
 
-- AurÈlio Marinho Jargas
+- Aur√©lio Marinho Jargas
 - Silvano Bolfoni Dias
 - Ataliba Teixeira
 - Elias Junior
@@ -302,15 +302,15 @@ Pessoas que contribuiram:
 
 =Patches=
 
-O Ataliba Teixeira mantÈm um
+O Ataliba Teixeira mant√©m um
 [patch http://cerebro.freeshell.org/sections/aplicationpatches/datas/]
 para o programa funcionar na SDF (http://sdf.lonestar.org).
 
-=ConsideraÁıes Finais=
+=Considera√ß√µes Finais=
 
-Espero que este programa seja ˙til para mais alguÈm.
+Espero que este programa seja √∫til para mais algu√©m.
 
-Se tiver algum coment·rio, sugest„o, aviso de bug... me envie um mail:
+Se tiver algum coment√°rio, sugest√£o, aviso de bug... me envie um mail:
 
 thobias (at) thobias (dot) org
 

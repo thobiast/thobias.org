@@ -52,14 +52,14 @@ SEDMES00='/^ *# *00 *-/,/^ *# *[0-9][0-9] *-/{/^ *# *00 *-/d;
 ##### funcao que trata a execucao via cron (parametro --cron)
 cron(){
 local i
-[ "$1" -a "${1//[0-9]}" ] && { echo "Número de dias inválido"; return; }
+[ "$1" -a "${1//[0-9]}" ] && { echo "NÃºmero de dias invÃ¡lido"; return; }
 hj=$(date  '+%d' --date "${1:-$days} days" | sed 's/^0//')
 ms=$(date  '+%m' --date "${1:-$days} days" | sed 's/^.$/0&/')
 ano=$(date  '+%Y' --date "${1:-$days} days")
 i=$(cat $dados | sed "$SEDMES00" |sed -n "/^ *# *$ms *- /,/#/{//d;/^ *$/d;
 s/^ *0//;/\b$hj\b/!d;p;}")
 # tem algum lembrete ?!
-[ "$i" ] && { (echo -e "Hoje é: $(date '+%d de %b de %Y')\n";
+[ "$i" ] && { (echo -e "Hoje Ã©: $(date '+%d de %b de %Y')\n";
 echo -e "$(cal $ms $ano)\nLembretes:\n\n$i") | eval $cmd_mail;
 [ "$celmail" ] && echo "Lembrete do programa datas: dia $i"|mail $celmail; }
 }
@@ -72,10 +72,10 @@ hj=$(date '+%d' | sed 's/^0//')
 [ "$2" ] && ano="$2" || ano=$(date '+%Y')
 # testa se o mes e valido
 [ "$(echo $ms | sed 's/^.$/0&/;s/^\(0[1-9]\|1[0-2]\)$//')" ] &&
-{ echo Erro: mês inválido; exit 1; }
+{ echo Erro: mÃªs invÃ¡lido; exit 1; }
 # testa se o ano e valido
 [ "$(echo $ano | sed 's/^200[0-9]$//')" ] &&
-{ echo "Erro: ano inválido"; exit 1; }
+{ echo "Erro: ano invÃ¡lido"; exit 1; }
 # se nao for este mes ou ano nao colore
 [ "$ms" = "$(date '+%m')" -a "$ano" = "$(date '+%Y')" ] || { VERDE=$NORMAL; }
 # monta o calendario com os lembretes
@@ -106,20 +106,20 @@ sed '1i **** tecla Q sai' | ${PAGER:-less -r}; exit; }
 
 # mostra help
 [ "$1" = "--help" -o "$1" = "-h" ] && {
-echo "datas.: script que mostra o calendário destacando as datas importantes
+echo "datas.: script que mostra o calendÃ¡rio destacando as datas importantes
 Site..: http://thobias.org/datas
-Versão: $versao
+VersÃ£o: $versao
 
-Uso: datas [opções]
+Uso: datas [opÃ§Ãµes]
 
-    [mês] [ano] especifica o mês a ser consultado (pode ser indicado o ano)
-    --cron [N]  envia o mail com de N dias de antecedência da data do lembrete
+    [mÃªs] [ano] especifica o mÃªs a ser consultado (pode ser indicado o ano)
+    --cron [N]  envia o mail com de N dias de antecedÃªncia da data do lembrete
 -e, --edit      abre o arquivo com os lembretes em um editor de texto
 -l, --list      mostra todos os lembretes cadastrados
 -h, --help      mostra a ajuda
--v, --versao    mostra a versão
+-v, --versao    mostra a versÃ£o
 
-Consulte a documentação completa no site.
+Consulte a documentaÃ§Ã£o completa no site.
 " ; exit; }
 
 # mostra o calendario com os lembretes na stdout

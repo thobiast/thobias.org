@@ -1,42 +1,42 @@
 #!/bin/bash
 #
-# rsshell.sh - script que monta uma p·gina com os rss de diversos sites
+# rsshell.sh - script que monta uma p√°gina com os rss de diversos sites
 # AUTOR: Thobias Salazar Trevisan 
 # SITE:  http://thobias.org/rsshell
 #
-# Este script consulta diversos sites de notÌcias e monta um resumo 
-# das seis ˙ltimas notÌcias.
+# Este script consulta diversos sites de not√≠cias e monta um resumo 
+# das seis √∫ltimas not√≠cias.
 #
-# Objetivo: ecomonizar tempo e banda, ou seja, n„o preciso acessar estes 
+# Objetivo: ecomonizar tempo e banda, ou seja, n√£o preciso acessar estes 
 # sites, esperar carregar todas imagens, banners... para ver se existe 
-# alguma notÌcia que lhe interessa.
+# alguma not√≠cia que lhe interessa.
 #
-# Este script È genÈrico, ou seja, vocÍ pode adicionar qualquer endereÁo de
-# RSS no final do script que o programa busca e monta a p·gina.
+# Este script √© gen√©rico, ou seja, voc√™ pode adicionar qualquer endere√ßo de
+# RSS no final do script que o programa busca e monta a p√°gina.
 #
-# A listagem dos sites est· no final do programa
+# A listagem dos sites est√° no final do programa
 #
 # Changelog:
-# 05/11/2004 - LanÁada vers„o 0.1
+# 05/11/2004 - Lan√ßada vers√£o 0.1
 #
 #############################################################################
-############# ConfiguraÁ„o das vari·veis
-# n˙mero de notÌcias mostradas por site
+############# Configura√ß√£o das vari√°veis
+# n√∫mero de not√≠cias mostradas por site
 n=6
-# sed para pegar as 'n' notÌcias. n„o mexa aqui!! :)
+# sed para pegar as 'n' not√≠cias. n√£o mexa aqui!! :)
 limite="sed $((n+1))q"
 # comando que gera a data e hora que o programa foi executado
 DATA=$(date '+%d %b %Y')
 HORA=$(date '+%H:%M')
-# se diretÛrio tempor·rio (vari·vel TMP) n„o estiver definido
-# define como /tmp. necess·rio para criar alguns arquivos
+# se diret√≥rio tempor√°rio (vari√°vel TMP) n√£o estiver definido
+# define como /tmp. necess√°rio para criar alguns arquivos
 TMP="${TMP=/tmp}"
-# tÌtulo da p·gina
+# t√≠tulo da p√°gina
 titulo='Bem-Vindo ao RSShell'
 #############################################################################
 
 #############################################################################
-# FunÁıes 
+# Fun√ß√µes 
 #############################################################################
 
 #
@@ -57,21 +57,21 @@ wait
 
 
 #
-# monta a p·gina em HTML a partir dos arquivos gerados pela funÁ„o get_rss
+# monta a p√°gina em HTML a partir dos arquivos gerados pela fun√ß√£o get_rss
 #
 show_rss(){
 echo '<table width="100%" border="5" cellspacing="2" cellpadding="0">'
-# chave para criar ou n„o uma nova linha na tabela
+# chave para criar ou n√£o uma nova linha na tabela
 linha_tabela=sim
-# monta as tabelas com as notÌcias 
+# monta as tabelas com as not√≠cias 
 for i in "${SITES[@]}";do
-  # se for uma seÁ„o cria uma nova tabela e volta para o for
+  # se for uma se√ß√£o cria uma nova tabela e volta para o for
   [ "${i/#-*/}" ] || { [ "$linha_tabela" = "nao" ] && echo "</tr>"
-  echo "</table> <center><H2>NotÌcias ${i#-}</H2></center>"; linha_tabela=sim
+  echo "</table> <center><H2>Not√≠cias ${i#-}</H2></center>"; linha_tabela=sim
   echo '<table width="100%" border="5" cellspacing="2" cellpadding="0">'
   continue; }
 
-  # pega o arquivo tempor·rio referente ao site 'i'
+  # pega o arquivo tempor√°rio referente ao site 'i'
   ARQ="$TMP/rsshell_$(echo $i | sed 's,.*//\([^/]*\)/.*,\1,')"
   [ "$linha_tabela" = "sim" ] && echo "<tr>" 
 
@@ -80,7 +80,7 @@ for i in "${SITES[@]}";do
      echo "<b><h3><center> <a style=\"color: blue\" 
 	 href=$(sed -n '1s/ .*//p' $ARQ)> $(sed -n '1s/^[^ ]* //p' $ARQ)</a>
      </center></h3></b><br><br>"
-     # notÌcias do site
+     # not√≠cias do site
      while read link news;do 
          echo "<a href=$link> $news</a><br>"
      done < <(sed '1d' $ARQ)
@@ -99,29 +99,29 @@ echo "</table>"
 #  Principal
 #############################################################################
 
-# vetor com os sites e seÁıes
+# vetor com os sites e se√ß√µes
 SITES=($(sed '1,/^@@@/d;s/^[ \t]*//;/^\(#\|$\)/d' $0))
 
-# se estiver executando via CGI envia o header necess·rio
+# se estiver executando via CGI envia o header necess√°rio
 [ "$SERVER_ADDR" ] && echo -e "content-type: text/html\n"
 
 if [ "$1" = "--css" ];then [ -f "$2" ] || { 
-echo "ERRO: arquivo $2 n„o encontrado" > /dev/stderr; exit 1; }
+echo "ERRO: arquivo $2 n√£o encontrado" > /dev/stderr; exit 1; }
 CSS="<LINK REL=\"stylesheet\" TYPE=\"text/css\" HREF=\"$2\">";else unset CSS
 fi
 
-# InÌcio do HTML
+# In√≠cio do HTML
 echo "<html> <head> 
-<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=iso-8859-1\">
+<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">
 $CSS <title> RSShell </title> 
 </head>
 <body>
 <center>
 <H1>$titulo</H1>
-Consulta realizada ‡s $HORA de $DATA
+Consulta realizada √†s $HORA de $DATA
 <HR NOSHADE SIZE=10></center>"
 
-# funÁıes
+# fun√ß√µes
 #get_rss
 show_rss
 
@@ -133,19 +133,19 @@ exit 0
 
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-#                 SeÁ„o de dados do script
+#                 Se√ß√£o de dados do script
 #
-# Listagem dos sites a serem consultados separados por seÁıes
+# Listagem dos sites a serem consultados separados por se√ß√µes
 #
-# Adicione os sites NESTA seÁ„o
+# Adicione os sites NESTA se√ß√£o
 #
-# ObservaÁıes:
+# Observa√ß√µes:
 #      - adicione 1 (um) site por linha
-#      - seÁıes comeÁam pelo sinal de menos seguido do nome (sem espaÁo)
-#      - linhas que comeÁ„o pelo caractere '#' s„o consideradas coment·rio
+#      - se√ß√µes come√ßam pelo sinal de menos seguido do nome (sem espa√ßo)
+#      - linhas que come√ß√£o pelo caractere '#' s√£o consideradas coment√°rio
 
-# Sites sobre Inform·tica
--Inform·tica
+# Sites sobre Inform√°tica
+-Inform√°tica
 http://br-linux.org/noticias/index.rdf
 http://www.noticiaslinux.com.br/rss.php
 http://pontobr.org/backend/pontobr_rdf.php
@@ -156,7 +156,7 @@ http://linuxtoday.com/biglt.rss
 http://www.newsforge.com/index.rss
 http://news.zdnet.com/2509-1_22-0-20.xml
 
-# Sites de notÌcias em geral
+# Sites de not√≠cias em geral
 -Gerais
 http://www1.folha.uol.com.br/folha/emcimadahora/rss091.xml
 http://www.estadao.com.br/rss/agestado.xml

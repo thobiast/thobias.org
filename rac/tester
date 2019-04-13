@@ -19,9 +19,9 @@ RAC_VERSION='rac version 1.0'
 RAC_HELP='Usage: rac [OPTIONS] ADDRESS [FILE]...'
 
 # string comparisons - pt_BR
-RAC_EMPTY="Tente \`rac --help' para mais informações."
-RAC_VERSION='rac versão 1.1'
-RAC_HELP='Uso: rac ENDEREÇO [ARQUIVO]'
+RAC_EMPTY="Tente \`rac --help' para mais informaÃ§Ãµes."
+RAC_VERSION='rac versÃ£o 1.1'
+RAC_HELP='Uso: rac ENDEREÃ‡O [ARQUIVO]'
 
 # path config
 RAC='./rac'

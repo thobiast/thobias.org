@@ -1,58 +1,58 @@
 #!/bin/bash
 #
-# A versão do programa Einstein em shell script.
-# esse programa rolou na internet há alguns anos atrás.
+# A versÃ£o do programa Einstein em shell script.
+# esse programa rolou na internet hÃ¡ alguns anos atrÃ¡s.
 #
-# Dá para brincar com muita gente que não é da área :)
+# DÃ¡ para brincar com muita gente que nÃ£o Ã© da Ã¡rea :)
 #
-# como perdi e, a versão que tinha era para windows, fiz
+# como perdi e, a versÃ£o que tinha era para windows, fiz
 # uma para UNIX.
 #
 # ################################################
 #               Como usar
 #
-# O esquema está na variável char_especial, onde você define
-# qual será a tecla utilizada para acionar o comportamento
+# O esquema estÃ¡ na variÃ¡vel char_especial, onde vocÃª define
+# qual serÃ¡ a tecla utilizada para acionar o comportamento
 # especial do programa.
-# Após executar o programa, se a **primeira** tecla pressionada
-# for a que estiver definida na variável char_especial o comportamento
-# especial é iniciado. Quando isto ocorre, para cada tecla que você for
-# pressionando, um caractere de uma frase pré-definida irá ecoar na tela.
-# a tecla que você pressionou é armazenada em uma variável.
-# quando você apertar de novo a 'char_especial', é finalizado este processo
-# e tudo o que você teclar será novamente ecoado na tela.
-# Quando você pressionar enter, será mostrado tudo o que você teclou 
+# ApÃ³s executar o programa, se a **primeira** tecla pressionada
+# for a que estiver definida na variÃ¡vel char_especial o comportamento
+# especial Ã© iniciado. Quando isto ocorre, para cada tecla que vocÃª for
+# pressionando, um caractere de uma frase prÃ©-definida irÃ¡ ecoar na tela.
+# a tecla que vocÃª pressionou Ã© armazenada em uma variÃ¡vel.
+# quando vocÃª apertar de novo a 'char_especial', Ã© finalizado este processo
+# e tudo o que vocÃª teclar serÃ¡ novamente ecoado na tela.
+# Quando vocÃª pressionar enter, serÃ¡ mostrado tudo o que vocÃª teclou 
 # escondido, ou seja, entre as duas pressionadas do char_especial.
 #
-# Assim, você escreve a resposta escondido, e faz a pergunta para a 
-# resposta que você digitou.
+# Assim, vocÃª escreve a resposta escondido, e faz a pergunta para a 
+# resposta que vocÃª digitou.
 #
-# Experimente algumas vezes que você vai pegar o esquema =8)
+# Experimente algumas vezes que vocÃª vai pegar o esquema =8)
 #
 # ################################################
 #
-# Versão 2.0 - totalmente remodelada e com alguns bug fixed
+# VersÃ£o 2.0 - totalmente remodelada e com alguns bug fixed
 #
 # Thobias Salazar Trevisan 
 
-f1="Meu amável guru, por favor me responda"
+f1="Meu amÃ¡vel guru, por favor me responda"
 f2="Seu monte de lixo, responda"
 f3="Seu monte de bugigangas, responda"
 f4="Sua sucata e ameba, me responda"
-r1="Não respondo para sub-alternos"
+r1="NÃ£o respondo para sub-alternos"
 r2="Vai procurar sua turma"
-r3="Hoje não é o seu dia"
-# se aumentar o número de perguntas possíveis
+r3="Hoje nÃ£o Ã© o seu dia"
+# se aumentar o nÃºmero de perguntas possÃ­veis
 # modifiquei o valor 4 da linha abaixo 
 i=0;char_especial="/"; n="f$(($RANDOM%4+1))"
 R="";M=0;X="X"
 
 read -s -n1 -p "
 	Bem-Vindo ao Einstein
-	Faça sua pergunta
+	FaÃ§a sua pergunta
 
 "
-[ "$REPLY" = "$char_especial" ] && M=1 || echo -n "$REPLY";IFS=¿
+[ "$REPLY" = "$char_especial" ] && M=1 || echo -n "$REPLY";IFS=Â¿
 
 while [ "$(echo -n "$X" | od)" != "0000000" ]; do read -s -n1 X
 if [ "$(echo -n "$X" | od -a | sed  -n '1s/[0-9]\+  *//p')" = "del" ]; then
@@ -67,7 +67,7 @@ fi
 done
 
 [ "$R" ] && echo -e "\nResposta: ${R%$char_especial*}" ||
-# se aumentar o número de respostas possíveis aumente o
+# se aumentar o nÃºmero de respostas possÃ­veis aumente o
 # valor 3 da linha abaixo
 { n="r$(($RANDOM%3+1))";echo -e "\nResposta: ${!n}"; }
 

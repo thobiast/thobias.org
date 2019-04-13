@@ -4,41 +4,41 @@ Atualizado em %%date(%d %b %Y)
 
 %! Cmdline : --style rsshell.css -t html --toc
 
-=Olá=
+=OlÃ¡=
 
-Bem-vindo(a) à página do programa RSShell.
+Bem-vindo(a) Ã  pÃ¡gina do programa RSShell.
 
 Muitas pessoas acessam alguns sites todos os dias a procura de
-notícias interessantes. Entretanto, perde-se muito tempo
-e gasta-se conexão acessando cada um destes sites no browser.
-Esperar carregar todas as imagens, banners, flash, java etc, só para
-ver se //hoje// tem alguma notícia legal. Este é o ponto do RSShell,
-que tem como objetivo poupar tempo e conexão.
+notÃ­cias interessantes. Entretanto, perde-se muito tempo
+e gasta-se conexÃ£o acessando cada um destes sites no browser.
+Esperar carregar todas as imagens, banners, flash, java etc, sÃ³ para
+ver se //hoje// tem alguma notÃ­cia legal. Este Ã© o ponto do RSShell,
+que tem como objetivo poupar tempo e conexÃ£o.
 
-O RSShell acessa os sites pré-configurados, utilizando um browser modo
-texto chamado [lynx http://lynx.isc.org], coleta as notícias e monta uma
-página com todos os sites e suas respectivas manchetes com links para cada
-uma delas. A que lhe interessar é só clicar em cima que a página referente
-a esta notícia é carregada. Utilizando o lynx somente o texto da página é
-acessado, desta maneira não é realizado o download destes sites //bloated//.
+O RSShell acessa os sites prÃ©-configurados, utilizando um browser modo
+texto chamado [lynx http://lynx.isc.org], coleta as notÃ­cias e monta uma
+pÃ¡gina com todos os sites e suas respectivas manchetes com links para cada
+uma delas. A que lhe interessar Ã© sÃ³ clicar em cima que a pÃ¡gina referente
+a esta notÃ­cia Ã© carregada. Utilizando o lynx somente o texto da pÃ¡gina Ã©
+acessado, desta maneira nÃ£o Ã© realizado o download destes sites //bloated//.
 RSShell foi todo escrito em Shell Script (BASH).
 
 ==Os sites==
 
-O RSShell foi feito de maneira genérica, ou seja, funciona para
-**qualquer** site que tenha suporte a RSS. Sites que não tem este suporte
-não funcionam. Não sabe o que é RSS? Acesse:
+O RSShell foi feito de maneira genÃ©rica, ou seja, funciona para
+**qualquer** site que tenha suporte a RSS. Sites que nÃ£o tem este suporte
+nÃ£o funcionam. NÃ£o sabe o que Ã© RSS? Acesse:
 [RSS no Wikipedia http://en.wikipedia.org/wiki/RSS_%28protocol%29]
 
-A lista com os sites a serem acessados está no final do código fonte do
-programa. Pode-se customizá-los adicionando ou removendo as URLs dos
-arquivos RSS dos sites. É necessário deixar uma URL por linha.
+A lista com os sites a serem acessados estÃ¡ no final do cÃ³digo fonte do
+programa. Pode-se customizÃ¡-los adicionando ou removendo as URLs dos
+arquivos RSS dos sites. Ã‰ necessÃ¡rio deixar uma URL por linha.
 
-Também existe a opção de criar seções. Adicione-as no final do código
-fonte. Ao contrário das URLs, as seções **tem** que começar pelo sinal de
+TambÃ©m existe a opÃ§Ã£o de criar seÃ§Ãµes. Adicione-as no final do cÃ³digo
+fonte. Ao contrÃ¡rio das URLs, as seÃ§Ãµes **tem** que comeÃ§ar pelo sinal de
 menos.
 
-Dê uma olhada no código que ficará mais claro. É bem simples de
+DÃª uma olhada no cÃ³digo que ficarÃ¡ mais claro. Ã‰ bem simples de
 costumizar para os seus sites favoritos.
 
 =Como Usar=
@@ -47,33 +47,33 @@ Existem duas maneiras de utilizar o RSShell:
 
 ===Crontab ou Linha de Comando===
 
-Normalmente acessa-se sites de notícias algumas vezes por dia. Se você
-acessa uma vez por dia, por exemplo, às 9h da manhã, você pode colocar o
-programa para rodar todos os dias às 8:50h no //cron// de sua máquina.
-Assim, quando acessar às 9h terá as últimas notícias.
+Normalmente acessa-se sites de notÃ­cias algumas vezes por dia. Se vocÃª
+acessa uma vez por dia, por exemplo, Ã s 9h da manhÃ£, vocÃª pode colocar o
+programa para rodar todos os dias Ã s 8:50h no //cron// de sua mÃ¡quina.
+Assim, quando acessar Ã s 9h terÃ¡ as Ãºltimas notÃ­cias.
 
-Se for várias vezes por dia, pode colocar no //cron// para rodar uma vez a cada
-uma hora, duas horas.... É só escolher.
+Se for vÃ¡rias vezes por dia, pode colocar no //cron// para rodar uma vez a cada
+uma hora, duas horas.... Ã‰ sÃ³ escolher.
 
-Outra alternativa é executar o programa direto na linha de comando quando
-for necessário. Quer ler?! É só rodar.
+Outra alternativa Ã© executar o programa direto na linha de comando quando
+for necessÃ¡rio. Quer ler?! Ã‰ sÃ³ rodar.
 
 **OBS**:
-O RSShell gera a página HTML na saída padrão (//stdout//). Caso seja utilizado
-//cron// ou a linha de comando, sua saída deve ser redirecionada para um
-arquivo para posteriormente ser acessado através de algum browser.
+O RSShell gera a pÃ¡gina HTML na saÃ­da padrÃ£o (//stdout//). Caso seja utilizado
+//cron// ou a linha de comando, sua saÃ­da deve ser redirecionada para um
+arquivo para posteriormente ser acessado atravÃ©s de algum browser.
 
 --- prompt> ./rsshell > rsshell.html
 
 
 ===CGI===
 
-O RSShell também pode ser utilizado como um script CGI.
-Não sabe o que é CGI? Acesse http://thobias.org/doc/cgi_shell.html
+O RSShell tambÃ©m pode ser utilizado como um script CGI.
+NÃ£o sabe o que Ã© CGI? Acesse http://thobias.org/doc/cgi_shell.html
 
-Nesta opção é necessário colocar o programa em algum servidor web.
+Nesta opÃ§Ã£o Ã© necessÃ¡rio colocar o programa em algum servidor web.
 Quando for acessada esta URL, o RSShell busca
-as notícias dos sites e monta a página de forma dinâmica.
+as notÃ­cias dos sites e monta a pÃ¡gina de forma dinÃ¢mica.
 
 
 --- http://localhost/cgi-bin/rsshell
@@ -81,24 +81,24 @@ as notícias dos sites e monta a página de forma dinâmica.
 
 ===Personalizar o HTML===
 
-A página HTML gerada pelo RSShell é bem simples. Para personalizar você
-deve utilizar a opção '--css' e informar um arquivo CSS. Exemplo:
+A pÃ¡gina HTML gerada pelo RSShell Ã© bem simples. Para personalizar vocÃª
+deve utilizar a opÃ§Ã£o '--css' e informar um arquivo CSS. Exemplo:
 
 --- prompt> ./rsshell --css arquivo.css > pagina.html
 
-Utilizando CSS você pode deixar a página do seu gosto. As notícias estão em
-tabelas HTML. Para facilitar a customização as seguintes TAGs HTML
+Utilizando CSS vocÃª pode deixar a pÃ¡gina do seu gosto. As notÃ­cias estÃ£o em
+tabelas HTML. Para facilitar a customizaÃ§Ã£o as seguintes TAGs HTML
 foram utilizadas.
 
- | h1 | Título da página |
- | h2 | Nome da seção (ex: Notícias Informática) | 
+ | h1 | TÃ­tulo da pÃ¡gina |
+ | h2 | Nome da seÃ§Ã£o (ex: NotÃ­cias InformÃ¡tica) | 
  | h3 | Nome do site (ex: BR-Linux 5.0) |
 
 
 =Screenshot=
 
 Como uma imagem vale mais do que mil palavras, alguns exemplos de uso do
-RSShell em ação.
+RSShell em aÃ§Ã£o.
 
 [rsshell_1.jpg]
 
@@ -108,13 +108,13 @@ RSShell em ação.
 
 Link para baixar o programa: [RSShell rsshell]
 
-OBS: Após baixar não esqueça de dar permissão de execução para o arquivo.
+OBS: ApÃ³s baixar nÃ£o esqueÃ§a de dar permissÃ£o de execuÃ§Ã£o para o arquivo.
 
 --- prompt> chmod +x rsshell
 
-=Considerações Finais=
+=ConsideraÃ§Ãµes Finais=
 
-Gostou?! Achou algum bug?! Tem algum comentário?! Me envie um mail:
+Gostou?! Achou algum bug?! Tem algum comentÃ¡rio?! Me envie um mail:
 thobias [at ] thobias.org
 
 Divirta-se!!!

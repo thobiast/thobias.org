@@ -74,7 +74,7 @@ SEDMES00='/^ *# *00 *-/,/^ *# *[0-9][0-9] *-/{/^ *# *00 *-/d;
 ##### funcao que envia o lembrete por mail e/ou celular (parametro --cron)
 cron(){
 local i hj mes ano
-[ "$1" -a "${1//[0-9]}" ] && { echo "Número de dias inválido"; return; }
+[ "$1" -a "${1//[0-9]}" ] && { echo "NÃºmero de dias invÃ¡lido"; return; }
 hj=$(date  '+%d' --date "${1:-$days} days" | $SED 's/^0//')
 ms=$(date  '+%m' --date "${1:-$days} days" | $SED 's/^.$/0&/')
 ano=$(date  '+%Y' --date "${1:-$days} days")
@@ -85,7 +85,7 @@ s/^ *0//;/\b$hj\b/!d;p;}")
 if [ "$i" ]; then 
    # envia mail. facil de personalizar o mail enviado
    echo "
-Hoje é: $(date '+%d de %b de %Y')
+Hoje Ã©: $(date '+%d de %b de %Y')
 
 $(cal $ms $ano)
 
@@ -107,9 +107,9 @@ hj=$(date '+%d' | $SED 's/^0//')
 [ "$2" ] && ano="$2" || ano=$(date '+%Y')
 # testa se o mes e valido
 [ "$(echo $ms | $SED 's/^.$/0&/;s/^\(0[1-9]\|1[0-2]\)$//')" ] &&
-{ echo Erro: mês inválido; exit 1; }
+{ echo Erro: mÃªs invÃ¡lido; exit 1; }
 [ "$(echo $ano | $SED 's/^200[0-9]$//')" ] && # testa se o ano e valido
-{ echo "Erro: ano inválido"; exit 1; }
+{ echo "Erro: ano invÃ¡lido"; exit 1; }
 cal=$(cal "$ms" $ano) 
 # se for este mes e ano, colore o dia de hoje
 [ "$ms" = "$(date '+%m')" -a "$ano" = "$(date '+%Y')" ] && {
@@ -145,20 +145,20 @@ $SED '1i **** tecla Q sai' | ${PAGER:-less -r}; exit; }
 
 # mostra help
 [ "$1" = "--help" -o "$1" = "-h" ] && {
-echo "datas.: script que mostra o calendário destacando as datas importantes
+echo "datas.: script que mostra o calendÃ¡rio destacando as datas importantes
 Site..: http://thobias.org/datas
-Versão: $versao
+VersÃ£o: $versao
 
-Uso: datas [opções]
+Uso: datas [opÃ§Ãµes]
 
-    [mês] [ano] especifica o mês a ser consultado (pode ser indicado o ano)
-    --cron [N]  envia o mail com de N dias de antecedência da data do lembrete
+    [mÃªs] [ano] especifica o mÃªs a ser consultado (pode ser indicado o ano)
+    --cron [N]  envia o mail com de N dias de antecedÃªncia da data do lembrete
 -e, --edit      abre o arquivo com os lembretes em um editor de texto
 -l, --list      mostra todos os lembretes cadastrados
 -h, --help      mostra a ajuda
--v, --versao    mostra a versão
+-v, --versao    mostra a versÃ£o
 
-Consulte a documentação completa no site.
+Consulte a documentaÃ§Ã£o completa no site.
 " ; exit; }
 
 # mostra o calendario com os compromissos 

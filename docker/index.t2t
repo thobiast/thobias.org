@@ -4,7 +4,7 @@ A tutorial about Docker
 
 
 
-%!encoding: iso-8859-1
+%!encoding: utf-8
 %!target  : html
 %!postproc(html): '(.*prompt.*)' '<B>\1</B>'
 %!postproc(html): '(.*root@.*)' '<span style="color:#0000FF">\1</span>'

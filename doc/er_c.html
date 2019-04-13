@@ -3,9 +3,9 @@
 <HEAD>
 <META NAME="generator" CONTENT="http://txt2tags.sf.net">
 <LINK REL="stylesheet" TYPE="text/css" HREF="er_c.css">
-<TITLE>Usando Expressıes Regulares na Linguagem C</TITLE>
+<TITLE>Usando Express√µes Regulares na Linguagem C</TITLE>
 </HEAD><BODY BGCOLOR="white" TEXT="black">
-<P ALIGN="center"><CENTER><H1>Usando Expressıes Regulares na Linguagem C</H1>
+<P ALIGN="center"><CENTER><H1>Usando Express√µes Regulares na Linguagem C</H1>
 <FONT SIZE=4>
 <I>Thobias Salazar Trevisan</I><BR>
 06/07/2004
@@ -16,104 +16,104 @@
 <P>
 <P>
  <UL>
- <LI><A HREF="#toc1">IntroduÁ„o</A>
- <LI><A HREF="#toc2">InÌcio</A>
+ <LI><A HREF="#toc1">Introdu√ß√£o</A>
+ <LI><A HREF="#toc2">In√≠cio</A>
   <UL>
-  <LI><A HREF="#toc3">Casa ou N„o Casa</A>
+  <LI><A HREF="#toc3">Casa ou N√£o Casa</A>
   <LI><A HREF="#toc4">String de Erro</A>
   <LI><A HREF="#toc5">my_grep</A>
   </UL>
  <LI><A HREF="#toc6">Onde Casa</A>
- <LI><A HREF="#toc7">ConsideraÁıes Finais</A>
+ <LI><A HREF="#toc7">Considera√ß√µes Finais</A>
  </UL>
 <P>
 <HR NOSHADE SIZE=1>
 <P>
 <P>
 <a name="toc1"></a>
-<H1>IntroduÁ„o</H1>
+<H1>Introdu√ß√£o</H1>
 <P>
-<A HREF="http://www.opengroup.org/onlinepubs/007908799/xbd/re.html">Express„o Regular</A>
-È um mÈtodo que utiliza alguns caracteres com significado especial para
-especificar um padr„o de texto. O suporte a expressıes regulares
-(tambÈm conhecida como regexp, regex e ER) pode ser
+<A HREF="http://www.opengroup.org/onlinepubs/007908799/xbd/re.html">Express√£o Regular</A>
+√© um m√©todo que utiliza alguns caracteres com significado especial para
+especificar um padr√£o de texto. O suporte a express√µes regulares
+(tamb√©m conhecida como regexp, regex e ER) pode ser
 encontrado em programas como sed, awk e grep, em editores de texto como vi e
-emacs, e em linguagens de programaÁ„o como C, perl, java, python, php etc.
-Como se pode ver, um dia as expressıes regulares v„o dominar o mundo! 8=)
+emacs, e em linguagens de programa√ß√£o como C, perl, java, python, php etc.
+Como se pode ver, um dia as express√µes regulares v√£o dominar o mundo! 8=)
 <P>
-Se vocÍ n„o entendeu ou n„o sabe o que s„o, pra que servem ou como usar?
+Se voc√™ n√£o entendeu ou n√£o sabe o que s√£o, pra que servem ou como usar?
 acesse <A HREF="http://aurelio.net/er">http://aurelio.net/er</A> e divirta-se!!
 <P>
-A utilizaÁ„o de ER pode facilitar muito a programaÁ„o de
-<I>parsers</I>, validaÁ„o de dados, busca de textos... Mas
-n„o vou ficar falando dos benefÌcios de us·-las ou como elas podem aumentar
+A utiliza√ß√£o de ER pode facilitar muito a programa√ß√£o de
+<I>parsers</I>, valida√ß√£o de dados, busca de textos... Mas
+n√£o vou ficar falando dos benef√≠cios de us√°-las ou como elas podem aumentar
 sua  produtividade, economizar muito o seu tempo, transformar tarefas
-chatas em emocionantes etc. O objetivo deste texto È mostrar como
+chatas em emocionantes etc. O objetivo deste texto √© mostrar como
 utilizar ER na linguagem C.
 <P>
-Expressıes regulares tÍm trÍs interfaces para C:
+Express√µes regulares t√™m tr√™s interfaces para C:
 <A HREF="http://www.delorie.com/gnu/docs/regex/regex_44.html">a projetada pelo GNU</A>,
-<A HREF="http://docs.freebsd.org/info/regex/regex.info.BSD_Regex_Functions.html">a compatÌvel com BSD</A>
+<A HREF="http://docs.freebsd.org/info/regex/regex.info.BSD_Regex_Functions.html">a compat√≠vel com BSD</A>
 e
-<A HREF="http://www.opengroup.org/onlinepubs/009695399/basedefs/regex.h.html">a compatÌvel com POSIX</A>.
-A ˙ltima ser· a abordada neste texto.
+<A HREF="http://www.opengroup.org/onlinepubs/009695399/basedefs/regex.h.html">a compat√≠vel com POSIX</A>.
+A √∫ltima ser√° a abordada neste texto.
 <P>
-<B>PrÈ-requisito</B>: Conhecimentos b·sicos de expressıes regulares e da
-linguagem de programaÁ„o C.
+<B>Pr√©-requisito</B>: Conhecimentos b√°sicos de express√µes regulares e da
+linguagem de programa√ß√£o C.
 <P>
-Como de costume, este texto È extremamente pr·tico. Aperte o sinto,
-segure-se na poltrona e vamos comeÁar. =8)
+Como de costume, este texto √© extremamente pr√°tico. Aperte o sinto,
+segure-se na poltrona e vamos come√ßar. =8)
 <P>
 <a name="toc2"></a>
-<H1>InÌcio</H1>
+<H1>In√≠cio</H1>
 <P>
-Existem quatro funÁıes para ER POSIX em C:
+Existem quatro fun√ß√µes para ER POSIX em C:
 <A HREF="http://www.opengroup.org/onlinepubs/009695399/functions/regcomp.html">regcomp</A>,
 <A HREF="http://www.opengroup.org/onlinepubs/009695399/functions/regexec.html">regexec</A>,
 <A HREF="http://www.opengroup.org/onlinepubs/009695399/functions/regerror.html">regerror</A>
 e <A HREF="http://www.opengroup.org/onlinepubs/009695399/functions/regfree.html">regfree</A>.
-O cabeÁalho destas funÁıes est· no arquivo
+O cabe√ßalho destas fun√ß√µes est√° no arquivo
 <A HREF="http://www.opengroup.org/onlinepubs/009695399/basedefs/regex.h.html">regex.h</A>.
-Este arquivo tambÈm tem os <I>defines</I> para duas estruturas:
+Este arquivo tamb√©m tem os <I>defines</I> para duas estruturas:
 <I>regex_t</I> e <I>regmatch_t</I>.
 <P>
-A utilizaÁ„o de ER em C se d· atravÈs de dois passos:
+A utiliza√ß√£o de ER em C se d√° atrav√©s de dois passos:
 Primeiro deve-se compilar/converter a ER (string) em um
-<I>pattern buffer</I>, que em POSIX, È do tipo <I>regex_t</I>.
-ApÛs este passo, pode-se casar a ER compilada com o input.
+<I>pattern buffer</I>, que em POSIX, √© do tipo <I>regex_t</I>.
+Ap√≥s este passo, pode-se casar a ER compilada com o input.
 <P>
-Para compilar uma dada ER em um <I>pattern buffer</I> utiliza-se a funÁ„o
+Para compilar uma dada ER em um <I>pattern buffer</I> utiliza-se a fun√ß√£o
 <B>regcomp</B>:
 <P>
 <PRE>
   int regcomp(regex_t *preg, const char *regex, int cflags);
 </PRE>
 <P>
-'preg' È um ponteiro para um <I>pattern buffer</I> (regex_t). 'regex' È um
-ponteiro para uma string que contÈm a express„o regular. 'cflags' È
-utilizada para determinar o tipo de compilaÁ„o. As 'cflags' s„o:
+'preg' √© um ponteiro para um <I>pattern buffer</I> (regex_t). 'regex' √© um
+ponteiro para uma string que cont√©m a express√£o regular. 'cflags' √©
+utilizada para determinar o tipo de compila√ß√£o. As 'cflags' s√£o:
 <P>
 <table align="center" cellpadding=4 border=1>
 <tr>
 <td><B>REG_EXTENDED</B></td>
-<td>para usar a sintaxe de POSIX <A HREF="http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap09.html">Extended Regular Expression</A>, caso contr·rio È utilizado POSIX <A HREF="http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap09.html">Basic Regular Expression</A>.</td>
+<td>para usar a sintaxe de POSIX <A HREF="http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap09.html">Extended Regular Expression</A>, caso contr√°rio √© utilizado POSIX <A HREF="http://www.opengroup.org/onlinepubs/009695399/basedefs/xbd_chap09.html">Basic Regular Expression</A>.</td>
 </tr>
 <tr>
 <td><B>REG_ICASE</B></td>
-<td>para ignorar mai˙sculas e min˙sculas (<I>ignore case</I>).</td>
+<td>para ignorar mai√∫sculas e min√∫sculas (<I>ignore case</I>).</td>
 </tr>
 <tr>
 <td><B>REG_NOSUB</B></td>
-<td>os par‚metros <I>nmatch</I> e <I>pmatch</I> da funÁ„o <I>regexec</I> s„o ignorados. Utilizado somente para saber se a ER casa ou n„o.</td>
+<td>os par√¢metros <I>nmatch</I> e <I>pmatch</I> da fun√ß√£o <I>regexec</I> s√£o ignorados. Utilizado somente para saber se a ER casa ou n√£o.</td>
 </tr>
 <tr>
 <td><B>REG_NEWLINE</B></td>
-<td>mesmo que o input tenha v·rias linhas, ser„o tratadas como se fossem independentes. ex: '^1' e '^1$' com uma entrada '1\n1' casariam duas vezes. '1\n1' casaria uma.</td>
+<td>mesmo que o input tenha v√°rias linhas, ser√£o tratadas como se fossem independentes. ex: '^1' e '^1$' com uma entrada '1\n1' casariam duas vezes. '1\n1' casaria uma.</td>
 </tr>
 </table>
 
 <P>
-ApÛs compilar a ER pode-se tentar cas·-la com uma dada entrada (<I>input</I>) atravÈs da funÁ„o
+Ap√≥s compilar a ER pode-se tentar cas√°-la com uma dada entrada (<I>input</I>) atrav√©s da fun√ß√£o
 <B>regexec</B>:
 <P>
 <PRE>
@@ -121,14 +121,14 @@ ApÛs compilar a ER pode-se tentar cas·-la com uma dada entrada (<I>input</I>) at
                      regmatch_t pmatch[], int eflags);
 </PRE>
 <P>
-'preg' È um ponteiro para o <I>pattern buffer</I> (regex_t). 'nmatch' e 'pmatch'
-tÍm informaÁıes sobre a localizaÁ„o dos <I>matches</I> na entrada (<I>input</I>). 'eflags' È
+'preg' √© um ponteiro para o <I>pattern buffer</I> (regex_t). 'nmatch' e 'pmatch'
+t√™m informa√ß√µes sobre a localiza√ß√£o dos <I>matches</I> na entrada (<I>input</I>). 'eflags' √©
 usado para alterar o comportamento do <I>match</I>:
 <P>
 <table align="center" cellpadding=4 border=1>
 <tr>
 <td><B>REG_NOTBOL</B></td>
-<td>o metacaractere '^' quando usado para marcar inÌcio de linha n„o tem efeito, ou seja, inÌcio da string passada (char *string) n„o deve ser considerado inÌcio de linha.</td>
+<td>o metacaractere '^' quando usado para marcar in√≠cio de linha n√£o tem efeito, ou seja, in√≠cio da string passada (char *string) n√£o deve ser considerado in√≠cio de linha.</td>
 </tr>
 <tr>
 <td><B>REG_NOTEOL</B></td>
@@ -137,54 +137,54 @@ usado para alterar o comportamento do <I>match</I>:
 </table>
 
 <P>
-VocÍ entender· o motivo destas flags no decorrer do tutorial. N„o se
+Voc√™ entender√° o motivo destas flags no decorrer do tutorial. N√£o se
 preocupe com elas agora.
 <P>
 <a name="toc3"></a>
-<H2>Casa ou N„o Casa</H2>
+<H2>Casa ou N√£o Casa</H2>
 <P>
 Esta pergunta depende muito do contexto. :)
 <P>
-Chega de teoria, hora da pr·tica para clarear as idÈias. O exemplo mais simples È
-saber se uma express„o regular casa ou n„o com uma determinada entrada.
+Chega de teoria, hora da pr√°tica para clarear as id√©ias. O exemplo mais simples √©
+saber se uma express√£o regular casa ou n√£o com uma determinada entrada.
 <P>
 <pre>
 <font color="blue">/*
  * match.c
  *
- * Este programa simplesmente testa se uma express„o regular casa (match)
+ * Este programa simplesmente testa se uma express√£o regular casa (match)
  * com uma entrada (input).
  *
- * argv[1] = express„o regular
+ * argv[1] = express√£o regular
  * argv[2] = input
  *
  * ex: ./match '^12' '1234567890'
  */</font>
 
-<font color="blue">/* headers necess·rios */</font>
+<font color="blue">/* headers necess√°rios */</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;stdio.h&gt;</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;stdlib.h&gt;</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;regex.h&gt;</font>
 
-<font color="blue">/* recebe como par‚metro a express„o regular e o input para
+<font color="blue">/* recebe como par√¢metro a express√£o regular e o input para
  * tentar casar */</font>
 <font color="#339900">void</font> er_match(<font color="#339900">char</font> *argv[])
 {
-<font color="blue">	/* aloca espaÁo para a estrutura do tipo regex_t */</font>
+<font color="blue">	/* aloca espa√ßo para a estrutura do tipo regex_t */</font>
 	regex_t reg;
 
 <font color="blue">	/* compila a ER passada em argv[1]
-	 * em caso de erro, a funÁ„o retorna diferente de zero */</font>
+	 * em caso de erro, a fun√ß√£o retorna diferente de zero */</font>
 	<font color="#FF0000">if</font> (regcomp(&amp;reg , argv[<font color="#FF0066">1</font>], REG_EXTENDED|REG_NOSUB) != <font color="#FF0066">0</font>) {
 		fprintf(<font color="#FF0066">stderr</font>,<font color="#FF0066">&quot;erro regcomp\n&quot;</font>);
 		exit(<font color="#FF0066">1</font>);
 	}
 <font color="blue">	/* tenta casar a ER compilada (&amp;reg) com a entrada (argv[2]) 
-	 * se a funÁ„o regexec retornar 0 casou, caso contr·rio n„o */</font>
+	 * se a fun√ß√£o regexec retornar 0 casou, caso contr√°rio n√£o */</font>
 	<font color="#FF0000">if</font> ((regexec(&amp;reg, argv[<font color="#FF0066">2</font>], <font color="#FF0066">0</font>, (regmatch_t *)<font color="#FF0066">NULL</font>, <font color="#FF0066">0</font>)) == <font color="#FF0066">0</font>)
 		printf(<font color="#FF0066">&quot;Casou\n&quot;</font>);
 	<font color="#FF0000">else</font>
-		printf(<font color="#FF0066">&quot;N„o Casou\n&quot;</font>);
+		printf(<font color="#FF0066">&quot;N√£o Casou\n&quot;</font>);
 }
 
 <font color="#339900">int</font> main(<font color="#339900">int</font> argc, <font color="#339900">char</font> **argv)
@@ -207,24 +207,24 @@ Executando:
   Casou
   
   prompt&gt; ./match '^ 12' '1234567890'
-  N„o Casou
+  N√£o Casou
   
   prompt&gt; ./match '[a-z]' '1234567890'
-  N„o Casou
+  N√£o Casou
 </PRE>
 <P>
 <a name="toc4"></a>
 <H2>String de Erro</H2>
 <P>
-Executando o programa anterior com uma ER inv·lida tem-se a seguinte
-saÌda:
+Executando o programa anterior com uma ER inv√°lida tem-se a seguinte
+sa√≠da:
 <P>
 <PRE>
   prompt&gt; ./match '[a-z' '1234567890'
   erro regcomp
 </PRE>
 <P>
-Pode-se utilizar a funÁ„o <B>regerror</B> para transformar o cÛdigo de erro
+Pode-se utilizar a fun√ß√£o <B>regerror</B> para transformar o c√≥digo de erro
 retornado por <I>regcomp</I> e <I>regexec</I> em uma mensagem de erro e, assim,
 dando uma dica do problema na ER.
 <P>
@@ -233,22 +233,22 @@ dando uma dica do problema na ER.
                          errbuf_size);
 </PRE>
 <P>
-'errcode' È o erro retornado por <I>regcomp</I> ou <I>regexec</I>. 'preg' È um
-ponteiro para o <I>pattern buffer</I> . 'errbuf' um buffer que conter· a
-mensagem de erro. 'errbuf_size' È o tamanho da string de erro.
+'errcode' √© o erro retornado por <I>regcomp</I> ou <I>regexec</I>. 'preg' √© um
+ponteiro para o <I>pattern buffer</I> . 'errbuf' um buffer que conter√° a
+mensagem de erro. 'errbuf_size' √© o tamanho da string de erro.
 <P>
-Se a funÁ„o <I>regerror</I> for chamada com <I>errbuf</I> como NULL e <I>errbuf_size</I> como
+Se a fun√ß√£o <I>regerror</I> for chamada com <I>errbuf</I> como NULL e <I>errbuf_size</I> como
 zero, ela retorna o tamanho da mensagem de erro.
 <P>
 <pre>
 <font color="blue">/*
  * er_error.c
  *
- * Testa se uma express„o regular casa (match)
- * com uma linha e faz tratamento de erro para ER inv·lidas...
+ * Testa se uma express√£o regular casa (match)
+ * com uma linha e faz tratamento de erro para ER inv√°lidas...
  */</font>
 
-<font color="blue">/* headers necess·rios */</font>
+<font color="blue">/* headers necess√°rios */</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;stdio.h&gt;</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;stdlib.h&gt;</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;regex.h&gt;</font>
@@ -262,7 +262,7 @@ zero, ela retorna o tamanho da mensagem de erro.
 <font color="blue">	/* pega o tamanho da mensagen de erro */</font>
 	length = regerror (i, &amp;reg, <font color="#FF0066">NULL</font>, <font color="#FF0066">0</font>);
 
-<font color="blue">	/* aloca espaÁo para a mensagem de erro */</font>
+<font color="blue">	/* aloca espa√ßo para a mensagem de erro */</font>
 	<font color="#FF0000">if</font> ((buffer = (<font color="#339900">char</font> *)malloc (length)) == <font color="#FF0066">NULL</font>) {
 		fprintf(<font color="#FF0066">stderr</font>, <font color="#FF0066">&quot;error: malloc buffer\n&quot;</font>);
 		exit(<font color="#FF0066">1</font>);
@@ -279,22 +279,22 @@ zero, ela retorna o tamanho da mensagem de erro.
 <font color="blue">/* tenta casar uma ER com o input */</font>
 <font color="#339900">void</font> er_match(<font color="#339900">char</font> *argv[])
 {
-<font color="blue">	/* aloca espaÁo para a estrutura do tipo regex_t */</font>
+<font color="blue">	/* aloca espa√ßo para a estrutura do tipo regex_t */</font>
 	regex_t reg;
 	<font color="#339900">int</font> i;
 
 <font color="blue">	/* compila a ER passada em argv[1]
-	 * em caso de erro, a funÁ„o retorna diferente de zero */</font>
+	 * em caso de erro, a fun√ß√£o retorna diferente de zero */</font>
 	<font color="#FF0000">if</font> ((i=regcomp(&amp;reg , argv[<font color="#FF0066">1</font>], REG_EXTENDED|REG_NOSUB)) != <font color="#FF0066">0</font>)
 <font color="blue">		/* imprime a string do erro */</font>
 		er_error(i,reg);	
 
 <font color="blue">	/* tenta casar a ER compilada (&amp;reg) com a entrada (argv[2]) 
-	 * se a funÁ„o regexec retornar 0 casou, caso contr·rio n„o */</font>
+	 * se a fun√ß√£o regexec retornar 0 casou, caso contr√°rio n√£o */</font>
 	<font color="#FF0000">if</font> ((regexec(&amp;reg, argv[<font color="#FF0066">2</font>], <font color="#FF0066">0</font>, (regmatch_t *)<font color="#FF0066">NULL</font>, <font color="#FF0066">0</font>)) == <font color="#FF0066">0</font>)
 		printf(<font color="#FF0066">&quot;Casou\n&quot;</font>);
 	<font color="#FF0000">else</font>
-		printf(<font color="#FF0066">&quot;N„o Casou\n&quot;</font>);
+		printf(<font color="#FF0066">&quot;N√£o Casou\n&quot;</font>);
 }
 
 <font color="#339900">int</font> main(<font color="#339900">int</font> argc, <font color="#339900">char</font> **argv)
@@ -324,24 +324,24 @@ Analisando algumas mensgens de erro:
 <a name="toc5"></a>
 <H2>my_grep</H2>
 <P>
-Para finalizar esta seÁ„o, um programa que faz um <I>grep</I> em um
-arquivo, ou seja, mostra somente as linhas que casam com a express„o
+Para finalizar esta se√ß√£o, um programa que faz um <I>grep</I> em um
+arquivo, ou seja, mostra somente as linhas que casam com a express√£o
 regular passada na linha de comando.
 <P>
 <pre>
 <font color="blue">/*
  * my_grep.c
  *
- * lÍ um arquivo e imprime somente as linhas que casarem com a 
- * express„o regular passada
+ * l√™ um arquivo e imprime somente as linhas que casarem com a 
+ * express√£o regular passada
  *
- * argv[1] = express„o regular
+ * argv[1] = express√£o regular
  * argv[2] = arquivo
  *
  * ex: ./my_grep '^er' arquivo.txt
  */</font>
 
-<font color="blue">/* headers necess·rios */</font>
+<font color="blue">/* headers necess√°rios */</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;stdio.h&gt;</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;stdlib.h&gt;</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;string.h&gt;</font>
@@ -356,7 +356,7 @@ regular passada na linha de comando.
 <font color="blue">	/* pega o tamanho da mensagen de erro */</font>
 	length = regerror (i, &amp;reg, <font color="#FF0066">NULL</font>, <font color="#FF0066">0</font>);
 
-<font color="blue">	/* aloca espaÁo para a mensagem de erro */</font>
+<font color="blue">	/* aloca espa√ßo para a mensagem de erro */</font>
 	<font color="#FF0000">if</font> ((buffer = (<font color="#339900">char</font> *)malloc (length)) == <font color="#FF0066">NULL</font>) {
 		fprintf(<font color="#FF0066">stderr</font>, <font color="#FF0066">&quot;error: malloc buffer\n&quot;</font>);
 		exit(<font color="#FF0066">1</font>);
@@ -370,7 +370,7 @@ regular passada na linha de comando.
 	exit(<font color="#FF0066">1</font>);
 }
 
-<font color="blue">/* lÍ uma linha inteira do arquivo */</font>
+<font color="blue">/* l√™ uma linha inteira do arquivo */</font>
 <font color="#339900">int</font> get_line(<font color="#339900">char</font> **line, FILE *fp)
 {
 	<font color="#339900">int</font> tam=<font color="#FF0066">2</font>;
@@ -394,16 +394,16 @@ regular passada na linha de comando.
 {
 	<font color="#339900">int</font> i;
 	<font color="#339900">char</font> *line = <font color="#FF0066">NULL</font>;
-<font color="blue">	/* aloca espaÁo para a estrutura do tipo regex_t */</font>
+<font color="blue">	/* aloca espa√ßo para a estrutura do tipo regex_t */</font>
 	regex_t reg;
 
 <font color="blue">	/* compila a ER passada em argv[1]
-	 * em caso de erro, a funÁ„o retorna diferente de zero */</font>
+	 * em caso de erro, a fun√ß√£o retorna diferente de zero */</font>
 	<font color="#FF0000">if</font> ((i=regcomp(&amp;reg , er, REG_EXTENDED|REG_NEWLINE|REG_NOSUB)) != <font color="#FF0066">0</font>)
 <font color="blue">		/* imprime uma string do erro */</font>
 		er_error(i,reg);	
 
-<font color="blue">	/* lÍ o arquivo linha por linha */</font>
+<font color="blue">	/* l√™ o arquivo linha por linha */</font>
 <font color="blue">	/* while ((i = getline(&amp;line, &amp;len, fp)) != -1) { */</font>
 	 <font color="#FF0000">while</font> ((i = get_line(&amp;line, fp)) != -<font color="#FF0066">1</font>) { 
 <font color="blue">		/* teste se a linha lida casa com a ER */</font>
@@ -434,44 +434,44 @@ regular passada na linha de comando.
 <a name="toc6"></a>
 <H1>Onde Casa</H1>
 <P>
-AtÈ agora n„o foi utilizada a estrutura <I>regmatch_t</I> porque queria-se saber
-somente se a ER casava ou n„o com a entrada. Para saber qual parte da string de
-entrada a ER casou, deve-se utilizar a estrutura <I>regmatch_t</I> que contÈm pelo menos
+At√© agora n√£o foi utilizada a estrutura <I>regmatch_t</I> porque queria-se saber
+somente se a ER casava ou n√£o com a entrada. Para saber qual parte da string de
+entrada a ER casou, deve-se utilizar a estrutura <I>regmatch_t</I> que cont√©m pelo menos
 os seguintes campos:
 <P>
 <table align="center" cellpadding=4 border=1>
 <tr>
 <td>regoff_t</td>
 <td>rm_so</td>
-<td>o deslcocamento (n˙mero de bytes) do inÌcio da string atÈ o inÌcio do <I>match</I>, ou seja, primeiro caractere que a ER casou.</td>
+<td>o deslcocamento (n√∫mero de bytes) do in√≠cio da string at√© o in√≠cio do <I>match</I>, ou seja, primeiro caractere que a ER casou.</td>
 </tr>
 <tr>
 <td>regoff_t</td>
 <td>rm_eo</td>
-<td>o deslocamento (n˙mero de bytes) do inÌcio da string atÈ o caractere depois do <I>match</I>, ou seja, o caractere apÛs o ˙ltimo que a ER casou.</td>
+<td>o deslocamento (n√∫mero de bytes) do in√≠cio da string at√© o caractere depois do <I>match</I>, ou seja, o caractere ap√≥s o √∫ltimo que a ER casou.</td>
 </tr>
 </table>
 
 <P>
-Estas informaÁıes dizem respeito a <B>um</B> <I>match</I>. A funÁ„o
-<I>regexec</I> n„o realiza todos os <I>matches</I> possÌveis da linha. Ela vai lendo a
-entrada da esquerda para direita e apÛs o primeiro match a funÁ„o retorna.
+Estas informa√ß√µes dizem respeito a <B>um</B> <I>match</I>. A fun√ß√£o
+<I>regexec</I> n√£o realiza todos os <I>matches</I> poss√≠veis da linha. Ela vai lendo a
+entrada da esquerda para direita e ap√≥s o primeiro match a fun√ß√£o retorna.
 <P>
 Exemplo: imagine a seguinte ER: '12'. Com a seguinte entrada: '12012'. Dada a
-premissa acima, a funÁ„o <I>regexec</I> retornar· com sucesso e ter· na
+premissa acima, a fun√ß√£o <I>regexec</I> retornar√° com sucesso e ter√° na
 estrutura <I>regmatch_t</I> o deslocamento do primeiro <I>match</I>, ou seja,
 '<B>12</B>012'. Se chamarmos novamente <I>regexec</I> com a mesma entrada, ele
-retornar· as mesmas informaÁıes. Para tentar casar novamente a ER com a
-linha, deve-se passar como entrada '012', assim eliminando do inÌcio da
-string atÈ o ˙ltimo caractere casado (<I>rm_eo</I>).
+retornar√° as mesmas informa√ß√µes. Para tentar casar novamente a ER com a
+linha, deve-se passar como entrada '012', assim eliminando do in√≠cio da
+string at√© o √∫ltimo caractere casado (<I>rm_eo</I>).
 <P>
 Outro detalhe:
 Com a seguinte ER: '^12'. Com uma entrada: '1212'. Teria-se 2 <I>matches</I>.
-Como ?! ApÛs o primeiro <I>match</I> teria-se que chamar a <I>regexec</I>
-com uma parte da string original, ou seja, os ˙ltimos dois caracteres '12',
+Como ?! Ap√≥s o primeiro <I>match</I> teria-se que chamar a <I>regexec</I>
+com uma parte da string original, ou seja, os √∫ltimos dois caracteres '12',
 que casaria novamente. Para resolver este problema, tem-se a
 flag <I>REG_NOTBOL</I> que 'avisa' a <I>regexec</I> que o operador '^', que
-marca inÌcio de linha, sempre falhar·.
+marca in√≠cio de linha, sempre falhar√°.
 <P>
 Com a ajuda do exemplo abaixo espera-se sedimentar estas regras:
 <P>
@@ -482,13 +482,13 @@ Com a ajuda do exemplo abaixo espera-se sedimentar estas regras:
  * mostra quantas vezes a ER casou, quais partes da string
  * de entrada ela acasou...
  * 
- * argv[1] = express„o regular
+ * argv[1] = express√£o regular
  * argv[2] = entrada 
  *
  * ex: ./match2 '^er' 'string de entrada' 
  */</font>
 
-<font color="blue">/* headers necess·rios */</font>
+<font color="blue">/* headers necess√°rios */</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;stdio.h&gt;</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;stdlib.h&gt;</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;regex.h&gt;</font>
@@ -502,7 +502,7 @@ Com a ajuda do exemplo abaixo espera-se sedimentar estas regras:
 <font color="blue">	/* pega o tamanho da mensagen de erro */</font>
 	length = regerror (i, &amp;reg, <font color="#FF0066">NULL</font>, <font color="#FF0066">0</font>);
 
-<font color="blue">	/* aloca espaÁo para a mensagem de erro */</font>
+<font color="blue">	/* aloca espa√ßo para a mensagem de erro */</font>
 	<font color="#FF0000">if</font> ((buffer = (<font color="#339900">char</font> *)malloc (length)) == <font color="#FF0066">NULL</font>) {
 		fprintf(<font color="#FF0066">stderr</font>, <font color="#FF0066">&quot;error: malloc buffer\n&quot;</font>);
 		exit(<font color="#FF0066">1</font>);
@@ -522,13 +522,13 @@ Com a ajuda do exemplo abaixo espera-se sedimentar estas regras:
 {
 	<font color="#339900">int</font> i, start;
 	<font color="#339900">int</font> error;
-<font color="blue">	/* aloca espaÁo para a estrutura do tipo regmatch_t */</font>
+<font color="blue">	/* aloca espa√ßo para a estrutura do tipo regmatch_t */</font>
 	regmatch_t match;
-<font color="blue">	/* aloca espaÁo para a estrutura do tipo regex_t */</font>
+<font color="blue">	/* aloca espa√ßo para a estrutura do tipo regex_t */</font>
 	regex_t reg;
 
 <font color="blue">	/* compila a ER passada em argv[1]
-	 * em caso de erro, a funÁ„o retorna diferente de zero */</font>
+	 * em caso de erro, a fun√ß√£o retorna diferente de zero */</font>
 	<font color="#FF0000">if</font> ((i=regcomp(&amp;reg , argv[<font color="#FF0066">1</font>], REG_EXTENDED)) != <font color="#FF0066">0</font>)
 <font color="blue">		/* imprime uma string do erro */</font>
 		er_error(i,reg);	
@@ -536,19 +536,19 @@ Com a ajuda do exemplo abaixo espera-se sedimentar estas regras:
 	printf(<font color="#FF0066">&quot;********** string original **********\n%s\n\n&quot;</font>,argv[<font color="#FF0066">2</font>]);
 	i = start = <font color="#FF0066">0</font>;
 <font color="blue">	/* casa a ER com o input argv[2] 
-	 * ^ marca inÌcio de linha */</font>
+	 * ^ marca in√≠cio de linha */</font>
 	error = regexec(&amp;reg, argv[<font color="#FF0066">2</font>], <font color="#FF0066">1</font>, &amp;match, <font color="#FF0066">0</font>);
 <font color="blue">	/* tenta casar a ER mais vezes na string */</font>
 	<font color="#FF0000">while</font>(error == <font color="#FF0066">0</font>) {
-		printf(<font color="#FF0066">&quot;inÌcio da string de pesquisa atual no caractere %d\n&quot;</font>,start);
+		printf(<font color="#FF0066">&quot;in√≠cio da string de pesquisa atual no caractere %d\n&quot;</font>,start);
 		printf(<font color="#FF0066">&quot;string de pesquisa = \&quot;%s\&quot;\n&quot;</font>,argv[<font color="#FF0066">2</font>]+start);
 		printf(<font color="#FF0066">&quot;casou do caractere = %d ao %d\n\n&quot;</font>,match.rm_so,match.rm_eo);
-		start +=match.rm_eo; /* atualize inÌcio de string */
+		start +=match.rm_eo; /* atualize in√≠cio de string */
 		i++;
-<font color="blue">		/* casa a ER com o input argv[2].  ^ n„o casa mais inÌcio de linha */</font>
+<font color="blue">		/* casa a ER com o input argv[2].  ^ n√£o casa mais in√≠cio de linha */</font>
 		error = regexec(&amp;reg, argv[<font color="#FF0066">2</font>]+start, <font color="#FF0066">1</font>, &amp;match, REG_NOTBOL);
 	}
-	<font color="#FF0000">if</font> (start !=<font color="#FF0066">0</font>) printf(<font color="#FF0066">&quot;N˙mero total de casamentos = %d\n&quot;</font>,i);
+	<font color="#FF0000">if</font> (start !=<font color="#FF0066">0</font>) printf(<font color="#FF0066">&quot;N√∫mero total de casamentos = %d\n&quot;</font>,i);
 }
 
 <font color="#339900">int</font> main(<font color="#339900">int</font> argc, <font color="#339900">char</font> **argv)
@@ -562,22 +562,22 @@ Com a ajuda do exemplo abaixo espera-se sedimentar estas regras:
 }
 
 </pre>
-Executando, tem-se a seguinte saÌda:
+Executando, tem-se a seguinte sa√≠da:
 <P>
 <PRE>
   prompt&gt; ./match2 '12' '12012'
   ********** string original **********
   12012
   
-  inÌcio da string de pesquisa atual no caractere 0
+  in√≠cio da string de pesquisa atual no caractere 0
   string de pesquisa = "12012"
   casou do caractere = 0 ao 2
   
-  inÌcio da string de pesquisa atual no caractere 2
+  in√≠cio da string de pesquisa atual no caractere 2
   string de pesquisa = "012"
   casou do caractere = 1 ao 3
   
-  N˙mero total de casamentos = 2
+  N√∫mero total de casamentos = 2
   
   
   prompt&gt; 
@@ -586,18 +586,18 @@ Executando, tem-se a seguinte saÌda:
   ********** string original **********
   1234567890
   
-  inÌcio da string de pesquisa atual no caractere 0
+  in√≠cio da string de pesquisa atual no caractere 0
   string de pesquisa = "1234567890"
   casou do caractere = 1 ao 2
   
-  inÌcio da string de pesquisa atual no caractere 2
+  in√≠cio da string de pesquisa atual no caractere 2
   string de pesquisa = "34567890"
   casou do caractere = 3 ao 4
   
-  N˙mero total de casamentos = 2
+  N√∫mero total de casamentos = 2
 </PRE>
 <P>
-E como ˙ltimo exemplo do tutorial, um grep colorido, onde o programa mostra
+E como √∫ltimo exemplo do tutorial, um grep colorido, onde o programa mostra
 somente as linhas que casarem com a ER e coloca as partes que casarem com a
 ER em uma cor diferente.
 <P>
@@ -605,16 +605,16 @@ ER em uma cor diferente.
 <font color="blue">/*
  * grep_colorido.c
  *
- * imprime somente as linhas que casarem com a express„o regular
+ * imprime somente as linhas que casarem com a express√£o regular
  * passada e colore a parte da linha que casa com a ER.
  * 
- * argv[1] = express„o regular
+ * argv[1] = express√£o regular
  * argv[2] = arquivo
  *
  * ex: ./grep_colorido '^er' arquivo.txt
  */</font>
 
-<font color="blue">/* headers necess·rios */</font>
+<font color="blue">/* headers necess√°rios */</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;stdio.h&gt;</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;stdlib.h&gt;</font>
 <font color="purple">#include</font> <font color="Orchid">&lt;string.h&gt;</font>
@@ -634,7 +634,7 @@ ER em uma cor diferente.
 <font color="blue">	/* pega o tamanho da mensagen de erro */</font>
 	length = regerror (i, &amp;reg, <font color="#FF0066">NULL</font>, <font color="#FF0066">0</font>);
 
-<font color="blue">	/* aloca espaÁo para a mensagem de erro */</font>
+<font color="blue">	/* aloca espa√ßo para a mensagem de erro */</font>
 	<font color="#FF0000">if</font> ((buffer = (<font color="#339900">char</font> *)malloc (length)) == <font color="#FF0066">NULL</font>) {
 		fprintf(<font color="#FF0066">stderr</font>, <font color="#FF0066">&quot;error: malloc buffer\n&quot;</font>);
 		exit(<font color="#FF0066">1</font>);
@@ -648,7 +648,7 @@ ER em uma cor diferente.
 	exit(<font color="#FF0066">1</font>);
 }
 
-<font color="blue">/* lÍ uma linha inteira do arquivo */</font>
+<font color="blue">/* l√™ uma linha inteira do arquivo */</font>
 <font color="#339900">int</font> get_line(<font color="#339900">char</font> **line, FILE *fp)
 {
 	<font color="#339900">int</font> tam=<font color="#FF0066">2</font>;
@@ -672,39 +672,39 @@ ER em uma cor diferente.
 {
 	<font color="#339900">int</font> i,error, start;
 	<font color="#339900">char</font> *line = <font color="#FF0066">NULL</font>;
-<font color="blue">	/* aloca espaÁo para a estrutura do tipo regmatch_t */</font>
+<font color="blue">	/* aloca espa√ßo para a estrutura do tipo regmatch_t */</font>
 	regmatch_t match;
-<font color="blue">	/* aloca espaÁo para a estrutura do tipo regex_t */</font>
+<font color="blue">	/* aloca espa√ßo para a estrutura do tipo regex_t */</font>
 	regex_t reg;
 
 <font color="blue">	/* compila a ER passada em argv[1]
-	 * em caso de erro, a funÁ„o retorna diferente de zero */</font>
+	 * em caso de erro, a fun√ß√£o retorna diferente de zero */</font>
 	<font color="#FF0000">if</font> ((i=regcomp(&amp;reg , er, REG_EXTENDED|REG_NEWLINE)) != <font color="#FF0066">0</font>)
 <font color="blue">		/* imprime uma string do erro */</font>
 		er_error(i,reg);	
 
-<font color="blue">	/* lÍ o arquivo linha por linha */</font>
+<font color="blue">	/* l√™ o arquivo linha por linha */</font>
 	<font color="#FF0000">while</font> ((i = get_line(&amp;line, fp)) != -<font color="#FF0066">1</font>) {
-<font color="blue">		/* coloca o offset para o inÌcio da linha */</font>
+<font color="blue">		/* coloca o offset para o in√≠cio da linha */</font>
 		start = <font color="#FF0066">0</font>;
 		error = regexec(&amp;reg, line, <font color="#FF0066">1</font>, &amp;match, <font color="#FF0066">0</font>);
 <font color="blue">		/* enquanto a linha casar com a ER */</font>
 		<font color="#FF0000">while</font> (error == <font color="#FF0066">0</font>) {
-<font color="blue">			/* imprime do inÌcio da string atÈ o caractere antes do match */</font>
+<font color="blue">			/* imprime do in√≠cio da string at√© o caractere antes do match */</font>
 			fwrite(line+start, <font color="#FF0066">1</font>, match.rm_so, <font color="#FF0066">stdout</font>);
 			printf(<font color="#FF0066">&quot;%s&quot;</font>,START_COLOR); /* caracteres de controle */
 <font color="blue">			/* imprime a parte da string que casa com a ER */</font>
 			fwrite(line+start+match.rm_so, <font color="#FF0066">1</font>, match.rm_eo - match.rm_so, <font color="#FF0066">stdout</font>);
 			printf(<font color="#FF0066">&quot;%s&quot;</font>,END_COLOR); /* caracteres de controle */
 			
-<font color="blue">			/* atualiza o offset de inÌcio da string */</font>
+<font color="blue">			/* atualiza o offset de in√≠cio da string */</font>
 			start += match.rm_eo;
 			error = regexec(&amp;reg, line+start, <font color="#FF0066">1</font>, &amp;match, REG_NOTBOL);
 		}
-<font color="blue">		/* caso ocorreu algum match, se necess·rio, imprime o resto da linha */</font>
+<font color="blue">		/* caso ocorreu algum match, se necess√°rio, imprime o resto da linha */</font>
 		<font color="#FF0000">if</font> (start != <font color="#FF0066">0</font>) fwrite(line+start, <font color="#FF0066">1</font>, strlen(line+start), <font color="#FF0066">stdout</font>);
 <font color="blue">		/* caso queira imprimir todo o arquivo, comente a linha com o if
-		 * acima e descomente a prÛxma linha 
+		 * acima e descomente a pr√≥xma linha 
 		fwrite(line+start, 1, strlen(line+start), stdout); */</font>
 	}
 }
@@ -739,23 +739,23 @@ ER em uma cor diferente.
 </PRE>
 <P>
 <B>PS</B>: note que o 'grep_colorido' espera como <I>argv[2]</I> um arquivo (file
-descriptor). O comando utilizado no exemplo sÛ funciona porque a estrutura
-do tipo '&lt;()' È expandida para um <I>fd</I> (file descriptor) pelo shell.
+descriptor). O comando utilizado no exemplo s√≥ funciona porque a estrutura
+do tipo '&lt;()' √© expandida para um <I>fd</I> (file descriptor) pelo shell.
 <P>
 <a name="toc7"></a>
-<H1>ConsideraÁıes Finais</H1>
+<H1>Considera√ß√µes Finais</H1>
 <P>
-Espero que este texto tenha sido ˙til para vocÍ e que consiga tirar
+Espero que este texto tenha sido √∫til para voc√™ e que consiga tirar
 proveito de ER em seus programas C.
 <P>
 Baixe todos os programas do tutorial: <A HREF="prog_er.tgz">prog_er.tgz</A>
 <P>
-Ah, para colocar o cÛdigo em C coloridinho, bonitinho, bem fru-fru,
+Ah, para colocar o c√≥digo em C coloridinho, bonitinho, bem fru-fru,
 fiz um pequeno script em sed. Se quiser baixar
 <A HREF="../bin/colorize_c.sed">colorize_c.sed</A>
 <P>
-NOTA: Conversando com o AurÈlio sobre o colorize_c.sed, ele me falou que o
-prÛprio VIM faz isso, ie, faz um 2html com a 'syntax highlighting' atual
+NOTA: Conversando com o Aur√©lio sobre o colorize_c.sed, ele me falou que o
+pr√≥prio VIM faz isso, ie, faz um 2html com a 'syntax highlighting' atual
 para as linguagens que ele suporta
 (<I>ls /usr/share/vim/vim*/syntax/2html.vim</I>).
 De qualquer maneira foi divertido fazer o sed. 8=)

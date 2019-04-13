@@ -106,12 +106,12 @@ Voce nao pode utilizar a funcao pronuncia sem o programa play
 # It shows how many times a word appears in a text
 #
 # retorna quantas vezes uma determinada palavra aparece em um arquivo
-# obs.: o uso do -i faz procura sem levar em consideração
+# obs.: o uso do -i faz procura sem levar em consideraÃ§Ã£o
 # maiusculas e minusculas
 #
-# obs.2: o uso do -b faz procura por partes de palavras também, ex: se
-# procurar por se, e encontrar a palavra sed, será contada como 1
-# ocorrência
+# obs.2: o uso do -b faz procura por partes de palavras tambÃ©m, ex: se
+# procurar por se, e encontrar a palavra sed, serÃ¡ contada como 1
+# ocorrÃªncia
 #
 # uso: contapalavra [-i] [-b] palavra arquivo
 # ex.: contapalavra sed 
@@ -198,7 +198,7 @@ lynx -dump -source http://br.wired.com/ |\
 sed -n '/class="hd">/{s/<[^>]*>//g;s/^[[:blank:]]*//;p;}' | sed 5q
 echo -e "\033[1m --- Clube do Hardware -  http://www.clubedohardware.com.br \033[m"
 lynx -dump -source http://www.clubedohardware.com.br/noticias.php |\
-sed -n '/Últimas Notícias/,/Próxima >>/{/^<p>.*size=2/s/.*<b>\([^<]\+\)<\/b.*/\1/p;}'|\
+sed -n '/Ãšltimas NotÃ­cias/,/PrÃ³xima >>/{/^<p>.*size=2/s/.*<b>\([^<]\+\)<\/b.*/\1/p;}'|\
 sed 5q
 }
 

@@ -6,21 +6,21 @@ Thobias Salazar Trevisan
 
 = Usar o sed para contar ? =
 
-Todos sabemos que o sed é um canivete suíço e que trabalha com caracteres, ou seja,
-ele não sabe a diferença entre um dígito e uma letra. Para ele, tudo são
-caracteres. Então como poderíamos utilizar o sed para contar ?
+Todos sabemos que o sed Ã© um canivete suÃ­Ã§o e que trabalha com caracteres, ou seja,
+ele nÃ£o sabe a diferenÃ§a entre um dÃ­gito e uma letra. Para ele, tudo sÃ£o
+caracteres. EntÃ£o como poderÃ­amos utilizar o sed para contar ?
 
-Neste texto tentarei explicar uma técnica proposta por Bruno Haible 
+Neste texto tentarei explicar uma tÃ©cnica proposta por Bruno Haible 
 ([incr_num.sed http://sed.sourceforge.net/local/scripts/incr_num.sed.html])
-para incrementar um número em SED e, no final, vamos extrapolá-la para letras. 
-Existem outras técnicas, como a utilizada por Greg Ubben na lendária implementação da 
-calculadora DC em sed. O que, você não conhece ?! Então acesse 
-http://sed.sourceforge.net/local/scripts/dc.sed.html e tenha uma boa diversão =8)
+para incrementar um nÃºmero em SED e, no final, vamos extrapolÃ¡-la para letras. 
+Existem outras tÃ©cnicas, como a utilizada por Greg Ubben na lendÃ¡ria implementaÃ§Ã£o da 
+calculadora DC em sed. O que, vocÃª nÃ£o conhece ?! EntÃ£o acesse 
+http://sed.sourceforge.net/local/scripts/dc.sed.html e tenha uma boa diversÃ£o =8)
 
-= Técnica Inicial =
+= TÃ©cnica Inicial =
 
-Bom, tudo são caracteres, então temos que tratá-los como tal. Para incrementarmos
-um número de 0 a 9 é fácil. Trocamos 0 por 1, 1 por 2, 2 por 3.... até 9. Ficando 
+Bom, tudo sÃ£o caracteres, entÃ£o temos que tratÃ¡-los como tal. Para incrementarmos
+um nÃºmero de 0 a 9 Ã© fÃ¡cil. Trocamos 0 por 1, 1 por 2, 2 por 3.... atÃ© 9. Ficando 
 assim:
 
 ---
@@ -50,21 +50,21 @@ mais de 1 digito
 prompt>
 ---
 
-ops! não funcionou =8(
+ops! nÃ£o funcionou =8(
 
-Bom, para nos auxiliar no compreendimento da execução e entender o que o sed está
+Bom, para nos auxiliar no compreendimento da execuÃ§Ã£o e entender o que o sed estÃ¡
 fazendo, vamos utilizar a ferramenta [sedsed http://sedsed.sourceforge.net/]
 (http://sedsed.sourceforge.net), escrita pelo nosso grande amigo
-Aurélio. sedsed é um programa escrito em python para sed :) Ele é um debug
-(mostrando passo a passo o hold space, o pattern space e a instrução executada),
+AurÃ©lio. sedsed Ã© um programa escrito em python para sed :) Ele Ã© um debug
+(mostrando passo a passo o hold space, o pattern space e a instruÃ§Ã£o executada),
 ele indenta script sed e gera um html colorido do script. Vale a pena conferir
 este programa.
 
-Vamos utilizar o sedsed para vermos o que está acontecendo. Como não estamos
-utilizando o hold space em nosso script, vou passar uma opção (`--hide=HOLD`)
-para omití-lo. Além disso, a saída do sedsed foi feita para console,
-utilizando cores para facilitar. Como aqui é html, vou utilizar o script 
-abaixo para deixar sua saída mais visual para o nosso exemplo.
+Vamos utilizar o sedsed para vermos o que estÃ¡ acontecendo. Como nÃ£o estamos
+utilizando o hold space em nosso script, vou passar uma opÃ§Ã£o (`--hide=HOLD`)
+para omitÃ­-lo. AlÃ©m disso, a saÃ­da do sedsed foi feita para console,
+utilizando cores para facilitar. Como aqui Ã© html, vou utilizar o script 
+abaixo para deixar sua saÃ­da mais visual para o nosso exemplo.
 
 ---
 prompt> cat limpa.sed 
@@ -75,7 +75,7 @@ s/^COMM:/    /
 prompt> 
 ---
 
-Vamos testar nossa primeira solução para contar:
+Vamos testar nossa primeira soluÃ§Ã£o para contar:
 
 ---
 prompt> echo 1 | sedsed -d --hide=HOLD -f incr_tentativa_1.sed | limpa.sed 
@@ -104,18 +104,18 @@ mais de 1 digito
 prompt>
 ---
 
-Destrinchando a saída. 
+Destrinchando a saÃ­da. 
 
-- as linhas que começam com um número mostram a entrada ou a saída para cada
-  instrução.
-- as linhas que começam com espaços em branco são as instruções sed.
+- as linhas que comeÃ§am com um nÃºmero mostram a entrada ou a saÃ­da para cada
+  instruÃ§Ã£o.
+- as linhas que comeÃ§am com espaÃ§os em branco sÃ£o as instruÃ§Ãµes sed.
 
 
-Repare que **TODAS** as instruções são executadas com sucesso, pois o sed
-executa a próxima instrução com a entrada da anterior. Então, quando entramos
-com 1, ele vira 2, que casa com a próxima substituição (`s/2/3/`), assim
-virando 3. Este processo ocorre até a última instrução e, assim, temos
-a saída `mais de 1 digito`.
+Repare que **TODAS** as instruÃ§Ãµes sÃ£o executadas com sucesso, pois o sed
+executa a prÃ³xima instruÃ§Ã£o com a entrada da anterior. EntÃ£o, quando entramos
+com 1, ele vira 2, que casa com a prÃ³xima substituiÃ§Ã£o (`s/2/3/`), assim
+virando 3. Este processo ocorre atÃ© a Ãºltima instruÃ§Ã£o e, assim, temos
+a saÃ­da `mais de 1 digito`.
 
 Mais um exemplo:
 
@@ -146,13 +146,13 @@ mais de 1 digito
 prompt> 
 ---
 
-Note que usamos como entrada o número 5 e, assim, não ocorreu sucesso na substituição
-até a instrução (`s/5/6/`). Como esperado, após a primeira substituição com sucesso
-as demais também tiveram sucesso.
+Note que usamos como entrada o nÃºmero 5 e, assim, nÃ£o ocorreu sucesso na substituiÃ§Ã£o
+atÃ© a instruÃ§Ã£o (`s/5/6/`). Como esperado, apÃ³s a primeira substituiÃ§Ã£o com sucesso
+as demais tambÃ©m tiveram sucesso.
 
-Moral da história. Temos que cuidar a ordem das substituições, senão.... =8)
+Moral da histÃ³ria. Temos que cuidar a ordem das substituiÃ§Ãµes, senÃ£o.... =8)
 
-Vamos inverter a ordem para garantir que tenhamos somente 1 execução com sucesso.
+Vamos inverter a ordem para garantir que tenhamos somente 1 execuÃ§Ã£o com sucesso.
 
 ---
 prompt> cat ./incr_tentativa_2.sed
@@ -189,14 +189,14 @@ mais de 2 digito
 prompt>
 ---
 
-Massa!! sabemos contar até 9. =8)
+Massa!! sabemos contar atÃ© 9. =8)
 
-E agora, como ultrapassar a barreira de 1 dígito ?!
+E agora, como ultrapassar a barreira de 1 dÃ­gito ?!
 
 
-= Usando 2 dígitos =
+= Usando 2 dÃ­gitos =
 
-A primeira técnica que poderíamos tentar era fazer o 9 virar 10 :)
+A primeira tÃ©cnica que poderÃ­amos tentar era fazer o 9 virar 10 :)
 
 ---
 prompt> cat incr_tentativa_3.sed
@@ -224,13 +224,13 @@ prompt> echo 9 | ./incr_tentativa_3.sed
 prompt>
 ---
 
-Que isso, esse negócio está louco ?! Vamos chamar o nosso amigo para nos dar
+Que isso, esse negÃ³cio estÃ¡ louco ?! Vamos chamar o nosso amigo para nos dar
 uma ajudinha.
 
-Eu usei esta solução para nós enxergarmos 2 problemas que teremos que resolver
-mais adiante. Primeiro:  olhando para este sed, nós achamos que ele
-deveria funcionar para números como 22, 45, 78, etc, ou seja, números fáceis que
-basta trocar um caractere, mas não funciona:
+Eu usei esta soluÃ§Ã£o para nÃ³s enxergarmos 2 problemas que teremos que resolver
+mais adiante. Primeiro:  olhando para este sed, nÃ³s achamos que ele
+deveria funcionar para nÃºmeros como 22, 45, 78, etc, ou seja, nÃºmeros fÃ¡ceis que
+basta trocar um caractere, mas nÃ£o funciona:
 
 ---
 prompt> echo 22 | sedsed -d --hide=HOLD -f incr_tentativa_3.sed | limpa.sed 
@@ -259,9 +259,9 @@ prompt> echo 22 | sedsed -d --hide=HOLD -f incr_tentativa_3.sed | limpa.sed
 prompt> 
 ---
 
-Note que a nossa entrada só muda quando chegarmos à instrução (`s/2/3`). Mas 
-o sed irá trocar somente a primeira ocorrência de 2 e não a última como
-nós gostaríamos.
+Note que a nossa entrada sÃ³ muda quando chegarmos Ã  instruÃ§Ã£o (`s/2/3`). Mas 
+o sed irÃ¡ trocar somente a primeira ocorrÃªncia de 2 e nÃ£o a Ãºltima como
+nÃ³s gostarÃ­amos.
 
 ---
 prompt> echo 22 | sed 's/2/3/'
@@ -269,8 +269,8 @@ prompt> echo 22 | sed 's/2/3/'
 prompt>
 ---
 
-Para resolver o problema teremos que usar o cifrão, para dizer ao sed que,
-nesses casos simples, ele deve só "somar" 1 no último "dígito".
+Para resolver o problema teremos que usar o cifrÃ£o, para dizer ao sed que,
+nesses casos simples, ele deve sÃ³ "somar" 1 no Ãºltimo "dÃ­gito".
 
 ---
 prompt> echo 22 | sed 's/2$/3/'
@@ -278,8 +278,8 @@ prompt> echo 22 | sed 's/2$/3/'
 prompt>
 ---
 
-Beleza, primeiro problema resolvido, vamos ao segundo: o que nós esperávamos
-que funcionasse também não funcionou, que era fazer 9 virar 10.
+Beleza, primeiro problema resolvido, vamos ao segundo: o que nÃ³s esperÃ¡vamos
+que funcionasse tambÃ©m nÃ£o funcionou, que era fazer 9 virar 10.
 
 ---
 prompt> echo 9 | sedsed -d --hide=HOLD -f incr_tentativa_3.sed | limpa.sed 
@@ -308,11 +308,11 @@ prompt> echo 9 | sedsed -d --hide=HOLD -f incr_tentativa_3.sed | limpa.sed
 prompt>
 ---
 
-Note que o nosso 9, após a primeira instrução vira 10, mas vai casar também lá
+Note que o nosso 9, apÃ³s a primeira instruÃ§Ã£o vira 10, mas vai casar tambÃ©m lÃ¡
 em baixo, com `s/1/2/` e `s/0/1/` e assim virando o 21 :(
 
-Para contornar, vamos adicionar um caractere diferente para não casar
-nas demais instruções. Utilizaremos o caractere underscore `_`. E somente no fim,
+Para contornar, vamos adicionar um caractere diferente para nÃ£o casar
+nas demais instruÃ§Ãµes. Utilizaremos o caractere underscore `_`. E somente no fim,
 trocaremos o _ por 0.
 
 ---
@@ -367,12 +367,12 @@ prompt>
 
 Barbada. Trocamos 9 por 0_, depois `0 -> 1` e `_  -> 0`.
 
-Mas isso só funciona para o 9, outros casos como 19, 29... não vai funcionar.
+Mas isso sÃ³ funciona para o 9, outros casos como 19, 29... nÃ£o vai funcionar.
 Exemplo: 19, vira 10_ e no fim, trocando o 1 por 2 vira 20_, 0 por 1 vira 21_, 
-que finalmente vira 210. Tudo bem, mas isso foi só para introduzir a tática
+que finalmente vira 210. Tudo bem, mas isso foi sÃ³ para introduzir a tÃ¡tica
 que usaremos a seguir.
 
-Chega de enrolar, hora de contar até 99 :D
+Chega de enrolar, hora de contar atÃ© 99 :D
 
 ---
 prompt> cat incr_tentativa_4.sed
@@ -411,9 +411,9 @@ prompt> echo 79 | ./incr_tentativa_4.sed
 prompt>
 ---
 
-Funciona! Por favor Mr. sedsed, nos ajude a entender que mágica é esta!! :)
+Funciona! Por favor Mr. sedsed, nos ajude a entender que mÃ¡gica Ã© esta!! :)
 
-Vamos analisar três casos especiais:
+Vamos analisar trÃªs casos especiais:
 
 + Quando recebemos o caractere 9 como entrada:
 
@@ -422,7 +422,7 @@ prompt> echo 9 | sedsed -d --hide=HOLD -f incr_tentativa_4.sed | limpa.sed
 9
     s/9/_/              <<< --- o 9 virou _
 _
-    s/^_/0_/            <<< --- tática. se começa com _, então temos que aumentar o número de casas deciamis virando 0_
+    s/^_/0_/            <<< --- tÃ¡tica. se comeÃ§a com _, entÃ£o temos que aumentar o nÃºmero de casas deciamis virando 0_
 0_
     s/8\(_\)\?$/9\1/
 0_
@@ -448,15 +448,15 @@ _
 prompt> 
 ---
 
-Primeira instrução, trocamos 9 por _. Na segunda instrução testamos 
-se _ é o primeiro caractere. Se for, então era o dígito 9 e
+Primeira instruÃ§Ã£o, trocamos 9 por _. Na segunda instruÃ§Ã£o testamos 
+se _ Ã© o primeiro caractere. Se for, entÃ£o era o dÃ­gito 9 e
 precisamos aumentar uma casa decimal. Assim ficando 0_. 
-Note que as próximas instruções não alteraram o pattern space (`0_`).
-Só casaremos lá em baixo com `s/0\(_\)\?$/1\1/`, ou seja, é a mesma coisa que
-`s/0(_)?$/1_/`, assim 0_ vira 1_,. Na última instrução trocamos o _ por zero 
-e temos o número 10.
+Note que as prÃ³ximas instruÃ§Ãµes nÃ£o alteraram o pattern space (`0_`).
+SÃ³ casaremos lÃ¡ em baixo com `s/0\(_\)\?$/1\1/`, ou seja, Ã© a mesma coisa que
+`s/0(_)?$/1_/`, assim 0_ vira 1_,. Na Ãºltima instruÃ§Ã£o trocamos o _ por zero 
+e temos o nÃºmero 10.
 
-Mas por que o underscore '_' precisa ser opcional ? Próximo caso :)
+Mas por que o underscore '_' precisa ser opcional ? PrÃ³ximo caso :)
 
 + recebemos o valor 5.
 
@@ -473,7 +473,7 @@ prompt> echo 5 | sedsed -d --hide=HOLD -f incr_tentativa_4.sed | limpa.sed
 5
     s/6\(_\)\?$/7\1/
 5
-    s/5\(_\)\?$/6\1/     <<< --- casou, 5 vira 6. Mas note que não existe o underscore aqui
+    s/5\(_\)\?$/6\1/     <<< --- casou, 5 vira 6. Mas note que nÃ£o existe o underscore aqui
 6
     s/4\(_\)\?$/5\1/
 6
@@ -492,13 +492,13 @@ prompt>
 ---
 
 Para ele virar 6, o underscore precisa ser opcional. No caso
-vai ser a mesma coisa que antes: `s/5$/6/`. Podemos ver que o valor só se altera
-na instrução `s/5\(_\)\?\$/6\1/`. Como não existe o underscore, o retrovisor
-`\1`, não vai ter nada, não alterando o comportamento da saída.
+vai ser a mesma coisa que antes: `s/5$/6/`. Podemos ver que o valor sÃ³ se altera
+na instruÃ§Ã£o `s/5\(_\)\?\$/6\1/`. Como nÃ£o existe o underscore, o retrovisor
+`\1`, nÃ£o vai ter nada, nÃ£o alterando o comportamento da saÃ­da.
 
-+ Mas se tivermos o número 59 ?!
++ Mas se tivermos o nÃºmero 59 ?!
 
-Neste caso o undercore também entra em ação.
+Neste caso o undercore tambÃ©m entra em aÃ§Ã£o.
 
 ---
 prompt> echo 59 | sedsed -d --hide=HOLD -f incr_tentativa_4.sed | limpa.sed 
@@ -531,18 +531,18 @@ prompt> echo 59 | sedsed -d --hide=HOLD -f incr_tentativa_4.sed | limpa.sed
 prompt>
 ---
 
-Após a primeira instrução ele vira 5_ e ele não vai casar na segunda, pois
-não começa com _. Ele só casará na `s/5(_)?$/6\1/`, ficando 6_. Por fim, lá em
-baixo vira o tão esperado 60.
+ApÃ³s a primeira instruÃ§Ã£o ele vira 5_ e ele nÃ£o vai casar na segunda, pois
+nÃ£o comeÃ§a com _. Ele sÃ³ casarÃ¡ na `s/5(_)?$/6\1/`, ficando 6_. Por fim, lÃ¡ em
+baixo vira o tÃ£o esperado 60.
 
 
 = Golpe final =
 
-Okay, seu filho cresceu e está sendo alfabetizado. Já aprendeu a contar 
-até 99. Hora de ensiná-lo a quebrar barreiras e entender que, incrementar
-um número, é uma arte milenar. 
+Okay, seu filho cresceu e estÃ¡ sendo alfabetizado. JÃ¡ aprendeu a contar 
+atÃ© 99. Hora de ensinÃ¡-lo a quebrar barreiras e entender que, incrementar
+um nÃºmero, Ã© uma arte milenar. 
 
-Sr. Miyagi, cadê você ?
+Sr. Miyagi, cadÃª vocÃª ?
 
 Calma Daniel-San. Concentre-se no seu objetivo.
 
@@ -567,39 +567,39 @@ s/_/0/g
 prompt>
 ---
 
-A idéia é estender o uso do underscore. 
+A idÃ©ia Ã© estender o uso do underscore. 
 
  || repare que o underscore continua sendo opcional!! |
 
-Alguns exemplo de como as coisas funcionam. As três primeiras instruções 
+Alguns exemplo de como as coisas funcionam. As trÃªs primeiras instruÃ§Ãµes 
 `:p;s/9\(_*\)$/_\1/;tp` significam: enquando existir 9 seguido de zero ou mais 
 undercores e fim de linha, troque o 9 por undercore. Exemplo: 
 
- || entrada | saída | comentário  |
+ || entrada | saÃ­da | comentÃ¡rio  |
  | 9        | _     | um _        |
  | 99       | __    | dois _      |
- | 999      | ___   | três _      |
+ | 999      | ___   | trÃªs _      |
  | 49       | 4_    | 4 mais um _ |
- | 91       | 91    | não casou   |
- | 598      | 598   | não casou   |
+ | 91       | 91    | nÃ£o casou   |
+ | 598      | 598   | nÃ£o casou   |
 
 
-A quarta instrução (`s/^\(_*\)$/0\1/`) pega casos como 9, 99, 999, etc. Casos onde temos que 
-aumentar o número de casas decimais. Note que, temos que aumentar o número de casas 
-decimais  quando recebemos **todos** os caracteres sendo o dígito 9. Neste caso todos os 9s 
-virarão underscores e, assim, casando na quarta instrução, que adicionará um 0 no início. E, 
-como vimos, este 0 vai virar 1 e os underscores virarão 0s. Casos onde exista um número diferente 
-de 9 não casará nesta instrução, pois, o loop anterior só altera para undescore os 9 que 
-estiverem no final da linha. Exemplo: após as quatro primeiras instruções temos:
+A quarta instruÃ§Ã£o (`s/^\(_*\)$/0\1/`) pega casos como 9, 99, 999, etc. Casos onde temos que 
+aumentar o nÃºmero de casas decimais. Note que, temos que aumentar o nÃºmero de casas 
+decimais  quando recebemos **todos** os caracteres sendo o dÃ­gito 9. Neste caso todos os 9s 
+virarÃ£o underscores e, assim, casando na quarta instruÃ§Ã£o, que adicionarÃ¡ um 0 no inÃ­cio. E, 
+como vimos, este 0 vai virar 1 e os underscores virarÃ£o 0s. Casos onde exista um nÃºmero diferente 
+de 9 nÃ£o casarÃ¡ nesta instruÃ§Ã£o, pois, o loop anterior sÃ³ altera para undescore os 9 que 
+estiverem no final da linha. Exemplo: apÃ³s as quatro primeiras instruÃ§Ãµes temos:
 
- || entrada | saída | comentário    | 
+ || entrada | saÃ­da | comentÃ¡rio    | 
   | 9       | 0_    | 0 mais um _   |
   | 99      | 0__   | 0 mais dois _ |
-  | 999     | 0___  | 0 mais três _ |
+  | 999     | 0___  | 0 mais trÃªs _ |
   | 49      | 4_    | 4 mais um _   |
 
-Note que, por exemplo em 49, a quarta instrução não altera o valor, visto que, o 
-primeiro caractere não é underscore.
+Note que, por exemplo em 49, a quarta instruÃ§Ã£o nÃ£o altera o valor, visto que, o 
+primeiro caractere nÃ£o Ã© underscore.
 
 Primeiro vamos testar:
 
@@ -621,10 +621,10 @@ prompt> echo 1449 | ./incr_tentativa_5.sed
 prompt>
 ---
 
-Analise de novo as tabelas acima, pois o esquema está nas 4 primeiras instruções.
-Nas próximas instruções será como antes. Quer ver ?! 
+Analise de novo as tabelas acima, pois o esquema estÃ¡ nas 4 primeiras instruÃ§Ãµes.
+Nas prÃ³ximas instruÃ§Ãµes serÃ¡ como antes. Quer ver ?! 
 
-sedsed, me dê a visão além do alcance!!
+sedsed, me dÃª a visÃ£o alÃ©m do alcance!!
 
 ---
 prompt> echo 0 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed 
@@ -710,7 +710,7 @@ prompt> echo 45 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed
 45
     s/6\(_*\)$/7\1/
 45
-    s/5\(_*\)$/6\1/   <<< ----- 45 virando 46, não esqueça do $ marcando fim de linha. trocamos somente o último caractere
+    s/5\(_*\)$/6\1/   <<< ----- 45 virando 46, nÃ£o esqueÃ§a do $ marcando fim de linha. trocamos somente o Ãºltimo caractere
 46
     s/4\(_*\)$/5\1/
 46
@@ -732,10 +732,10 @@ prompt>
 prompt> echo 999 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed 
 999
     : p
-    s/9\(_*\)$/_\1/      <<< --- trocamos o último 9 por _ saída = 99_
+    s/9\(_*\)$/_\1/      <<< --- trocamos o Ãºltimo 9 por _ saÃ­da = 99_
 99_
     t p
-    s/9\(_*\)$/_\1/      <<< --- casa também 99_, vira 9__
+    s/9\(_*\)$/_\1/      <<< --- casa tambÃ©m 99_, vira 9__
 9__
     t p
     s/9\(_*\)$/_\1/      <<< --- 9 seguido de 0 ou mais _ e fim de linha, troca o 9 por _
@@ -744,7 +744,7 @@ ___
     s/9\(_*\)$/_\1/
 ___
     t p
-    s/^\(_*\)$/0\1/      <<< --- primeiro caractere é _ então aumenta as casas decimais
+    s/^\(_*\)$/0\1/      <<< --- primeiro caractere Ã© _ entÃ£o aumenta as casas decimais
 0___
     s/8\(_*\)$/9\1/
 0___
@@ -793,7 +793,7 @@ prompt> echo 1499 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed
 14__
     s/5\(_*\)$/6\1/
 14__
-    s/4\(_*\)$/5\1/       <<< --- 4 seguido de 0 ou mais _s, "soma" 1 no último dígito = 15__
+    s/4\(_*\)$/5\1/       <<< --- 4 seguido de 0 ou mais _s, "soma" 1 no Ãºltimo dÃ­gito = 15__
 15__
     s/3\(_*\)$/4\1/
 15__
@@ -809,7 +809,7 @@ prompt> echo 1499 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed
 prompt>
 ---
 
-E nosso último exemplo:
+E nosso Ãºltimo exemplo:
 
 ---
 prompt> echo 1449 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed 
@@ -847,14 +847,14 @@ prompt> echo 1449 | sedsed -d --hide=HOLD -f incr_tentativa_5.sed | limpa.sed
 prompt>
 ---
 
-**Resumão:**
+**ResumÃ£o:**
 
-OBS: como primeira instrução eu coloquei o loop inteiro.
+OBS: como primeira instruÃ§Ã£o eu coloquei o loop inteiro.
 
-Com a tabela abaixo espero deixar mais visual o processo de mudança sobre os caracteres, em outras
+Com a tabela abaixo espero deixar mais visual o processo de mudanÃ§a sobre os caracteres, em outras
 palavras, ver como ocorre a "soma".
 
- || Número | instrução         | N. de entrada = 4  | N. de entrada = 99 |  N. de entrada = 1499 | N. de entrada =  1449 |
+ || NÃºmero | instruÃ§Ã£o         | N. de entrada = 4  | N. de entrada = 99 |  N. de entrada = 1499 | N. de entrada =  1449 |
  |    1    | `:p`              |                    |                    |                       |                       |
  |    1    | `s/9\(_*\)$/_\1/` |                    |      __            |      14__             |       144_            |
  |    1    | `tp`              |                    |                    |                       |                       |
@@ -872,15 +872,15 @@ palavras, ver como ocorre a "soma".
 
 
 
-Como exemplo do uso "real" desta técnica, implementei um sed que conta quantas vezes uma determinada
+Como exemplo do uso "real" desta tÃ©cnica, implementei um sed que conta quantas vezes uma determinada
 palavra aparece em um texto. Confira [conta_palavra.sed ../bin/conta_palavra.sed.html].
 
 = Letras =
 
-Com esta técnica podemos utilizar outra ou fazer nossa própria linguagem.
+Com esta tÃ©cnica podemos utilizar outra ou fazer nossa prÃ³pria linguagem.
 Vamos supor que tenhamos que contar de '`a`' a '`f`'. Exemplo:
 
- || entrada | saída |
+ || entrada | saÃ­da |
   | a       | b     |
   | b       | c     |
   | aa      | ab    |
@@ -888,7 +888,7 @@ Vamos supor que tenhamos que contar de '`a`' a '`f`'. Exemplo:
   | cd      | ce    |
   | ff      | baa   |
 
-Como nós tratamos tudo como caractere, basta trocar `0-9` por `a-f`.
+Como nÃ³s tratamos tudo como caractere, basta trocar `0-9` por `a-f`.
 
 ---
 prompt> cat inc_letras.sed
@@ -907,7 +907,7 @@ s/_/a/g
 prompt>
 ---
 
-Câmbio - testando.
+CÃ¢mbio - testando.
 
 ---
 prompt> echo a | ./inc_letras.sed
@@ -929,14 +929,14 @@ os caracteres permitidos.
 
 Neste outro texto, 
 [Lookup Tables & Incrementando em sed lookup_tables_sed.html],
-utilizo a técnica de lookup tables para somar e no
-final tem um exemplo de como somar e diminuir levando em consideração se o 
-valor é positivo ou negativo.
+utilizo a tÃ©cnica de lookup tables para somar e no
+final tem um exemplo de como somar e diminuir levando em consideraÃ§Ã£o se o 
+valor Ã© positivo ou negativo.
 
 Fim! Hora de ZZZzzzzz
 
 | **Agradecimentos:**
-- Aurélio Marinho Jargas
+- AurÃ©lio Marinho Jargas
 
 
 ---------------------------------------------------------------------

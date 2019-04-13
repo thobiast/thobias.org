@@ -3,7 +3,7 @@ Useful SQL Statements for TSM
 %%date(%m/%d/%Y)
 
 
-%!encoding: iso-8859-1
+%!encoding: utf-8
 %!Style   : sql.css
 %!target: html
 %!Options : --toc --mask-emai

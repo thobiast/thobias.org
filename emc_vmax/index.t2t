@@ -2,7 +2,7 @@ Python Scripts for EMC VMAX Storage System
 %%date(%m/%d/%Y)
 
 
-%!encoding: iso-8859-1
+%!encoding: utf-8
 %!Style   : python.css
 %!target  : html
 %!Options : --toc --mask-email --enum-title --toc-level=1

@@ -10,8 +10,8 @@
  * gcc -o exemplo_tmk exemplo_tmk.c -I{DIR}/Tmk-1.0.3.2/include/ 
  * -L{DIR}/Tmk-1.0.3.2/lib.i386_linux2/ -lTmk_udp -lm
  *
- * Crie no seu home um arquivo chamado .Tmkrc contendo os nós que irao participar da
- * computação
+ * Crie no seu home um arquivo chamado .Tmkrc contendo os nÃ³s que irao participar da
+ * computaÃ§Ã£o
  * 
  * ./exemplo_tmk
  * ou para mostrar o display dos processos rodando em outros nos

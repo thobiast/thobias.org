@@ -3,9 +3,9 @@
 <HEAD>
 <META NAME="generator" CONTENT="http://txt2tags.sf.net">
 <LINK REL="stylesheet" TYPE="text/css" HREF="audio.css">
-<TITLE>Converter Arquivos de ¡udio</TITLE>
+<TITLE>Converter Arquivos de √Åudio</TITLE>
 </HEAD><BODY BGCOLOR="white" TEXT="black">
-<P ALIGN="center"><CENTER><H1>Converter Arquivos de ¡udio</H1>
+<P ALIGN="center"><CENTER><H1>Converter Arquivos de √Åudio</H1>
 <FONT SIZE="4">
 <I>Thobias Salazar Trevisan</I><BR>
 29/06/2005
@@ -15,7 +15,7 @@
 <HR NOSHADE SIZE=1>
 <P></P>
   <UL>
-  <LI><A HREF="#toc1">IntroduÁ„o</A>
+  <LI><A HREF="#toc1">Introdu√ß√£o</A>
   <LI><A HREF="#toc2">MP3 to WAV</A>
   <LI><A HREF="#toc3">WAV to MP3</A>
   <LI><A HREF="#toc4">WAV to OGG</A>
@@ -31,20 +31,20 @@
 <HR NOSHADE SIZE=1>
 <P></P>
 <A NAME="toc1"></A>
-<H1>IntroduÁ„o</H1>
+<H1>Introdu√ß√£o</H1>
 <P>
-O objetivo deste texto È juntar em um ˙nico documento scripts <I>one-line</I>
-prontos para copiar e colar que fazem a convers„o entre os principais
-formatos de ·udio existente.
+O objetivo deste texto √© juntar em um √∫nico documento scripts <I>one-line</I>
+prontos para copiar e colar que fazem a convers√£o entre os principais
+formatos de √°udio existente.
 </P>
 <P>
-Se vocÍ est· sentindo falta de algum formato, sabe de uma outra
-maneira ou outro programa que faÁa estas conversıes me mande um
-mail. Contribua!! Ajude a tornar este texto ˙til. =8)
+Se voc√™ est√° sentindo falta de algum formato, sabe de uma outra
+maneira ou outro programa que fa√ßa estas convers√µes me mande um
+mail. Contribua!! Ajude a tornar este texto √∫til. =8)
 </P>
 <P>
 <B>OBS</B>: Note que utilizei o "for" para listar os arquivos, portanto, caso
-os seus arquivos tenham espaÁos em branco no nome, vocÍ tem que trocar o IFS
+os seus arquivos tenham espa√ßos em branco no nome, voc√™ tem que trocar o IFS
 para "\n" ou utilizar o "while".
 </P>
 <P>
@@ -63,21 +63,21 @@ ou
 </PRE>
 <P></P>
 <P>
-Ah, ou antes de executar os comandos use a funÁ„o zzarrumanome das
+Ah, ou antes de executar os comandos use a fun√ß√£o zzarrumanome das
 <A HREF="http://aurelio.net/zz">funcoeszz</A>, muito bom para organizar
-o nome dos arquivos de ·udio.
+o nome dos arquivos de √°udio.
 </P>
 <PRE>
   prompt&gt; zzarrumanome --help
   
-  Renomeia arquivos do diretÛrio atual, arrumando nomes estranhos.
-  Obs.: ele deixa tudo em min˙sculas, retira acentuaÁ„o e troca espaÁos em
-        branco, sÌmbolos e pontuaÁ„o pelo sublinhado _
-  Use o -r para ser recursivo e o -d para renomear diretÛrios tambÈm
+  Renomeia arquivos do diret√≥rio atual, arrumando nomes estranhos.
+  Obs.: ele deixa tudo em min√∫sculas, retira acentua√ß√£o e troca espa√ßos em
+        branco, s√≠mbolos e pontua√ß√£o pelo sublinhado _
+  Use o -r para ser recursivo e o -d para renomear diret√≥rios tamb√©m
   Uso: zzarrumanome [-d] [-r] arquivo(s)
   Ex.: zzarrumanome *
        zzarrumanome -d -r .
-       zzarrumanome "DOCUMENTO MAL√O!.DOC"       # fica documento_malao.doc
+       zzarrumanome "DOCUMENTO MAL√ÉO!.DOC"       # fica documento_malao.doc
        zzarrumanome "RAMONES - I Don't Care"     # fica ramones-i_don_t_care
 </PRE>
 <P></P>
@@ -86,11 +86,11 @@ o nome dos arquivos de ·udio.
 <A NAME="toc2"></A>
 <H1>MP3 to WAV</H1>
 <P>
-Uma das maneiras de realizar esta convers„o È utilizando o programa
+Uma das maneiras de realizar esta convers√£o √© utilizando o programa
 <A HREF="http://www.mpg123.org">mpg123</A>.
 </P>
 <P>
-Para conveter todos os mp3 do diretÛrio atual para wav:
+Para conveter todos os mp3 do diret√≥rio atual para wav:
 </P>
 <PRE>
   prompt&gt; for i in *.mp3; do mpg123 -w "${i%.mp3}.wav" "$i"; done 
@@ -116,8 +116,8 @@ Usando o <A HREF="http://lame.sourceforge.net">lame</A>:
 <H1>WAV to OGG</H1>
 <P>
 Usando o <A HREF="http://www.gnu.org/directory/audio/ogg/OggEnc.html">oggenc</A>.
-A opÁ„o "-q" indica a qualidade do
-arquivo gerado. O default È 3 e o m·ximo È 10, que significa a melhor
+A op√ß√£o "-q" indica a qualidade do
+arquivo gerado. O default √© 3 e o m√°ximo √© 10, que significa a melhor
 qualidade.
 </P>
 <PRE>
@@ -196,7 +196,7 @@ Ripar todo CD usando o <A HREF="http://www.xiph.org/paranoia">cdparanoia</A>:
 </PRE>
 <P></P>
 <P>
-Colocar todo os WAV na mesma frequÍncia:
+Colocar todo os WAV na mesma frequ√™ncia:
 </P>
 <PRE>
   prompt&gt; for i in *.wav; do sox "$i" -r 44100 "arquivo_novo_$i" ; done
@@ -205,8 +205,8 @@ Colocar todo os WAV na mesma frequÍncia:
 <P>
 Ajustar o volume dos arquivos WAV usando o
 <A HREF="http://freshmeat.net/projects/normalize">normalize</A>.
-Antes de gravar um CD de ·udio execute
-este comando para deixar todas as m˙sicas com o mesmo volume:
+Antes de gravar um CD de √°udio execute
+este comando para deixar todas as m√∫sicas com o mesmo volume:
 </P>
 <PRE>
   prompt&gt; normalize -m *.wav
