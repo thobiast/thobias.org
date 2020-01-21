@@ -1,3 +1,7 @@
+---
+title: Another tmux cheatsheets
+---
+
 # tmux
 
 Another tmux cheatsheets.
