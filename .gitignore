@@ -11,3 +11,8 @@ tags
 [._]ss[a-gi-z]
 [._]sw[a-p]
 
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata
+Gemfile.lock
