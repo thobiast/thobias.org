@@ -25,6 +25,7 @@ You can check my [.tmux.conf file](https://github.com/thobiast/dotfiles).
 
 | tmux command | description |
 | :----------  | :---------  |
+| prefix + w | choose a window from a list |
 | prefix + c | create a new window |
 | prefix + 0-9 | move to window number |
 | prefix + , | rename window |
@@ -52,4 +53,5 @@ You can check my [.tmux.conf file](https://github.com/thobiast/dotfiles).
 | tmux command | description |
 | :----------  | :---------  |
 | prefix + w | list and select to attach session, windows and pane numbers.  |
+| prefix + ? | list shortcuts |
 | source-file ~/.tmux.conf | reload tmux config file |
