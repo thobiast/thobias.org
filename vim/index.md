@@ -1,6 +1,7 @@
 ---
 title: Another vim cheatsheets
 ---
+{%- include google-analytics.html -%}
 
 # vim
 
@@ -48,5 +49,6 @@ Another vim cheatsheets.
 | :tab ball | open all buffers in new tabs |
 | :tab only | close all other tabs |
 | <number>gt | move to tab number (index start from 0) |
+
 
 

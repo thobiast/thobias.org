@@ -1,6 +1,7 @@
 ---
 title: Another tmux cheatsheets
 ---
+{%- include google-analytics.html -%}
 
 # tmux
 
@@ -55,3 +56,4 @@ You can check my [.tmux.conf file](https://github.com/thobiast/dotfiles).
 | prefix + w | list and select to attach session, windows and pane numbers.  |
 | prefix + ? | list shortcuts |
 | source-file ~/.tmux.conf | reload tmux config file |
+
