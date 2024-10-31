@@ -3,9 +3,11 @@
   <head>
     <meta charset="utf-8">
     <title>{{ page.title }}</title>
-	<link rel="stylesheet" href="/assets/css/post.css">
-	<link rel="stylesheet" href="/assets/css/nav.css">
-	{%- include google-analytics.html -%}
+    <link rel="stylesheet" href="/assets/css/post.css">
+    <link rel="stylesheet" href="/assets/css/nav.css">
+    {% if jekyll.environment == "production" %}
+        {%- include google-analytics.html -%}
+    {% endif %}
   </head>
   <body>
     {% include navigation.html %}

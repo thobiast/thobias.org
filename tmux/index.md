@@ -1,7 +1,9 @@
 ---
 title: Another tmux cheatsheets
 ---
-{%- include google-analytics.html -%}
+{% if jekyll.environment == "production" %}
+  {%- include google-analytics.html -%}
+{% endif %}
 
 # tmux
 

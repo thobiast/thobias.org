@@ -1,7 +1,9 @@
 ---
 title: Another vim cheatsheets
 ---
-{%- include google-analytics.html -%}
+{% if jekyll.environment == "production" %}
+  {%- include google-analytics.html -%}
+{% endif %}
 
 # vim
 
